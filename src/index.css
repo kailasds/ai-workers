@@ -1,0 +1,140 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --font-display: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+
+  /* Page / shell / card — donezo reference: sampled, not approximated */
+  --color-page: #EAECED;
+  --color-shell: #F7F7F7;
+  --color-card: #FFFFFF;
+  --color-card-sunken: #F1F1F1;
+  --color-border: #ECECEC;
+  --color-border-strong: #D8D8D8;
+
+  /* Ink */
+  --color-ink: #0A0A0A;
+  --color-ink-soft: #1A1A1A;
+  --color-ink-mute: #6B7280;
+  --color-ink-faint: #9CA3AF;
+
+  /* Near-black — reserved for text and small chrome, not hero cards (those are green) */
+  --color-onyx: #0A0A0A;
+  --color-onyx-soft: #1A1A1A;
+
+  /* The one hue — five steps, no second accent */
+  --color-brand-900: #0D411B;
+  --color-brand-800: #13452D;
+  --color-brand-600: #185B3B;
+  --color-brand-500: #227D53;
+  --color-brand-300: #5FBD92;
+  --color-brand-100: #E8F5EE;
+
+  --color-accent: #185B3B;
+  --color-accent-ink: #13452D;
+  --color-accent-soft: #E8F5EE;
+  --color-accent-border: #BFE3D2;
+
+  /* Status pills — amber/grey are the reference's own vocabulary (In Progress / Pending);
+     blue/red/purple are muted extensions kept for product states the reference doesn't cover
+     (Active, Blocked, Learning) — small pale-tint pills only, never a structural surface. */
+  --color-status-blue: #3B6FCC;
+  --color-status-blue-soft: #EAF0FB;
+  --color-status-green: #185B3B;
+  --color-status-green-soft: #E8F5EE;
+  --color-status-amber: #B4790E;
+  --color-status-amber-soft: #FCF1DC;
+  --color-status-red: #C23B3B;
+  --color-status-red-soft: #FBEAEA;
+  --color-status-purple: #7A5FBF;
+  --color-status-purple-soft: #F0ECFA;
+
+  --radius-shell: 28px;
+  --radius-card: 20px;
+  --radius-control: 14px;
+
+  --shadow-card: 0 1px 2px rgba(10, 10, 10, 0.04);
+  --shadow-float: 0 12px 32px rgba(10, 10, 10, 0.14);
+  --shadow-pill: 0 8px 20px rgba(10, 10, 10, 0.10);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-page);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 13.5px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background: var(--color-accent-soft);
+    color: var(--color-accent-ink);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border-strong) transparent;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer utilities {
+  .hatch {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent 0 4px,
+      rgb(10 10 10 / 0.08) 4px 5px
+    );
+  }
+
+  .hatch-bar {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent 0 5px,
+      rgb(107 114 128 / 0.35) 5px 6.5px
+    );
+  }
+
+  .noise-veil {
+    background-image: radial-gradient(rgb(10 10 10 / 0.05) 1px, transparent 1px);
+    background-size: 14px 14px;
+  }
+
+  /* hero/punctuation card — replaces flat near-black with the reference's diagonal green gradient */
+  .card-hero {
+    background-image: linear-gradient(135deg, var(--color-brand-800), var(--color-brand-500));
+  }
+
+  /* sidebar promo/status card texture — subtle dark concentric rings on brand-900 */
+  .ring-texture {
+    background-color: var(--color-brand-900);
+    background-image: repeating-radial-gradient(
+      circle at 85% 15%,
+      rgb(255 255 255 / 0.05) 0 1px,
+      transparent 1px 10px
+    );
+  }
+}
