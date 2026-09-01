@@ -7,28 +7,23 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { AskWorkforceAI } from "@/components/shared/ask-workforce-ai";
-import { getWorker, workers } from "@/lib/data";
+import { getWorker, allWorkHistory } from "@/lib/data";
 
 const routeLabels: Record<string, string> = {
   "": "Overview",
-  workers: "Workers",
+  workers: "AI Workers",
   work: "Work",
-  approvals: "Approvals",
+  operations: "Operations",
   governance: "Governance",
   analytics: "Analytics",
   settings: "Settings",
   new: "Create Worker",
-  overview: "Overview",
-  configuration: "Configuration",
-  performance: "Performance",
-  learning: "Learning",
-  audit: "Audit",
-  skills: "Skills",
-  knowledge: "Knowledge",
-  agents: "Agent Team",
-  tools: "Tools & Access",
-  budget: "Budget",
-  completion: "Completion Contract",
+  assign: "Assign Work",
+  responsibilities: "Responsibilities",
+  capabilities: "Capabilities",
+  "definition-of-done": "Definition of Done",
+  knowledge: "Knowledge & Learning",
+  "work-history": "Work History",
 };
 
 export function Topbar() {
@@ -37,12 +32,11 @@ export function Topbar() {
 
   const crumbs: { label: string; to: string }[] = [{ label: "AI Workforce", to: "/" }];
   let acc = "";
-  const allTasks = workers.flatMap((w) => w.tasks);
   for (const seg of segments) {
     acc += `/${seg}`;
     const worker = getWorker(seg);
-    const task = allTasks.find((t) => t.id === seg);
-    const label = worker ? worker.name : task ? task.title : routeLabels[seg] ?? seg;
+    const workItem = allWorkHistory.find((w) => w.id === seg);
+    const label = worker ? worker.name : workItem ? workItem.title : routeLabels[seg] ?? seg;
     crumbs.push({ label, to: acc });
   }
 

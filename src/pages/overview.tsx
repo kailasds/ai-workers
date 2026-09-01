@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
-import { Plus, ArrowUpRight, Clock, Bot, Wallet } from "lucide-react";
+import { Plus, ArrowUpRight, Bot, Wallet, ClipboardList } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusDot } from "@/components/shared/status-dot";
 import { ExecutionStepper } from "@/components/shared/execution-stepper";
+import { AutonomyBadge } from "@/components/shared/autonomy-badge";
+import { SentinelStatus } from "@/components/shared/sentinel-status";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -10,35 +12,45 @@ import { workers, orgMetrics, attentionItems, getWorker } from "@/lib/data";
 import { workerStatusColor } from "@/lib/status";
 import { cn } from "@/lib/utils";
 
-const featured = getWorker("legacy-modernization-engineer")!;
-const otherActive = workers.filter((w) => w.id !== featured.id).slice(0, 3);
+const featured = getWorker("cobol-modernization-worker")!;
+const otherActive = workers.filter((w) => w.id !== featured.id && w.currentWork).slice(0, 3);
 const healthy = workers.filter((w) => w.status !== "blocked" && w.status !== "review").length;
 const attention = workers.filter((w) => w.status === "review").length;
 const blocked = workers.filter((w) => w.status === "blocked").length;
 
 export default function Overview() {
+  const cw = featured.currentWork!;
+
   return (
     <div className="pb-10">
       <PageHeader
         title="AI Workforce"
         subtitle="Manage and monitor your digital workforce."
         actions={
-          <Button asChild>
-            <Link to="/workers/new">
-              <Plus className="h-4 w-4" strokeWidth={2} />
-              Create Worker
-            </Link>
-          </Button>
+          <>
+            <Button asChild variant="secondary">
+              <Link to="/work/assign">
+                <ClipboardList className="h-4 w-4" strokeWidth={2} />
+                Assign Work
+              </Link>
+            </Button>
+            <Button asChild>
+              <Link to="/workers/new">
+                <Plus className="h-4 w-4" strokeWidth={2} />
+                Create Worker
+              </Link>
+            </Button>
+          </>
         }
       />
 
       <div className="px-8 space-y-5">
         {/* Metrics — equal-size cards, hierarchy signaled by color, not size */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
-          <MetricCard label="Active Workers" value="12" hero />
-          <MetricCard label="Running Work" value="38" />
-          <MetricCard label="Requires Attention" value="4" tone="amber" />
-          <MetricCard label="Escalations" value="2" tone="red" />
+          <MetricCard label="Active Workers" value={String(orgMetrics.activeWorkers)} hero />
+          <MetricCard label="Running Work" value={String(orgMetrics.runningWork)} />
+          <MetricCard label="Requires Attention" value={String(orgMetrics.requiresAttention)} tone="amber" />
+          <MetricCard label="Escalations" value={String(orgMetrics.escalations)} tone="red" />
           <div className="rounded-card border border-border bg-card shadow-card p-5">
             <p className="text-[11px] uppercase tracking-wider text-ink-mute">Monthly Spend</p>
             <p className="mt-1.5 text-[26px] leading-none font-bold tracking-[-0.01em] tabular-nums text-ink font-display">
@@ -64,75 +76,68 @@ export default function Overview() {
             <div className="rounded-card card-hero p-6 text-white">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <StatusDot color="blue" pulse />
-                    <span className="text-[11px] uppercase tracking-wider text-white/60">Working</span>
+                  <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                    <StatusDot color={workerStatusColor[featured.status]} pulse={featured.status === "working"} />
+                    <span className="text-[11px] uppercase tracking-wider text-white/60">{featured.statusLabel}</span>
+                    <AutonomyBadge level={featured.autonomy} className="bg-white/15 text-white" />
+                    <SentinelStatus state={featured.sentinel} className="bg-white/15 text-white" />
                   </div>
-                  <Link to={`/workers/${featured.id}`} className="text-[19px] font-medium tracking-[-0.01em] hover:underline underline-offset-4">
+                  <Link to={`/workers/${featured.id}`} className="text-[19px] font-bold tracking-[-0.01em] hover:underline underline-offset-4">
                     {featured.name}
                   </Link>
-                  <p className="mt-1 text-[13px] text-white/70">Current task: {featured.currentTask}</p>
+                  <p className="mt-1 text-[13px] text-white/70">Current work: {cw.title}</p>
                 </div>
                 <Button asChild variant="secondary" className="border-white/20 bg-transparent text-white hover:bg-white/10 shrink-0">
-                  <Link to={`/workers/${featured.id}/work`}>
-                    View Work
+                  <Link to={`/workers/${featured.id}/operations`}>
+                    View Operations
                     <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.5} />
                   </Link>
                 </Button>
               </div>
 
               <div className="mt-6">
-                <ExecutionStepper
-                  dark
-                  steps={[
-                    { label: "Understand", state: "done" },
-                    { label: "Plan", state: "done" },
-                    { label: "Execute", state: "current" },
-                    { label: "Validate", state: "pending" },
-                    { label: "Approve", state: "pending" },
-                    { label: "Complete", state: "pending" },
-                  ]}
-                />
+                <ExecutionStepper dark steps={cw.stages.map((s) => ({ label: s.label, state: s.state }))} />
               </div>
 
               <div className="mt-6 rounded-[14px] bg-white/5 border border-white/10 px-4 py-3">
                 <p className="text-[12.5px] text-white/80">
-                  <span className="text-white/50">Business Logic Agent —</span> extracting transaction rules from ClaimsService.cbl.
+                  <span className="text-white/50">Current stage —</span> {cw.stage}
                 </p>
               </div>
 
               <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <HeroStat label="Progress" value={`${featured.progress}%`} />
-                <HeroStat label="Elapsed" icon={<Clock className="h-3 w-3" strokeWidth={1.5} />} value="02h 34m" />
-                <HeroStat label="Agents used" icon={<Bot className="h-3 w-3" strokeWidth={1.5} />} value="4 / 8" />
-                <HeroStat label="Task budget" icon={<Wallet className="h-3 w-3" strokeWidth={1.5} />} value="$23.80 / $50" />
+                <HeroStat label="Progress" value={`${cw.progress}%`} />
+                <HeroStat label="Definition of Done" value={`${featured.definitionOfDone.sections.flatMap((s) => s.requirements).filter((r) => r.status === "passed").length} / ${featured.definitionOfDone.sections.flatMap((s) => s.requirements).length}`} />
+                <HeroStat label="Agent mesh" icon={<Bot className="h-3 w-3" strokeWidth={1.5} />} value={`${featured.agentMesh.filter((a) => a.status !== "idle").length} / ${featured.agentMesh.length}`} />
+                <HeroStat label="Task budget" icon={<Wallet className="h-3 w-3" strokeWidth={1.5} />} value={`$${cw.cost.toFixed(2)} / $${cw.budget}`} />
               </div>
             </div>
 
             {/* Other active workers */}
-            <div className="rounded-card border border-border bg-card shadow-card divide-y divide-border">
-              {otherActive.map((w) => (
-                <div key={w.id} className="flex items-center justify-between gap-4 px-5 py-4">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <StatusDot color={workerStatusColor[w.status]} pulse={w.status === "working"} />
-                      <Link to={`/workers/${w.id}`} className="text-[13.5px] font-medium text-ink hover:text-accent-ink truncate">
-                        {w.name}
-                      </Link>
-                      <Badge variant={w.status === "completed" ? "green" : w.status === "review" ? "amber" : "blue"}>
-                        {w.status === "completed" ? "Completed" : w.statusLabel}
-                      </Badge>
+            {otherActive.length > 0 && (
+              <div className="rounded-card border border-border bg-card shadow-card divide-y divide-border">
+                {otherActive.map((w) => (
+                  <div key={w.id} className="flex items-center justify-between gap-4 px-5 py-4">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <StatusDot color={workerStatusColor[w.status]} pulse={w.status === "working"} />
+                        <Link to={`/workers/${w.id}`} className="text-[13.5px] font-medium text-ink hover:text-accent-ink truncate">
+                          {w.name}
+                        </Link>
+                        <Badge variant={w.status === "review" ? "amber" : w.status === "blocked" ? "red" : "blue"}>
+                          {w.statusLabel}
+                        </Badge>
+                        <AutonomyBadge level={w.autonomy} />
+                      </div>
+                      <p className="mt-1 text-[12.5px] text-ink-mute truncate">{w.currentWork?.title}</p>
                     </div>
-                    <p className="mt-1 text-[12.5px] text-ink-mute truncate">{w.currentTask}</p>
+                    <Button asChild size="sm" variant="secondary" className="shrink-0">
+                      <Link to={`/workers/${w.id}`}>{w.status === "review" ? "Review" : "View"}</Link>
+                    </Button>
                   </div>
-                  <Button asChild size="sm" variant="secondary" className="shrink-0">
-                    <Link to={`/workers/${w.id}`}>
-                      {w.status === "review" ? "Review" : w.status === "completed" ? "View Output" : "View"}
-                    </Link>
-                  </Button>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Right rail */}
@@ -156,8 +161,8 @@ export default function Overview() {
                       <p className="text-[11.5px] text-ink-mute truncate">{item.worker}</p>
                       <p className="mt-0.5 text-[12px] text-ink-soft">{item.detail}</p>
                     </div>
-                    <Button size="sm" variant="ghost" className="shrink-0 -mr-1.5">
-                      Review
+                    <Button size="sm" variant="ghost" className="shrink-0 -mr-1.5" asChild>
+                      <Link to="/operations">Review</Link>
                     </Button>
                   </div>
                 ))}

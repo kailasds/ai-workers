@@ -3,26 +3,22 @@ import { AppShell } from "@/components/layout/app-shell";
 import Overview from "@/pages/overview";
 import WorkersDirectory from "@/pages/workers-directory";
 import CreateWorker from "@/pages/create-worker";
+import AssignWork from "@/pages/assign-work";
 import WorkerLayout from "@/pages/worker/worker-layout";
-import WorkerOverview from "@/pages/worker/worker-overview";
-import ConfigurationHub from "@/pages/worker/configuration-hub";
-import ManageSkills from "@/pages/worker/manage-skills";
-import ManageKnowledge from "@/pages/worker/manage-knowledge";
-import AgentTeam from "@/pages/worker/agent-team";
-import ToolsAccess from "@/pages/worker/tools-access";
-import WorkerGovernance from "@/pages/worker/worker-governance";
-import WorkerBudget from "@/pages/worker/worker-budget";
-import CompletionContractPage from "@/pages/worker/completion-contract";
-import WorkerWork from "@/pages/worker/worker-work";
-import WorkExecution from "@/pages/worker/work-execution";
+import WorkerOverview from "@/pages/worker/overview";
+import Responsibilities from "@/pages/worker/responsibilities";
+import Capabilities from "@/pages/worker/capabilities";
+import Governance from "@/pages/worker/governance";
+import DefinitionOfDone from "@/pages/worker/definition-of-done";
+import Knowledge from "@/pages/worker/knowledge";
+import WorkHistory from "@/pages/worker/work-history";
+import WorkHistoryDetail from "@/pages/worker/work-history-detail";
+import Operations from "@/pages/worker/operations";
 import GlobalWork from "@/pages/global-work";
-import GlobalApprovals from "@/pages/global-approvals";
+import GlobalOperations from "@/pages/global-operations";
 import GlobalGovernance from "@/pages/global-governance";
 import GlobalAnalytics from "@/pages/global-analytics";
 import Settings from "@/pages/settings";
-import WorkerPerformance from "@/pages/worker/worker-performance";
-import WorkerLearning from "@/pages/worker/worker-learning";
-import WorkerAudit from "@/pages/worker/worker-audit";
 
 export default function App() {
   return (
@@ -34,22 +30,18 @@ export default function App() {
           <Route path="workers/new" element={<CreateWorker />} />
           <Route path="workers/:workerId" element={<WorkerLayout />}>
             <Route index element={<WorkerOverview />} />
-            <Route path="configuration" element={<ConfigurationHub />} />
-            <Route path="configuration/skills" element={<ManageSkills />} />
-            <Route path="configuration/knowledge" element={<ManageKnowledge />} />
-            <Route path="configuration/agents" element={<AgentTeam />} />
-            <Route path="configuration/tools" element={<ToolsAccess />} />
-            <Route path="configuration/governance" element={<WorkerGovernance />} />
-            <Route path="configuration/budget" element={<WorkerBudget />} />
-            <Route path="configuration/completion" element={<CompletionContractPage />} />
-            <Route path="work" element={<WorkerWork />} />
-            <Route path="work/:taskId" element={<WorkExecution />} />
-            <Route path="performance" element={<WorkerPerformance />} />
-            <Route path="learning" element={<WorkerLearning />} />
-            <Route path="audit" element={<WorkerAudit />} />
+            <Route path="responsibilities" element={<Responsibilities />} />
+            <Route path="capabilities" element={<Capabilities />} />
+            <Route path="governance" element={<Governance />} />
+            <Route path="definition-of-done" element={<DefinitionOfDone />} />
+            <Route path="knowledge" element={<Knowledge />} />
+            <Route path="work-history" element={<WorkHistory />} />
+            <Route path="work-history/:workId" element={<WorkHistoryDetail />} />
+            <Route path="operations" element={<Operations />} />
           </Route>
           <Route path="work" element={<GlobalWork />} />
-          <Route path="approvals" element={<GlobalApprovals />} />
+          <Route path="work/assign" element={<AssignWork />} />
+          <Route path="operations" element={<GlobalOperations />} />
           <Route path="governance" element={<GlobalGovernance />} />
           <Route path="analytics" element={<GlobalAnalytics />} />
           <Route path="settings" element={<Settings />} />

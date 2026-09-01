@@ -3,7 +3,7 @@ import {
   Gauge,
   Users,
   ListChecks,
-  ShieldCheck,
+  Activity,
   Scale,
   BarChart3,
   Settings,
@@ -23,15 +23,13 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { orgMetrics, approvals, allTasks } from "@/lib/data";
-
-const runningCount = allTasks.filter((t) => t.status === "running").length;
+import { orgMetrics, approvals, allCurrentWork } from "@/lib/data";
 
 const primaryNav = [
   { to: "/", label: "Overview", icon: Gauge, end: true },
-  { to: "/workers", label: "Workers", icon: Users },
-  { to: "/work", label: "Work", icon: ListChecks, count: runningCount },
-  { to: "/approvals", label: "Approvals", icon: ShieldCheck, count: approvals.length },
+  { to: "/workers", label: "AI Workers", icon: Users },
+  { to: "/work", label: "Work", icon: ListChecks, count: allCurrentWork.length },
+  { to: "/operations", label: "Operations", icon: Activity, count: approvals.length },
 ];
 
 const orgNav = [

@@ -1,4 +1,6 @@
+import { Link } from "react-router-dom";
 import { PageHeader } from "@/components/shared/page-header";
+import { SentinelStatus } from "@/components/shared/sentinel-status";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -57,7 +59,23 @@ export default function GlobalGovernance() {
         }
       />
 
-      <div className="px-8">
+      <div className="px-8 space-y-5">
+        <div className="rounded-card border border-border bg-card shadow-card p-5">
+          <h3 className="text-[15px] font-bold text-ink mb-3">AI Sentinel — Workforce Wide</h3>
+          <div className="flex flex-wrap gap-2.5">
+            {workers.map((w) => (
+              <Link
+                key={w.id}
+                to={`/workers/${w.id}/governance`}
+                className="flex items-center gap-2 rounded-full border border-border px-3 py-1.5 transition hover:border-border-strong"
+              >
+                <span className="text-[12px] text-ink-soft">{w.name}</span>
+                <SentinelStatus state={w.sentinel} />
+              </Link>
+            ))}
+          </div>
+        </div>
+
         <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
           <div className="grid grid-cols-[2fr_2fr_1fr_0.8fr_1fr] items-center gap-4 border-b border-border bg-card-sunken/60 px-5 py-2.5 text-[11px] font-medium uppercase tracking-wider text-ink-mute">
             <span>Policy</span>

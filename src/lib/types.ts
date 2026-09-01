@@ -1,105 +1,154 @@
-export type WorkerStatus = "active" | "working" | "review" | "paused" | "blocked" | "completed";
+export type WorkerStatus = "active" | "working" | "review" | "paused" | "blocked" | "idle";
 
 export type StatusColor = "blue" | "green" | "amber" | "red" | "purple" | "neutral";
 
-export interface Skill {
-  id: string;
-  name: string;
-  level: "Intermediate" | "Advanced" | "Expert";
-  scope: string;
-  restrictions?: string;
-  usedByAgents: string[];
-  usageCount: number;
+export type AutonomyLevel = "supervised" | "guarded" | "autonomous";
+
+export type SentinelState =
+  | "observing"
+  | "guarding"
+  | "intervention-required"
+  | "certified"
+  | "policy-violation"
+  | "learning-signal";
+
+export type DoDOverallStatus = "not-ready" | "ready-for-review" | "certified-complete";
+
+export interface WorkerIdentity {
+  workerId: string;
+  environment: string;
+  tenant: string;
+  createdAt: string;
+  credentialStatus: "Active" | "Rotated" | "Suspended";
 }
 
-export interface KnowledgeSource {
-  id: string;
-  name: string;
-  type: "Guideline" | "Standard" | "Playbook" | "Historical Record" | "Reference";
-  version?: string;
-  status: "Active" | "Connected" | "Stale";
-  lastUpdated: string;
-  usageCount: number;
-  detail?: string;
+export interface ScopeDefinition {
+  primaryPurpose: string;
+  boundedScope: string;
+  expectedOutcome: string;
+  outOfScope: string[];
 }
 
-export interface AgentDefinition {
+export interface Responsibility {
+  primary: string;
+  inputs: string[];
+  expectedOutputs: string[];
+  boundaries: string[];
+}
+
+export interface SkillV2 {
   id: string;
   name: string;
-  purpose: string;
-  capabilities: string[];
-  restrictions: string[];
+  description: string;
+  version: string;
+  status: "Active" | "Deprecated" | "Draft";
+  evalStatus: "Passed" | "Needs Review" | "Failed" | "Not Evaluated";
+  linkedTools: string[];
+  linkedSpecs: string[];
+}
+
+export interface AgentMeshNode {
+  id: string;
+  name: string;
+  role: string;
+  isOrchestrator?: boolean;
   status: "completed" | "running" | "waiting" | "idle";
-  usageCount: number;
-  performance: number;
-  costPerRun: number;
+  description: string;
 }
 
-export interface ToolAccess {
+export interface ToolAccessV2 {
   id: string;
   name: string;
   category: string;
   connected: boolean;
-  permissions: ("READ" | "WRITE" | "EXECUTE" | "ADMIN" | "CREATE PR" | "RUN SCAN" | "RUN PIPELINE")[];
+  permissions: ("Read" | "Write" | "Execute")[];
   restriction?: string;
 }
 
-export interface Policy {
+export interface ApprovalMatrixRow {
+  id: string;
+  action: string;
+  autonomy: "Allowed" | "Approval Required" | "Restricted";
+  note?: string;
+}
+
+export interface PolicyCard {
   id: string;
   name: string;
-  scope: "Organization" | "Worker-Specific";
-  status: "Enforced" | "Exception";
-  appliesTo?: string;
-  version?: string;
-  lastUpdated?: string;
+  statusLabel: string;
+  tone: "green" | "amber" | "red" | "neutral";
+  description?: string;
 }
 
-export interface CompletionCheckpoint {
+export interface GovernanceProfile {
+  accessScope: string[];
+  environmentPermissions: string[];
+  leastPrivilegeRules: string[];
+  policies: PolicyCard[];
+  approvalMatrix: ApprovalMatrixRow[];
+  evaluation: {
+    suiteName: string;
+    lastRun: string;
+    passRate: number;
+    llmJudgeStatus: "Passed" | "Needs Review" | "Not Run";
+    redTeamStatus: "Passed" | "Findings Open" | "Not Run";
+    regressionStatus: "Passed" | "Failed" | "Not Run";
+  };
+  budget: {
+    monthly: number;
+    used: number;
+    projected: number;
+    perTaskLimit: number;
+    approvalThreshold: number;
+    costPerOutcome: number;
+    valueGenerated: number;
+    breakdown: { label: string; amount: number }[];
+  };
+}
+
+export interface DoDRequirement {
   id: string;
-  order: number;
   label: string;
-  required: boolean;
-  status: "complete" | "pending" | "in-progress";
-  validationType: string;
-  responsibleAgent: string;
-  evidenceRequirement: string;
-  humanApproval: boolean;
+  status: "passed" | "failed" | "pending";
+  evidence: string[];
 }
 
-export interface KPI {
+export interface DoDSection {
   id: string;
-  label: string;
-  value: number;
-  unit: "%" | "hrs" | "$" | "";
-  target: number;
-  targetDirection: "min" | "max";
-  trend: number[];
-}
-
-export interface WorkTask {
-  id: string;
-  workerId: string;
   title: string;
-  status: "running" | "completed" | "awaiting-approval" | "failed" | "scheduled";
-  progress: number;
-  currentStage: string;
-  startedAt: string;
-  completedAt?: string;
-  cost: number;
-  budget: number;
+  requirements: DoDRequirement[];
 }
 
-export interface AuditEvent {
+export interface DefinitionOfDoneContract {
+  title: string;
+  overallStatus: DoDOverallStatus;
+  sections: DoDSection[];
+}
+
+export interface KnowledgeSourceV2 {
   id: string;
-  timestamp: string;
-  actor: string;
-  action: string;
-  policy?: string;
-  outcome: "allowed" | "blocked" | "info";
-  detail?: string;
+  name: string;
+  type: string;
+  status: "Active" | "Connected" | "Stale";
+  lastUpdated: string;
 }
 
-export interface LearningCandidate {
+export interface MemoryCategory {
+  id: string;
+  name: string;
+  description: string;
+  itemCount: number;
+}
+
+export interface WorkerVersion {
+  version: string;
+  role: "champion" | "challenger";
+  summary: string;
+  evaluationStatus: string;
+  date: string;
+}
+
+export interface ImprovementCandidate {
   id: string;
   title: string;
   description: string;
@@ -109,50 +158,98 @@ export interface LearningCandidate {
   date: string;
 }
 
-export interface VersionEvent {
-  version: string;
+export interface LearningPlanData {
+  fastLoopSummary: string;
+  slowLoopSummary: string;
+  championVersion: WorkerVersion;
+  challengerVersion?: WorkerVersion;
+  improvementCandidates: ImprovementCandidate[];
+}
+
+export interface WorkHistoryItem {
+  id: string;
+  title: string;
+  outcome: string;
+  status: "certified-complete" | "needs-review" | "in-progress" | "failed";
+  dodPassed: number;
+  dodTotal: number;
+  cost: number;
+  durationHrs: number;
+  evidenceAvailable: boolean;
+  humanReview: "Approved" | "Pending" | "Not Required" | "Rejected";
+  reason?: string;
+  completedAt?: string;
+}
+
+export interface ExecutionEvent {
+  id: string;
+  time: string;
+  title: string;
+  actor: string;
+  type: "assignment" | "agent-start" | "milestone" | "validation" | "sentinel" | "pause" | "completion";
+  decisionSummary?: string;
+  evidence?: string[];
+  inputs?: string[];
+  outputs?: string[];
+  rulesApplied?: string[];
+  policiesApplied?: string[];
+  agentsInvolved?: string[];
+  result?: string;
+}
+
+export interface WorkerHealthMetrics {
+  capability: number;
+  governance: number;
+  evaluation: number;
+  cost: number;
+}
+
+export interface CurrentWorkStage {
   label: string;
-  date: string;
-  current?: boolean;
+  state: "done" | "current" | "pending";
+}
+
+export interface CurrentWork {
+  id: string;
+  title: string;
+  status: "in-progress" | "awaiting-approval" | "paused";
+  stage: string;
+  stages: CurrentWorkStage[];
+  progress: number;
+  startedAt: string;
+  cost: number;
+  budget: number;
 }
 
 export interface AIWorker {
   id: string;
   name: string;
   role: string;
+  purpose: string;
   department: string;
+  domain: string;
   status: WorkerStatus;
   statusLabel: string;
+  autonomy: AutonomyLevel;
   version: string;
-  mission: string;
   avatarInitials: string;
   accentColor: StatusColor;
-  currentTask?: string;
-  currentStage?: string;
-  progress?: number;
-  performance: number;
+  sentinel: SentinelState;
+  identity: WorkerIdentity;
+  scope: ScopeDefinition;
+  responsibility: Responsibility;
+  skills: SkillV2[];
+  agentMesh: AgentMeshNode[];
+  tools: ToolAccessV2[];
+  governance: GovernanceProfile;
+  definitionOfDone: DefinitionOfDoneContract;
+  knowledgeSources: KnowledgeSourceV2[];
+  memory: MemoryCategory[];
+  learningPlan: LearningPlanData;
+  workHistory: WorkHistoryItem[];
+  currentWork?: CurrentWork;
+  executionTimeline: ExecutionEvent[];
+  health: WorkerHealthMetrics;
   costPerTask: number;
   activeTasks: number;
-  skills: Skill[];
-  knowledge: KnowledgeSource[];
-  agents: AgentDefinition[];
-  tools: ToolAccess[];
-  policies: Policy[];
-  budget: {
-    monthly: number;
-    used: number;
-    projected: number;
-    perTaskLimit: number;
-    approvalThreshold: number;
-    breakdown: { label: string; amount: number }[];
-  };
-  kpis: KPI[];
-  completionContract: CompletionCheckpoint[];
-  authority: { allowed: string[]; forbidden: string[] };
-  escalationRules: string[];
-  tasks: WorkTask[];
-  auditTrail: AuditEvent[];
-  learning: LearningCandidate[];
-  versionHistory: VersionEvent[];
-  responsibilities: string[];
 }

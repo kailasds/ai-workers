@@ -5,24 +5,25 @@ import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { AutonomyBadge } from "@/components/shared/autonomy-badge";
 import { getWorker } from "@/lib/data";
 
 type Stage = "idle" | "generating" | "blueprint";
 
 const generationSteps = [
   "Analyzing the role description",
-  "Mapping required skills and knowledge",
-  "Assembling the specialized agent team",
-  "Drafting the completion contract",
+  "Defining the bounded scope and outcome",
+  "Assembling the skill set and agent mesh",
+  "Drafting governance policies and the Definition of Done",
 ];
 
-const worker = getWorker("legacy-modernization-engineer")!;
+const worker = getWorker("cobol-modernization-worker")!;
 
 export default function CreateWorker() {
   const navigate = useNavigate();
   const [stage, setStage] = useState<Stage>("idle");
   const [prompt, setPrompt] = useState(
-    "I need an AI worker that modernizes legacy COBOL applications into Java while following our enterprise architecture, security, and coding standards."
+    "I need an AI worker that modernizes legacy COBOL applications into Java while preserving business behavior, and that proves functional equivalence before it can call the work done."
   );
   const [stepIndex, setStepIndex] = useState(0);
 
@@ -40,23 +41,27 @@ export default function CreateWorker() {
     }, 500);
   }
 
+  const dodRequirementCount = worker.definitionOfDone.sections.flatMap((s) => s.requirements).length;
+
   return (
     <div className="pb-14">
-      <PageHeader title="Create AI Worker" subtitle="Describe the role. AI will help configure the worker." />
+      <PageHeader title="Create AI Worker" subtitle="Describe the outcome it owns. AI will help provision the worker." />
 
       <div className="px-8 max-w-3xl">
         {stage === "idle" && (
           <div className="rounded-card border border-border bg-card shadow-card p-5">
-            <label className="text-[13px] font-medium text-ink">What role should this AI Worker perform?</label>
+            <label className="text-[13px] font-medium text-ink">What outcome should this AI Worker own?</label>
             <Textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               rows={4}
               className="mt-3"
-              placeholder="Describe the role, responsibilities, and standards this worker should follow…"
+              placeholder="Describe the role, the bounded outcome it owns, and what proves the work is done…"
             />
             <div className="mt-4 flex items-center justify-between">
-              <p className="text-[12px] text-ink-mute">AI will propose skills, agents, knowledge, policies, and success criteria.</p>
+              <p className="text-[12px] text-ink-mute">
+                AI will propose scope, skills, agent mesh, governance and a Definition of Done — not just a prompt.
+              </p>
               <Button onClick={generate} disabled={!prompt.trim()}>
                 <Sparkle className="h-3.5 w-3.5" strokeWidth={1.5} />
                 Generate Blueprint
@@ -69,7 +74,7 @@ export default function CreateWorker() {
           <div className="rounded-card border border-border bg-card shadow-card p-6">
             <div className="flex items-center gap-2 mb-5">
               <Loader2 className="h-4 w-4 animate-spin text-accent" strokeWidth={1.5} />
-              <p className="text-[13.5px] font-medium text-ink">Designing the worker…</p>
+              <p className="text-[13.5px] font-medium text-ink">Provisioning the worker…</p>
             </div>
             <div className="space-y-3">
               {generationSteps.map((step, i) => (
@@ -98,20 +103,28 @@ export default function CreateWorker() {
             <div className="rounded-card border border-accent-border bg-accent-soft px-5 py-3.5 flex items-center gap-2.5">
               <Sparkle className="h-4 w-4 text-accent-ink shrink-0" strokeWidth={1.5} />
               <p className="text-[12.5px] text-accent-ink">
-                Proposed from your description — every suggestion below is editable before the worker is created.
+                Proposed from your description — every suggestion below is editable before the worker is provisioned.
               </p>
             </div>
 
             <BlueprintSection title="Identity">
               <p className="text-[16px] font-medium text-ink">{worker.name}</p>
-              <p className="mt-0.5 text-[12.5px] text-ink-mute">Department: {worker.department}</p>
+              <p className="mt-0.5 text-[12.5px] text-ink-mute">
+                {worker.role} · {worker.domain}
+              </p>
+              <div className="mt-2">
+                <AutonomyBadge level={worker.autonomy} />
+              </div>
             </BlueprintSection>
 
-            <BlueprintSection title="Proposed Mission">
-              <p className="text-[13.5px] leading-relaxed text-ink-soft">{worker.mission}</p>
+            <BlueprintSection title="Purpose &amp; Bounded Outcome">
+              <p className="text-[13.5px] leading-relaxed text-ink-soft">{worker.scope.primaryPurpose}</p>
+              <p className="mt-2 text-[12.5px] text-ink-mute">
+                <span className="font-medium text-ink">Owns:</span> {worker.scope.expectedOutcome}
+              </p>
             </BlueprintSection>
 
-            <BlueprintSection title="Suggested Skills" reason="Derived from the COBOL-to-Java transformation scope you described.">
+            <BlueprintSection title="Suggested Skills" reason="Derived from the modernization scope you described.">
               <div className="flex flex-wrap gap-1.5">
                 {worker.skills.map((s) => (
                   <Badge key={s.id} variant="green">
@@ -122,19 +135,20 @@ export default function CreateWorker() {
               </div>
             </BlueprintSection>
 
-            <BlueprintSection title="Suggested Agents" reason="One agent per modernization stage, from analysis through documentation.">
+            <BlueprintSection title="Suggested Agent Mesh" reason="One orchestrator plus one specialist per transformation stage.">
               <div className="grid grid-cols-2 gap-2">
-                {worker.agents.map((a) => (
+                {worker.agentMesh.map((a) => (
                   <div key={a.id} className="rounded-[10px] border border-border px-3 py-2 text-[12.5px] text-ink-soft">
                     {a.name}
+                    {a.isOrchestrator && <span className="ml-1.5 text-[10.5px] text-accent-ink">· Orchestrator</span>}
                   </div>
                 ))}
               </div>
             </BlueprintSection>
 
-            <BlueprintSection title="Suggested Knowledge">
+            <BlueprintSection title="Suggested Knowledge Sources">
               <div className="space-y-1.5">
-                {worker.knowledge.slice(0, 4).map((k) => (
+                {worker.knowledgeSources.slice(0, 4).map((k) => (
                   <div key={k.id} className="flex items-center gap-2 text-[13px] text-ink-soft">
                     <span className="h-1 w-1 rounded-full bg-ink-faint" />
                     {k.name}
@@ -143,9 +157,9 @@ export default function CreateWorker() {
               </div>
             </BlueprintSection>
 
-            <BlueprintSection title="Suggested Policies">
+            <BlueprintSection title="Suggested Governance Policies">
               <div className="flex flex-wrap gap-1.5">
-                {worker.policies.map((p) => (
+                {worker.governance.policies.map((p) => (
                   <Badge key={p.id} variant="outline">
                     {p.name}
                   </Badge>
@@ -153,25 +167,18 @@ export default function CreateWorker() {
               </div>
             </BlueprintSection>
 
-            <BlueprintSection title="Suggested KPIs">
-              <div className="flex flex-wrap gap-1.5">
-                {worker.kpis.map((k) => (
-                  <Badge key={k.id} variant="accent">
-                    {k.label}
-                  </Badge>
-                ))}
-              </div>
-            </BlueprintSection>
-
-            <BlueprintSection title="Suggested Success Criteria" reason="10 completion checkpoints, escalating to human approval for high-risk changes.">
-              <p className="text-[13px] text-ink-soft">{worker.completionContract.length} completion checkpoints defined.</p>
+            <BlueprintSection
+              title="Suggested Definition of Done"
+              reason="The worker cannot declare this work complete until every checkpoint below passes, with evidence attached."
+            >
+              <p className="text-[13px] text-ink-soft">{dodRequirementCount} required checkpoints across {worker.definitionOfDone.sections.length} sections.</p>
             </BlueprintSection>
 
             <div className="flex items-center justify-end gap-2 pt-2">
               <Button variant="secondary" onClick={() => setStage("idle")}>
                 Review Blueprint
               </Button>
-              <Button onClick={() => navigate(`/workers/${worker.id}`)}>Create Worker Draft</Button>
+              <Button onClick={() => navigate(`/workers/${worker.id}`)}>Provision Worker</Button>
             </div>
           </div>
         )}

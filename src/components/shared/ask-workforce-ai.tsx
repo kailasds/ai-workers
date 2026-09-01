@@ -5,20 +5,20 @@ import { cn } from "@/lib/utils";
 
 const suggestions = [
   "What workers need attention?",
-  "Why is the Modernization Worker blocked?",
-  "Show workers with the highest cost.",
-  "Which workers have declining performance?",
+  "Why did the COBOL Modernization Worker pause?",
+  "Which workers are Autonomous?",
+  "What is the COBOL Modernization Worker's Definition of Done status?",
 ];
 
 const canned: Record<string, string> = {
   "What workers need attention?":
-    "4 items need attention: a policy conflict on Legacy Modernization Engineer, a budget threshold on Claims Investigation Worker, and 2 pending approvals — Underwriting Specialist and Code Security Reviewer.",
-  "Why is the Modernization Worker blocked?":
-    "Legacy Modernization Engineer isn't blocked — it's actively working (62% through ClaimsService.cbl). Code Security Reviewer is the worker currently blocked, on an unresolved permission request.",
-  "Show workers with the highest cost.":
-    "By cost per task: Regulatory Filing Assistant ($28), Claims Investigation Worker ($31), Legacy Modernization Engineer ($37) — all within budget targets.",
-  "Which workers have declining performance?":
-    "None are declining this week. Legacy Modernization Engineer's human intervention rate improved from 16% to 11% over the last 7 cycles.",
+    "4 items need attention: an AI Sentinel intervention on COBOL Modernization Worker (data reconciliation variance), a Needs Review work item, and 2 pending approvals — Underwriting Analyst and a learning candidate awaiting governed review.",
+  "Why did the COBOL Modernization Worker pause?":
+    "AI Sentinel paused execution after a data reconciliation variance was detected on 3 of 1,240 replayed transactions — a rounding tolerance issue on the Data Integrity checkpoint. It's awaiting human review before resuming.",
+  "Which workers are Autonomous?":
+    "None yet — every worker in this workforce is currently Guarded or Supervised. Autonomous status is only granted after sustained certification history.",
+  "What is the COBOL Modernization Worker's Definition of Done status?":
+    "Ready for Review — 12 of 17 checkpoints have passed across Functional Equivalence, Validation, Code Quality, Data Integrity and Governance. Data Integrity is the section still outstanding.",
 };
 
 export function AskWorkforceAI() {
