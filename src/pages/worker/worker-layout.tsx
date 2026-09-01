@@ -42,7 +42,7 @@ export default function WorkerLayout() {
       <WorkerHeader worker={worker} />
 
       <div className="px-8 mt-8">
-        <div className="flex flex-wrap items-center gap-1 rounded-[16px] border border-border bg-card p-1.5 shadow-card w-fit max-w-full">
+        <div className="flex flex-wrap items-center gap-1 rounded-[16px] border border-border bg-card p-1.5 shadow-card w-fit">
           {tabs.map((tab) => (
             <NavLink
               key={tab.label}

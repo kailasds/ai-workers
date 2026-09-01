@@ -34,7 +34,7 @@ export default function AssignWork() {
         tone="accent"
       />
 
-      <div className="px-8 max-w-3xl">
+      <div className="px-8">
         <div className="mb-6 flex items-center gap-1 flex-wrap">
           {steps.map((s, i) => (
             <div key={s} className="flex items-center gap-1">
@@ -170,7 +170,7 @@ export default function AssignWork() {
                 <Check className="h-6 w-6" strokeWidth={2.5} />
               </div>
               <h3 className="text-[16px] font-bold text-ink">Ready to assign</h3>
-              <p className="mt-1.5 max-w-md mx-auto text-[13px] text-ink-soft">
+              <p className="mt-1.5 text-[13px] text-ink-soft">
                 <span className="font-medium text-ink">{worker.name}</span> will own this outcome and is accountable for
                 satisfying its Definition of Done before it can be marked complete.
               </p>
