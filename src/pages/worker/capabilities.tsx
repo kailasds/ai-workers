@@ -1,7 +1,8 @@
-import { Plug, AlertTriangle } from "lucide-react";
+import { Plug, AlertTriangle, Sparkles, Network, Wrench } from "lucide-react";
 import { useWorker } from "./use-worker";
 import { SkillCard } from "@/components/shared/skill-card";
 import { AgentMesh } from "@/components/shared/agent-mesh";
+import { SectionHeading } from "@/components/shared/section-heading";
 import { cn } from "@/lib/utils";
 
 const permissionTone: Record<string, string> = {
@@ -16,8 +17,12 @@ export default function Capabilities() {
   return (
     <div className="pb-10 space-y-8">
       <section>
-        <h2 className="text-[16px] font-bold text-ink mb-1">Skills</h2>
-        <p className="text-[12.5px] text-ink-mute mb-3.5">Reusable, versioned capabilities this worker draws on.</p>
+        <SectionHeading
+          icon={Sparkles}
+          tone="blue"
+          title="Skills"
+          subtitle="Reusable, versioned capabilities this worker draws on."
+        />
         {worker.skills.length === 0 ? (
           <div className="rounded-card border border-dashed border-border-strong px-5 py-10 text-center">
             <p className="text-[13px] text-ink-mute">No skills configured for this worker yet.</p>
@@ -32,14 +37,22 @@ export default function Capabilities() {
       </section>
 
       <section>
-        <h2 className="text-[16px] font-bold text-ink mb-1">Agent Mesh</h2>
-        <p className="text-[12.5px] text-ink-mute mb-3.5">The specialist agents this worker orchestrates to carry out its work.</p>
+        <SectionHeading
+          icon={Network}
+          tone="purple"
+          title="Agent Mesh"
+          subtitle="The specialist agents this worker orchestrates to carry out its work."
+        />
         <AgentMesh workerName={worker.name} avatarInitials={worker.avatarInitials} nodes={worker.agentMesh} />
       </section>
 
       <section>
-        <h2 className="text-[16px] font-bold text-ink mb-1">Tools &amp; System Access</h2>
-        <p className="text-[12.5px] text-ink-mute mb-3.5">Approved tools and enterprise systems this worker can use.</p>
+        <SectionHeading
+          icon={Wrench}
+          tone="amber"
+          title="Tools & System Access"
+          subtitle="Approved tools and enterprise systems this worker can use."
+        />
         {worker.tools.length === 0 ? (
           <div className="rounded-card border border-dashed border-border-strong px-5 py-10 text-center">
             <p className="text-[13px] text-ink-mute">No tools connected for this worker yet.</p>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, X as XIcon, ChevronRight } from "lucide-react";
+import { Check, X as XIcon, ChevronRight, ClipboardList } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
@@ -27,7 +27,12 @@ export default function AssignWork() {
 
   return (
     <div className="pb-14">
-      <PageHeader title="Assign Work" subtitle="Assign a bounded outcome to an AI Worker — accountable, not just prompted." />
+      <PageHeader
+        title="Assign Work"
+        subtitle="Assign a bounded outcome to an AI Worker — accountable, not just prompted."
+        icon={ClipboardList}
+        tone="accent"
+      />
 
       <div className="px-8 max-w-3xl">
         <div className="mb-6 flex items-center gap-1 flex-wrap">

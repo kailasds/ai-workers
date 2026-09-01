@@ -1,9 +1,22 @@
+import { KeyRound, ShieldAlert, GitBranch, BadgeCheck, Wallet } from "lucide-react";
 import { useWorker } from "./use-worker";
 import { GovernanceMatrix } from "@/components/shared/governance-matrix";
+import { SectionHeading } from "@/components/shared/section-heading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+
+function CardIconTitle({ icon: Icon, tone, children }: { icon: React.ComponentType<{ className?: string; strokeWidth?: number }>; tone: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <div className={cn("grid h-7 w-7 shrink-0 place-items-center rounded-full", tone)}>
+        <Icon className="h-3.5 w-3.5" strokeWidth={2} />
+      </div>
+      <CardTitle>{children}</CardTitle>
+    </div>
+  );
+}
 
 const policyTone: Record<string, "green" | "amber" | "red" | "neutral"> = {
   green: "green",
@@ -27,7 +40,7 @@ export default function Governance() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Identity &amp; Access</CardTitle>
+          <CardIconTitle icon={KeyRound} tone="bg-status-blue-soft text-status-blue">Identity &amp; Access</CardIconTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <GovList title="Access Scope" items={g.accessScope} />
@@ -38,7 +51,7 @@ export default function Governance() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Policies &amp; Guardrails</CardTitle>
+          <CardIconTitle icon={ShieldAlert} tone="bg-status-purple-soft text-status-purple">Policies &amp; Guardrails</CardIconTitle>
         </CardHeader>
         <CardContent>
           {g.policies.length === 0 ? (
@@ -57,14 +70,18 @@ export default function Governance() {
       </Card>
 
       <div>
-        <h3 className="text-[16px] font-bold text-ink mb-1">Approval Matrix</h3>
-        <p className="text-[12.5px] text-ink-mute mb-3.5">What this worker can do on its own, and what always needs a human.</p>
+        <SectionHeading
+          icon={GitBranch}
+          tone="neutral"
+          title="Approval Matrix"
+          subtitle="What this worker can do on its own, and what always needs a human."
+        />
         <GovernanceMatrix rows={g.approvalMatrix} />
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Evaluation &amp; Certification</CardTitle>
+          <CardIconTitle icon={BadgeCheck} tone="bg-status-green-soft text-status-green">Evaluation &amp; Certification</CardIconTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div>
@@ -85,7 +102,7 @@ export default function Governance() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Budget Boundaries</CardTitle>
+          <CardIconTitle icon={Wallet} tone="bg-status-amber-soft text-status-amber">Budget Boundaries</CardIconTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2, Check, Sparkle } from "lucide-react";
+import { Loader2, Check, Sparkle, UserPlus } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/input";
@@ -45,7 +45,12 @@ export default function CreateWorker() {
 
   return (
     <div className="pb-14">
-      <PageHeader title="Create AI Worker" subtitle="Describe the outcome it owns. AI will help provision the worker." />
+      <PageHeader
+        title="Create AI Worker"
+        subtitle="Describe the outcome it owns. AI will help provision the worker."
+        icon={UserPlus}
+        tone="accent"
+      />
 
       <div className="px-8 max-w-3xl">
         {stage === "idle" && (

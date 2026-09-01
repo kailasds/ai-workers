@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Sparkle, Check, X as XIcon, Pencil, ArrowUpCircle } from "lucide-react";
+import { Sparkle, Check, X as XIcon, Pencil, ArrowUpCircle, Activity } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { SentinelStatus } from "@/components/shared/sentinel-status";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +21,7 @@ export default function GlobalOperations() {
 
   return (
     <div className="pb-10">
-      <PageHeader title="Operations" subtitle="Real-time control tower for the entire AI Workforce." />
+      <PageHeader title="Operations" subtitle="Real-time control tower for the entire AI Workforce." icon={Activity} tone="blue" />
 
       <div className="px-8 grid grid-cols-1 xl:grid-cols-3 gap-5">
         <div className="xl:col-span-2 space-y-3">

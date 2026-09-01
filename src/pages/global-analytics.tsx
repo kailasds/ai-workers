@@ -1,3 +1,4 @@
+import { BarChart3, TrendingUp, ShieldCheck, DollarSign } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { HeroChart } from "@/components/shared/hero-chart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,14 +15,19 @@ const totalValue = workers.reduce((n, w) => n + w.governance.budget.valueGenerat
 export default function GlobalAnalytics() {
   return (
     <div className="pb-10">
-      <PageHeader title="Workforce Analytics" subtitle="How the entire AI Workforce is performing — cost versus outcome value." />
+      <PageHeader
+        title="Workforce Analytics"
+        subtitle="How the entire AI Workforce is performing — cost versus outcome value."
+        icon={BarChart3}
+        tone="green"
+      />
 
       <div className="px-8 space-y-5">
         <div className="grid grid-cols-1 sm:grid-cols-4 rounded-card border border-border bg-card shadow-card divide-y sm:divide-y-0 sm:divide-x divide-border">
-          <Metric label="Total Workers" value={String(workers.length)} />
-          <Metric label="Work Items Completed" value={String(allWorkHistory.length)} />
-          <Metric label="Certification Rate" value={`${certificationRate}%`} />
-          <Metric label="Value Generated" value={`$${totalValue.toLocaleString()}`} tone="green" />
+          <Metric label="Total Workers" value={String(workers.length)} icon={BarChart3} tone="blue" />
+          <Metric label="Work Items Completed" value={String(allWorkHistory.length)} icon={TrendingUp} tone="blue" />
+          <Metric label="Certification Rate" value={`${certificationRate}%`} icon={ShieldCheck} tone="purple" />
+          <Metric label="Value Generated" value={`$${totalValue.toLocaleString()}`} icon={DollarSign} tone="green" />
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
@@ -79,10 +85,33 @@ export default function GlobalAnalytics() {
   );
 }
 
-function Metric({ label, value, tone }: { label: string; value: string; tone?: "green" }) {
+const metricTone: Record<string, string> = {
+  blue: "bg-status-blue-soft text-status-blue",
+  green: "bg-status-green-soft text-status-green",
+  purple: "bg-status-purple-soft text-status-purple",
+};
+
+function Metric({
+  label,
+  value,
+  tone,
+  icon: Icon,
+}: {
+  label: string;
+  value: string;
+  tone?: "green" | "blue" | "purple";
+  icon?: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+}) {
   return (
     <div className="p-5">
-      <p className="text-[11px] uppercase tracking-wider text-ink-mute">{label}</p>
+      <div className="flex items-center justify-between">
+        <p className="text-[11px] uppercase tracking-wider text-ink-mute">{label}</p>
+        {Icon && (
+          <div className={`grid h-7 w-7 shrink-0 place-items-center rounded-full ${tone ? metricTone[tone] : "bg-card-sunken text-ink-soft"}`}>
+            <Icon className="h-3.5 w-3.5" strokeWidth={2} />
+          </div>
+        )}
+      </div>
       <p className={`mt-1.5 text-[28px] leading-none tabular-nums font-display ${tone === "green" ? "text-status-green" : "text-ink"}`}>
         {value}
       </p>

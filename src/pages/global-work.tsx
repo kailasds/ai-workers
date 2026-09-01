@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ClipboardList } from "lucide-react";
+import { ClipboardList, ListChecks, UsersRound, TrendingUp, Wallet, Clock, CheckCircle2, CalendarCheck } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +24,8 @@ export default function GlobalWork() {
       <PageHeader
         title="Work"
         subtitle="What the entire AI Workforce is performing right now."
+        icon={ListChecks}
+        tone="blue"
         actions={
           <Button asChild>
             <Link to="/work/assign">
@@ -55,12 +57,12 @@ export default function GlobalWork() {
 
         {tab === "active" ? (
           <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
-            <div className="grid grid-cols-[1.6fr_1.8fr_1.2fr_0.9fr_0.9fr] items-center gap-4 border-b border-border bg-card-sunken/60 px-5 py-2.5 text-[11px] font-medium uppercase tracking-wider text-ink-mute">
-              <span>Worker</span>
-              <span>Work</span>
-              <span>Progress</span>
-              <span>Cost</span>
-              <span>Started</span>
+            <div className="grid grid-cols-[1.6fr_1.8fr_1.2fr_0.9fr_0.9fr] items-center gap-4 border-b border-border-strong bg-card-sunken px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-ink-soft">
+              <span className="flex items-center gap-1.5"><UsersRound className="h-3 w-3 text-ink-faint" strokeWidth={2} />Worker</span>
+              <span className="flex items-center gap-1.5"><ListChecks className="h-3 w-3 text-ink-faint" strokeWidth={2} />Work</span>
+              <span className="flex items-center gap-1.5"><TrendingUp className="h-3 w-3 text-ink-faint" strokeWidth={2} />Progress</span>
+              <span className="flex items-center gap-1.5"><Wallet className="h-3 w-3 text-ink-faint" strokeWidth={2} />Cost</span>
+              <span className="flex items-center gap-1.5"><Clock className="h-3 w-3 text-ink-faint" strokeWidth={2} />Started</span>
             </div>
             {allCurrentWork.map(({ worker, work }) => (
               <Link
@@ -88,12 +90,12 @@ export default function GlobalWork() {
           </div>
         ) : (
           <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
-            <div className="grid grid-cols-[1.6fr_1.8fr_1fr_0.9fr_0.9fr] items-center gap-4 border-b border-border bg-card-sunken/60 px-5 py-2.5 text-[11px] font-medium uppercase tracking-wider text-ink-mute">
-              <span>Worker</span>
-              <span>Work</span>
-              <span>Definition of Done</span>
-              <span>Cost</span>
-              <span>Completed</span>
+            <div className="grid grid-cols-[1.6fr_1.8fr_1fr_0.9fr_0.9fr] items-center gap-4 border-b border-border-strong bg-card-sunken px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-ink-soft">
+              <span className="flex items-center gap-1.5"><UsersRound className="h-3 w-3 text-ink-faint" strokeWidth={2} />Worker</span>
+              <span className="flex items-center gap-1.5"><ListChecks className="h-3 w-3 text-ink-faint" strokeWidth={2} />Work</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3 w-3 text-ink-faint" strokeWidth={2} />Definition of Done</span>
+              <span className="flex items-center gap-1.5"><Wallet className="h-3 w-3 text-ink-faint" strokeWidth={2} />Cost</span>
+              <span className="flex items-center gap-1.5"><CalendarCheck className="h-3 w-3 text-ink-faint" strokeWidth={2} />Completed</span>
             </div>
             {allWorkHistory
               .filter((w) => w.status === tab)

@@ -1,4 +1,4 @@
-import { Check, Clock, Ban } from "lucide-react";
+import { Check, Clock, Ban, ListTree, Zap } from "lucide-react";
 import type { ApprovalMatrixRow } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -19,9 +19,9 @@ export function GovernanceMatrix({ rows }: { rows: ApprovalMatrixRow[] }) {
 
   return (
     <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
-      <div className="grid grid-cols-[2fr_1fr] items-center gap-4 border-b border-border bg-card-sunken/60 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-ink-mute">
-        <span>Action</span>
-        <span>Autonomy</span>
+      <div className="grid grid-cols-[2fr_1fr] items-center gap-4 border-b border-border-strong bg-card-sunken px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-ink-soft">
+        <span className="flex items-center gap-1.5"><ListTree className="h-3 w-3 text-ink-faint" strokeWidth={2} />Action</span>
+        <span className="flex items-center gap-1.5"><Zap className="h-3 w-3 text-ink-faint" strokeWidth={2} />Autonomy</span>
       </div>
       {rows.map((r) => {
         const m = meta[r.autonomy];

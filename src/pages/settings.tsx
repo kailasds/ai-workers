@@ -1,3 +1,4 @@
+import { Settings as SettingsIcon } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -7,7 +8,7 @@ import { Button } from "@/components/ui/button";
 export default function Settings() {
   return (
     <div className="pb-10">
-      <PageHeader title="Settings" subtitle="Organization, billing, and platform preferences." />
+      <PageHeader title="Settings" subtitle="Organization, billing, and platform preferences." icon={SettingsIcon} tone="neutral" />
 
       <div className="px-8 grid grid-cols-1 lg:grid-cols-2 gap-5">
         <Card>

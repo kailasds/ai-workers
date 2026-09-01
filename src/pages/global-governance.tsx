@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { SentinelStatus } from "@/components/shared/sentinel-status";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Scale, FileText, Target, UsersRound, Tag, CircleDot } from "lucide-react";
 import { workers } from "@/lib/data";
 
 const orgPolicies = [
@@ -51,6 +51,8 @@ export default function GlobalGovernance() {
       <PageHeader
         title="Governance"
         subtitle="The rules that govern your AI Workforce."
+        icon={Scale}
+        tone="purple"
         actions={
           <Button>
             <Plus className="h-4 w-4" strokeWidth={2} />
@@ -77,12 +79,12 @@ export default function GlobalGovernance() {
         </div>
 
         <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
-          <div className="grid grid-cols-[2fr_2fr_1fr_0.8fr_1fr] items-center gap-4 border-b border-border bg-card-sunken/60 px-5 py-2.5 text-[11px] font-medium uppercase tracking-wider text-ink-mute">
-            <span>Policy</span>
-            <span>Applies To</span>
-            <span>Workers Affected</span>
-            <span>Version</span>
-            <span>Status</span>
+          <div className="grid grid-cols-[2fr_2fr_1fr_0.8fr_1fr] items-center gap-4 border-b border-border-strong bg-card-sunken px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-ink-soft">
+            <span className="flex items-center gap-1.5"><FileText className="h-3 w-3 text-ink-faint" strokeWidth={2} />Policy</span>
+            <span className="flex items-center gap-1.5"><Target className="h-3 w-3 text-ink-faint" strokeWidth={2} />Applies To</span>
+            <span className="flex items-center gap-1.5"><UsersRound className="h-3 w-3 text-ink-faint" strokeWidth={2} />Workers Affected</span>
+            <span className="flex items-center gap-1.5"><Tag className="h-3 w-3 text-ink-faint" strokeWidth={2} />Version</span>
+            <span className="flex items-center gap-1.5"><CircleDot className="h-3 w-3 text-ink-faint" strokeWidth={2} />Status</span>
           </div>
           {orgPolicies.map((p) => (
             <div key={p.id} className="grid grid-cols-[2fr_2fr_1fr_0.8fr_1fr] items-center gap-4 border-b border-border px-5 py-4 last:border-b-0">

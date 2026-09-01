@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Plus, Search, ArrowUpDown, ShieldCheck } from "lucide-react";
+import { Plus, Search, ArrowUpDown, ShieldCheck, Users, UsersRound, CircleDot, Zap, ListChecks, CheckCircle2 } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { AutonomyBadge } from "@/components/shared/autonomy-badge";
 import { Button } from "@/components/ui/button";
@@ -51,6 +51,8 @@ export default function WorkersDirectory() {
       <PageHeader
         title="AI Workers"
         subtitle="Your organization's digital workforce — provisioned identities accountable for an outcome."
+        icon={Users}
+        tone="blue"
         actions={
           <Button asChild>
             <Link to="/workers/new">
@@ -138,13 +140,13 @@ export default function WorkersDirectory() {
         </div>
 
         <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
-          <div className="grid grid-cols-[2.2fr_1fr_1fr_1.6fr_1.3fr_1fr] items-center gap-4 border-b border-border bg-card-sunken/60 px-5 py-2.5 text-[11px] font-medium uppercase tracking-wider text-ink-mute">
-            <span>Worker</span>
-            <span>Status</span>
-            <span>Autonomy</span>
-            <span>Active Work</span>
-            <span>Definition of Done</span>
-            <span>Governance</span>
+          <div className="grid grid-cols-[2.2fr_1fr_1fr_1.6fr_1.3fr_1fr] items-center gap-4 border-b border-border-strong bg-card-sunken px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-ink-soft">
+            <span className="flex items-center gap-1.5"><UsersRound className="h-3 w-3 text-ink-faint" strokeWidth={2} />Worker</span>
+            <span className="flex items-center gap-1.5"><CircleDot className="h-3 w-3 text-ink-faint" strokeWidth={2} />Status</span>
+            <span className="flex items-center gap-1.5"><Zap className="h-3 w-3 text-ink-faint" strokeWidth={2} />Autonomy</span>
+            <span className="flex items-center gap-1.5"><ListChecks className="h-3 w-3 text-ink-faint" strokeWidth={2} />Active Work</span>
+            <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3 w-3 text-ink-faint" strokeWidth={2} />Definition of Done</span>
+            <span className="flex items-center gap-1.5"><ShieldCheck className="h-3 w-3 text-ink-faint" strokeWidth={2} />Governance</span>
           </div>
 
           {filtered.map((w) => {

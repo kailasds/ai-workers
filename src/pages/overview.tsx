@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Plus, ArrowUpRight, Bot, Wallet, ClipboardList } from "lucide-react";
+import { Plus, ArrowUpRight, Bot, Wallet, ClipboardList, LayoutGrid, Users, Activity, AlertTriangle, Flame } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusDot } from "@/components/shared/status-dot";
 import { ExecutionStepper } from "@/components/shared/execution-stepper";
@@ -26,6 +26,8 @@ export default function Overview() {
       <PageHeader
         title="AI Workforce"
         subtitle="Manage and monitor your digital workforce."
+        icon={LayoutGrid}
+        tone="accent"
         actions={
           <>
             <Button asChild variant="secondary">
@@ -47,12 +49,17 @@ export default function Overview() {
       <div className="px-8 space-y-5">
         {/* Metrics — equal-size cards, hierarchy signaled by color, not size */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
-          <MetricCard label="Active Workers" value={String(orgMetrics.activeWorkers)} hero />
-          <MetricCard label="Running Work" value={String(orgMetrics.runningWork)} />
-          <MetricCard label="Requires Attention" value={String(orgMetrics.requiresAttention)} tone="amber" />
-          <MetricCard label="Escalations" value={String(orgMetrics.escalations)} tone="red" />
+          <MetricCard label="Active Workers" value={String(orgMetrics.activeWorkers)} icon={Users} hero />
+          <MetricCard label="Running Work" value={String(orgMetrics.runningWork)} icon={Activity} tone="blue" />
+          <MetricCard label="Requires Attention" value={String(orgMetrics.requiresAttention)} icon={AlertTriangle} tone="amber" />
+          <MetricCard label="Escalations" value={String(orgMetrics.escalations)} icon={Flame} tone="red" />
           <div className="rounded-card border border-border bg-card shadow-card p-5">
-            <p className="text-[11px] uppercase tracking-wider text-ink-mute">Monthly Spend</p>
+            <div className="flex items-center justify-between">
+              <p className="text-[11px] uppercase tracking-wider text-ink-mute">Monthly Spend</p>
+              <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-status-green-soft text-status-green">
+                <Wallet className="h-3.5 w-3.5" strokeWidth={2} />
+              </div>
+            </div>
             <p className="mt-1.5 text-[26px] leading-none font-bold tracking-[-0.01em] tabular-nums text-ink font-display">
               ${orgMetrics.monthlySpend.toLocaleString()}
             </p>
@@ -189,21 +196,37 @@ export default function Overview() {
   );
 }
 
+const metricIconTone: Record<string, string> = {
+  blue: "bg-status-blue-soft text-status-blue",
+  amber: "bg-status-amber-soft text-status-amber",
+  red: "bg-status-red-soft text-status-red",
+  green: "bg-status-green-soft text-status-green",
+};
+
 function MetricCard({
   label,
   value,
   tone,
   hero,
+  icon: Icon,
 }: {
   label: string;
   value: string;
-  tone?: "amber" | "red";
+  tone?: "blue" | "amber" | "red";
   hero?: boolean;
+  icon?: React.ComponentType<{ className?: string; strokeWidth?: number }>;
 }) {
   if (hero) {
     return (
       <div className="rounded-card card-hero p-5 text-white">
-        <p className="text-[11px] uppercase tracking-wider text-white/60">{label}</p>
+        <div className="flex items-center justify-between">
+          <p className="text-[11px] uppercase tracking-wider text-white/60">{label}</p>
+          {Icon && (
+            <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white/15 text-white">
+              <Icon className="h-3.5 w-3.5" strokeWidth={2} />
+            </div>
+          )}
+        </div>
         <p className="mt-1.5 text-[26px] leading-none font-bold tracking-[-0.01em] tabular-nums font-display">
           {value}
         </p>
@@ -212,7 +235,14 @@ function MetricCard({
   }
   return (
     <div className="rounded-card border border-border bg-card shadow-card p-5">
-      <p className="text-[11px] uppercase tracking-wider text-ink-mute">{label}</p>
+      <div className="flex items-center justify-between">
+        <p className="text-[11px] uppercase tracking-wider text-ink-mute">{label}</p>
+        {Icon && (
+          <div className={cn("grid h-7 w-7 shrink-0 place-items-center rounded-full", tone ? metricIconTone[tone] : "bg-card-sunken text-ink-soft")}>
+            <Icon className="h-3.5 w-3.5" strokeWidth={2} />
+          </div>
+        )}
+      </div>
       <p
         className={cn(
           "mt-1.5 text-[26px] leading-none font-bold tracking-[-0.01em] tabular-nums font-display",

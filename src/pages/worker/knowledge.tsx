@@ -1,9 +1,9 @@
-import { BookOpen, Brain } from "lucide-react";
+import { BookOpen, Brain, GraduationCap, Lightbulb, Check, X as XIcon } from "lucide-react";
 import { useWorker } from "./use-worker";
 import { LearningPlan } from "@/components/shared/learning-plan";
+import { SectionHeading } from "@/components/shared/section-heading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Check, X as XIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function Knowledge() {
@@ -14,11 +14,7 @@ export default function Knowledge() {
   return (
     <div className="pb-10 space-y-8">
       <section>
-        <div className="flex items-center gap-2 mb-1">
-          <BookOpen className="h-4 w-4 text-accent" strokeWidth={1.75} />
-          <h2 className="text-[16px] font-bold text-ink">Knowledge Sources</h2>
-        </div>
-        <p className="text-[12.5px] text-ink-mute mb-3.5">Approved sources this worker is grounded in.</p>
+        <SectionHeading icon={BookOpen} tone="accent" title="Knowledge Sources" subtitle="Approved sources this worker is grounded in." />
         {worker.knowledgeSources.length === 0 ? (
           <div className="rounded-card border border-dashed border-border-strong px-5 py-10 text-center">
             <p className="text-[13px] text-ink-mute">No knowledge sources connected yet.</p>
@@ -44,13 +40,12 @@ export default function Knowledge() {
       </section>
 
       <section>
-        <div className="flex items-center gap-2 mb-1">
-          <Brain className="h-4 w-4 text-status-purple" strokeWidth={1.75} />
-          <h2 className="text-[16px] font-bold text-ink">Memory</h2>
-        </div>
-        <p className="text-[12.5px] text-ink-mute mb-3.5">
-          Operational memory, shown by category — not raw hidden reasoning.
-        </p>
+        <SectionHeading
+          icon={Brain}
+          tone="purple"
+          title="Memory"
+          subtitle="Operational memory, shown by category — not raw hidden reasoning."
+        />
         {worker.memory.length === 0 ? (
           <div className="rounded-card border border-dashed border-border-strong px-5 py-10 text-center">
             <p className="text-[13px] text-ink-mute">No memory categories recorded yet.</p>
@@ -70,15 +65,23 @@ export default function Knowledge() {
       </section>
 
       <section>
-        <h2 className="text-[16px] font-bold text-ink mb-1">Learning Plan</h2>
-        <p className="text-[12.5px] text-ink-mute mb-3.5">Controlled continuous improvement — no silent retraining.</p>
+        <SectionHeading
+          icon={GraduationCap}
+          tone="green"
+          title="Learning Plan"
+          subtitle="Controlled continuous improvement — no silent retraining."
+        />
         <LearningPlan plan={worker.learningPlan} />
       </section>
 
       {(pending.length > 0 || resolved.length > 0) && (
         <section>
-          <h2 className="text-[16px] font-bold text-ink mb-1">Improvement Candidates</h2>
-          <p className="text-[12.5px] text-ink-mute mb-3.5">Learning signals captured from execution, pending governed review.</p>
+          <SectionHeading
+            icon={Lightbulb}
+            tone="amber"
+            title="Improvement Candidates"
+            subtitle="Learning signals captured from execution, pending governed review."
+          />
 
           {pending.length > 0 && (
             <div className="space-y-3 mb-3">
