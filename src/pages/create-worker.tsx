@@ -9,8 +9,8 @@ import { BeatView, UserBubble, ThinkingBubble } from "@/components/create-worker
 import { BlueprintPanel } from "@/components/create-worker/blueprint-panel";
 import { ReviewStage } from "@/components/create-worker/review-stage";
 import { ProvisioningStage } from "@/components/create-worker/provisioning-stage";
-import { beats, defaultPrompt, starterPrompts, draftWorker, priorityLabel } from "@/components/create-worker/script";
-import type { Answer, QuestionBeat, SectionId, SectionStatus } from "@/components/create-worker/types";
+import { beats, defaultPrompt, starterPrompts, draftWorker, priorityLabel, createComposeDefaults } from "@/components/create-worker/script";
+import type { Answer, ComposeState, QuestionBeat, SectionId, SectionStatus } from "@/components/create-worker/types";
 import type { AutonomyLevel } from "@/lib/types";
 
 type Stage = "intro" | "working" | "review" | "provisioning";
@@ -22,12 +22,14 @@ const initialStatus: Record<SectionId, SectionStatus> = {
   team: "pending",
   skills: "pending",
   tools: "pending",
+  models: "pending",
   contract: "pending",
   knowledge: "pending",
   governance: "pending",
   dod: "pending",
   kpis: "pending",
   budget: "pending",
+  deployment: "pending",
 };
 
 export default function CreateWorker() {
@@ -47,6 +49,12 @@ export default function CreateWorker() {
   const [priorities, setPriorities] = useState<string[]>([]);
   const [recommendationApplied, setRecommendationApplied] = useState(false);
   const [riskApplied, setRiskApplied] = useState(false);
+
+  const composeDefaults = useRef(createComposeDefaults()).current;
+  const [compose, setCompose] = useState<ComposeState>(() => createComposeDefaults());
+  function updateCompose<K extends keyof ComposeState>(key: K, value: ComposeState[K]) {
+    setCompose((prev) => ({ ...prev, [key]: value }));
+  }
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -136,6 +144,7 @@ export default function CreateWorker() {
     setPriorities([]);
     setRecommendationApplied(false);
     setRiskApplied(false);
+    setCompose(createComposeDefaults());
   }
 
   const visibleBeats = beats.slice(0, visibleBeatCount);
@@ -151,6 +160,13 @@ export default function CreateWorker() {
         onApplyRisk={() => setRiskApplied(true)}
         onBack={() => setStage("working")}
         onCreate={() => setStage("provisioning")}
+        compose={compose}
+        onJumpTo={(id: SectionId) => {
+          setStage("working");
+          window.setTimeout(() => {
+            document.getElementById(`section-${id}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+          }, 60);
+        }}
       />
     );
   }
@@ -189,6 +205,9 @@ export default function CreateWorker() {
               autonomy={autonomy}
               repoChoice={repoChoice}
               priorities={priorities}
+              compose={compose}
+              defaults={composeDefaults}
+              update={updateCompose}
             />
           </div>
 

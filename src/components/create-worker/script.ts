@@ -1,7 +1,53 @@
 import { getWorker } from "@/lib/data";
-import type { Beat } from "./types";
+import type { Beat, ComposeState } from "./types";
 
 export const draftWorker = getWorker("cobol-modernization-worker")!;
+
+export const draftWillList = [
+  "Analyze COBOL source code",
+  "Understand JCL execution flows",
+  "Analyze copybooks",
+  "Extract business rules",
+  "Identify data dependencies",
+  "Design the target Java architecture",
+  "Generate the Java implementation",
+  "Generate tests",
+  "Validate behavioral equivalence",
+  "Reconcile source and target outputs",
+  "Generate evidence of completion",
+];
+
+export const draftWontList = [
+  ...draftWorker.scope.outOfScope,
+  "Perform irreversible infrastructure changes",
+  "Access systems it does not require",
+];
+
+export function createComposeDefaults(): ComposeState {
+  const w = draftWorker;
+  return {
+    name: w.name,
+    owner: w.owner,
+    objective: w.scope.primaryPurpose,
+    inputBoundary: w.scope.acceptedInputBoundary,
+    willList: [...draftWillList],
+    wontList: [...draftWontList],
+    skills: w.skills.map((s) => s.name),
+    tools: w.tools.map((t) => t.name),
+    operatingMode: w.operatingMode,
+    alwaysRequireApproval: [...w.governance.alwaysRequireApproval],
+    modelConfig: { ...w.modelConfig },
+    learningConfig: { ...w.learningConfig },
+    deployment: { ...w.deployment },
+    dodSections: w.definitionOfDone.sections.map((s) => ({
+      id: s.id,
+      title: s.title,
+      requirements: s.requirements.map((r) => ({ ...r })),
+    })),
+    perTaskLimit: w.governance.budget.perTaskLimit,
+    monthlyBudget: w.governance.budget.monthly,
+  };
+}
 
 export const starterPrompts = [
   {
@@ -136,6 +182,12 @@ export const beats: Beat[] = [
     reveals: ["tools"],
   },
   {
+    id: "models-reveal",
+    kind: "ai-text",
+    text: "For a task this consequential, I recommend routing through a primary model plus an independent verifier — the same model shouldn't grade its own work.",
+    reveals: ["models"],
+  },
+  {
     id: "contract-reveal",
     kind: "ai-text",
     text: "I've generated an operating contract for this Worker — objective, inputs, outputs, constraints and execution boundaries — so it isn't operating from a vague prompt.",
@@ -170,6 +222,12 @@ export const beats: Beat[] = [
     kind: "ai-text",
     text: "Here are the operational boundaries I recommend for this Worker, including a hard stop if it approaches its approved budget.",
     reveals: ["budget"],
+  },
+  {
+    id: "deployment-reveal",
+    kind: "ai-text",
+    text: "Finally, here's how I'd package and deliver this Worker — a runtime and resource profile sized to the workload, ready as a local test bundle first.",
+    reveals: ["deployment"],
   },
   {
     id: "final-cta",

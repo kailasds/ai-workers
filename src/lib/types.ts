@@ -14,6 +14,16 @@ export type SentinelState =
 
 export type DoDOverallStatus = "not-ready" | "ready-for-review" | "certified-complete";
 
+export type OperatingMode = "propose-only" | "act-with-approval" | "act-within-limits";
+
+export type ModelRoutingMode = "fixed" | "adaptive";
+
+export type MemoryScope = "worker" | "session" | "enterprise";
+
+export type SharedLearningScope = "none" | "team" | "organization";
+
+export type DeliveryTarget = "local-bundle" | "content-store" | "deployment-pipeline";
+
 export interface WorkerIdentity {
   workerId: string;
   environment: string;
@@ -26,6 +36,7 @@ export interface ScopeDefinition {
   primaryPurpose: string;
   boundedScope: string;
   expectedOutcome: string;
+  acceptedInputBoundary: string;
   outOfScope: string[];
 }
 
@@ -86,6 +97,7 @@ export interface GovernanceProfile {
   leastPrivilegeRules: string[];
   policies: PolicyCard[];
   approvalMatrix: ApprovalMatrixRow[];
+  alwaysRequireApproval: string[];
   evaluation: {
     suiteName: string;
     lastRun: string;
@@ -111,6 +123,9 @@ export interface DoDRequirement {
   label: string;
   status: "passed" | "failed" | "pending";
   evidence: string[];
+  check?: string;
+  owner?: string;
+  adjudicator?: string;
 }
 
 export interface DoDSection {
@@ -221,21 +236,51 @@ export interface CurrentWork {
   budget: number;
 }
 
+export interface ModelConfig {
+  routingMode: ModelRoutingMode;
+  primaryModel: string;
+  verifierModel: string;
+  fallbackModel: string;
+  monthlyBudgetEstimate: number;
+}
+
+export interface LearningConfig {
+  memoryScope: MemoryScope;
+  retentionDays: number;
+  sharedLearning: SharedLearningScope;
+  useApprovedFeedback: boolean;
+  sharedLearningApproved: boolean;
+}
+
+export interface DeploymentConfig {
+  runtime: string;
+  architecture: string;
+  workerProfile: string;
+  sizeProfile: string;
+  deliveryTarget: DeliveryTarget;
+  deploymentMethod: string;
+}
+
 export interface AIWorker {
   id: string;
   name: string;
   role: string;
   purpose: string;
+  owner: string;
   department: string;
   domain: string;
   status: WorkerStatus;
   statusLabel: string;
   autonomy: AutonomyLevel;
+  operatingMode: OperatingMode;
   version: string;
   avatarInitials: string;
   accentColor: StatusColor;
   sentinel: SentinelState;
   identity: WorkerIdentity;
+  modelConfig: ModelConfig;
+  learningConfig: LearningConfig;
+  deployment: DeploymentConfig;
   scope: ScopeDefinition;
   responsibility: Responsibility;
   skills: SkillV2[];

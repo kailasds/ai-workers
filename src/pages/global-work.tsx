@@ -57,12 +57,12 @@ export default function GlobalWork() {
 
         {tab === "active" ? (
           <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
-            <div className="grid grid-cols-[1.6fr_1.8fr_1.2fr_0.9fr_0.9fr] items-center gap-4 border-b border-border-strong bg-card-sunken px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-ink-soft">
-              <span className="flex items-center gap-1.5"><UsersRound className="h-3 w-3 text-ink-faint" strokeWidth={2} />Worker</span>
-              <span className="flex items-center gap-1.5"><ListChecks className="h-3 w-3 text-ink-faint" strokeWidth={2} />Work</span>
-              <span className="flex items-center gap-1.5"><TrendingUp className="h-3 w-3 text-ink-faint" strokeWidth={2} />Progress</span>
-              <span className="flex items-center gap-1.5"><Wallet className="h-3 w-3 text-ink-faint" strokeWidth={2} />Cost</span>
-              <span className="flex items-center gap-1.5"><Clock className="h-3 w-3 text-ink-faint" strokeWidth={2} />Started</span>
+            <div className="grid grid-cols-[1.6fr_1.8fr_1.2fr_0.9fr_0.9fr] items-center gap-4 border-b border-accent-border bg-accent-soft px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-accent-ink">
+              <span className="flex items-center gap-1.5"><UsersRound className="h-3 w-3 text-accent" strokeWidth={2} />Worker</span>
+              <span className="flex items-center gap-1.5"><ListChecks className="h-3 w-3 text-accent" strokeWidth={2} />Work</span>
+              <span className="flex items-center gap-1.5"><TrendingUp className="h-3 w-3 text-accent" strokeWidth={2} />Progress</span>
+              <span className="flex items-center gap-1.5"><Wallet className="h-3 w-3 text-accent" strokeWidth={2} />Cost</span>
+              <span className="flex items-center gap-1.5"><Clock className="h-3 w-3 text-accent" strokeWidth={2} />Started</span>
             </div>
             {allCurrentWork.map(({ worker, work }) => (
               <Link
@@ -90,12 +90,12 @@ export default function GlobalWork() {
           </div>
         ) : (
           <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
-            <div className="grid grid-cols-[1.6fr_1.8fr_1fr_0.9fr_0.9fr] items-center gap-4 border-b border-border-strong bg-card-sunken px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-ink-soft">
-              <span className="flex items-center gap-1.5"><UsersRound className="h-3 w-3 text-ink-faint" strokeWidth={2} />Worker</span>
-              <span className="flex items-center gap-1.5"><ListChecks className="h-3 w-3 text-ink-faint" strokeWidth={2} />Work</span>
-              <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3 w-3 text-ink-faint" strokeWidth={2} />Definition of Done</span>
-              <span className="flex items-center gap-1.5"><Wallet className="h-3 w-3 text-ink-faint" strokeWidth={2} />Cost</span>
-              <span className="flex items-center gap-1.5"><CalendarCheck className="h-3 w-3 text-ink-faint" strokeWidth={2} />Completed</span>
+            <div className="grid grid-cols-[1.6fr_1.8fr_1fr_0.9fr_0.9fr] items-center gap-4 border-b border-accent-border bg-accent-soft px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-accent-ink">
+              <span className="flex items-center gap-1.5"><UsersRound className="h-3 w-3 text-accent" strokeWidth={2} />Worker</span>
+              <span className="flex items-center gap-1.5"><ListChecks className="h-3 w-3 text-accent" strokeWidth={2} />Work</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3 w-3 text-accent" strokeWidth={2} />Definition of Done</span>
+              <span className="flex items-center gap-1.5"><Wallet className="h-3 w-3 text-accent" strokeWidth={2} />Cost</span>
+              <span className="flex items-center gap-1.5"><CalendarCheck className="h-3 w-3 text-accent" strokeWidth={2} />Completed</span>
             </div>
             {allWorkHistory
               .filter((w) => w.status === tab)

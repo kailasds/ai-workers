@@ -1,3 +1,5 @@
+import type { DeploymentConfig, DoDRequirement, LearningConfig, ModelConfig, OperatingMode } from "@/lib/types";
+
 export type SectionId =
   | "identity"
   | "purpose"
@@ -5,12 +7,14 @@ export type SectionId =
   | "team"
   | "skills"
   | "tools"
+  | "models"
   | "contract"
   | "knowledge"
   | "governance"
   | "dod"
   | "kpis"
-  | "budget";
+  | "budget"
+  | "deployment";
 
 export type SectionStatus = "pending" | "suggested";
 
@@ -58,4 +62,29 @@ export interface Answer {
   beatId: string;
   optionIds: string[];
   summary: string;
+}
+
+export interface ComposeDoDSection {
+  id: string;
+  title: string;
+  requirements: DoDRequirement[];
+}
+
+export interface ComposeState {
+  name: string;
+  owner: string;
+  objective: string;
+  inputBoundary: string;
+  willList: string[];
+  wontList: string[];
+  skills: string[];
+  tools: string[];
+  operatingMode: OperatingMode;
+  alwaysRequireApproval: string[];
+  modelConfig: ModelConfig;
+  learningConfig: LearningConfig;
+  deployment: DeploymentConfig;
+  dodSections: ComposeDoDSection[];
+  perTaskLimit: number;
+  monthlyBudget: number;
 }

@@ -64,7 +64,7 @@ export default function GlobalAnalytics() {
             <CardTitle>Worker Comparison</CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
-            <div className="grid grid-cols-[2fr_1fr_1fr_1fr] items-center gap-4 border-b border-border pb-2 mb-1 text-[11px] font-medium uppercase tracking-wider text-ink-mute">
+            <div className="grid grid-cols-[2fr_1fr_1fr_1fr] items-center gap-4 rounded-[10px] bg-accent-soft px-3 py-2.5 mb-1 text-[11px] font-semibold uppercase tracking-wider text-accent-ink">
               <span>Worker</span>
               <span>Capability Health</span>
               <span>Cost / Outcome</span>
