@@ -22,6 +22,7 @@ export function EditableField({
   multiline = false,
   placeholder,
   textClassName,
+  maxLength,
 }: {
   value: string;
   aiValue: string;
@@ -29,6 +30,7 @@ export function EditableField({
   multiline?: boolean;
   placeholder?: string;
   textClassName?: string;
+  maxLength?: number;
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
@@ -60,16 +62,24 @@ export function EditableField({
     return (
       <div>
         {multiline ? (
-          <textarea
-            ref={textareaRef}
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") cancel();
-            }}
-            rows={3}
-            className="w-full rounded-[10px] border border-accent bg-card px-3 py-2 text-[12.5px] leading-relaxed text-ink outline-none"
-          />
+          <div>
+            <textarea
+              ref={textareaRef}
+              value={draft}
+              onChange={(e) => setDraft(e.target.value.slice(0, maxLength))}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") cancel();
+              }}
+              rows={3}
+              maxLength={maxLength}
+              className="w-full rounded-[10px] border border-accent bg-card px-3 py-2 text-[12.5px] leading-relaxed text-ink outline-none"
+            />
+            {maxLength && (
+              <p className="mt-1 text-right text-[10.5px] tabular-nums text-ink-faint">
+                {draft.length} / {maxLength}
+              </p>
+            )}
+          </div>
         ) : (
           <input
             ref={inputRef}
@@ -120,6 +130,11 @@ export function EditableField({
           strokeWidth={2}
         />
       </button>
+      {maxLength && (
+        <p className="mt-0.5 px-1.5 text-right text-[10.5px] tabular-nums text-ink-faint">
+          {value.length} / {maxLength}
+        </p>
+      )}
       {isModified && <ModifiedNote onRestore={() => onChange(aiValue)} />}
     </div>
   );

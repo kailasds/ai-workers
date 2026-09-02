@@ -91,3 +91,66 @@ export const experienceMetrics = {
 export const experienceGraph = workers
   .filter((w) => experienceAssets.some((a) => a.sourceWorkerId === w.id))
   .map((w) => ({ id: w.id, name: w.name }));
+
+export interface ExperienceSourceRow {
+  workerId: string;
+  workerName: string;
+  workerVersion: string;
+  customer: string;
+  domain: string;
+  daysOperational: number;
+  assetCount: number;
+  lastUpdated: string;
+}
+
+const sourceCustomers = ["Acme Corporation", "XYZ Insurance", "ABC Mutual", "Global Bank", "SafeGuard Ltd.", "Northbridge Insurance"];
+
+export const experienceSources: ExperienceSourceRow[] = workers.map((w, i) => ({
+  workerId: w.id,
+  workerName: w.name,
+  workerVersion: w.version,
+  customer: sourceCustomers[i % sourceCustomers.length],
+  domain: w.domain,
+  daysOperational: 42 + i * 21,
+  assetCount: experienceAssets.filter((a) => a.sourceWorkerId === w.id).length * 12 + 18,
+  lastUpdated: ["2 hrs ago", "5 hrs ago", "1 day ago", "2 days ago", "3 days ago", "5 days ago"][i % 6],
+}));
+
+export interface RecentTransfer {
+  id: string;
+  from: string;
+  to: string;
+  patternsTransferred: number;
+  status: "completed" | "pending";
+  time: string;
+}
+
+export const recentTransfers: RecentTransfer[] = [
+  { id: "tr-1", from: "COBOL Modernization Worker", to: "Java Modernization Worker", patternsTransferred: 12, status: "completed", time: "2 hrs ago" },
+  { id: "tr-2", from: "Full Stack Java Engineer", to: "Integration Modernization Worker", patternsTransferred: 8, status: "completed", time: "1 day ago" },
+  { id: "tr-3", from: "COBOL Modernization Worker", to: "Underwriting Analyst", patternsTransferred: 5, status: "pending", time: "2 days ago" },
+];
+
+export const recommendedAssets = experienceAssets
+  .filter((a) => a.compatibility !== "Low")
+  .slice(0, 3)
+  .map((a) => ({
+    id: a.id,
+    name: a.name,
+    fromWorker: a.sourceWorkerName,
+    match: a.compatibility === "High" ? "High match" : "Medium match",
+  }));
+
+export const contributionStats = {
+  assetsContributed: experienceAssets.reduce((n, a) => n + Math.round(a.validatedCases / 4), 0),
+  workersHelped: experienceGraph.length + 12,
+};
+
+export const experienceCategoryStats = [
+  { name: "Decision patterns", count: 782 },
+  { name: "Workflow templates", count: 412 },
+  { name: "Resolution strategies", count: 358 },
+  { name: "Validation approaches", count: 214 },
+  { name: "Operational insights", count: 173 },
+  { name: "Best practices", count: 112 },
+];

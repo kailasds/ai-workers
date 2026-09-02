@@ -17,10 +17,18 @@ export interface WorkerDeployment {
   budgetUsed: number;
   budgetMonthly: number;
   usageTasks: number;
+  usagePct: number;
   health: FleetHealth;
   liveStatus: LiveStatus;
   lastActivity: string;
   remoteAccess: RemoteAccessLevel;
+  purpose: string;
+  operatingMode: string;
+  runtime: string;
+  deployedOn: string;
+  decisionsToday: number;
+  successRate: number;
+  avgResponseTime: string;
 }
 
 const customers = ["Meridian Capital", "Meridian Capital — Sandbox", "Northbridge Insurance", "Pacific Mutual"];
@@ -38,8 +46,15 @@ function deploymentFor(index: number): Pick<WorkerDeployment, "deploymentStatus"
   return patterns[index % patterns.length];
 }
 
+const operatingModeLabel: Record<string, string> = {
+  "propose-only": "Propose only",
+  "act-with-approval": "Act with approval",
+  "act-within-limits": "Act within limits",
+};
+
 export const deployments: WorkerDeployment[] = workers.map((w, i) => {
   const p = deploymentFor(i);
+  const usagePct = Math.min(100, Math.round(((w.activeTasks + w.workHistory.length) / 10) * 100));
   return {
     workerId: w.id,
     workerName: w.name,
@@ -51,9 +66,17 @@ export const deployments: WorkerDeployment[] = workers.map((w, i) => {
     budgetUsed: w.governance.budget.used,
     budgetMonthly: w.governance.budget.monthly,
     usageTasks: w.activeTasks + w.workHistory.length,
+    usagePct,
     health: p.health,
     liveStatus: p.liveStatus,
     lastActivity: w.executionTimeline.at(-1)?.time ?? "—",
     remoteAccess: p.remoteAccess,
+    purpose: w.scope.primaryPurpose,
+    operatingMode: operatingModeLabel[w.operatingMode] ?? w.operatingMode,
+    runtime: w.deployment.runtime,
+    deployedOn: w.identity.createdAt,
+    decisionsToday: (w.activeTasks + 1) * 9,
+    successRate: w.health.evaluation,
+    avgResponseTime: `${(1.2 + i * 0.3).toFixed(1)}s`,
   };
 });

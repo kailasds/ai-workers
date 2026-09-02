@@ -104,6 +104,7 @@ export function PurposeStep({
                 onChange={(v) => update("businessContext", v)}
                 placeholder="Which team and system does this Worker operate in?"
                 textClassName="text-[13px] text-ink-soft"
+                maxLength={500}
               />
             </div>
           </div>
@@ -117,6 +118,7 @@ export function PurposeStep({
                 multiline
                 placeholder="What does this Worker deliver, and what does success look like?"
                 textClassName="text-[13px] leading-relaxed text-ink-soft"
+                maxLength={500}
               />
             </div>
           </div>
@@ -130,6 +132,7 @@ export function PurposeStep({
                 multiline
                 placeholder="What data or artifacts can this Worker accept, and from where?"
                 textClassName="text-[13px] leading-relaxed text-ink-soft"
+                maxLength={500}
               />
             </div>
           </div>

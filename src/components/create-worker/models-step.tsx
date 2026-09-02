@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Info, ExternalLink } from "lucide-react";
 import { EditableField, EditableSelect, AiImpactNote, type SelectOption } from "@/components/shared/editable";
 import { AiPrepCard } from "./worker-brief";
 import type { ComposeState } from "./types";
@@ -113,6 +115,20 @@ export function ModelsStep({
             <EditableSelect value={mc.fallbackModel} aiValue={defaults.modelConfig.fallbackModel} options={modelOptions} onChange={(v) => setModelConfig({ fallbackModel: v })} />
             <p className="mt-1 text-[11px] text-ink-mute">Used automatically if the primary model is unavailable.</p>
           </div>
+        </div>
+      </div>
+
+      <div className="rounded-card border border-border bg-card shadow-card p-5">
+        <p className="text-[13.5px] font-bold text-ink">Learning configuration (global)</p>
+        <p className="mt-0.5 text-[12px] text-ink-mute">Learning settings are managed globally and applied to all Workers.</p>
+
+        <div className="mt-3 flex items-start gap-2.5 rounded-lg bg-accent-soft px-3.5 py-3">
+          <Info className="h-4 w-4 text-accent-ink shrink-0 mt-0.5" strokeWidth={1.75} />
+          <p className="flex-1 text-[12px] text-accent-ink">Update global learning settings from the Experience Hub.</p>
+          <Link to="/experience-hub" className="flex shrink-0 items-center gap-1 text-[12px] font-semibold text-accent-ink hover:underline">
+            Go to Experience Hub
+            <ExternalLink className="h-3 w-3" strokeWidth={2} />
+          </Link>
         </div>
       </div>
     </div>

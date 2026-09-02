@@ -2,27 +2,26 @@
 @import "tw-animate-css";
 
 @theme {
-  --font-display: "Plus Jakarta Sans", "Segoe UI", sans-serif;
-  --font-sans: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+  --font-display: "Inter", "Segoe UI", sans-serif;
+  --font-sans: "Inter", "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
 
-  /* Page / shell / card — donezo reference: sampled, not approximated */
-  --color-page: #EAECED;
-  --color-shell: #F7F7F7;
+  /* Page / shell / card — enterprise SaaS: near-white surfaces, quiet gray borders */
+  --color-page: #F7F8FA;
+  --color-shell: #FFFFFF;
   --color-card: #FFFFFF;
-  --color-card-sunken: #F1F1F1;
-  --color-border: #ECECEC;
-  --color-border-strong: #D8D8D8;
+  --color-card-sunken: #F5F6F8;
+  --color-border: #E7E9EC;
+  --color-border-strong: #D6D9DE;
 
   /* Ink */
-  --color-ink: #0A0A0A;
-  --color-ink-soft: #1A1A1A;
-  --color-ink-mute: #6B7280;
-  --color-ink-faint: #9CA3AF;
+  --color-ink: #0F172A;
+  --color-ink-soft: #1E293B;
+  --color-ink-mute: #64748B;
+  --color-ink-faint: #94A3B8;
 
-  /* Near-black — reserved for text and small chrome, not hero cards (those are brand blue) */
-  --color-onyx: #0A0A0A;
-  --color-onyx-soft: #1A1A1A;
+  --color-onyx: #0F172A;
+  --color-onyx-soft: #1E293B;
 
   /* The one hue — enterprise blue, five steps, no second accent */
   --color-brand-900: #0B2A5C;
@@ -34,29 +33,29 @@
 
   --color-accent: #1D4ED8;
   --color-accent-ink: #1739A6;
-  --color-accent-soft: #E8EFFD;
+  --color-accent-soft: #EAF1FE;
   --color-accent-border: #BFD3F8;
 
   /* Status pills — green is demoted to a status-only signal (readiness / healthy / passed);
      blue is the primary brand accent; amber/red/purple round out the vocabulary. */
   --color-status-blue: #1D4ED8;
   --color-status-blue-soft: #E8EFFD;
-  --color-status-green: #16814D;
-  --color-status-green-soft: #E7F5EC;
-  --color-status-amber: #B4790E;
-  --color-status-amber-soft: #FCF1DC;
-  --color-status-red: #C23B3B;
-  --color-status-red-soft: #FBEAEA;
-  --color-status-purple: #7A5FBF;
-  --color-status-purple-soft: #F0ECFA;
+  --color-status-green: #15803D;
+  --color-status-green-soft: #EAF7EF;
+  --color-status-amber: #B45309;
+  --color-status-amber-soft: #FDF3E3;
+  --color-status-red: #B91C1C;
+  --color-status-red-soft: #FBEBEB;
+  --color-status-purple: #6D4FC2;
+  --color-status-purple-soft: #F0ECFB;
 
-  --radius-shell: 28px;
-  --radius-card: 20px;
-  --radius-control: 14px;
+  --radius-shell: 16px;
+  --radius-card: 12px;
+  --radius-control: 8px;
 
-  --shadow-card: 0 1px 2px rgba(10, 10, 10, 0.04);
-  --shadow-float: 0 12px 32px rgba(10, 10, 10, 0.14);
-  --shadow-pill: 0 8px 20px rgba(10, 10, 10, 0.10);
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-float: 0 12px 32px rgba(15, 23, 42, 0.14);
+  --shadow-pill: 0 4px 12px rgba(15, 23, 42, 0.08);
 }
 
 @layer base {

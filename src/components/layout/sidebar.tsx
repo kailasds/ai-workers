@@ -1,178 +1,80 @@
-import { NavLink, Link } from "react-router-dom";
-import {
-  Gauge,
-  Users,
-  ListChecks,
-  Activity,
-  Scale,
-  BarChart3,
-  Settings,
-  PanelLeftClose,
-  PanelLeftOpen,
-  ChevronsUpDown,
-  ArrowUpRight,
-  Share2,
-} from "lucide-react";
+import { NavLink } from "react-router-dom";
+import { Gauge, Pencil, Share2, Radio, Users, ListChecks, Scale, BarChart3, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { orgMetrics, approvals, allCurrentWork } from "@/lib/data";
 
-const primaryNav = [
-  { to: "/", label: "Overview", icon: Gauge, end: true },
-  { to: "/workers", label: "AI Workers", icon: Users },
-  { to: "/work", label: "Work", icon: ListChecks, count: allCurrentWork.length },
-  { to: "/experience-hub", label: "Experience Hub", icon: Share2 },
-  { to: "/operations", label: "Operations", icon: Activity, count: approvals.length },
+const workspaceNav = [
+  { to: "/", label: "Dashboard", description: "Overview and insights", icon: Gauge, end: true },
+  { to: "/workers/new", label: "Compose", description: "Create and configure AI Workers", icon: Pencil },
+  { to: "/experience-hub", label: "Experience Hub", description: "Transfer and reuse validated experience", icon: Share2 },
+  { to: "/operations", label: "Operate", description: "Monitor deployed workers and environments", icon: Radio },
 ];
 
-const orgNav = [
+const orgNav = [{ to: "/workers", label: "AI Workers", description: "Directory and profiles", icon: Users }];
+
+const moreNav = [
+  { to: "/work", label: "Work", icon: ListChecks },
   { to: "/governance", label: "Governance", icon: Scale },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
+  { to: "/settings", label: "Settings", icon: Settings },
 ];
 
-const systemNav = [{ to: "/settings", label: "Settings", icon: Settings }];
-
 export function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
-  const budgetPct = Math.round((orgMetrics.monthlySpend / orgMetrics.monthlyBudget) * 100);
-
   return (
-    <aside
-      className={cn(
-        "flex h-full shrink-0 flex-col bg-card border-r border-border-strong transition-[width] duration-200",
-        collapsed ? "w-[72px]" : "w-[280px]"
-      )}
-    >
-      <div className="flex items-center gap-2.5 px-5 pt-6 pb-7">
-        <div className="grid h-8 w-8 shrink-0 place-items-center rounded-[9px] bg-accent">
-          <span className="text-[13px] font-bold text-white font-display">W</span>
+    <aside className="flex h-full w-[280px] shrink-0 flex-col bg-card border-r border-border">
+      <div className="flex items-center gap-2.5 px-5 pt-6 pb-6">
+        <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-accent">
+          <span className="text-[15px] font-extrabold text-white">A</span>
         </div>
-        {!collapsed && (
-          <span className="text-[15px] font-bold tracking-[-0.01em] text-ink font-display">
-            AI Workforce
-          </span>
-        )}
+        <div className="min-w-0">
+          <p className="truncate text-[11px] font-semibold uppercase tracking-wider text-ink-mute">TCS</p>
+          <p className="truncate text-[14.5px] font-bold tracking-[-0.01em] text-ink">AI Worker Platform</p>
+        </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-4">
-        <NavGroup items={primaryNav} collapsed={collapsed} />
-        <NavGroupLabel collapsed={collapsed}>Organization</NavGroupLabel>
-        <NavGroup items={orgNav} collapsed={collapsed} />
-        <NavGroupLabel collapsed={collapsed}>System</NavGroupLabel>
-        <NavGroup items={systemNav} collapsed={collapsed} />
+      <nav className="flex-1 overflow-y-auto px-3 pb-4">
+        <NavGroupLabel>Workspace</NavGroupLabel>
+        <NavGroup items={workspaceNav} />
+        <NavGroupLabel>Directory</NavGroupLabel>
+        <NavGroup items={orgNav} />
+        <NavGroupLabel>More</NavGroupLabel>
+        <div className="flex flex-col gap-0.5">
+          {moreNav.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium transition-colors",
+                  isActive ? "bg-accent-soft text-accent-ink" : "text-ink-mute hover:bg-card-sunken hover:text-ink"
+                )
+              }
+            >
+              <item.icon className="h-[16px] w-[16px] shrink-0" strokeWidth={1.75} />
+              {item.label}
+            </NavLink>
+          ))}
+        </div>
       </nav>
 
-      {!collapsed && (
-        <div className="mx-4 mb-4 rounded-card ring-texture p-4 text-white">
-          <p className="text-[10.5px] uppercase tracking-wider text-white/55">Monthly AI Spend</p>
-          <p className="mt-1 text-[22px] leading-none font-bold tabular-nums font-display">
-            ${orgMetrics.monthlySpend.toLocaleString()}
-          </p>
-          <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-white/15">
-            <div className="h-full rounded-full bg-brand-300" style={{ width: `${budgetPct}%` }} />
-          </div>
-          <p className="mt-1.5 text-[11px] text-white/55">{budgetPct}% of budget used</p>
-          <Link
-            to="/analytics"
-            className="mt-3 flex items-center justify-center gap-1.5 rounded-full bg-brand-500 py-2 text-[12.5px] font-semibold text-white transition hover:bg-brand-300"
-          >
-            View Analytics
-            <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
-          </Link>
-        </div>
-      )}
-
       <div className="border-t border-border p-3">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              className={cn(
-                "flex w-full items-center gap-2.5 rounded-[12px] px-2.5 py-2 text-left transition hover:bg-card-sunken",
-                collapsed && "justify-center px-0"
-              )}
-            >
-              <div className="grid h-7 w-7 shrink-0 place-items-center rounded-[8px] bg-accent-soft text-[11px] font-bold text-accent-ink">
-                MC
-              </div>
-              {!collapsed && (
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-[12.5px] font-semibold text-ink">Meridian Capital</p>
-                  <p className="truncate text-[11px] text-ink-mute">Enterprise plan</p>
-                </div>
-              )}
-              {!collapsed && <ChevronsUpDown className="h-3.5 w-3.5 text-ink-faint" strokeWidth={1.5} />}
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-56">
-            <DropdownMenuLabel>Organizations</DropdownMenuLabel>
-            <DropdownMenuItem>Meridian Capital</DropdownMenuItem>
-            <DropdownMenuItem>Meridian Capital — Sandbox</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Create organization</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              className={cn(
-                "mt-1 flex w-full items-center gap-2.5 rounded-[12px] px-2.5 py-2 text-left transition hover:bg-card-sunken",
-                collapsed && "justify-center px-0"
-              )}
-            >
-              <Avatar className="h-7 w-7">
-                <AvatarFallback>KD</AvatarFallback>
-              </Avatar>
-              {!collapsed && (
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-[12.5px] font-semibold text-ink">Kailas D.</p>
-                  <p className="truncate text-[11px] text-ink-mute">Workforce Admin</p>
-                </div>
-              )}
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-56">
-            <DropdownMenuItem>Profile settings</DropdownMenuItem>
-            <DropdownMenuItem>API keys</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Sign out</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <button
-          onClick={() => setCollapsed((c) => !c)}
-          className={cn(
-            "mt-2 flex w-full items-center gap-2 rounded-[10px] px-2.5 py-1.5 text-[12px] text-ink-mute transition hover:bg-card-sunken hover:text-ink",
-            collapsed && "justify-center"
-          )}
-        >
-          {collapsed ? (
-            <PanelLeftOpen className="h-3.5 w-3.5" strokeWidth={1.5} />
-          ) : (
-            <>
-              <PanelLeftClose className="h-3.5 w-3.5" strokeWidth={1.5} />
-              Collapse
-            </>
-          )}
-        </button>
+        <div className="flex items-center gap-2.5 rounded-lg px-2.5 py-2">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback>AW</AvatarFallback>
+          </Avatar>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[12.5px] font-semibold text-ink">AI Worker Admin</p>
+            <p className="truncate text-[11px] text-ink-mute">Platform operator</p>
+          </div>
+        </div>
       </div>
     </aside>
   );
 }
 
-function NavGroupLabel({ children, collapsed }: { children: React.ReactNode; collapsed: boolean }) {
-  if (collapsed) return <div className="mt-4 h-px bg-border mx-2" />;
+function NavGroupLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mt-6 mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-ink-faint">
+    <p className="mt-5 mb-2 px-3 text-[10.5px] font-semibold uppercase tracking-wider text-ink-faint">
       {children}
     </p>
   );
@@ -180,19 +82,17 @@ function NavGroupLabel({ children, collapsed }: { children: React.ReactNode; col
 
 function NavGroup({
   items,
-  collapsed,
 }: {
   items: {
     to: string;
     label: string;
+    description: string;
     icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
     end?: boolean;
-    count?: number;
   }[];
-  collapsed: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className="flex flex-col gap-1">
       {items.map((item) => (
         <NavLink
           key={item.to}
@@ -200,30 +100,25 @@ function NavGroup({
           end={item.end}
           className={({ isActive }) =>
             cn(
-              "relative flex items-center gap-2.5 rounded-[10px] py-2 pr-2.5 text-[14.5px] transition-colors",
-              collapsed ? "justify-center px-0" : "pl-4",
-              isActive ? "text-ink font-semibold" : "text-ink-mute font-medium hover:text-ink hover:bg-card-sunken"
+              "flex items-start gap-2.5 rounded-lg px-3 py-2.5 transition-colors",
+              isActive ? "bg-accent text-white" : "text-ink-soft hover:bg-card-sunken"
             )
           }
         >
           {({ isActive }) => (
             <>
-              <span
-                className={cn(
-                  "absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full transition-colors",
-                  isActive ? "bg-accent" : "bg-transparent"
-                )}
-              />
               <item.icon
-                className={cn("h-[18px] w-[18px] shrink-0", isActive ? "text-accent" : "text-ink-faint")}
+                className={cn("h-[18px] w-[18px] shrink-0 mt-0.5", isActive ? "text-white" : "text-ink-mute")}
                 strokeWidth={1.75}
               />
-              {!collapsed && <span className="truncate flex-1">{item.label}</span>}
-              {!collapsed && !!item.count && (
-                <span className="grid h-5 min-w-5 shrink-0 place-items-center rounded-full bg-onyx px-1.5 text-[10.5px] font-semibold text-white">
-                  {item.count}
+              <span className="min-w-0">
+                <span className={cn("block truncate text-[13.5px] font-semibold", isActive ? "text-white" : "text-ink")}>
+                  {item.label}
                 </span>
-              )}
+                <span className={cn("block truncate text-[11.5px] leading-tight", isActive ? "text-white/70" : "text-ink-mute")}>
+                  {item.description}
+                </span>
+              </span>
             </>
           )}
         </NavLink>

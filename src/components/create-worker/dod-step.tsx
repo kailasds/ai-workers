@@ -1,7 +1,8 @@
-import { Plus, X as XIcon, RotateCcw, AlertTriangle, BadgeCheck } from "lucide-react";
+import { Plus, X as XIcon, AlertTriangle, BadgeCheck, Sparkle } from "lucide-react";
 import { EditableField } from "@/components/shared/editable";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { AiPrepCard } from "./worker-brief";
 import { createComposeDefaults } from "./script";
 import type { ComposeState, ComposeDoDSection } from "./types";
@@ -60,15 +61,27 @@ export function DodStep({
 
   return (
     <div className="space-y-5">
-      <AiPrepCard title={`AI has prepared ${allReqs.length} success criteria for this Worker.`}>
-        <div className="flex items-center justify-between">
-          <p className="text-[12px] leading-relaxed text-ink">
-            This Worker cannot mark work complete until every required checkpoint below passes, with evidence attached.
-          </p>
-          <Button size="sm" variant="secondary" onClick={regenerate} className="shrink-0 ml-3">
-            <RotateCcw className="h-3 w-3" strokeWidth={2} /> Regenerate
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-[15px] font-bold text-ink">Definition of Done</p>
+          <p className="mt-0.5 text-[12.5px] text-ink-mute">Define how this Worker will determine that its work is complete.</p>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <Button size="sm" variant="secondary" onClick={regenerate}>
+            <Sparkle className="h-3.5 w-3.5" strokeWidth={2} />
+            AI suggest criteria
+          </Button>
+          <Button size="sm" onClick={() => addRequirement(compose.dodSections.at(-1)?.id ?? "")}>
+            <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
+            Add criterion
           </Button>
         </div>
+      </div>
+
+      <AiPrepCard title={`AI has prepared ${allReqs.length} success criteria for this Worker.`}>
+        <p className="text-[12px] leading-relaxed text-ink">
+          This Worker cannot mark work complete until every mandatory checkpoint below passes, with evidence attached.
+        </p>
       </AiPrepCard>
 
       {!hasPrivacyCriterion && (
@@ -92,16 +105,17 @@ export function DodStep({
               <span className="text-[11px] text-ink-mute">{section.requirements.length} criteria</span>
             </div>
 
-            <div className="grid grid-cols-[1.6fr_1.6fr_1.2fr_1fr_auto] gap-3 border-b border-border px-4 py-2 text-[10.5px] font-semibold uppercase tracking-wider text-ink-mute">
+            <div className="grid grid-cols-[1.5fr_1.5fr_1.1fr_0.9fr_0.6fr_auto] gap-3 border-b border-border px-4 py-2 text-[10.5px] font-semibold uppercase tracking-wider text-ink-mute">
               <span>Success Criteria</span>
               <span>Validation Method</span>
               <span>Evidence</span>
               <span>Owner / Validator</span>
+              <span>Mandatory</span>
               <span />
             </div>
 
             {section.requirements.map((r) => (
-              <div key={r.id} className="group/row grid grid-cols-[1.6fr_1.6fr_1.2fr_1fr_auto] items-start gap-3 border-b border-border px-4 py-2.5 last:border-b-0">
+              <div key={r.id} className="group/row grid grid-cols-[1.5fr_1.5fr_1.1fr_0.9fr_0.6fr_auto] items-start gap-3 border-b border-border px-4 py-2.5 last:border-b-0">
                 <EditableField value={r.label} aiValue={r.label} onChange={(v) => updateRequirement(section.id, r.id, { label: v })} textClassName="text-[12px] text-ink" />
                 <EditableField
                   value={r.check ?? ""}
@@ -124,6 +138,12 @@ export function DodStep({
                   placeholder="Owner"
                   textClassName="text-[12px] text-ink-soft"
                 />
+                <div className="pt-1">
+                  <Checkbox
+                    checked={r.mandatory !== false}
+                    onCheckedChange={(v) => updateRequirement(section.id, r.id, { mandatory: v === true })}
+                  />
+                </div>
                 <div className="flex items-center gap-2 pt-0.5">
                   <Badge variant={r.status === "passed" ? "green" : "amber"}>
                     {r.status === "passed" ? "Passed" : "Suggested"}

@@ -46,14 +46,21 @@ export function WorkerBrief({
   const dodTotal = compose.dodSections.flatMap((s) => s.requirements).length;
 
   return (
-    <div className="rounded-card border border-border-strong bg-card shadow-card p-5 h-fit sticky top-6">
-      <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-mute">Worker Brief</p>
+    <div className="rounded-card border border-border bg-card shadow-card p-5 h-fit sticky top-6">
+      <div className="flex items-center justify-between">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-mute">Worker brief</p>
+        <Badge variant="accent">
+          <Sparkles className="h-3 w-3" strokeWidth={2} />
+          AI generated
+        </Badge>
+      </div>
       <p className="mt-1.5 text-[16px] font-bold text-ink truncate">{compose.name || "Untitled Worker"}</p>
       <p className="text-[12px] text-ink-mute truncate">{compose.owner || "No owner set"}</p>
 
       <div className="mt-3 flex flex-wrap gap-1.5">
         <AutonomyBadge level={autonomy} />
         <Badge variant="outline">{operatingModeLabel[compose.operatingMode]}</Badge>
+        {compose.templateId && <Badge variant="accent">{compose.templateId.replace(/-/g, " ")}</Badge>}
       </div>
 
       <div className="mt-4 space-y-2.5 border-t border-border pt-4 text-[12.5px]">

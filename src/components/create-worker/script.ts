@@ -201,51 +201,15 @@ export const availablePackages: ImportedPackage[] = [
   },
 ];
 
-export const customerConfigCatalog: { category: string; items: { label: string; control: CustomerConfigItem["control"] }[] }[] = [
-  {
-    category: "Business Configuration",
-    items: [
-      { label: "Business rules", control: "customer" },
-      { label: "Processing thresholds", control: "customer" },
-      { label: "Processing rules", control: "request" },
-    ],
-  },
-  {
-    category: "Integration Configuration",
-    items: [
-      { label: "API endpoints", control: "request" },
-      { label: "Authentication configuration", control: "platform" },
-      { label: "External systems", control: "request" },
-    ],
-  },
-  {
-    category: "Worker Behaviour",
-    items: [
-      { label: "Allowed capabilities", control: "platform" },
-      { label: "Automation limits", control: "customer" },
-      { label: "Approval requirements", control: "platform" },
-    ],
-  },
-  {
-    category: "Model Configuration",
-    items: [
-      { label: "Allowed models", control: "platform" },
-      { label: "Budget limits", control: "customer" },
-      { label: "Model overrides", control: "request" },
-    ],
-  },
-  {
-    category: "Feature Configuration",
-    items: [{ label: "Enable / disable optional features", control: "customer" }],
-  },
-  {
-    category: "Data Configuration",
-    items: [
-      { label: "Data access permissions", control: "platform" },
-      { label: "Knowledge sources", control: "request" },
-      { label: "Retention policies", control: "platform" },
-    ],
-  },
+export const customerConfigCatalog: { label: string; control: CustomerConfigItem["control"]; requiresApproval: boolean }[] = [
+  { label: "Business rules & thresholds", control: "view", requiresApproval: false },
+  { label: "Data sources & connections", control: "customer", requiresApproval: false },
+  { label: "Model selection", control: "customer", requiresApproval: false },
+  { label: "Monthly budget", control: "customer", requiresApproval: true },
+  { label: "Automation limits", control: "customer", requiresApproval: false },
+  { label: "Notifications & alerts", control: "customer", requiresApproval: false },
+  { label: "Safety rules", control: "view", requiresApproval: false },
+  { label: "Core agents & capabilities", control: "platform", requiresApproval: false },
 ];
 
 export const changeLog: ConfigChangeLogItem[] = [
@@ -254,10 +218,7 @@ export const changeLog: ConfigChangeLogItem[] = [
 ];
 
 function customerConfigDefaults(): CustomerConfigItem[] {
-  let n = 0;
-  return customerConfigCatalog.flatMap((c) =>
-    c.items.map((i) => ({ id: `cfg-${n++}`, category: c.category, label: i.label, control: i.control }))
-  );
+  return customerConfigCatalog.map((i, n) => ({ id: `cfg-${n}`, label: i.label, control: i.control, requiresApproval: i.requiresApproval }));
 }
 
 export function createComposeDefaults(templateId: string = "modernization"): ComposeState {

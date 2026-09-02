@@ -29,7 +29,7 @@ export function WorkerStepper({
   onSelect: (id: StepId) => void;
 }) {
   return (
-    <div className="flex overflow-x-auto rounded-[14px] border border-border bg-card shadow-card">
+    <div className="flex overflow-x-auto rounded-card border border-border bg-card shadow-card">
       {steps.map((s) => {
         const isCurrent = s.id === current;
         const isDone = completed.has(s.id) && !isCurrent;

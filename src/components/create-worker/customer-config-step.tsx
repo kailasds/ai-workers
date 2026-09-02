@@ -1,37 +1,46 @@
 import { useState } from "react";
-import { Building2, Plug, Sliders, Cpu, ToggleLeft, Database, RefreshCw, History, Check, X as XIcon, Eye } from "lucide-react";
-import { EditableSelect, type SelectOption } from "@/components/shared/editable";
+import {
+  FileSliders,
+  Link2,
+  CircleDot,
+  ArrowLeftRight,
+  ToggleLeft,
+  Bell,
+  ShieldCheck,
+  Users,
+  Settings2,
+  Pencil,
+  History,
+  Info,
+  Eye,
+  EyeOff,
+  Copy,
+  Plug,
+  RefreshCw,
+  Check,
+  X as XIcon,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { changeLog } from "./script";
 import type { ComposeState, ConfigControl } from "./types";
 import { cn } from "@/lib/utils";
 
-const categoryIcons: Record<string, typeof Building2> = {
-  "Business Configuration": Building2,
-  "Integration Configuration": Plug,
-  "Worker Behaviour": Sliders,
-  "Model Configuration": Cpu,
-  "Feature Configuration": ToggleLeft,
-  "Data Configuration": Database,
+const rowIcons: Record<string, typeof FileSliders> = {
+  "Business rules & thresholds": FileSliders,
+  "Data sources & connections": Link2,
+  "Model selection": CircleDot,
+  "Monthly budget": ArrowLeftRight,
+  "Automation limits": ToggleLeft,
+  "Notifications & alerts": Bell,
+  "Safety rules": ShieldCheck,
+  "Core agents & capabilities": Users,
 };
 
-const controlOptions: SelectOption[] = [
-  { value: "platform", label: "Platform Controlled", description: "Fixed by us — the customer cannot change this." },
-  { value: "customer", label: "Customer Configurable", description: "The customer can change this directly in their portal." },
-  { value: "request", label: "Request Required", description: "The customer must submit a request for us to approve." },
-];
-
-const controlTone: Record<ConfigControl, "neutral" | "green" | "amber"> = {
-  platform: "neutral",
-  customer: "green",
-  request: "amber",
-};
-
-const syncOptions: SelectOption[] = [
-  { value: "webhook", label: "Webhook", description: "Customer environment pushes changes to us in real time." },
-  { value: "polling", label: "Polling", description: "We poll the customer environment on a schedule." },
-  { value: "event-driven", label: "Event-Driven", description: "Changes flow through an event bus between environments." },
+const controlColumns: { value: ConfigControl; label: string }[] = [
+  { value: "platform", label: "Platform controlled" },
+  { value: "view", label: "Customer can view" },
+  { value: "customer", label: "Customer can configure" },
 ];
 
 export function CustomerConfigStep({
@@ -41,8 +50,8 @@ export function CustomerConfigStep({
   compose: ComposeState;
   update: <K extends keyof ComposeState>(key: K, value: ComposeState[K]) => void;
 }) {
-  const categories = Array.from(new Set(compose.customerConfig.map((c) => c.category)));
   const [reviewing, setReviewing] = useState<string | null>(null);
+  const [showKey, setShowKey] = useState(false);
 
   function setControl(id: string, control: ConfigControl) {
     update(
@@ -51,62 +60,143 @@ export function CustomerConfigStep({
     );
   }
 
+  function toggleApproval(id: string) {
+    update(
+      "customerConfig",
+      compose.customerConfig.map((c) => (c.id === id ? { ...c, requiresApproval: !c.requiresApproval } : c))
+    );
+  }
+
   return (
     <div className="space-y-5">
-      <div className="rounded-card border border-border bg-card shadow-card p-4">
-        <p className="text-[12.5px] leading-relaxed text-ink-soft">
-          Define what a customer can configure once this Worker is deployed to their environment. Everything not marked
-          "Customer Configurable" stays fixed by the platform, or requires our approval to change.
-        </p>
+      <div>
+        <p className="text-[15px] font-bold text-ink">Customer configuration and connection</p>
+        <p className="mt-0.5 text-[12.5px] text-ink-mute">Define how this Worker connects to customer environments and what they can configure.</p>
       </div>
 
-      <div className="space-y-4">
-        {categories.map((category) => {
-          const Icon = categoryIcons[category] ?? Sliders;
-          const items = compose.customerConfig.filter((c) => c.category === category);
+      <div className="rounded-card border border-border bg-card shadow-card p-5">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-mute mb-3">Connection overview</p>
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+          <div>
+            <p className="text-[11px] text-ink-mute">Connection type</p>
+            <div className="mt-1 flex items-center gap-1.5">
+              <Plug className="h-3.5 w-3.5 text-ink-faint" strokeWidth={1.75} />
+              <span className="text-[12.5px] font-medium text-ink">Secure Agent</span>
+              <Badge variant="green">Connected</Badge>
+            </div>
+          </div>
+          <div>
+            <p className="text-[11px] text-ink-mute">Connected customer</p>
+            <div className="mt-1 flex items-center gap-1.5">
+              <span className="text-[12.5px] font-medium text-ink">Acme Corporation</span>
+              <button className="text-[11px] font-medium text-accent-ink hover:underline">Change</button>
+            </div>
+          </div>
+          <div>
+            <p className="text-[11px] text-ink-mute">Environment</p>
+            <div className="mt-1 flex items-center gap-1.5">
+              <span className="text-[12.5px] font-medium text-ink">Production</span>
+              <button className="text-[11px] font-medium text-accent-ink hover:underline">Change</button>
+            </div>
+          </div>
+          <div>
+            <p className="text-[11px] text-ink-mute">Last sync</p>
+            <p className="mt-1 flex items-center gap-1.5 text-[12.5px] font-medium text-ink">
+              <span className="h-1.5 w-1.5 rounded-full bg-status-green" />2 mins ago
+            </p>
+          </div>
+          <div>
+            <p className="text-[11px] text-ink-mute">Configuration version</p>
+            <div className="mt-1 flex items-center gap-1.5">
+              <span className="text-[12.5px] font-medium text-ink">v2.4.1</span>
+              <button className="text-[11px] font-medium text-accent-ink hover:underline">View history</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+          <div>
+            <p className="text-[14px] font-bold text-ink">What can the customer configure?</p>
+            <p className="text-[12px] text-ink-mute">Control what settings the customer can view or modify after deployment.</p>
+          </div>
+          <Button variant="secondary" size="sm">
+            <Settings2 className="h-3.5 w-3.5" strokeWidth={1.75} />
+            Manage configuration policies
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-[1.6fr_1fr_1fr_1fr_1fr] items-center gap-3 border-b border-border bg-card-sunken px-5 py-2.5 text-[10.5px] font-semibold uppercase tracking-wider text-ink-mute">
+          <span>Configuration area</span>
+          <span>Platform controlled</span>
+          <span>Customer can view</span>
+          <span>Customer can configure</span>
+          <span>Requires approval</span>
+        </div>
+
+        {compose.customerConfig.map((item) => {
+          const Icon = rowIcons[item.label] ?? Settings2;
           return (
-            <div key={category} className="rounded-card border border-border bg-card shadow-card overflow-hidden">
-              <div className="flex items-center gap-2.5 border-b border-border bg-card-sunken px-4 py-2.5">
-                <div className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-accent-soft text-accent-ink">
-                  <Icon className="h-3 w-3" strokeWidth={2} />
-                </div>
-                <p className="text-[12.5px] font-semibold text-ink">{category}</p>
-              </div>
-              <div className="divide-y divide-border">
-                {items.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between gap-4 px-4 py-2.5">
-                    <span className="text-[12.5px] text-ink-soft">{item.label}</span>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <Badge variant={controlTone[item.control]}>{controlOptions.find((o) => o.value === item.control)?.label}</Badge>
-                      <EditableSelect value={item.control} aiValue={item.control} options={controlOptions} onChange={(v) => setControl(item.id, v as ConfigControl)} />
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div key={item.id} className="grid grid-cols-[1.6fr_1fr_1fr_1fr_1fr] items-center gap-3 border-b border-border px-5 py-3 last:border-b-0">
+              <span className="flex items-center gap-2.5 min-w-0">
+                <Icon className="h-4 w-4 shrink-0 text-accent" strokeWidth={1.75} />
+                <span className="truncate text-[12.5px] text-ink">{item.label}</span>
+              </span>
+              {controlColumns.map((col) => (
+                <button key={col.value} onClick={() => setControl(item.id, col.value)} className="flex items-center">
+                  <RadioDot checked={item.control === col.value} />
+                </button>
+              ))}
+              <button onClick={() => toggleApproval(item.id)} className="flex items-center">
+                <RadioDot checked={item.requiresApproval} />
+              </button>
             </div>
           );
         })}
       </div>
 
       <div className="rounded-card border border-border bg-card shadow-card p-5">
-        <div className="flex items-center gap-2 mb-1">
-          <RefreshCw className="h-4 w-4 text-accent" strokeWidth={1.9} />
-          <p className="text-[14px] font-bold text-ink">Configuration Sync &amp; Change Management</p>
-        </div>
-        <p className="text-[12px] text-ink-mute mb-4">
-          The Worker stays connected to our control plane even after deployment — customer changes flow back for review.
-        </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+        <div className="flex items-center justify-between mb-4">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-mute mb-1">Sync Method</p>
-            <EditableSelect value={compose.syncMethod} aiValue="webhook" options={syncOptions} onChange={(v) => update("syncMethod", v)} />
+            <p className="text-[14px] font-bold text-ink">Integration endpoints</p>
+            <p className="text-[12px] text-ink-mute">Endpoint details used for secure communication and configuration sync.</p>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <SyncStat label="Connection Status" value="Connected" tone="green" />
-            <SyncStat label="Last Sync" value="2 min ago" />
-            <SyncStat label="Config Version" value="v1.0" />
-            <SyncStat label="Pending Changes" value={String(changeLog.filter((c) => c.status === "Pending Review").length)} tone="amber" />
+          <Button variant="secondary" size="sm">
+            <Pencil className="h-3.5 w-3.5" strokeWidth={1.75} />
+            Edit endpoints
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-mute mb-1">Webhook URL</p>
+            <div className="h-9 rounded-lg border border-border bg-card-sunken px-3 flex items-center text-[12.5px] text-ink-soft truncate">
+              https://acme.com/webhooks/ai-worker
+            </div>
+          </div>
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-mute mb-1">Auth type</p>
+            <div className="h-9 rounded-lg border border-border bg-card px-3 flex items-center text-[12.5px] text-ink">Bearer Token</div>
+          </div>
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-mute mb-1">API Key / Token</p>
+            <div className="h-9 rounded-lg border border-border bg-card-sunken px-3 flex items-center gap-2 text-[12.5px] text-ink-soft">
+              <span className="flex-1 truncate font-mono">{showKey ? "sk_live_8f2a91c4e6b0d3f7" : "••••••••••••••••••••"}</span>
+              <button onClick={() => setShowKey((s) => !s)} className="text-ink-faint hover:text-ink shrink-0">
+                {showKey ? <EyeOff className="h-3.5 w-3.5" strokeWidth={1.75} /> : <Eye className="h-3.5 w-3.5" strokeWidth={1.75} />}
+              </button>
+              <button className="text-ink-faint hover:text-ink shrink-0">
+                <Copy className="h-3.5 w-3.5" strokeWidth={1.75} />
+              </button>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Badge variant="green">Verified</Badge>
+            <Button variant="secondary" size="sm">
+              <RefreshCw className="h-3.5 w-3.5" strokeWidth={1.75} />
+              Test connection
+            </Button>
           </div>
         </div>
       </div>
@@ -156,17 +246,26 @@ export function CustomerConfigStep({
           ))}
         </div>
       </div>
+
+      <div className="flex items-start gap-2.5 rounded-card border border-accent-border bg-accent-soft px-4 py-3">
+        <Info className="h-4 w-4 text-accent-ink shrink-0 mt-0.5" strokeWidth={1.75} />
+        <p className="text-[12px] text-accent-ink">
+          Everything not marked "Customer can configure" stays fixed by the platform, or requires our approval to change.
+        </p>
+      </div>
     </div>
   );
 }
 
-function SyncStat({ label, value, tone }: { label: string; value: string; tone?: "green" | "amber" }) {
+function RadioDot({ checked }: { checked: boolean }) {
   return (
-    <div>
-      <p className="text-[10px] uppercase tracking-wider text-ink-mute">{label}</p>
-      <p className={cn("mt-0.5 text-[13px] font-semibold tabular-nums", tone === "green" ? "text-status-green" : tone === "amber" ? "text-status-amber" : "text-ink")}>
-        {value}
-      </p>
-    </div>
+    <span
+      className={cn(
+        "grid h-4 w-4 shrink-0 place-items-center rounded-full border transition-colors",
+        checked ? "border-accent" : "border-border-strong"
+      )}
+    >
+      {checked && <span className="h-2 w-2 rounded-full bg-accent" />}
+    </span>
   );
 }

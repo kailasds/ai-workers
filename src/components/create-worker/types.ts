@@ -32,13 +32,13 @@ export interface ImportedPackage {
   compatibility: "Compatible" | "Needs Review";
 }
 
-export type ConfigControl = "platform" | "customer" | "request";
+export type ConfigControl = "platform" | "view" | "customer";
 
 export interface CustomerConfigItem {
   id: string;
-  category: string;
   label: string;
   control: ConfigControl;
+  requiresApproval: boolean;
 }
 
 export interface ConfigChangeLogItem {

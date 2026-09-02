@@ -126,6 +126,7 @@ export interface DoDRequirement {
   check?: string;
   owner?: string;
   adjudicator?: string;
+  mandatory?: boolean;
 }
 
 export interface DoDSection {
