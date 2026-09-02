@@ -1,5 +1,5 @@
 import { getWorker } from "@/lib/data";
-import type { Beat, ComposeState } from "./types";
+import type { ComposeState, ConfigChangeLogItem, CustomerConfigItem, ImportedPackage, WorkerTemplate } from "./types";
 
 export const draftWorker = getWorker("cobol-modernization-worker")!;
 
@@ -23,21 +23,262 @@ export const draftWontList = [
   "Access systems it does not require",
 ];
 
-export function createComposeDefaults(): ComposeState {
+export const templates: WorkerTemplate[] = [
+  {
+    id: "modernization",
+    name: "Modernization Worker",
+    description: "Rebuilds legacy applications in a modern language while proving functional parity.",
+    capabilityCount: 8,
+    suggestedModels: "Sonnet 5 + independent Opus 5 verifier",
+    suggestedSafety: "Act With Approval — no production access",
+    suggestedDoDCount: 5,
+    namePrefill: draftWorker.name,
+    objectivePrefill: draftWorker.scope.primaryPurpose,
+    inputBoundaryPrefill: draftWorker.scope.acceptedInputBoundary,
+    businessContextPrefill: "Engineering Transformation — bounded legacy-to-modern migration.",
+    willList: draftWillList,
+    skills: draftWorker.skills.map((s) => s.name),
+    tools: draftWorker.tools.map((t) => t.name),
+  },
+  {
+    id: "claims",
+    name: "Claims Processing Worker",
+    description: "Triages and processes incoming claims against policy and coverage rules.",
+    capabilityCount: 6,
+    suggestedModels: "Sonnet 5 + independent verifier",
+    suggestedSafety: "Act With Approval — high-value claims always reviewed",
+    suggestedDoDCount: 4,
+    namePrefill: "Claims Processing Worker",
+    objectivePrefill: "Process incoming claims against policy and coverage rules, routing exceptions to a human adjuster.",
+    inputBoundaryPrefill: "Submitted claim forms, policy documents and supporting evidence from approved intake channels only.",
+    businessContextPrefill: "Claims Operations — first-pass triage and processing.",
+    willList: ["Validate claim completeness", "Match claim to policy coverage", "Flag suspected fraud indicators", "Draft settlement recommendation"],
+    skills: ["Claims Triage", "Policy Matching", "Fraud Signal Detection", "Settlement Drafting"],
+    tools: ["Policy Admin System", "Claims Ledger", "Document Store"],
+  },
+  {
+    id: "document-intelligence",
+    name: "Document Intelligence Worker",
+    description: "Extracts and structures data from incoming enterprise documents.",
+    capabilityCount: 5,
+    suggestedModels: "Sonnet 5 + fast fallback",
+    suggestedSafety: "Act Within Limits — read-only document access",
+    suggestedDoDCount: 3,
+    namePrefill: "Document Intelligence Worker",
+    objectivePrefill: "Extract and structure data from incoming enterprise documents into the target schema.",
+    inputBoundaryPrefill: "Approved document intake queues — PDFs, scans and structured forms only.",
+    businessContextPrefill: "Operations — document intake and structuring.",
+    willList: ["Classify document type", "Extract structured fields", "Validate against schema", "Flag low-confidence extractions"],
+    skills: ["Document Classification", "Field Extraction", "Schema Validation"],
+    tools: ["Document Store", "OCR Service"],
+  },
+  {
+    id: "fraud",
+    name: "Fraud Investigation Worker",
+    description: "Investigates flagged transactions and produces evidence-backed findings.",
+    capabilityCount: 7,
+    suggestedModels: "Opus 5 + independent verifier",
+    suggestedSafety: "Act With Approval — customer data access always logged",
+    suggestedDoDCount: 4,
+    namePrefill: "Fraud Investigation Worker",
+    objectivePrefill: "Investigate flagged transactions and produce an evidence-backed findings report.",
+    inputBoundaryPrefill: "Flagged transaction records and account history from the fraud queue only.",
+    businessContextPrefill: "Risk & Fraud — flagged transaction investigation.",
+    willList: ["Cross-reference transaction history", "Score fraud likelihood", "Assemble evidence package", "Draft findings report"],
+    skills: ["Transaction Analysis", "Fraud Scoring", "Evidence Assembly"],
+    tools: ["Case Management System", "Transaction Ledger"],
+  },
+  {
+    id: "customer-service",
+    name: "Customer Service Worker",
+    description: "Resolves common customer requests within approved policy boundaries.",
+    capabilityCount: 5,
+    suggestedModels: "Haiku 4.5 + Sonnet 5 fallback",
+    suggestedSafety: "Act Within Limits — no account modification without approval",
+    suggestedDoDCount: 3,
+    namePrefill: "Customer Service Worker",
+    objectivePrefill: "Resolve common customer service requests within approved policy boundaries.",
+    inputBoundaryPrefill: "Customer support tickets and account data visible through the support console only.",
+    businessContextPrefill: "Customer Success — first-line request resolution.",
+    willList: ["Answer policy questions", "Update non-sensitive account fields", "Escalate complex requests"],
+    skills: ["Policy Q&A", "Account Lookup", "Escalation Routing"],
+    tools: ["Support Console"],
+  },
+  {
+    id: "underwriting",
+    name: "Underwriting Worker",
+    description: "Scores applications against underwriting guidelines and flags exceptions.",
+    capabilityCount: 6,
+    suggestedModels: "Sonnet 5 + independent verifier",
+    suggestedSafety: "Act With Approval — high-risk decisions always reviewed",
+    suggestedDoDCount: 4,
+    namePrefill: "Underwriting Worker",
+    objectivePrefill: "Score incoming applications against underwriting guidelines and route exceptions to a human underwriter.",
+    inputBoundaryPrefill: "Submitted applications and bureau data from approved underwriting feeds only.",
+    businessContextPrefill: "Underwriting — automated risk scoring.",
+    willList: ["Score application risk", "Check guideline compliance", "Flag conflicting guidance", "Draft decision rationale"],
+    skills: ["Risk Scoring", "Guideline Matching", "Decision Rationale"],
+    tools: ["Bureau Data Feed"],
+  },
+  {
+    id: "custom",
+    name: "Custom Worker",
+    description: "Start from a blank Worker and configure every step yourself.",
+    capabilityCount: 0,
+    suggestedModels: "Not yet configured",
+    suggestedSafety: "Not yet configured",
+    suggestedDoDCount: 0,
+    namePrefill: "New AI Worker",
+    objectivePrefill: "",
+    inputBoundaryPrefill: "",
+    businessContextPrefill: "",
+    willList: [],
+    skills: [],
+    tools: [],
+  },
+];
+
+export const availablePackages: ImportedPackage[] = [
+  {
+    id: "pkg-modernization",
+    name: "Application Modernization Package",
+    team: "Platform Engineering",
+    version: "2.1",
+    agents: 4,
+    skills: ["Legacy Code Comprehension", "Target Architecture Design", "Java Code Generation", "Independent Verification"],
+    tools: ["Repository Access", "Code Analysis Tool", "Test Environment"],
+    apis: 3,
+    lastUpdated: "2026-08-14",
+    compatibility: "Compatible",
+  },
+  {
+    id: "pkg-fraud",
+    name: "Fraud Detection Package",
+    team: "Risk Engineering",
+    version: "1.4",
+    agents: 3,
+    skills: ["Transaction Analysis", "Fraud Scoring"],
+    tools: ["Case Management System"],
+    apis: 2,
+    lastUpdated: "2026-07-30",
+    compatibility: "Needs Review",
+  },
+  {
+    id: "pkg-document",
+    name: "Document Intelligence Package",
+    team: "Data Platform",
+    version: "3.0",
+    agents: 2,
+    skills: ["Document Classification", "Field Extraction"],
+    tools: ["Document Store"],
+    apis: 1,
+    lastUpdated: "2026-08-22",
+    compatibility: "Compatible",
+  },
+  {
+    id: "pkg-claims",
+    name: "Claims Automation Package",
+    team: "Claims Operations",
+    version: "1.9",
+    agents: 5,
+    skills: ["Claims Triage", "Policy Matching", "Settlement Drafting"],
+    tools: ["Policy Admin System", "Claims Ledger"],
+    apis: 4,
+    lastUpdated: "2026-08-01",
+    compatibility: "Compatible",
+  },
+  {
+    id: "pkg-underwriting",
+    name: "Underwriting Package",
+    team: "Underwriting Engineering",
+    version: "2.3",
+    agents: 3,
+    skills: ["Risk Scoring", "Guideline Matching"],
+    tools: ["Bureau Data Feed"],
+    apis: 2,
+    lastUpdated: "2026-06-18",
+    compatibility: "Compatible",
+  },
+];
+
+export const customerConfigCatalog: { category: string; items: { label: string; control: CustomerConfigItem["control"] }[] }[] = [
+  {
+    category: "Business Configuration",
+    items: [
+      { label: "Business rules", control: "customer" },
+      { label: "Processing thresholds", control: "customer" },
+      { label: "Processing rules", control: "request" },
+    ],
+  },
+  {
+    category: "Integration Configuration",
+    items: [
+      { label: "API endpoints", control: "request" },
+      { label: "Authentication configuration", control: "platform" },
+      { label: "External systems", control: "request" },
+    ],
+  },
+  {
+    category: "Worker Behaviour",
+    items: [
+      { label: "Allowed capabilities", control: "platform" },
+      { label: "Automation limits", control: "customer" },
+      { label: "Approval requirements", control: "platform" },
+    ],
+  },
+  {
+    category: "Model Configuration",
+    items: [
+      { label: "Allowed models", control: "platform" },
+      { label: "Budget limits", control: "customer" },
+      { label: "Model overrides", control: "request" },
+    ],
+  },
+  {
+    category: "Feature Configuration",
+    items: [{ label: "Enable / disable optional features", control: "customer" }],
+  },
+  {
+    category: "Data Configuration",
+    items: [
+      { label: "Data access permissions", control: "platform" },
+      { label: "Knowledge sources", control: "request" },
+      { label: "Retention policies", control: "platform" },
+    ],
+  },
+];
+
+export const changeLog: ConfigChangeLogItem[] = [
+  { id: "cl-1", setting: "Automation Limit", from: "50", to: "75", changedBy: "Customer Admin — ABC Bank", status: "Pending Review", timestamp: "2026-09-01T14:20:00Z" },
+  { id: "cl-2", setting: "Monthly Budget", from: "$4,000", to: "$4,500", changedBy: "Customer Admin — ABC Bank", status: "Approved", timestamp: "2026-08-27T09:05:00Z" },
+];
+
+function customerConfigDefaults(): CustomerConfigItem[] {
+  let n = 0;
+  return customerConfigCatalog.flatMap((c) =>
+    c.items.map((i) => ({ id: `cfg-${n++}`, category: c.category, label: i.label, control: i.control }))
+  );
+}
+
+export function createComposeDefaults(templateId: string = "modernization"): ComposeState {
   const w = draftWorker;
+  const template = templates.find((t) => t.id === templateId) ?? templates[0];
   return {
-    name: w.name,
+    templateId,
+    name: template.namePrefill,
     owner: w.owner,
-    objective: w.scope.primaryPurpose,
-    inputBoundary: w.scope.acceptedInputBoundary,
-    willList: [...draftWillList],
+    businessContext: template.businessContextPrefill,
+    objective: template.objectivePrefill,
+    inputBoundary: template.inputBoundaryPrefill,
+    willList: [...template.willList],
     wontList: [...draftWontList],
-    skills: w.skills.map((s) => s.name),
-    tools: w.tools.map((t) => t.name),
+    capabilitiesMode: "build",
+    skills: [...template.skills],
+    tools: [...template.tools],
+    importedPackage: null,
     operatingMode: w.operatingMode,
     alwaysRequireApproval: [...w.governance.alwaysRequireApproval],
     modelConfig: { ...w.modelConfig },
-    learningConfig: { ...w.learningConfig },
     deployment: { ...w.deployment },
     dodSections: w.definitionOfDone.sections.map((s) => ({
       id: s.id,
@@ -46,201 +287,10 @@ export function createComposeDefaults(): ComposeState {
     })),
     perTaskLimit: w.governance.budget.perTaskLimit,
     monthlyBudget: w.governance.budget.monthly,
+    customerConfig: customerConfigDefaults(),
+    syncMethod: "webhook",
   };
 }
-
-export const starterPrompts = [
-  {
-    label: "Modernize legacy applications",
-    prompt:
-      "I need an AI worker that can modernize our legacy COBOL applications into Java while preserving business logic.",
-  },
-  {
-    label: "Automate testing and QA",
-    prompt: "I need an AI worker that can automate regression testing and QA for our claims platform.",
-  },
-  {
-    label: "Review and analyze code",
-    prompt: "I need an AI worker that reviews pull requests for correctness, security and style before merge.",
-  },
-  {
-    label: "Process enterprise documents",
-    prompt: "I need an AI worker that extracts and structures data from incoming enterprise documents.",
-  },
-  {
-    label: "Monitor compliance activities",
-    prompt: "I need an AI worker that monitors ongoing work for policy and compliance violations.",
-  },
-  {
-    label: "Build and maintain applications",
-    prompt: "I need an AI worker that owns a bounded feature end-to-end, from API to UI, with tests.",
-  },
-];
-
-export const defaultPrompt =
-  "I need an AI worker that modernizes legacy COBOL applications into Java while preserving business behavior, and that proves functional equivalence before it can call the work done.";
-
-export const understandingChecklist = [
-  { label: "Identifying desired business outcome", detail: "Modernize legacy COBOL applications into Java" },
-  { label: "Identifying source environment", detail: "COBOL, JCL, Copybooks, DB2 / VSAM" },
-  { label: "Identifying target environment", detail: "Java, Spring Boot" },
-  { label: "Identifying expected deliverables", detail: "Modernized code + validation evidence" },
-  { label: "Identifying work boundaries", detail: "Legacy analysis → implementation → validation" },
-  {
-    label: "Identifying potential risks",
-    detail: "Business rule preservation, behavioral equivalence, data integrity, production access",
-  },
-];
-
-export const beats: Beat[] = [
-  {
-    id: "checklist",
-    kind: "checklist",
-    heading: "Understanding your objective",
-    items: understandingChecklist.map((c) => `${c.label} — ${c.detail}`),
-    closing: "I've identified the core requirements. I'm preparing an initial Worker Blueprint.",
-  },
-  {
-    id: "identity-reveal",
-    kind: "ai-text",
-    text: "I've designed an initial AI Worker for you. Based on your objective, here's the structure I recommend — you can review or modify anything below.",
-    reveals: ["identity", "purpose", "responsibilities"],
-  },
-  {
-    id: "q-autonomy",
-    kind: "question",
-    question: "How independently should this Worker operate?",
-    aiNote:
-      "Because this worker can modify enterprise code, I recommend Guarded autonomy — it can act independently within approved boundaries, but high-impact actions like merging or deployment always need a human.",
-    options: [
-      {
-        id: "supervised",
-        label: "Supervised",
-        description: "The worker works independently but pauses at defined approval checkpoints.",
-      },
-      {
-        id: "guarded",
-        label: "Guarded",
-        description: "Operates independently within approved boundaries — recommended for this worker.",
-        recommended: true,
-      },
-      {
-        id: "autonomous",
-        label: "Autonomous",
-        description: "Independently completes approved work within policy, no standing checkpoints.",
-      },
-    ],
-    reveals: ["governance"],
-  },
-  {
-    id: "q-repo",
-    kind: "question",
-    question: "Where should this Worker access the source code?",
-    options: [
-      { id: "github", label: "Connect GitHub", recommended: true },
-      { id: "gitlab", label: "Connect GitLab" },
-      { id: "enterprise", label: "Connect enterprise repository" },
-      { id: "upload", label: "Upload artifacts" },
-    ],
-    reveals: ["tools"],
-  },
-  {
-    id: "q-priority",
-    kind: "question",
-    question: "What matters most for this Worker?",
-    aiNote: "Pick as many as apply — I'll weight the design and KPIs toward these.",
-    multiSelect: true,
-    options: [
-      { id: "accuracy", label: "🎯 Accuracy", recommended: true },
-      { id: "speed", label: "⚡ Speed" },
-      { id: "cost", label: "💰 Cost efficiency" },
-      { id: "risk", label: "🛡 Risk reduction", recommended: true },
-    ],
-    reveals: ["kpis"],
-  },
-  {
-    id: "team-reveal",
-    kind: "ai-text",
-    text: "Your requested outcome requires multiple specialist capabilities. I recommend the following coordinated Agent Team, with one orchestrator sequencing each stage of the transformation.",
-    reveals: ["team"],
-  },
-  {
-    id: "team-note",
-    kind: "ai-text",
-    text: "I recommend keeping Verification independent from Implementation, so the same system doesn't validate its own work — it runs a final, independent check against tests, business rules and evidence before this worker can call anything done.",
-  },
-  {
-    id: "skills-reveal",
-    kind: "ai-text",
-    text: "Based on the Worker's responsibilities, I recommend the following capabilities, grouped by what they're for.",
-    reveals: ["skills"],
-  },
-  {
-    id: "tools-reveal",
-    kind: "ai-text",
-    text: "Based on the proposed workflow, here's the access I recommend — scoped to exactly what this worker needs, nothing more.",
-    reveals: ["tools"],
-  },
-  {
-    id: "models-reveal",
-    kind: "ai-text",
-    text: "For a task this consequential, I recommend routing through a primary model plus an independent verifier — the same model shouldn't grade its own work.",
-    reveals: ["models"],
-  },
-  {
-    id: "contract-reveal",
-    kind: "ai-text",
-    text: "I've generated an operating contract for this Worker — objective, inputs, outputs, constraints and execution boundaries — so it isn't operating from a vague prompt.",
-    reveals: ["contract"],
-  },
-  {
-    id: "knowledge-reveal",
-    kind: "ai-text",
-    text: "I've identified knowledge sources that will improve this Worker's accuracy. It can be created without them, but connecting them helps it make better decisions.",
-    reveals: ["knowledge"],
-  },
-  {
-    id: "governance-reveal",
-    kind: "ai-text",
-    text: "Here's the governance I recommend — production access is restricted, and human approval is required at the checkpoints that matter most.",
-    reveals: ["governance"],
-  },
-  {
-    id: "dod-reveal",
-    kind: "ai-text",
-    text: "Here's when this Worker can say the work is done. It can't mark this task complete until every required checkpoint below is satisfied, with evidence attached.",
-    reveals: ["dod"],
-  },
-  {
-    id: "kpis-reveal",
-    kind: "ai-text",
-    text: "Based on the Worker's purpose, I recommend measuring these outcomes — not raw activity like prompt or token counts.",
-    reveals: ["kpis"],
-  },
-  {
-    id: "budget-reveal",
-    kind: "ai-text",
-    text: "Here are the operational boundaries I recommend for this Worker, including a hard stop if it approaches its approved budget.",
-    reveals: ["budget"],
-  },
-  {
-    id: "deployment-reveal",
-    kind: "ai-text",
-    text: "Finally, here's how I'd package and deliver this Worker — a runtime and resource profile sized to the workload, ready as a local test bundle first.",
-    reveals: ["deployment"],
-  },
-  {
-    id: "final-cta",
-    kind: "cta",
-    text: "I've generated the proposed Worker Contract, Agent Team, Skills, Governance controls, KPIs and Definition of Done. I need your review on a couple of high-impact decisions before this Worker is provisioned.",
-    buttonLabel: "Review Worker Blueprint",
-  },
-];
-
-const priorityBeat = beats.find((b) => b.id === "q-priority");
-export const priorityLabel: Record<string, string> = Object.fromEntries(
-  priorityBeat?.kind === "question" ? priorityBeat.options.map((o) => [o.id, o.label]) : []
-);
 
 export const provisioningSteps = [
   "Creating Worker Identity",

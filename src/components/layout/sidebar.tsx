@@ -11,6 +11,7 @@ import {
   PanelLeftOpen,
   ChevronsUpDown,
   ArrowUpRight,
+  Share2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -29,6 +30,7 @@ const primaryNav = [
   { to: "/", label: "Overview", icon: Gauge, end: true },
   { to: "/workers", label: "AI Workers", icon: Users },
   { to: "/work", label: "Work", icon: ListChecks, count: allCurrentWork.length },
+  { to: "/experience-hub", label: "Experience Hub", icon: Share2 },
   { to: "/operations", label: "Operations", icon: Activity, count: approvals.length },
 ];
 

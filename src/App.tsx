@@ -15,6 +15,7 @@ import WorkHistory from "@/pages/worker/work-history";
 import WorkHistoryDetail from "@/pages/worker/work-history-detail";
 import Operations from "@/pages/worker/operations";
 import GlobalWork from "@/pages/global-work";
+import ExperienceHub from "@/pages/experience-hub";
 import GlobalOperations from "@/pages/global-operations";
 import GlobalGovernance from "@/pages/global-governance";
 import GlobalAnalytics from "@/pages/global-analytics";
@@ -41,6 +42,7 @@ export default function App() {
           </Route>
           <Route path="work" element={<GlobalWork />} />
           <Route path="work/assign" element={<AssignWork />} />
+          <Route path="experience-hub" element={<ExperienceHub />} />
           <Route path="operations" element={<GlobalOperations />} />
           <Route path="governance" element={<GlobalGovernance />} />
           <Route path="analytics" element={<GlobalAnalytics />} />

@@ -20,30 +20,29 @@
   --color-ink-mute: #6B7280;
   --color-ink-faint: #9CA3AF;
 
-  /* Near-black — reserved for text and small chrome, not hero cards (those are green) */
+  /* Near-black — reserved for text and small chrome, not hero cards (those are brand blue) */
   --color-onyx: #0A0A0A;
   --color-onyx-soft: #1A1A1A;
 
-  /* The one hue — five steps, no second accent */
-  --color-brand-900: #0D411B;
-  --color-brand-800: #13452D;
-  --color-brand-600: #185B3B;
-  --color-brand-500: #227D53;
-  --color-brand-300: #5FBD92;
-  --color-brand-100: #E8F5EE;
+  /* The one hue — enterprise blue, five steps, no second accent */
+  --color-brand-900: #0B2A5C;
+  --color-brand-800: #123B7A;
+  --color-brand-600: #1D4ED8;
+  --color-brand-500: #2F6FED;
+  --color-brand-300: #8DAEF6;
+  --color-brand-100: #E8EFFD;
 
-  --color-accent: #185B3B;
-  --color-accent-ink: #13452D;
-  --color-accent-soft: #E8F5EE;
-  --color-accent-border: #BFE3D2;
+  --color-accent: #1D4ED8;
+  --color-accent-ink: #1739A6;
+  --color-accent-soft: #E8EFFD;
+  --color-accent-border: #BFD3F8;
 
-  /* Status pills — amber/grey are the reference's own vocabulary (In Progress / Pending);
-     blue/red/purple are muted extensions kept for product states the reference doesn't cover
-     (Active, Blocked, Learning) — small pale-tint pills only, never a structural surface. */
-  --color-status-blue: #3B6FCC;
-  --color-status-blue-soft: #EAF0FB;
-  --color-status-green: #185B3B;
-  --color-status-green-soft: #E8F5EE;
+  /* Status pills — green is demoted to a status-only signal (readiness / healthy / passed);
+     blue is the primary brand accent; amber/red/purple round out the vocabulary. */
+  --color-status-blue: #1D4ED8;
+  --color-status-blue-soft: #E8EFFD;
+  --color-status-green: #16814D;
+  --color-status-green-soft: #E7F5EC;
   --color-status-amber: #B4790E;
   --color-status-amber-soft: #FCF1DC;
   --color-status-red: #C23B3B;
@@ -123,7 +122,7 @@
     background-size: 14px 14px;
   }
 
-  /* hero/punctuation card — replaces flat near-black with the reference's diagonal green gradient */
+  /* hero/punctuation card — diagonal brand-blue gradient */
   .card-hero {
     background-image: linear-gradient(135deg, var(--color-brand-800), var(--color-brand-500));
   }

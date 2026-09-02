@@ -1,67 +1,54 @@
-import type { DeploymentConfig, DoDRequirement, LearningConfig, ModelConfig, OperatingMode } from "@/lib/types";
+import type { DeploymentConfig, DoDRequirement, ModelConfig, OperatingMode } from "@/lib/types";
 
-export type SectionId =
-  | "identity"
-  | "purpose"
-  | "responsibilities"
-  | "team"
-  | "skills"
-  | "tools"
-  | "models"
-  | "contract"
-  | "knowledge"
-  | "governance"
-  | "dod"
-  | "kpis"
-  | "budget"
-  | "deployment";
+export type StepId = "purpose" | "capabilities" | "models" | "dod" | "customer" | "safety" | "package";
 
-export type SectionStatus = "pending" | "suggested";
-
-export interface QuestionOption {
+export interface WorkerTemplate {
   id: string;
+  name: string;
+  description: string;
+  capabilityCount: number;
+  suggestedModels: string;
+  suggestedSafety: string;
+  suggestedDoDCount: number;
+  namePrefill: string;
+  objectivePrefill: string;
+  inputBoundaryPrefill: string;
+  businessContextPrefill: string;
+  willList: string[];
+  skills: string[];
+  tools: string[];
+}
+
+export interface ImportedPackage {
+  id: string;
+  name: string;
+  team: string;
+  version: string;
+  agents: number;
+  skills: string[];
+  tools: string[];
+  apis: number;
+  lastUpdated: string;
+  compatibility: "Compatible" | "Needs Review";
+}
+
+export type ConfigControl = "platform" | "customer" | "request";
+
+export interface CustomerConfigItem {
+  id: string;
+  category: string;
   label: string;
-  description?: string;
-  recommended?: boolean;
+  control: ConfigControl;
 }
 
-interface BeatBase {
+export interface ConfigChangeLogItem {
   id: string;
-  reveals?: SectionId[];
-}
-
-export interface AiTextBeat extends BeatBase {
-  kind: "ai-text";
-  text: string;
-}
-
-export interface ChecklistBeat extends BeatBase {
-  kind: "checklist";
-  heading: string;
-  items: string[];
-  closing: string;
-}
-
-export interface QuestionBeat extends BeatBase {
-  kind: "question";
-  question: string;
-  aiNote?: string;
-  multiSelect?: boolean;
-  options: QuestionOption[];
-}
-
-export interface CtaBeat extends BeatBase {
-  kind: "cta";
-  text: string;
-  buttonLabel: string;
-}
-
-export type Beat = AiTextBeat | ChecklistBeat | QuestionBeat | CtaBeat;
-
-export interface Answer {
-  beatId: string;
-  optionIds: string[];
-  summary: string;
+  setting: string;
+  from: string;
+  to: string;
+  changedBy: string;
+  status: "Pending Review" | "Approved" | "Rejected";
+  timestamp: string;
 }
 
 export interface ComposeDoDSection {
@@ -71,20 +58,25 @@ export interface ComposeDoDSection {
 }
 
 export interface ComposeState {
+  templateId: string | null;
   name: string;
   owner: string;
+  businessContext: string;
   objective: string;
   inputBoundary: string;
   willList: string[];
   wontList: string[];
+  capabilitiesMode: "build" | "import";
   skills: string[];
   tools: string[];
+  importedPackage: ImportedPackage | null;
   operatingMode: OperatingMode;
   alwaysRequireApproval: string[];
   modelConfig: ModelConfig;
-  learningConfig: LearningConfig;
   deployment: DeploymentConfig;
   dodSections: ComposeDoDSection[];
   perTaskLimit: number;
   monthlyBudget: number;
+  customerConfig: CustomerConfigItem[];
+  syncMethod: string;
 }
