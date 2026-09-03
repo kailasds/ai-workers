@@ -1,12 +1,12 @@
 import { NavLink } from "react-router-dom";
-import { Gauge, Pencil, Share2, Radio, Users, ListChecks, Scale, BarChart3, Settings } from "lucide-react";
+import { Gauge, Pencil, Lightbulb, Radio, Users, ListChecks, Scale, BarChart3, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const workspaceNav = [
   { to: "/", label: "Dashboard", description: "Overview and insights", icon: Gauge, end: true },
   { to: "/workers/new", label: "Compose", description: "Create and configure AI Workers", icon: Pencil },
-  { to: "/experience-hub", label: "Experience Hub", description: "Transfer and reuse validated experience", icon: Share2 },
+  { to: "/experience-hub", label: "Experience Hub", description: "AI-recommended worker improvements", icon: Lightbulb },
   { to: "/operations", label: "Operate", description: "Monitor deployed workers and environments", icon: Radio },
 ];
 

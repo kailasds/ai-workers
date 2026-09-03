@@ -1,5 +1,4 @@
 import { workers } from "./data";
-import { experienceAssets } from "./experience-data";
 
 export type LiveStatus = "Running" | "Idle" | "Requires Attention" | "Offline";
 export type DeploymentStatus = "Live" | "Staging" | "Provisioning" | "Paused";
@@ -62,7 +61,7 @@ export const deployments: WorkerDeployment[] = workers.map((w, i) => {
     version: w.version,
     deploymentStatus: p.deploymentStatus,
     environment: p.environment,
-    experienceShared: experienceAssets.filter((a) => a.sourceWorkerId === w.id).length,
+    experienceShared: [4, 2, 0, 0, 1, 0][i % 6],
     budgetUsed: w.governance.budget.used,
     budgetMonthly: w.governance.budget.monthly,
     usageTasks: w.activeTasks + w.workHistory.length,

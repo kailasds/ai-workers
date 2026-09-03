@@ -15,7 +15,15 @@ import WorkHistory from "@/pages/worker/work-history";
 import WorkHistoryDetail from "@/pages/worker/work-history-detail";
 import Operations from "@/pages/worker/operations";
 import GlobalWork from "@/pages/global-work";
-import ExperienceHub from "@/pages/experience-hub";
+import { ExperienceHubLayout } from "@/pages/experience-hub/hub-layout";
+import RecommendedUpdates from "@/pages/experience-hub/recommended-updates";
+import ExperienceStream from "@/pages/experience-hub/experience-stream";
+import ExperienceLibrary from "@/pages/experience-hub/experience-library";
+import UpdateHistory from "@/pages/experience-hub/update-history";
+import UpdateReview from "@/pages/experience-hub/update-review";
+import ExperienceDetail from "@/pages/experience-hub/experience-detail";
+import LearningDetail from "@/pages/experience-hub/learning-detail";
+import UpdateDetail from "@/pages/experience-hub/update-detail";
 import GlobalOperations from "@/pages/global-operations";
 import GlobalGovernance from "@/pages/global-governance";
 import GlobalAnalytics from "@/pages/global-analytics";
@@ -42,7 +50,16 @@ export default function App() {
           </Route>
           <Route path="work" element={<GlobalWork />} />
           <Route path="work/assign" element={<AssignWork />} />
-          <Route path="experience-hub" element={<ExperienceHub />} />
+          <Route path="experience-hub" element={<ExperienceHubLayout />}>
+            <Route index element={<RecommendedUpdates />} />
+            <Route path="stream" element={<ExperienceStream />} />
+            <Route path="library" element={<ExperienceLibrary />} />
+            <Route path="history" element={<UpdateHistory />} />
+          </Route>
+          <Route path="experience-hub/updates/:id" element={<UpdateReview />} />
+          <Route path="experience-hub/stream/:id" element={<ExperienceDetail />} />
+          <Route path="experience-hub/library/:id" element={<LearningDetail />} />
+          <Route path="experience-hub/history/:id" element={<UpdateDetail />} />
           <Route path="operations" element={<GlobalOperations />} />
           <Route path="governance" element={<GlobalGovernance />} />
           <Route path="analytics" element={<GlobalAnalytics />} />
