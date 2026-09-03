@@ -24,7 +24,14 @@ import UpdateReview from "@/pages/experience-hub/update-review";
 import ExperienceDetail from "@/pages/experience-hub/experience-detail";
 import LearningDetail from "@/pages/experience-hub/learning-detail";
 import UpdateDetail from "@/pages/experience-hub/update-detail";
-import GlobalOperations from "@/pages/global-operations";
+import { OperateLayout } from "@/pages/operate/operate-layout";
+import DeploymentsOverview from "@/pages/operate/deployments-overview";
+import CustomerWorkers from "@/pages/operate/customer-workers";
+import WorkerConfiguration from "@/pages/operate/worker-configuration";
+import VersionsRollouts from "@/pages/operate/versions-rollouts";
+import Monitoring from "@/pages/operate/monitoring";
+import DeployWorker from "@/pages/operate/deploy-worker";
+import DeploymentDetail from "@/pages/operate/deployment-detail";
 import GlobalGovernance from "@/pages/global-governance";
 import GlobalAnalytics from "@/pages/global-analytics";
 import Settings from "@/pages/settings";
@@ -60,7 +67,15 @@ export default function App() {
           <Route path="experience-hub/stream/:id" element={<ExperienceDetail />} />
           <Route path="experience-hub/library/:id" element={<LearningDetail />} />
           <Route path="experience-hub/history/:id" element={<UpdateDetail />} />
-          <Route path="operations" element={<GlobalOperations />} />
+          <Route path="operations" element={<OperateLayout />}>
+            <Route index element={<DeploymentsOverview />} />
+            <Route path="customer-workers" element={<CustomerWorkers />} />
+            <Route path="worker-configuration" element={<WorkerConfiguration />} />
+            <Route path="versions-rollouts" element={<VersionsRollouts />} />
+            <Route path="monitoring" element={<Monitoring />} />
+          </Route>
+          <Route path="operations/deploy" element={<DeployWorker />} />
+          <Route path="operations/deployments/:id" element={<DeploymentDetail />} />
           <Route path="governance" element={<GlobalGovernance />} />
           <Route path="analytics" element={<GlobalAnalytics />} />
           <Route path="settings" element={<Settings />} />

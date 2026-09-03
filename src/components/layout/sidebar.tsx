@@ -7,7 +7,7 @@ const workspaceNav = [
   { to: "/", label: "Dashboard", description: "Overview and insights", icon: Gauge, end: true },
   { to: "/workers/new", label: "Compose", description: "Create and configure AI Workers", icon: Pencil },
   { to: "/experience-hub", label: "Experience Hub", description: "AI-recommended worker improvements", icon: Lightbulb },
-  { to: "/operations", label: "Operate", description: "Monitor deployed workers and environments", icon: Radio },
+  { to: "/operations", label: "Operate", description: "Deploy and manage customer worker instances", icon: Radio },
 ];
 
 const orgNav = [{ to: "/workers", label: "AI Workers", description: "Directory and profiles", icon: Users }];
