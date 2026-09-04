@@ -10,6 +10,12 @@ import {
   Info,
   Lock,
   Users2,
+  ToggleLeft,
+  Cpu,
+  Plug,
+  ShieldCheck,
+  Gauge,
+  Settings2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -43,6 +49,15 @@ const capabilitiesCatalog = [
 ];
 
 const packageTabs = ["Capabilities", "Models", "Tools & Integrations", "Safety", "Performance Profile", "Customer Controls"] as const;
+
+const packageTabIcons: Record<(typeof packageTabs)[number], React.ComponentType<{ className?: string; strokeWidth?: number }>> = {
+  Capabilities: ToggleLeft,
+  Models: Cpu,
+  "Tools & Integrations": Plug,
+  Safety: ShieldCheck,
+  "Performance Profile": Gauge,
+  "Customer Controls": Settings2,
+};
 
 const toolsCatalog = [
   { name: "Salesforce", access: "Customer Configurable" as const },
@@ -161,55 +176,70 @@ export default function DeployWorker() {
 
       <div className="px-8 mt-5">
         {step === "worker" && (
-          <div className="space-y-3">
-            {deployableWorkers.map((w) => (
-              <button
-                key={w.id}
-                onClick={() => setWorker(w)}
-                className={cn(
-                  "w-full text-left rounded-card border p-4 transition-colors",
-                  worker?.id === w.id ? "border-accent bg-accent-soft" : "border-border bg-card hover:bg-card-sunken"
-                )}
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-[14px] font-semibold text-ink">{w.name}</p>
-                    <p className="text-[12.5px] text-ink-mute mt-0.5">{w.purpose}</p>
-                  </div>
-                  {worker?.id === w.id && <Check className="h-4 w-4 text-accent-ink shrink-0" strokeWidth={2.5} />}
-                </div>
-                <div className="mt-3 grid grid-cols-4 gap-4 text-[11.5px]">
-                  <Field label="Version" value={w.version} />
-                  <Field label="Deployed To" value={`${w.deployedToCount} customers`} />
-                  <Field label="Experience Level" value={w.experienceLevel} />
-                  <Field label="Validated Learnings" value={String(w.validatedLearnings)} />
-                </div>
-              </button>
-            ))}
+          <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
+            <div className="grid grid-cols-[0.3fr_1.6fr_0.7fr_0.9fr_0.9fr_1fr] items-center gap-3 border-b border-border bg-card-sunken px-5 py-2.5 text-[10.5px] font-semibold uppercase tracking-wider text-ink-mute">
+              <span />
+              <span>Worker</span>
+              <span>Version</span>
+              <span>Deployed To</span>
+              <span>Experience</span>
+              <span>Validated Learnings</span>
+            </div>
+            {deployableWorkers.map((w) => {
+              const selected = worker?.id === w.id;
+              return (
+                <button
+                  key={w.id}
+                  onClick={() => setWorker(w)}
+                  className={cn(
+                    "grid w-full grid-cols-[0.3fr_1.6fr_0.7fr_0.9fr_0.9fr_1fr] items-center gap-3 border-b border-border px-5 py-3.5 text-left last:border-b-0 transition-colors",
+                    selected ? "bg-accent-soft" : "hover:bg-card-sunken/60"
+                  )}
+                >
+                  <RadioDot checked={selected} />
+                  <span className="min-w-0">
+                    <span className="block truncate text-[13px] font-medium text-ink">{w.name}</span>
+                    <span className="block truncate text-[11.5px] text-ink-mute">{w.purpose}</span>
+                  </span>
+                  <span className="text-[12px] tabular-nums text-ink-mute">{w.version}</span>
+                  <span className="text-[12px] text-ink-soft">{w.deployedToCount} customers</span>
+                  <ExperienceBadge level={w.experienceLevel} />
+                  <span className="text-[12px] tabular-nums text-ink-soft">{w.validatedLearnings}</span>
+                </button>
+              );
+            })}
           </div>
         )}
 
         {step === "customer" && (
           <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {deploymentCustomers.map((c) => (
-                <button
-                  key={c.id}
-                  onClick={() => setCustomer(c)}
-                  className={cn(
-                    "text-left rounded-card border p-4 transition-colors",
-                    customer?.id === c.id ? "border-accent bg-accent-soft" : "border-border bg-card hover:bg-card-sunken"
-                  )}
-                >
-                  <div className="flex items-center justify-between">
-                    <p className="text-[13.5px] font-semibold text-ink">{c.name}</p>
-                    {customer?.id === c.id && <Check className="h-3.5 w-3.5 text-accent-ink" strokeWidth={2.5} />}
-                  </div>
-                  <p className="mt-1 text-[11.5px] text-ink-mute">
-                    {c.industry} · {c.region} · {c.portal}
-                  </p>
-                </button>
-              ))}
+            <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
+              <div className="grid grid-cols-[0.3fr_1.2fr_1fr_0.9fr_1.3fr] items-center gap-3 border-b border-border bg-card-sunken px-5 py-2.5 text-[10.5px] font-semibold uppercase tracking-wider text-ink-mute">
+                <span />
+                <span>Customer</span>
+                <span>Industry</span>
+                <span>Region</span>
+                <span>Portal / Tenant</span>
+              </div>
+              {deploymentCustomers.map((c) => {
+                const selected = customer?.id === c.id;
+                return (
+                  <button
+                    key={c.id}
+                    onClick={() => setCustomer(c)}
+                    className={cn(
+                      "grid w-full grid-cols-[0.3fr_1.2fr_1fr_0.9fr_1.3fr] items-center gap-3 border-b border-border px-5 py-3.5 text-left last:border-b-0 transition-colors",
+                      selected ? "bg-accent-soft" : "hover:bg-card-sunken/60"
+                    )}
+                  >
+                    <RadioDot checked={selected} />
+                    <span className="text-[13px] font-medium text-ink">{c.name}</span>
+                    <span className="text-[12px] text-ink-soft">{c.industry}</span>
+                    <span className="text-[12px] text-ink-soft">{c.region}</span>
+                    <span className="text-[12px] text-ink-mute truncate">{c.portal}</span>
+                  </button>
+                );
+              })}
             </div>
 
             {customer && worker && (
@@ -244,18 +274,22 @@ export default function DeployWorker() {
             </div>
 
             <div className="flex flex-wrap gap-1.5 border-b border-border pb-0">
-              {packageTabs.map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setPackageTab(t)}
-                  className={cn(
-                    "rounded-t-lg px-3.5 py-2 text-[12.5px] font-medium border-b-2 -mb-px transition-colors",
-                    packageTab === t ? "border-accent text-accent-ink" : "border-transparent text-ink-mute hover:text-ink"
-                  )}
-                >
-                  {t}
-                </button>
-              ))}
+              {packageTabs.map((t) => {
+                const TabIcon = packageTabIcons[t];
+                return (
+                  <button
+                    key={t}
+                    onClick={() => setPackageTab(t)}
+                    className={cn(
+                      "flex items-center gap-1.5 rounded-t-lg px-3.5 py-2 text-[12.5px] font-medium border-b-2 -mb-px transition-colors",
+                      packageTab === t ? "border-accent text-accent-ink" : "border-transparent text-ink-mute hover:text-ink"
+                    )}
+                  >
+                    <TabIcon className="h-3.5 w-3.5" strokeWidth={1.9} />
+                    {t}
+                  </button>
+                );
+              })}
             </div>
 
             {packageTab === "Capabilities" && (
@@ -549,6 +583,19 @@ function Field({ label, value }: { label: string; value: string }) {
       <p className="mt-0.5 text-[12.5px] font-medium text-ink">{value}</p>
     </div>
   );
+}
+
+function RadioDot({ checked }: { checked: boolean }) {
+  return (
+    <span className={cn("grid h-4 w-4 shrink-0 place-items-center rounded-full border", checked ? "border-accent" : "border-border-strong")}>
+      {checked && <span className="h-2 w-2 rounded-full bg-accent" />}
+    </span>
+  );
+}
+
+function ExperienceBadge({ level }: { level: "High" | "Medium" | "Low" }) {
+  const tone = level === "High" ? "green" : level === "Medium" ? "amber" : "neutral";
+  return <Badge variant={tone}>{level}</Badge>;
 }
 
 function ConfigRow({ label, value, owner, flat }: { label: string; value: string; owner: string; flat?: boolean }) {

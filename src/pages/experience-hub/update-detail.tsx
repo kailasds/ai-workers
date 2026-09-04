@@ -74,11 +74,10 @@ export default function UpdateDetail() {
             </div>
           )}
 
-          <Section title="Original Recommendation">
-            <p className="text-[12.5px] text-ink-soft leading-relaxed">Source learning: {item.sourceLearning}</p>
-          </Section>
-
-          <Section title="Changes Applied">
+          <Section title="What Changed">
+            <p className="text-[12px] text-ink-mute mb-2.5">
+              Source learning: <span className="text-ink-soft font-medium">{item.sourceLearning}</span>
+            </p>
             <ul className="space-y-1.5">
               {item.changesApplied.map((c) => (
                 <li key={c} className="flex items-start gap-2 text-[12.5px] text-ink-soft">
@@ -106,25 +105,27 @@ export default function UpdateDetail() {
             </div>
           </Section>
 
-          <Section title="Update Monitoring">
-            <div className="flex items-center gap-2 mb-2">
+          <Section title="Monitoring">
+            <div className="flex items-center gap-2 mb-2.5">
               <Badge variant={statusTone[item.status]}>{item.status}</Badge>
             </div>
             <div className="flex items-start gap-2.5 rounded-lg bg-accent-soft px-3.5 py-3">
               <Sparkle className="h-3.5 w-3.5 text-accent-ink shrink-0 mt-0.5" strokeWidth={1.9} />
               <p className="text-[12.5px] leading-relaxed text-accent-ink">{item.monitoringObservation}</p>
             </div>
-          </Section>
 
-          <Section title="Observed Impact">
-            <p className={cn("text-[12.5px] leading-relaxed", attention ? "text-status-red" : "text-ink-soft")}>{item.observedImpact}</p>
-          </Section>
+            <div className="mt-3 pt-3 border-t border-border">
+              <p className="text-[10.5px] font-semibold uppercase tracking-wider text-ink-mute mb-1">Observed Impact</p>
+              <p className={cn("text-[12.5px] leading-relaxed", attention ? "text-status-red font-medium" : "text-ink-soft")}>{item.observedImpact}</p>
+            </div>
 
-          {item.issuesDetected && (
-            <Section title="Issues Detected">
-              <p className="text-[12.5px] text-status-red leading-relaxed">{item.issuesDetected}</p>
-            </Section>
-          )}
+            {item.issuesDetected && (
+              <div className="mt-3 pt-3 border-t border-border">
+                <p className="text-[10.5px] font-semibold uppercase tracking-wider text-ink-mute mb-1">Issues Detected</p>
+                <p className="text-[12.5px] text-status-red leading-relaxed">{item.issuesDetected}</p>
+              </div>
+            )}
+          </Section>
         </div>
 
         <div className="rounded-card border border-border bg-card shadow-card p-5 xl:sticky xl:top-5 space-y-3">

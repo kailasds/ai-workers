@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ChevronRight, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { experienceEvents, hubWorker, maturityLabel, maturityOrder, type ExperienceType, type MaturityStage } from "@/lib/experience-hub-data";
 import { cn } from "@/lib/utils";
@@ -23,6 +23,14 @@ const maturityTone: Record<MaturityStage, "neutral" | "blue" | "amber" | "green"
   "under-validation": "amber",
   "validated-learning": "green",
   "used-in-recommendation": "accent",
+};
+
+const maturityDot: Record<MaturityStage, string> = {
+  "raw-experience": "bg-ink-faint",
+  "observed-pattern": "bg-status-blue",
+  "under-validation": "bg-status-amber",
+  "validated-learning": "bg-status-green",
+  "used-in-recommendation": "bg-accent",
 };
 
 export default function ExperienceStream() {
@@ -49,42 +57,36 @@ export default function ExperienceStream() {
         />
       </div>
 
-      <div className="space-y-3">
+      <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
         {filtered.map((e) => {
           const worker = hubWorker(e.workerId);
           return (
-            <div key={e.id} className="rounded-card border border-border bg-card shadow-card p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0">
-                  <p className="text-[13px] font-semibold text-ink">{worker.name}</p>
-                  <div className="mt-1 flex items-center gap-1.5 flex-wrap">
-                    <Badge variant="outline" className="uppercase tracking-wide">
-                      {e.type}
-                    </Badge>
-                    <Badge variant={maturityTone[e.maturity]}>{maturityLabel[e.maturity]}</Badge>
-                  </div>
+            <Link
+              key={e.id}
+              to={`/experience-hub/stream/${e.id}`}
+              className="flex items-start gap-3 border-b border-border px-5 py-3.5 last:border-b-0 transition-colors hover:bg-card-sunken/60"
+            >
+              <span className={cn("mt-1.5 h-2 w-2 rounded-full shrink-0", maturityDot[e.maturity])} />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="text-[12.5px] font-semibold text-ink">{worker.name}</p>
+                  <Badge variant="outline" className="text-[10px]">
+                    {e.type}
+                  </Badge>
                 </div>
-                <span className="shrink-0 text-[11px] text-ink-faint tabular-nums">
+                <p className="mt-0.5 text-[12.5px] text-ink-soft truncate">{e.whatHappened}</p>
+              </div>
+              <div className="flex items-center gap-3 shrink-0">
+                <Badge variant={maturityTone[e.maturity]}>{maturityLabel[e.maturity]}</Badge>
+                <span className="text-[11px] text-ink-faint tabular-nums w-12 text-right">
                   {new Date(e.timestamp).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
                 </span>
+                <ChevronRight className="h-3.5 w-3.5 text-ink-faint" strokeWidth={2} />
               </div>
-
-              <p className="mt-3 text-[13px] text-ink leading-relaxed">{e.whatHappened}</p>
-              <p className="mt-1.5 text-[12.5px] text-ink-soft">
-                <span className="font-medium text-ink">Outcome:</span> {e.outcome}
-              </p>
-
-              <Link
-                to={`/experience-hub/stream/${e.id}`}
-                className="mt-3 inline-flex items-center gap-1 text-[12.5px] font-medium text-accent-ink hover:underline"
-              >
-                View Experience
-                <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
-              </Link>
-            </div>
+            </Link>
           );
         })}
-        {filtered.length === 0 && <p className="text-[12.5px] text-ink-mute px-1">No experiences match these filters.</p>}
+        {filtered.length === 0 && <p className="text-[12.5px] text-ink-mute px-5 py-8">No experiences match these filters.</p>}
       </div>
     </div>
   );

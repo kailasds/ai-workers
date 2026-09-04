@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ChevronDown, Search } from "lucide-react";
+import { ArrowRight, ChevronDown, Search, GitBranch, Users2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { validatedLearnings, type LibraryCategory } from "@/lib/experience-hub-data";
 
@@ -60,7 +60,7 @@ export default function ExperienceLibrary() {
             <div className="flex items-start justify-between gap-2">
               <p className="text-[14px] font-bold text-ink">{l.title}</p>
               <Badge variant={l.usedInCount > 0 ? "green" : "amber"} className="shrink-0">
-                {l.usedInCount > 0 ? "Validated Learning" : "Under Validation"}
+                {l.usedInCount > 0 ? "Validated" : "Under Validation"}
               </Badge>
             </div>
             <Badge variant="outline" className="mt-2 w-fit">
@@ -68,25 +68,25 @@ export default function ExperienceLibrary() {
             </Badge>
             <p className="mt-2.5 text-[12.5px] text-ink-soft leading-relaxed flex-1">{l.whatWasLearned}</p>
 
-            <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5 text-[11.5px]">
-              <span className="text-ink-mute">
-                Derived from: <span className="text-ink-soft">{l.derivedFrom}</span>
-              </span>
-              <span className="text-ink-mute">
-                Applicable to: <span className="text-ink-soft">{l.applicableTo}</span>
-              </span>
-              <span className="text-ink-mute">
-                Used in: <span className="text-ink-soft">{l.usedInCount} worker update{l.usedInCount === 1 ? "" : "s"}</span>
-              </span>
+            <div className="mt-3 pt-3 border-t border-border flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 text-[11px] text-ink-mute min-w-0">
+                <span className="flex items-center gap-1 truncate">
+                  <GitBranch className="h-3 w-3 shrink-0" strokeWidth={2} />
+                  {l.applicableTo}
+                </span>
+                <span className="flex items-center gap-1 shrink-0">
+                  <Users2 className="h-3 w-3" strokeWidth={2} />
+                  {l.usedInCount} updates
+                </span>
+              </div>
+              <Link
+                to={`/experience-hub/library/${l.id}`}
+                className="flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline shrink-0"
+              >
+                View
+                <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
+              </Link>
             </div>
-
-            <Link
-              to={`/experience-hub/library/${l.id}`}
-              className="mt-4 inline-flex items-center gap-1 text-[12.5px] font-medium text-accent-ink hover:underline w-fit"
-            >
-              View Learning
-              <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
-            </Link>
           </div>
         ))}
         {filtered.length === 0 && <p className="text-[12.5px] text-ink-mute px-1">No learnings match these filters.</p>}

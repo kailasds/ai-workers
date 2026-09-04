@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Sparkle } from "lucide-react";
+import { ArrowLeft, Sparkle, UserCog } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getExperience, hubWorker, maturityLabel, experienceEvents, type MaturityStage } from "@/lib/experience-hub-data";
 import { cn } from "@/lib/utils";
@@ -35,77 +35,51 @@ export default function ExperienceDetail() {
           Back to Experience Stream
         </Link>
 
-        <div className="mt-4">
-          <div className="flex items-center gap-2 flex-wrap">
-            <Badge variant="outline">{experience.type}</Badge>
-            <Badge variant={maturityTone[experience.maturity]}>{maturityLabel[experience.maturity]}</Badge>
-          </div>
-          <h1 className="mt-2 text-[24px] font-bold tracking-[-0.02em] text-ink">{experience.title}</h1>
-          <p className="mt-1 text-[13px] text-ink-mute">
-            {worker.name} · {new Date(experience.timestamp).toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
-          </p>
+        <div className="mt-3 flex items-center gap-2 flex-wrap">
+          <Badge variant="outline">{experience.type}</Badge>
+          <Badge variant={maturityTone[experience.maturity]}>{maturityLabel[experience.maturity]}</Badge>
         </div>
+        <h1 className="mt-1.5 text-[24px] font-bold tracking-[-0.02em] text-ink">{experience.title}</h1>
+        <p className="mt-1 text-[13px] text-ink-mute">
+          {worker.name} · {experience.environment} ·{" "}
+          {new Date(experience.timestamp).toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+        </p>
       </div>
 
-      <div className="px-8 mt-6 grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-5 items-start">
-        <div className="min-w-0 space-y-5">
-          <Section title="Experience Summary">
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <Field label="Worker" value={worker.name} />
-              <Field label="Environment" value={experience.environment} />
-            </div>
-            <p className="text-[12.5px] text-ink-soft leading-relaxed">
-              <span className="font-medium text-ink">What happened:</span> {experience.whatHappened}
+      <div className="px-8 mt-5 grid grid-cols-1 xl:grid-cols-[1fr_300px] gap-5 items-start">
+        <div className="min-w-0 space-y-4">
+          <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
+            <Row label="What happened" text={experience.whatHappened} />
+            <Row label="Context" list={experience.inputsContext} />
+            <Row label="Worker action" text={experience.workerAction} />
+            <Row label="Outcome" text={experience.outcome} highlight />
+            {experience.humanIntervention && <Row label="Human intervention" text={experience.humanIntervention} icon={UserCog} />}
+          </div>
+
+          <div className="rounded-card bg-accent-soft border border-accent-border p-4">
+            <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-accent-ink mb-1.5">
+              <Sparkle className="h-3.5 w-3.5" strokeWidth={2} />
+              AI Analysis
             </p>
-          </Section>
-
-          <Section title="Inputs / Context">
-            <ul className="space-y-1.5">
-              {experience.inputsContext.map((c) => (
-                <li key={c} className="flex items-start gap-2 text-[12.5px] text-ink-soft">
-                  <span className="mt-1.5 h-1 w-1 rounded-full bg-ink-faint shrink-0" />
-                  {c}
-                </li>
-              ))}
-            </ul>
-          </Section>
-
-          <Section title="Worker Action">
-            <p className="text-[12.5px] text-ink-soft leading-relaxed">{experience.workerAction}</p>
-          </Section>
-
-          <Section title="Observed Outcome">
-            <p className="text-[12.5px] text-ink-soft leading-relaxed">{experience.outcome}</p>
-          </Section>
-
-          {experience.humanIntervention && (
-            <Section title="Human Intervention">
-              <p className="text-[12.5px] text-ink-soft leading-relaxed">{experience.humanIntervention}</p>
-            </Section>
-          )}
-
-          <Section title="AI Analysis">
-            <div className="flex items-start gap-2.5 rounded-lg bg-accent-soft px-3.5 py-3">
-              <Sparkle className="h-3.5 w-3.5 text-accent-ink shrink-0 mt-0.5" strokeWidth={1.9} />
-              <p className="text-[12.5px] leading-relaxed text-accent-ink">{experience.aiAnalysis}</p>
-            </div>
-          </Section>
+            <p className="text-[12.5px] leading-relaxed text-ink">{experience.aiAnalysis}</p>
+          </div>
 
           {related.length > 0 && (
-            <Section title="Related Experiences">
-              <div className="space-y-2">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-mute mb-2 px-1">Related Experiences</p>
+              <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
                 {related.map((r) => (
                   <Link
                     key={r.id}
                     to={`/experience-hub/stream/${r.id}`}
-                    className="flex items-center justify-between rounded-lg border border-border px-3.5 py-2.5 transition hover:bg-card-sunken"
+                    className="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5 last:border-b-0 transition hover:bg-card-sunken/60"
                   >
                     <span className="text-[12.5px] text-ink">{r.title}</span>
                     <Badge variant={maturityTone[r.maturity]}>{maturityLabel[r.maturity]}</Badge>
                   </Link>
                 ))}
               </div>
-            </Section>
+            </div>
           )}
         </div>
 
@@ -118,20 +92,37 @@ export default function ExperienceDetail() {
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Row({
+  label,
+  text,
+  list,
+  highlight,
+  icon: Icon,
+}: {
+  label: string;
+  text?: string;
+  list?: string[];
+  highlight?: boolean;
+  icon?: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+}) {
   return (
-    <div className="rounded-card border border-border bg-card shadow-card p-5">
-      <p className="text-[13.5px] font-bold text-ink mb-3">{title}</p>
-      {children}
-    </div>
-  );
-}
-
-function Field({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <p className="text-[10.5px] uppercase tracking-wider text-ink-mute">{label}</p>
-      <p className="mt-0.5 text-[12.5px] font-medium text-ink">{value}</p>
+    <div className={cn("px-5 py-3.5 border-b border-border last:border-b-0", highlight && "bg-status-green-soft/40")}>
+      <p className="flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-wider text-ink-mute mb-1">
+        {Icon && <Icon className="h-3 w-3" strokeWidth={2} />}
+        {label}
+      </p>
+      {list ? (
+        <ul className="space-y-1">
+          {list.map((c) => (
+            <li key={c} className="flex items-start gap-2 text-[12.5px] text-ink-soft">
+              <span className="mt-1.5 h-1 w-1 rounded-full bg-ink-faint shrink-0" />
+              {c}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className={cn("text-[12.5px] leading-relaxed", highlight ? "text-ink font-medium" : "text-ink-soft")}>{text}</p>
+      )}
     </div>
   );
 }
