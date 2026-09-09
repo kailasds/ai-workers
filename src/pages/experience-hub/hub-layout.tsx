@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 
 const hubTabs = [
   { to: "/experience-hub", label: "Recommended Updates", end: true },
+  { to: "/experience-hub/history", label: "Update History" },
   { to: "/experience-hub/stream", label: "Experience Stream" },
   { to: "/experience-hub/library", label: "Experience Library" },
-  { to: "/experience-hub/history", label: "Update History" },
 ];
 
 export function ExperienceHubLayout() {

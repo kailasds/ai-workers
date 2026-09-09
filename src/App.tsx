@@ -32,6 +32,17 @@ import VersionsRollouts from "@/pages/operate/versions-rollouts";
 import Monitoring from "@/pages/operate/monitoring";
 import DeployWorker from "@/pages/operate/deploy-worker";
 import DeploymentDetail from "@/pages/operate/deployment-detail";
+import { KnowledgeLayout } from "@/pages/knowledge/knowledge-layout";
+import LearningLandscape from "@/pages/knowledge/learning-landscape";
+import KnowledgeCoverage from "@/pages/knowledge/coverage";
+import CandidateDecisions from "@/pages/knowledge/candidate-decisions";
+import KnowledgePacks from "@/pages/knowledge/packs";
+import ConstructDetail from "@/pages/knowledge/construct-detail";
+import CandidateDetail from "@/pages/knowledge/candidate-detail";
+import PackDetail from "@/pages/knowledge/pack-detail";
+import ObservationDetail from "@/pages/knowledge/observation-detail";
+import WorkerMemoryDetail from "@/pages/knowledge/worker-memory-detail";
+import TopicDetail from "@/pages/knowledge/topic-detail";
 import GlobalGovernance from "@/pages/global-governance";
 import GlobalAnalytics from "@/pages/global-analytics";
 import Settings from "@/pages/settings";
@@ -76,6 +87,18 @@ export default function App() {
           </Route>
           <Route path="operations/deploy" element={<DeployWorker />} />
           <Route path="operations/deployments/:id" element={<DeploymentDetail />} />
+          <Route path="knowledge" element={<KnowledgeLayout />}>
+            <Route index element={<LearningLandscape />} />
+            <Route path="coverage" element={<KnowledgeCoverage />} />
+            <Route path="candidates" element={<CandidateDecisions />} />
+            <Route path="packs" element={<KnowledgePacks />} />
+          </Route>
+          <Route path="knowledge/topics/:id" element={<TopicDetail />} />
+          <Route path="knowledge/constructs/:id" element={<ConstructDetail />} />
+          <Route path="knowledge/candidates/:id" element={<CandidateDetail />} />
+          <Route path="knowledge/packs/:id" element={<PackDetail />} />
+          <Route path="knowledge/observations/:id" element={<ObservationDetail />} />
+          <Route path="knowledge/memory/:id" element={<WorkerMemoryDetail />} />
           <Route path="governance" element={<GlobalGovernance />} />
           <Route path="analytics" element={<GlobalAnalytics />} />
           <Route path="settings" element={<Settings />} />
