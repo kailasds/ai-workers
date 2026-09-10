@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Check, Circle } from "lucide-react";
+import { ArrowLeft, Check, Circle, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { coverageRow, getWorker } from "@/lib/knowledge/service";
 import type { ConstructStatus } from "@/lib/knowledge/types";
 import { cn } from "@/lib/utils";
@@ -42,10 +43,18 @@ export default function ConstructDetail() {
   return (
     <div className="pb-16">
       <div className="px-8 pt-6">
-        <Link to="/knowledge/coverage" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-mute hover:text-ink">
-          <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
-          Back to Coverage
-        </Link>
+        <div className="flex items-center justify-between gap-3">
+          <Link to="/knowledge/coverage" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-mute hover:text-ink">
+            <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
+            Back to Coverage
+          </Link>
+          <Button asChild variant="secondary" size="sm">
+            <Link to={`/knowledge?focus=${construct.id}`}>
+              <Share2 className="h-3.5 w-3.5" strokeWidth={1.75} />
+              Focus in graph
+            </Link>
+          </Button>
+        </div>
 
         <div className="mt-3 flex items-center gap-2">
           <Badge variant="outline">{construct.category}</Badge>

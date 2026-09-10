@@ -1,7 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { Sparkle, Layers, Eye, Share2, AlertTriangle, Users2, ChevronRight, Clock } from "lucide-react";
 import { StatCard } from "@/components/shared/stat-card";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { KnowledgeGraph } from "@/components/knowledge-graph/knowledge-graph";
 import {
   topics,
   learningLandscapeStats,
@@ -12,6 +15,8 @@ import {
   getWorker,
   memoryRecords,
 } from "@/lib/knowledge/service";
+import { graphContexts, PRIMARY_CONTEXT, type GraphFilters } from "@/lib/knowledge/graph-types";
+import { useKnowledgeOverlayVersion } from "@/lib/knowledge/store";
 import { cn } from "@/lib/utils";
 
 function timeAgo(iso: string) {
@@ -21,16 +26,22 @@ function timeAgo(iso: string) {
   return `${Math.round(h / 24)}d ago`;
 }
 
-const lifecycleStages = [
-  { key: "observed", label: "Observed", status: "Observed" },
-  { key: "corroborated", label: "Corroborated", status: "Corroborated" },
-  { key: "certified", label: "Certified", status: "Certified" },
-  { key: "published", label: "Published", status: "Published" },
-  { key: "reused", label: "Reused", status: null },
-] as const;
+const lifecycleStages: { key: "observed" | "corroborated" | "certified" | "published" | "reused"; label: string; filter: GraphFilters["lifecycle"] }[] = [
+  { key: "observed", label: "Observed", filter: "Observed" },
+  { key: "corroborated", label: "Corroborated", filter: "Corroborated" },
+  { key: "certified", label: "Certified", filter: "Certified" },
+  { key: "published", label: "Published", filter: "Published" },
+  { key: "reused", label: "Reused", filter: "Reused" },
+];
 
 export default function LearningLandscape() {
-  const navigate = useNavigate();
+  useKnowledgeOverlayVersion();
+  const [searchParams] = useSearchParams();
+  const focusConstructId = searchParams.get("focus");
+  const [contextId, setContextId] = useState(PRIMARY_CONTEXT);
+  const [lifecycleFilter, setLifecycleFilter] = useState<GraphFilters["lifecycle"] | null>(null);
+  const [pulse, setPulse] = useState(0);
+
   const stats = learningLandscapeStats();
   const lifecycle = lifecycleCounts();
   const arrivals = liveArrivals(6);
@@ -43,12 +54,29 @@ export default function LearningLandscape() {
 
   return (
     <div className="space-y-5">
-      <div className="rounded-card border border-accent-border bg-accent-soft p-4">
-        <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-accent-ink mb-1.5">
-          <Sparkle className="h-3.5 w-3.5" strokeWidth={2} />
-          GBrain knowledge
-        </p>
-        <p className="text-[13px] leading-relaxed text-ink">{summary}</p>
+      <div className="flex items-start justify-between gap-4 px-1">
+        <div className="rounded-card border border-accent-border bg-accent-soft p-4 flex-1">
+          <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-accent-ink mb-1.5">
+            <Sparkle className="h-3.5 w-3.5" strokeWidth={2} />
+            GBrain knowledge
+          </p>
+          <p className="text-[13px] leading-relaxed text-ink">{summary}</p>
+        </div>
+        <div className="shrink-0 pt-0.5">
+          <p className="mb-1.5 text-[10.5px] font-semibold uppercase tracking-wider text-ink-faint">Context</p>
+          <Select value={contextId} onValueChange={setContextId}>
+            <SelectTrigger className="w-64">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {graphContexts.map((c) => (
+                <SelectItem key={c.id} value={c.id}>
+                  {c.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
@@ -59,28 +87,47 @@ export default function LearningLandscape() {
         <StatCard label="Contributing Workers" value={stats.contributingWorkers} icon={Users2} tone="accent" />
       </div>
 
-      <div className="rounded-card border border-border bg-card shadow-card p-5">
-        <p className="text-[13.5px] font-bold text-ink mb-3">Knowledge Lifecycle</p>
-        <div className="flex items-stretch gap-2">
-          {lifecycleStages.map((s, i) => (
-            <div key={s.key} className="flex items-center flex-1">
-              <button
-                onClick={() => navigate(s.status ? `/knowledge/coverage?status=${encodeURIComponent(s.status)}` : "/knowledge/packs")}
-                className="flex-1 rounded-lg border border-border bg-card-sunken px-3 py-3 text-center transition hover:border-accent-border hover:bg-accent-soft"
-              >
-                <p className="text-[20px] leading-none font-bold tabular-nums text-ink">
-                  {s.key === "observed" ? lifecycle.observed : s.key === "corroborated" ? lifecycle.corroborated : s.key === "certified" ? lifecycle.certified : s.key === "published" ? lifecycle.published : lifecycle.reused}
-                </p>
-                <p className="mt-1 text-[11px] font-medium text-ink-mute">{s.label}</p>
-              </button>
-              {i < lifecycleStages.length - 1 && <ChevronRight className="h-4 w-4 text-ink-faint shrink-0 mx-1" strokeWidth={2} />}
+      <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
+        <div className="h-[640px]">
+          <KnowledgeGraph
+            key={`${contextId}-${focusConstructId ?? ""}`}
+            contextId={contextId}
+            focusConstructId={focusConstructId}
+            lifecycleFilter={lifecycleFilter}
+            onLifecycleConsumed={() => setLifecycleFilter(null)}
+          />
+        </div>
+        <div className="border-t border-border p-4">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-faint mb-2.5">Knowledge Lifecycle</p>
+          <div className="flex items-stretch gap-2">
+            {lifecycleStages.map((s, i) => (
+              <div key={s.key} className="flex items-center flex-1">
+                <button
+                  onClick={() => {
+                    setLifecycleFilter(s.filter);
+                    setPulse((p) => p + 1);
+                  }}
+                  className="flex-1 rounded-lg border border-border bg-card-sunken px-3 py-2.5 text-center transition hover:border-accent-border hover:bg-accent-soft"
+                >
+                  <p className="text-[18px] leading-none font-bold tabular-nums text-ink">
+                    {s.key === "observed" ? lifecycle.observed : s.key === "corroborated" ? lifecycle.corroborated : s.key === "certified" ? lifecycle.certified : s.key === "published" ? lifecycle.published : lifecycle.reused}
+                  </p>
+                  <p className="mt-1 text-[10.5px] font-medium text-ink-mute">{s.label}</p>
+                </button>
+                {i < lifecycleStages.length - 1 && <ChevronRight className="h-3.5 w-3.5 text-ink-faint shrink-0 mx-1" strokeWidth={2} />}
+              </div>
+            ))}
+            <div className="flex items-center pl-1">
+              <ChevronRight className="h-3.5 w-3.5 text-accent shrink-0" strokeWidth={2} />
+              <span className="ml-1 text-[10.5px] font-medium text-accent-ink whitespace-nowrap">New observations</span>
             </div>
-          ))}
+          </div>
+          {pulse > 0 && <p className="mt-2 text-[10.5px] text-ink-faint">Graph filtered to {lifecycleFilter} knowledge above.</p>}
         </div>
       </div>
 
       <div>
-        <p className="text-[13.5px] font-bold text-ink mb-3 px-1">Learning Landscape</p>
+        <p className="text-[13.5px] font-bold text-ink mb-3 px-1">Learning Topics</p>
         <div className="space-y-2.5">
           {topics.map((t) => {
             const s = topicSummary(t.id);

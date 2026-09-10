@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { ChevronDown, Search, ChevronRight } from "lucide-react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { ChevronDown, Search, ChevronRight, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { coverageSummary, allCoverageRows } from "@/lib/knowledge/service";
 import type { ConstructStatus } from "@/lib/knowledge/types";
@@ -25,6 +25,7 @@ function timeAgo(iso: string | null) {
 }
 
 export default function Coverage() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const initialStatus = (searchParams.get("status") as ConstructStatus) ?? "All";
   const [status, setStatus] = useState<ConstructStatus | "All">(statusFilters.includes(initialStatus) ? initialStatus : "All");
@@ -78,7 +79,7 @@ export default function Coverage() {
       <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
         <div className="overflow-x-auto">
           <div className="min-w-[900px]">
-            <div className="grid grid-cols-[1.8fr_0.9fr_0.7fr_0.7fr_0.7fr_0.6fr_0.9fr_0.5fr] items-center gap-3 border-b border-border bg-card-sunken px-5 py-2.5 text-[10.5px] font-semibold uppercase tracking-wider text-ink-mute">
+            <div className="grid grid-cols-[1.8fr_0.9fr_0.7fr_0.7fr_0.7fr_0.6fr_0.9fr_0.6fr] items-center gap-3 border-b border-border bg-card-sunken px-5 py-2.5 text-[10.5px] font-semibold uppercase tracking-wider text-ink-mute">
               <span>Construct</span>
               <span>Status</span>
               <span>Mappings</span>
@@ -89,10 +90,13 @@ export default function Coverage() {
               <span />
             </div>
             {rows.map((r) => (
-              <Link
+              <div
                 key={r.construct.id}
-                to={`/knowledge/constructs/${r.construct.id}`}
-                className="grid grid-cols-[1.8fr_0.9fr_0.7fr_0.7fr_0.7fr_0.6fr_0.9fr_0.5fr] items-center gap-3 border-b border-border px-5 py-3 last:border-b-0 transition-colors hover:bg-card-sunken/60"
+                role="button"
+                tabIndex={0}
+                onClick={() => navigate(`/knowledge/constructs/${r.construct.id}`)}
+                onKeyDown={(e) => e.key === "Enter" && navigate(`/knowledge/constructs/${r.construct.id}`)}
+                className="grid grid-cols-[1.8fr_0.9fr_0.7fr_0.7fr_0.7fr_0.6fr_0.9fr_0.6fr] items-center gap-3 border-b border-border px-5 py-3 last:border-b-0 transition-colors hover:bg-card-sunken/60 cursor-pointer"
               >
                 <span className="min-w-0">
                   <span className="block truncate text-[13px] font-medium text-ink">{r.construct.name}</span>
@@ -104,8 +108,18 @@ export default function Coverage() {
                 <span className="text-[12px] tabular-nums text-ink-soft">{r.awaitingCount}</span>
                 <span className="text-[12px] tabular-nums text-ink-soft">{r.runCount}</span>
                 <span className="text-[11.5px] text-ink-mute">{timeAgo(r.lastObserved)}</span>
-                <ChevronRight className="h-3.5 w-3.5 text-ink-faint justify-self-end" strokeWidth={2} />
-              </Link>
+                <span className="flex items-center justify-end gap-2">
+                  <Link
+                    to={`/knowledge?focus=${r.construct.id}`}
+                    onClick={(e) => e.stopPropagation()}
+                    title="Focus in graph"
+                    className="grid h-6 w-6 place-items-center rounded-md text-ink-mute hover:bg-card hover:text-accent-ink"
+                  >
+                    <Share2 className="h-3.5 w-3.5" strokeWidth={1.75} />
+                  </Link>
+                  <ChevronRight className="h-3.5 w-3.5 text-ink-faint" strokeWidth={2} />
+                </span>
+              </div>
             ))}
             {rows.length === 0 && <p className={cn("px-5 py-8 text-[12.5px] text-ink-mute")}>No constructs match these filters.</p>}
           </div>
