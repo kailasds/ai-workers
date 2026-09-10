@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+﻿import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Check, Circle, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,12 +44,12 @@ export default function ConstructDetail() {
     <div className="pb-16">
       <div className="px-8 pt-6">
         <div className="flex items-center justify-between gap-3">
-          <Link to="/knowledge/coverage" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-mute hover:text-ink">
+          <Link to="/learning/coverage" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-mute hover:text-ink">
             <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
             Back to Coverage
           </Link>
           <Button asChild variant="secondary" size="sm">
-            <Link to={`/knowledge?focus=${construct.id}`}>
+            <Link to={`/learning?focus=${construct.id}`}>
               <Share2 className="h-3.5 w-3.5" strokeWidth={1.75} />
               Focus in graph
             </Link>
@@ -82,7 +82,7 @@ export default function ConstructDetail() {
                 {row.observations.map((o) => (
                   <Link
                     key={o.id}
-                    to={`/knowledge/observations/${o.id}`}
+                    to={`/learning/observations/${o.id}`}
                     className="flex items-center justify-between gap-3 rounded-lg border border-border px-3 py-2 transition hover:bg-card-sunken"
                   >
                     <span className="text-[12px] text-ink truncate">{o.summary}</span>
@@ -146,7 +146,7 @@ export default function ConstructDetail() {
           {row.candidate && (
             <div className="pt-3 border-t border-border">
               <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-mute mb-1.5">Candidate Decision</p>
-              <Link to={`/knowledge/candidates/${row.candidate.id}`} className="text-[12.5px] font-medium text-accent-ink hover:underline">
+              <Link to={`/learning/candidates/${row.candidate.id}`} className="text-[12.5px] font-medium text-accent-ink hover:underline">
                 {row.candidate.type}: {row.candidate.claim.slice(0, 60)}…
               </Link>
             </div>

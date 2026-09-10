@@ -26,7 +26,9 @@ import {
   filterGraph,
   getNeighborIds,
   kindOf,
+  nodeKey,
 } from "@/lib/knowledge/graph-builder";
+import { GraphStageLabels } from "./graph-stage-labels";
 import { getObservation, getRun, getWorker } from "@/lib/knowledge/service";
 import type { GraphFilters, GraphMode, KnowledgeGraphData, KnowledgeGraphNode } from "@/lib/knowledge/graph-types";
 import { defaultFilters } from "@/lib/knowledge/graph-types";
@@ -101,7 +103,7 @@ function KnowledgeGraphInner({
 
   const [mode, setMode] = useState<GraphMode>(focusConstructId ? "evidence" : "landscape");
   const [filters, setFilters] = useState<GraphFilters>(() => (initialWorkerFilter ? { ...defaultFilters, worker: initialWorkerFilter } : defaultFilters));
-  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(() => (focusConstructId ? nodeKey("construct", focusConstructId) : null));
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [trace, setTrace] = useState<{ nodeId: string; direction: "evidence" | "usage" } | null>(null);
   const [positionedNodes, setPositionedNodes] = useState<RFNode[]>([]);
@@ -249,6 +251,7 @@ function KnowledgeGraphInner({
       />
 
       {trace && <TraceBanner nodeId={trace.nodeId} direction={trace.direction} onExit={() => setTrace(null)} />}
+      {!trace && (mode === "landscape" || mode === "flow") && <GraphStageLabels />}
 
       <div className="relative flex min-h-0 flex-1">
         <div className="relative flex-1 min-w-0">

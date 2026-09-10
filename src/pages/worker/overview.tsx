@@ -1,15 +1,21 @@
 import { Link } from "react-router-dom";
-import { Fingerprint, ArrowUpRight } from "lucide-react";
+import { Fingerprint, ArrowUpRight, Library, BrainCircuit, ChevronRight } from "lucide-react";
 import { useWorker } from "./use-worker";
 import { WorkerPurposeCard } from "@/components/shared/worker-purpose-card";
 import { WorkerHealth } from "@/components/shared/worker-health";
 import { SentinelCard } from "@/components/shared/sentinel-status";
 import { ExecutionStepper } from "@/components/shared/execution-stepper";
+import { MaturityCard } from "@/components/shared/maturity-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { getWorkerMaturity } from "@/lib/registry/maturity";
+import { getLearningSummaryForWorker, getKnowledgeUsageForWorker } from "@/lib/registry/learning-summary";
 
 export default function WorkerOverview() {
   const worker = useWorker();
+  const maturity = getWorkerMaturity(worker);
+  const learning = getLearningSummaryForWorker(worker.id);
+  const knowledgeUsage = getKnowledgeUsageForWorker(worker.id);
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-5 pb-10">
@@ -86,6 +92,54 @@ export default function WorkerOverview() {
             <IdentityRow label="Credential Status" value={worker.identity.credentialStatus} />
             <IdentityRow label="Provisioned" value={worker.identity.createdAt} />
           </div>
+        </div>
+
+        <MaturityCard maturity={maturity} />
+
+        <div className="rounded-card border border-border bg-card shadow-card p-5">
+          <div className="flex items-center gap-2">
+            <div className="grid h-8 w-8 place-items-center rounded-full bg-status-blue-soft text-status-blue">
+              <Library className="h-4 w-4" strokeWidth={1.75} />
+            </div>
+            <h3 className="text-[15px] font-bold text-ink">Knowledge used</h3>
+          </div>
+          {knowledgeUsage.measured ? (
+            <p className="mt-2.5 text-[12.5px] text-ink-soft">
+              {knowledgeUsage.skillCount} Skill{knowledgeUsage.skillCount === 1 ? "" : "s"} · {knowledgeUsage.domainLanguageCount} Domain Language term{knowledgeUsage.domainLanguageCount === 1 ? "" : "s"}
+            </p>
+          ) : (
+            <p className="mt-2.5 text-[12.5px] text-ink-faint">Not measured</p>
+          )}
+          <Link
+            to={learning.knowledgeWorkerId ? `/knowledge?worker=${learning.knowledgeWorkerId}` : "/knowledge"}
+            className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline"
+          >
+            View knowledge
+            <ChevronRight className="h-3.5 w-3.5" strokeWidth={2} />
+          </Link>
+        </div>
+
+        <div className="rounded-card border border-border bg-card shadow-card p-5">
+          <div className="flex items-center gap-2">
+            <div className="grid h-8 w-8 place-items-center rounded-full bg-status-purple-soft text-status-purple">
+              <BrainCircuit className="h-4 w-4" strokeWidth={1.75} />
+            </div>
+            <h3 className="text-[15px] font-bold text-ink">Learning activity</h3>
+          </div>
+          {learning.measured ? (
+            <p className="mt-2.5 text-[12.5px] text-ink-soft leading-relaxed">
+              {learning.observations} observation{learning.observations === 1 ? "" : "s"} · {learning.constructs} knowledge construct{learning.constructs === 1 ? "" : "s"} · {learning.candidateDecisions} candidate decision{learning.candidateDecisions === 1 ? "" : "s"}
+            </p>
+          ) : (
+            <p className="mt-2.5 text-[12.5px] text-ink-faint">Not measured</p>
+          )}
+          <Link
+            to={learning.knowledgeWorkerId ? `/learning?worker=${learning.knowledgeWorkerId}` : "/learning"}
+            className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline"
+          >
+            View learning
+            <ChevronRight className="h-3.5 w-3.5" strokeWidth={2} />
+          </Link>
         </div>
 
         <WorkerHealth health={worker.health} />

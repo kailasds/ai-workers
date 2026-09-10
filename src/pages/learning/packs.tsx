@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { Package, Users2, GitCommitHorizontal, Sparkle, ChevronRight, ShieldCheck, ShieldAlert } from "lucide-react";
 import { StatCard } from "@/components/shared/stat-card";
 import { Badge } from "@/components/ui/badge";
@@ -39,7 +39,7 @@ export default function Packs() {
             return (
               <Link
                 key={p.id}
-                to={`/knowledge/packs/${p.id}`}
+                to={`/learning/packs/${p.id}`}
                 className="flex rounded-card border border-border bg-card shadow-card overflow-hidden transition hover:bg-card-sunken/30"
               >
                 <span className={p.status === "Published" ? "w-1 shrink-0 bg-status-green" : p.status === "Blocked" ? "w-1 shrink-0 bg-status-red" : "w-1 shrink-0 bg-border-strong"} />

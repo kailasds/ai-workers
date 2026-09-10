@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDown, Search, ChevronRight, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -94,8 +94,8 @@ export default function Coverage() {
                 key={r.construct.id}
                 role="button"
                 tabIndex={0}
-                onClick={() => navigate(`/knowledge/constructs/${r.construct.id}`)}
-                onKeyDown={(e) => e.key === "Enter" && navigate(`/knowledge/constructs/${r.construct.id}`)}
+                onClick={() => navigate(`/learning/constructs/${r.construct.id}`)}
+                onKeyDown={(e) => e.key === "Enter" && navigate(`/learning/constructs/${r.construct.id}`)}
                 className="grid grid-cols-[1.8fr_0.9fr_0.7fr_0.7fr_0.7fr_0.6fr_0.9fr_0.6fr] items-center gap-3 border-b border-border px-5 py-3 last:border-b-0 transition-colors hover:bg-card-sunken/60 cursor-pointer"
               >
                 <span className="min-w-0">
@@ -110,7 +110,7 @@ export default function Coverage() {
                 <span className="text-[11.5px] text-ink-mute">{timeAgo(r.lastObserved)}</span>
                 <span className="flex items-center justify-end gap-2">
                   <Link
-                    to={`/knowledge?focus=${r.construct.id}`}
+                    to={`/learning?focus=${r.construct.id}`}
                     onClick={(e) => e.stopPropagation()}
                     title="Focus in graph"
                     className="grid h-6 w-6 place-items-center rounded-md text-ink-mute hover:bg-card hover:text-accent-ink"

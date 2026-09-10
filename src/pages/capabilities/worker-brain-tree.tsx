@@ -1,4 +1,4 @@
-import { Link, useParams, useSearchParams } from "react-router-dom";
+﻿import { Link, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,7 @@ export default function WorkerBrainTree() {
             Back to Capability Landscape
           </Link>
           <Button asChild variant="secondary" size="sm">
-            <Link to={`/knowledge?worker=${worker.id}`}>
+            <Link to={`/learning?worker=${worker.id}`}>
               View learning
               <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.75} />
             </Link>

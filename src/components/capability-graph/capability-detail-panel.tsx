@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { X, Route, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -119,7 +119,7 @@ function WorkerPanel({ refId }: { refId: string }) {
           {inv.runs} Run{inv.runs === 1 ? "" : "s"} · {inv.observations} Observation{inv.observations === 1 ? "" : "s"} · {inv.constructs} Construct{inv.constructs === 1 ? "" : "s"}
         </p>
       </PanelSection>
-      <Link to={`/knowledge?worker=${refId}`} className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
+      <Link to={`/learning?worker=${refId}`} className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
         View learning
         <ExternalLink className="h-3 w-3" strokeWidth={2} />
       </Link>
@@ -153,7 +153,7 @@ function SkillPanel({ refId }: { refId: string }) {
           <p className="text-[11.5px] text-ink-mute leading-relaxed">
             This registered capability has produced learning activity: <span className="font-medium text-ink">{signal.construct.liveStatus}</span>.
           </p>
-          <Link to={`/knowledge?focus=${skill.relatedConstructId}`} className="mt-2 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
+          <Link to={`/learning?focus=${skill.relatedConstructId}`} className="mt-2 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
             Explore in Knowledge
             <ExternalLink className="h-3 w-3" strokeWidth={2} />
           </Link>
@@ -251,7 +251,7 @@ function AgentPanel({ refId }: { refId: string }) {
       <PanelSection title="Workers">
         <WorkersList workerIds={agent.workerIds} />
       </PanelSection>
-      <Link to={`/knowledge?worker=${agent.workerIds[0] ?? ""}`} className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
+      <Link to={`/learning?worker=${agent.workerIds[0] ?? ""}`} className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
         View learning impact
         <ExternalLink className="h-3 w-3" strokeWidth={2} />
       </Link>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown, Sparkle, ArrowRight, Users2, GitCommitHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -73,7 +73,7 @@ export default function CandidateDecisions() {
               return (
                 <Link
                   key={c.id}
-                  to={`/knowledge/candidates/${c.id}`}
+                  to={`/learning/candidates/${c.id}`}
                   className="flex items-center justify-between gap-3 border-b border-border px-5 py-3 last:border-b-0 transition hover:bg-card-sunken/60"
                 >
                   <div className="min-w-0">
@@ -131,7 +131,7 @@ function CandidateRow({ candidate }: { candidate: ReturnType<typeof getCandidate
       </p>
 
       <div className="mt-3 flex items-center justify-between gap-2">
-        <Link to={`/knowledge/candidates/${candidate.id}`} className="flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
+        <Link to={`/learning/candidates/${candidate.id}`} className="flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
           View evidence
           <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
         </Link>

@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+﻿import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Sparkle, Check, X as XIcon, Clock, GitCommitHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -47,7 +47,7 @@ export default function CandidateDetail() {
   return (
     <div className="pb-16">
       <div className="px-8 pt-6">
-        <Link to="/knowledge/candidates" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-mute hover:text-ink">
+        <Link to="/learning/candidates" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-mute hover:text-ink">
           <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
           Back to Candidate Decisions
         </Link>
@@ -59,7 +59,7 @@ export default function CandidateDetail() {
         <h1 className="mt-1.5 text-[22px] font-bold tracking-[-0.02em] text-ink leading-snug">{candidate.claim}</h1>
         {construct && (
           <p className="mt-1 text-[13px] text-ink-mute">
-            Construct: <Link to={`/knowledge/constructs/${construct.id}`} className="text-accent-ink hover:underline">{construct.name}</Link>
+            Construct: <Link to={`/learning/constructs/${construct.id}`} className="text-accent-ink hover:underline">{construct.name}</Link>
           </p>
         )}
       </div>
@@ -94,7 +94,7 @@ export default function CandidateDetail() {
                 {supporting.map((o) => (
                   <Link
                     key={o!.id}
-                    to={`/knowledge/observations/${o!.id}`}
+                    to={`/learning/observations/${o!.id}`}
                     className="flex items-center justify-between gap-3 rounded-lg border border-border px-3.5 py-2.5 transition hover:bg-card-sunken"
                   >
                     <span className="min-w-0">
@@ -116,7 +116,7 @@ export default function CandidateDetail() {
                 {contradicting.map((o) => (
                   <Link
                     key={o!.id}
-                    to={`/knowledge/observations/${o!.id}`}
+                    to={`/learning/observations/${o!.id}`}
                     className="flex items-center justify-between gap-3 rounded-lg border border-status-amber/25 bg-status-amber-soft px-3.5 py-2.5 transition hover:bg-status-amber-soft/70"
                   >
                     <span className="text-[12.5px] text-ink truncate">{o!.summary}</span>
@@ -197,7 +197,7 @@ export default function CandidateDetail() {
           </div>
 
           {candidate.liveStatus === "Accepted" && (
-            <Button variant="secondary" className="w-full mt-1" onClick={() => navigate("/knowledge/packs")}>
+            <Button variant="secondary" className="w-full mt-1" onClick={() => navigate("/learning/packs")}>
               Add to draft pack
             </Button>
           )}

@@ -67,6 +67,20 @@ const kindMeta: Record<GraphNodeKind, { icon: typeof Users2; accent: string; ico
   pack: { icon: Package, accent: "border-l-onyx", iconBg: "bg-onyx", iconColor: "text-white" },
 };
 
+// Explicit type label per kind so the graph never depends on the legend to
+// tell entity types apart — always distinct from the status badge below it.
+export const kindLabel: Record<GraphNodeKind, string> = {
+  worker: "Worker",
+  topic: "Topic",
+  construct: "Knowledge Construct",
+  run: "Run",
+  observation: "Observation",
+  evidence: "Evidence",
+  candidate: "Candidate Knowledge",
+  certified: "Certified Knowledge",
+  pack: "Knowledge Pack",
+};
+
 function Subtitle({ data }: { data: GraphNodeData }) {
   const p = data.payload as Record<string, any>;
   switch (data.kind) {
@@ -102,7 +116,7 @@ function Subtitle({ data }: { data: GraphNodeData }) {
       return <div className="mt-1"><Badge variant={candidateTone[status]}>{status}</Badge></div>;
     }
     case "certified":
-      return <p className="text-[10.5px] text-status-green font-medium">Certified knowledge</p>;
+      return <div className="mt-1"><Badge variant="green">Certified</Badge></div>;
     case "pack": {
       const status: PackStatus = p.pack?.status;
       return <div className="mt-1"><Badge variant={packTone[status]}>{status}</Badge></div>;
@@ -112,10 +126,21 @@ function Subtitle({ data }: { data: GraphNodeData }) {
   }
 }
 
+function nodeTitle(d: GraphNodeData): { title: string; runTag: string | null } {
+  if (d.kind === "worker") {
+    const match = d.label.match(/#(\d+)/);
+    if (match) {
+      return { title: d.label.split("·")[0].trim(), runTag: `#${match[1]}` };
+    }
+  }
+  return { title: d.label, runTag: null };
+}
+
 function GraphNodeImpl({ data }: NodeProps) {
   const d = data as unknown as GraphNodeData;
   const meta = kindMeta[d.kind];
   const Icon = meta.icon;
+  const { title, runTag } = nodeTitle(d);
 
   return (
     <div
@@ -130,11 +155,15 @@ function GraphNodeImpl({ data }: NodeProps) {
     >
       <Handle type="target" position={Position.Left} className="!bg-border-strong !w-1.5 !h-1.5 !border-0" />
       <Handle type="source" position={Position.Right} className="!bg-border-strong !w-1.5 !h-1.5 !border-0" />
+      <p className="mb-1 text-[9.5px] font-semibold uppercase tracking-wider text-ink-faint">{kindLabel[d.kind]}</p>
       <div className="flex items-start gap-2">
         <div className={cn("grid h-6 w-6 shrink-0 place-items-center rounded-md", meta.iconBg)}>
           <Icon className={cn("h-3.5 w-3.5", meta.iconColor)} strokeWidth={2} />
         </div>
-        <p className="min-w-0 text-[11.5px] font-semibold leading-snug text-ink line-clamp-2">{d.label}</p>
+        <span className="min-w-0">
+          <span className="block line-clamp-2 text-[11.5px] font-semibold leading-snug text-ink">{title}</span>
+          {runTag && <span className="text-[10px] font-medium text-ink-mute">{runTag}</span>}
+        </span>
       </div>
       <Subtitle data={d} />
     </div>

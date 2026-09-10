@@ -1,29 +1,29 @@
-import { NavLink, Outlet } from "react-router-dom";
-import { BookOpen } from "lucide-react";
+﻿import { NavLink, Outlet } from "react-router-dom";
+import { BrainCircuit } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { cn } from "@/lib/utils";
 
-const knowledgeTabs = [
-  { to: "/knowledge", label: "Learning Landscape", end: true },
-  { to: "/knowledge/coverage", label: "Coverage" },
-  { to: "/knowledge/candidates", label: "Candidate Decisions" },
-  { to: "/knowledge/packs", label: "Packs" },
+const learningTabs = [
+  { to: "/learning", label: "Learning Landscape", end: true },
+  { to: "/learning/coverage", label: "Coverage" },
+  { to: "/learning/candidates", label: "Candidate Decisions" },
+  { to: "/learning/packs", label: "Packs" },
 ];
 
-export function KnowledgeLayout() {
+export function LearningLayout() {
   return (
     <div className="pb-16">
       <PageHeader
-        title="Knowledge"
-        subtitle="What AI Workers are learning while migrating TIBCO BusinessWorks to Java Spring Boot, and what's trusted enough to reuse."
-        icon={BookOpen}
+        title="Learning"
+        subtitle="How AI Workers are learning while migrating TIBCO BusinessWorks to Java Spring Boot, and how mature and trustworthy that learning is."
+        icon={BrainCircuit}
         tone="purple"
       />
 
       <div className="px-8">
         <div className="border-b border-border mb-5">
           <div className="flex items-center gap-6">
-            {knowledgeTabs.map((t) => (
+            {learningTabs.map((t) => (
               <NavLink
                 key={t.to}
                 to={t.to}

@@ -1,10 +1,11 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Sparkle, Layers, Eye, Share2, AlertTriangle, Users2, ChevronRight, Clock } from "lucide-react";
 import { StatCard } from "@/components/shared/stat-card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { KnowledgeGraph } from "@/components/knowledge-graph/knowledge-graph";
+import { LearningLifecycleExplainer } from "@/components/knowledge-graph/learning-lifecycle-explainer";
 import {
   topics,
   learningLandscapeStats,
@@ -88,6 +89,8 @@ export default function LearningLandscape() {
         <StatCard label="Contributing Workers" value={stats.contributingWorkers} icon={Users2} tone="accent" />
       </div>
 
+      <LearningLifecycleExplainer />
+
       <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
         <div className="h-[640px]">
           <KnowledgeGraph
@@ -136,7 +139,7 @@ export default function LearningLandscape() {
             return (
               <Link
                 key={t.id}
-                to={`/knowledge/topics/${t.id}`}
+                to={`/learning/topics/${t.id}`}
                 className="flex items-center justify-between gap-4 rounded-card border border-border bg-card shadow-card px-5 py-3.5 transition hover:bg-card-sunken/60"
               >
                 <div className="min-w-0">
@@ -173,7 +176,7 @@ export default function LearningLandscape() {
               return (
                 <Link
                   key={o.id}
-                  to={`/knowledge/observations/${o.id}`}
+                  to={`/learning/observations/${o.id}`}
                   className="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5 last:border-b-0 transition hover:bg-card-sunken/60"
                 >
                   <div className="min-w-0">
@@ -193,7 +196,7 @@ export default function LearningLandscape() {
             {gaps.map(({ construct, reason }) => (
               <Link
                 key={construct.id}
-                to={`/knowledge/constructs/${construct.id}`}
+                to={`/learning/constructs/${construct.id}`}
                 className="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5 last:border-b-0 transition hover:bg-card-sunken/60"
               >
                 <div className="min-w-0">
@@ -205,7 +208,7 @@ export default function LearningLandscape() {
             ))}
             {gaps.length === 0 && <p className="px-4 py-6 text-[12px] text-ink-mute">No open knowledge gaps right now.</p>}
           </div>
-          <Link to="/knowledge/coverage" className="mt-2 inline-flex items-center gap-1 px-1 text-[12px] font-medium text-accent-ink hover:underline">
+          <Link to="/learning/coverage" className="mt-2 inline-flex items-center gap-1 px-1 text-[12px] font-medium text-accent-ink hover:underline">
             View all coverage
             <ChevronRight className="h-3.5 w-3.5" strokeWidth={2} />
           </Link>

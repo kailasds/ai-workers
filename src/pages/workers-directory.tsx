@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Plus, Search, ArrowUpDown, ShieldCheck, Users, UsersRound, CircleDot, Zap, ListChecks, CheckCircle2 } from "lucide-react";
+import { Plus, Search, ArrowUpDown, ShieldCheck, Users, UsersRound, CircleDot, Zap, ListChecks, CheckCircle2, Award } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { AutonomyBadge } from "@/components/shared/autonomy-badge";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,13 @@ import {
 } from "@/components/ui/select";
 import { workers } from "@/lib/data";
 import { dodStatusMeta, workerStatusColor } from "@/lib/status";
+import { getWorkerMaturity, type MaturityTier } from "@/lib/registry/maturity";
+
+const maturityTone: Record<MaturityTier, "neutral" | "amber" | "onyx"> = {
+  Silver: "neutral",
+  Gold: "amber",
+  Platinum: "onyx",
+};
 
 const domains = Array.from(new Set(workers.map((w) => w.domain)));
 const environments = Array.from(new Set(workers.map((w) => w.identity.environment)));
@@ -49,8 +56,8 @@ export default function WorkersDirectory() {
   return (
     <div className="pb-10">
       <PageHeader
-        title="AI Workers"
-        subtitle="Your organization's digital workforce — provisioned identities accountable for an outcome."
+        title="Registry"
+        subtitle="What Workers exist, what can they do, how mature are they, and how are they performing?"
         icon={Users}
         tone="blue"
         actions={
@@ -140,9 +147,11 @@ export default function WorkersDirectory() {
         </div>
 
         <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
-          <div className="grid grid-cols-[2.2fr_1fr_1fr_1.6fr_1.3fr_1fr] items-center gap-4 border-b border-accent-border bg-accent-soft px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-accent-ink">
+          <div className="overflow-x-auto">
+          <div className="min-w-[980px] grid grid-cols-[2fr_0.9fr_0.9fr_0.9fr_1.4fr_1.2fr_0.9fr] items-center gap-4 border-b border-accent-border bg-accent-soft px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-accent-ink">
             <span className="flex items-center gap-1.5"><UsersRound className="h-3 w-3 text-accent" strokeWidth={2} />Worker</span>
             <span className="flex items-center gap-1.5"><CircleDot className="h-3 w-3 text-accent" strokeWidth={2} />Status</span>
+            <span className="flex items-center gap-1.5"><Award className="h-3 w-3 text-accent" strokeWidth={2} />Maturity</span>
             <span className="flex items-center gap-1.5"><Zap className="h-3 w-3 text-accent" strokeWidth={2} />Autonomy</span>
             <span className="flex items-center gap-1.5"><ListChecks className="h-3 w-3 text-accent" strokeWidth={2} />Active Work</span>
             <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3 w-3 text-accent" strokeWidth={2} />Definition of Done</span>
@@ -151,11 +160,12 @@ export default function WorkersDirectory() {
 
           {filtered.map((w) => {
             const dod = dodStatusMeta[w.definitionOfDone.overallStatus];
+            const maturity = getWorkerMaturity(w);
             return (
               <Link
                 key={w.id}
                 to={`/workers/${w.id}`}
-                className="grid grid-cols-[2.2fr_1fr_1fr_1.6fr_1.3fr_1fr] items-center gap-4 border-b border-border px-5 py-3.5 last:border-b-0 transition-colors hover:bg-card-sunken/50"
+                className="min-w-[980px] grid grid-cols-[2fr_0.9fr_0.9fr_0.9fr_1.4fr_1.2fr_0.9fr] items-center gap-4 border-b border-border px-5 py-3.5 last:border-b-0 transition-colors hover:bg-card-sunken/50"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <Avatar className="h-8 w-8">
@@ -169,6 +179,7 @@ export default function WorkersDirectory() {
                 <Badge variant={workerStatusColor[w.status]} dot>
                   {w.statusLabel}
                 </Badge>
+                <Badge variant={maturityTone[maturity.tier]}>{maturity.tier}</Badge>
                 <AutonomyBadge level={w.autonomy} />
                 <span className="truncate text-[12.5px] text-ink-soft">{w.currentWork?.title ?? "—"}</span>
                 <Badge variant={dod.color}>{dod.label}</Badge>
@@ -179,6 +190,7 @@ export default function WorkersDirectory() {
               </Link>
             );
           })}
+          </div>
 
           {filtered.length === 0 && (
             <div className="px-5 py-14 text-center">

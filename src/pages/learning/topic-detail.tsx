@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+﻿import { Link, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { topics, topicSummary, observationsForTopic, getWorker, getConstruct } from "@/lib/knowledge/service";
@@ -36,7 +36,7 @@ export default function TopicDetail() {
   return (
     <div className="pb-16">
       <div className="px-8 pt-6">
-        <Link to="/knowledge" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-mute hover:text-ink">
+        <Link to="/learning" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-mute hover:text-ink">
           <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
           Back to Learning Landscape
         </Link>
@@ -58,7 +58,7 @@ export default function TopicDetail() {
             return (
               <Link
                 key={o.id}
-                to={`/knowledge/observations/${o.id}`}
+                to={`/learning/observations/${o.id}`}
                 className="flex items-center justify-between gap-3 border-b border-border px-5 py-3 last:border-b-0 transition hover:bg-card-sunken/60"
               >
                 <div className="min-w-0">

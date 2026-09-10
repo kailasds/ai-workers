@@ -36,20 +36,23 @@ import { CapabilitiesLayout } from "@/pages/capabilities/capabilities-layout";
 import CapabilityLandscape from "@/pages/capabilities/capability-landscape";
 import WorkerRegistry from "@/pages/capabilities/worker-registry";
 import WorkerBrainTree from "@/pages/capabilities/worker-brain-tree";
-import { KnowledgeLayout } from "@/pages/knowledge/knowledge-layout";
-import LearningLandscape from "@/pages/knowledge/learning-landscape";
-import KnowledgeCoverage from "@/pages/knowledge/coverage";
-import CandidateDecisions from "@/pages/knowledge/candidate-decisions";
-import KnowledgePacks from "@/pages/knowledge/packs";
-import ConstructDetail from "@/pages/knowledge/construct-detail";
-import CandidateDetail from "@/pages/knowledge/candidate-detail";
-import PackDetail from "@/pages/knowledge/pack-detail";
-import ObservationDetail from "@/pages/knowledge/observation-detail";
-import WorkerMemoryDetail from "@/pages/knowledge/worker-memory-detail";
-import TopicDetail from "@/pages/knowledge/topic-detail";
+import { LearningLayout } from "@/pages/learning/learning-layout";
+import LearningLandscape from "@/pages/learning/learning-landscape";
+import KnowledgeCoverage from "@/pages/learning/coverage";
+import CandidateDecisions from "@/pages/learning/candidate-decisions";
+import KnowledgePacks from "@/pages/learning/packs";
+import ConstructDetail from "@/pages/learning/construct-detail";
+import CandidateDetail from "@/pages/learning/candidate-detail";
+import PackDetail from "@/pages/learning/pack-detail";
+import ObservationDetail from "@/pages/learning/observation-detail";
+import WorkerMemoryDetail from "@/pages/learning/worker-memory-detail";
+import TopicDetail from "@/pages/learning/topic-detail";
+import { KnowledgeLanding } from "@/pages/knowledge/knowledge-landing";
+import { KnowledgeItemDetail } from "@/pages/knowledge/knowledge-item-detail";
 import GlobalGovernance from "@/pages/global-governance";
 import GlobalAnalytics from "@/pages/global-analytics";
 import Settings from "@/pages/settings";
+import Sentinel from "@/pages/sentinel";
 
 export default function App() {
   return (
@@ -96,18 +99,21 @@ export default function App() {
             <Route path="workers" element={<WorkerRegistry />} />
           </Route>
           <Route path="capabilities/worker/:id" element={<WorkerBrainTree />} />
-          <Route path="knowledge" element={<KnowledgeLayout />}>
+          <Route path="learning" element={<LearningLayout />}>
             <Route index element={<LearningLandscape />} />
             <Route path="coverage" element={<KnowledgeCoverage />} />
             <Route path="candidates" element={<CandidateDecisions />} />
             <Route path="packs" element={<KnowledgePacks />} />
           </Route>
-          <Route path="knowledge/topics/:id" element={<TopicDetail />} />
-          <Route path="knowledge/constructs/:id" element={<ConstructDetail />} />
-          <Route path="knowledge/candidates/:id" element={<CandidateDetail />} />
-          <Route path="knowledge/packs/:id" element={<PackDetail />} />
-          <Route path="knowledge/observations/:id" element={<ObservationDetail />} />
-          <Route path="knowledge/memory/:id" element={<WorkerMemoryDetail />} />
+          <Route path="learning/topics/:id" element={<TopicDetail />} />
+          <Route path="learning/constructs/:id" element={<ConstructDetail />} />
+          <Route path="learning/candidates/:id" element={<CandidateDetail />} />
+          <Route path="learning/packs/:id" element={<PackDetail />} />
+          <Route path="learning/observations/:id" element={<ObservationDetail />} />
+          <Route path="learning/memory/:id" element={<WorkerMemoryDetail />} />
+          <Route path="knowledge" element={<KnowledgeLanding />} />
+          <Route path="knowledge/:id" element={<KnowledgeItemDetail />} />
+          <Route path="sentinel" element={<Sentinel />} />
           <Route path="governance" element={<GlobalGovernance />} />
           <Route path="analytics" element={<GlobalAnalytics />} />
           <Route path="settings" element={<Settings />} />

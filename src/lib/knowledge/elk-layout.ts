@@ -4,7 +4,7 @@ import type { Node as RFNode, Edge as RFEdge } from "@xyflow/react";
 const elk = new ELK();
 
 const NODE_WIDTH = 220;
-const NODE_HEIGHT = 76;
+const NODE_HEIGHT = 92;
 
 export async function layoutGraph(
   nodes: RFNode[],

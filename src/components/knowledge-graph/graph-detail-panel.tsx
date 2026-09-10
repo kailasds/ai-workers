@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { X, ArrowRight, ArrowLeft as ArrowLeftIcon, Check, XCircle, Clock3, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,34 @@ import { getWorker, getMemory, observationsForWorker, getObservation, getRun, ge
 import { observationsFor } from "@/lib/knowledge/data";
 import { acceptCandidate, rejectCandidate, deferCandidate, useKnowledgeOverlayVersion } from "@/lib/knowledge/store";
 import type { Outcome, Construct, CandidateStatus, PackStatus } from "@/lib/knowledge/types";
+import { kindLabel } from "./graph-node";
+import { findKnowledgeItemIdForConstruct } from "@/lib/knowledge-repo/service";
+
+const constructMeaning: Record<Construct["status"], string> = {
+  "Nothing yet": "No Worker has reported an observation against this yet.",
+  Observed: "We saw this happen during a Worker run. It does not yet mean the knowledge is confirmed.",
+  Corroborated: "Multiple observations independently support the same learning.",
+  Certified: "This knowledge passed the required validation and admission criteria.",
+  Published: "This knowledge has been made available as shared organizational knowledge, ready for reuse.",
+};
+
+const candidateMeaning: Record<CandidateStatus, string> = {
+  Pending: "There isn't enough evidence yet to decide — awaiting evidence.",
+  "Ready to Certify": "Evidence is sufficient for this candidate to move toward certification.",
+  Contradictory: "Different Workers reported different outcomes. It will not be automatically promoted.",
+  Deferred: "A decision has been postponed pending more evidence.",
+  Accepted: "This candidate has been admitted for further trusted-knowledge processing — not yet fully certified.",
+  Rejected: "This candidate was explicitly rejected and will not become reusable knowledge.",
+};
+
+const candidateNextStep: Record<CandidateStatus, string> = {
+  Pending: "Gather more evidence",
+  "Ready to Certify": "Certification",
+  Contradictory: "Resolve contradicting evidence",
+  Deferred: "Re-review when more evidence arrives",
+  Accepted: "Certification",
+  Rejected: "None — closed",
+};
 
 const outcomeTone: Record<Outcome, "green" | "amber" | "blue" | "neutral" | "red"> = {
   Met: "green",
@@ -62,7 +90,7 @@ export function GraphDetailPanel({
     <div className="flex h-full flex-col">
       <div className="flex items-start justify-between gap-3 border-b border-border px-4 py-3.5">
         <div className="min-w-0">
-          <p className="text-[10.5px] font-semibold uppercase tracking-wider text-ink-faint">{node.kind}</p>
+          <p className="text-[10.5px] font-semibold uppercase tracking-wider text-ink-faint">{kindLabel[node.kind]}</p>
           <p className="mt-0.5 text-[13.5px] font-bold leading-snug text-ink">{node.label}</p>
         </div>
         <button onClick={onClose} className="shrink-0 grid h-7 w-7 place-items-center rounded-full text-ink-mute hover:bg-card-sunken hover:text-ink">
@@ -116,7 +144,7 @@ function WorkerPanel({ refId }: { refId: string }) {
         <p className="mt-1.5 text-[11.5px] text-ink-mute leading-relaxed">{memory?.note}</p>
       </PanelSection>
       <div className="mt-3 flex flex-col items-start gap-1.5">
-        <Link to={`/knowledge/memory/${refId}`} className="inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
+        <Link to={`/learning/memory/${refId}`} className="inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
           View full memory record
           <ExternalLink className="h-3 w-3" strokeWidth={2} />
         </Link>
@@ -138,7 +166,7 @@ function TopicPanel({ refId, onFocus }: { refId: string; onFocus: (id: string) =
           {summary.observationCount} observations from {summary.workerCount} Worker{summary.workerCount === 1 ? "" : "s"}.
         </p>
       </PanelSection>
-      <Link to={`/knowledge/topics/${refId}`} onClick={() => onFocus(`topic:${refId}`)} className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
+      <Link to={`/learning/topics/${refId}`} onClick={() => onFocus(`topic:${refId}`)} className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
         View topic observations
         <ExternalLink className="h-3 w-3" strokeWidth={2} />
       </Link>
@@ -149,25 +177,38 @@ function TopicPanel({ refId, onFocus }: { refId: string; onFocus: (id: string) =
 function ConstructPanel({ refId }: { refId: string; onFocus: (id: string) => void }) {
   const c = getConstructLive(refId);
   const obs = observationsFor(refId);
+  const knowledgeItemId = findKnowledgeItemIdForConstruct(refId);
   if (!c) return null;
+  const workerCount = new Set(obs.map((o) => o.workerId)).size;
   return (
     <div>
-      <PanelSection title="Status">
+      <PanelSection title="Current state">
         <Badge variant={constructTone[c.liveStatus]}>{c.liveStatus}</Badge>
         {c.blockingReason && <p className="mt-1.5 text-[11.5px] text-status-amber leading-relaxed">{c.blockingReason}</p>}
       </PanelSection>
+      <PanelSection title="What this means">
+        <p className="text-[12px] text-ink-mute leading-relaxed">{constructMeaning[c.liveStatus]}</p>
+      </PanelSection>
       <PanelSection title="Evidence">
-        <p className="text-[12.5px] text-ink">
-          {obs.length} observation{obs.length === 1 ? "" : "s"} · {new Set(obs.map((o) => o.workerId)).size} Worker{new Set(obs.map((o) => o.workerId)).size === 1 ? "" : "s"}
+        <p className="text-[13px] font-semibold text-ink">
+          {obs.length} observation{obs.length === 1 ? "" : "s"} · {workerCount} Worker{workerCount === 1 ? "" : "s"}
         </p>
       </PanelSection>
       <PanelSection title="Category">
         <p className="text-[12.5px] text-ink">{c.category}</p>
       </PanelSection>
-      <Link to={`/knowledge/constructs/${refId}`} className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
-        View full construct detail
-        <ExternalLink className="h-3 w-3" strokeWidth={2} />
-      </Link>
+      <div className="mt-3 flex flex-col items-start gap-1.5">
+        <Link to={`/learning/constructs/${refId}`} className="inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
+          View full construct detail
+          <ExternalLink className="h-3 w-3" strokeWidth={2} />
+        </Link>
+        {knowledgeItemId && (
+          <Link to={`/knowledge/${knowledgeItemId}`} className="inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
+            Open knowledge
+            <ExternalLink className="h-3 w-3" strokeWidth={2} />
+          </Link>
+        )}
+      </div>
     </div>
   );
 }
@@ -208,7 +249,7 @@ function ObservationPanel({ refId }: { refId: string }) {
       <PanelSection title="Summary">
         <p className="text-[12.5px] text-ink leading-relaxed">Full observation detail — result metrics, citations, and Definition of Done checks.</p>
       </PanelSection>
-      <Link to={`/knowledge/observations/${refId}`} className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
+      <Link to={`/learning/observations/${refId}`} className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
         View full observation
         <ExternalLink className="h-3 w-3" strokeWidth={2} />
       </Link>
@@ -236,7 +277,7 @@ function EvidencePanel({ refId }: { refId: string }) {
           </div>
         </PanelSection>
       )}
-      <Link to={`/knowledge/observations/${refId}`} className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
+      <Link to={`/learning/observations/${refId}`} className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
         View citations & timeline
         <ExternalLink className="h-3 w-3" strokeWidth={2} />
       </Link>
@@ -246,22 +287,34 @@ function EvidencePanel({ refId }: { refId: string }) {
 
 function CandidatePanel({ refId, certified }: { refId: string; certified: boolean }) {
   const cand = getCandidateDecisionLive(refId);
+  const knowledgeItemId = cand ? findKnowledgeItemIdForConstruct(cand.constructId) : null;
   if (!cand) return null;
   const decided = cand.liveStatus === "Accepted" || cand.liveStatus === "Rejected";
+  const contradictory = cand.liveStatus === "Contradictory" || cand.contradictingObservationIds.length > 0;
   return (
     <div>
       <PanelSection title="Claim">
         <p className="text-[12.5px] text-ink leading-relaxed">{cand.claim}</p>
       </PanelSection>
-      <PanelSection title="Status">
+      <PanelSection title="Current state">
         <Badge variant={candidateTone[cand.liveStatus]}>{cand.liveStatus}</Badge>
       </PanelSection>
-      <PanelSection title="Evidence">
-        <p className="text-[12.5px] text-ink">
+      <PanelSection title="What this means">
+        <p className="text-[12px] text-ink-mute leading-relaxed">
+          {contradictory ? "Different Workers reported different outcomes under related conditions." : candidateMeaning[cand.liveStatus]}
+        </p>
+      </PanelSection>
+      <PanelSection title="Supporting evidence">
+        <p className="text-[13px] font-semibold text-ink">
           {cand.supportingObservationIds.length} supporting
           {cand.contradictingObservationIds.length > 0 ? ` · ${cand.contradictingObservationIds.length} contradicting` : ""}
         </p>
       </PanelSection>
+      {!certified && !decided && (
+        <PanelSection title="Next step">
+          <p className="text-[12.5px] text-ink">{candidateNextStep[cand.liveStatus]}</p>
+        </PanelSection>
+      )}
       <PanelSection title="Recommendation">
         <p className="text-[11.5px] text-ink-mute leading-relaxed">{cand.aiRecommendation}</p>
       </PanelSection>
@@ -281,10 +334,18 @@ function CandidatePanel({ refId, certified }: { refId: string; certified: boolea
         </div>
       )}
 
-      <Link to={`/knowledge/candidates/${refId}`} className={cn("inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline", certified || decided ? "mt-3" : "mt-2.5")}>
-        View full decision record
-        <ExternalLink className="h-3 w-3" strokeWidth={2} />
-      </Link>
+      <div className={cn("flex flex-col items-start gap-1.5", certified || decided ? "mt-3" : "mt-2.5")}>
+        <Link to={`/learning/candidates/${refId}`} className="inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
+          View full decision record
+          <ExternalLink className="h-3 w-3" strokeWidth={2} />
+        </Link>
+        {knowledgeItemId && (
+          <Link to={`/knowledge/${knowledgeItemId}`} className="inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
+            Open knowledge
+            <ExternalLink className="h-3 w-3" strokeWidth={2} />
+          </Link>
+        )}
+      </div>
     </div>
   );
 }
@@ -311,7 +372,7 @@ function PackPanel({ refId }: { refId: string }) {
           Used by {new Set(usage.map((u) => u.workerId)).size} Worker{new Set(usage.map((u) => u.workerId)).size === 1 ? "" : "s"} across {usage.length} run{usage.length === 1 ? "" : "s"}
         </p>
       </PanelSection>
-      <Link to={`/knowledge/packs/${refId}`} className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
+      <Link to={`/learning/packs/${refId}`} className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
         View full pack detail
         <ExternalLink className="h-3 w-3" strokeWidth={2} />
       </Link>

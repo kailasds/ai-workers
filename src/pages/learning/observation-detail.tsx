@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+﻿import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Quote } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getObservation, getRun, getWorker, getConstruct, topics } from "@/lib/knowledge/service";
@@ -40,7 +40,7 @@ export default function ObservationDetail() {
   return (
     <div className="pb-16">
       <div className="px-8 pt-6">
-        <Link to="/knowledge" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-mute hover:text-ink">
+        <Link to="/learning" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-mute hover:text-ink">
           <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
           Back to Knowledge Hub
         </Link>
@@ -139,7 +139,7 @@ export default function ObservationDetail() {
           {construct && (
             <div className="pt-3 border-t border-border">
               <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-mute mb-1.5">Contributes To</p>
-              <Link to={`/knowledge/constructs/${construct.id}`} className="text-[12.5px] font-medium text-accent-ink hover:underline">
+              <Link to={`/learning/constructs/${construct.id}`} className="text-[12.5px] font-medium text-accent-ink hover:underline">
                 {construct.name}
               </Link>
             </div>
@@ -149,7 +149,7 @@ export default function ObservationDetail() {
             <div className="pt-3 border-t border-border">
               <p className="text-[11px] font-semibold uppercase tracking-wider text-status-amber mb-1.5">Contradicts</p>
               {observation.contradicts.map((oid) => (
-                <Link key={oid} to={`/knowledge/observations/${oid}`} className="block text-[12px] text-accent-ink hover:underline truncate">
+                <Link key={oid} to={`/learning/observations/${oid}`} className="block text-[12px] text-accent-ink hover:underline truncate">
                   {getObservation(oid)?.summary}
                 </Link>
               ))}
@@ -157,7 +157,7 @@ export default function ObservationDetail() {
           )}
 
           <div className="pt-3 border-t border-border">
-            <Link to={`/knowledge/memory/${worker.id}`} className="text-[12px] font-medium text-accent-ink hover:underline">
+            <Link to={`/learning/memory/${worker.id}`} className="text-[12px] font-medium text-accent-ink hover:underline">
               View {worker.name.split(" · ")[1] ?? worker.name} memory →
             </Link>
           </div>

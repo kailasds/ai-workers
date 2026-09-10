@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+﻿import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ShieldCheck, ShieldAlert, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getPack, getCandidate, getConstruct, getWorker, packUsage } from "@/lib/knowledge/service";
@@ -31,7 +31,7 @@ export default function PackDetail() {
   return (
     <div className="pb-16">
       <div className="px-8 pt-6">
-        <Link to="/knowledge/packs" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-mute hover:text-ink">
+        <Link to="/learning/packs" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-mute hover:text-ink">
           <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
           Back to Packs
         </Link>
@@ -76,7 +76,7 @@ export default function PackDetail() {
                   {pack.regressionGate.blockingItemIds.map((cid) => {
                     const c = getCandidate(cid);
                     return (
-                      <Link key={cid} to={`/knowledge/candidates/${cid}`}>
+                      <Link key={cid} to={`/learning/candidates/${cid}`}>
                         <Badge variant="red" className="hover:opacity-80 cursor-pointer">
                           <Eye className="h-3 w-3" strokeWidth={2} />
                           {c?.claim.slice(0, 40)}…
@@ -99,7 +99,7 @@ export default function PackDetail() {
                   return (
                     <Link
                       key={item!.id}
-                      to={`/knowledge/candidates/${item!.id}`}
+                      to={`/learning/candidates/${item!.id}`}
                       className="flex items-center justify-between gap-3 rounded-lg border border-border px-3.5 py-2.5 transition hover:bg-card-sunken"
                     >
                       <span className="min-w-0">
