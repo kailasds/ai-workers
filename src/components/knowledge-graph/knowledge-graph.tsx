@@ -60,8 +60,8 @@ function TraceBanner({ nodeId, direction, onExit }: { nodeId: string; direction:
           {observation && worker && (
             <p className="mt-1 text-[12.5px] leading-relaxed text-ink">
               {direction === "evidence"
-                ? `This knowledge originated from ${worker.name.split("·")[0].trim()}'s run converting the TIBCO source. ${observation.summary}`
-                : `This knowledge was retrieved by ${worker.name.split("·")[0].trim()} and produced a new observation: ${observation.summary}`}
+                ? `This knowledge originated from ${(worker.name.match(/#(\d+)/) ? `${worker.name.split("·")[0].trim()} #${worker.name.match(/#(\d+)/)![1]}` : worker.name)}'s run converting the TIBCO source. ${observation.summary}`
+                : `This knowledge was retrieved by ${(worker.name.match(/#(\d+)/) ? `${worker.name.split("·")[0].trim()} #${worker.name.match(/#(\d+)/)![1]}` : worker.name)} and produced a new observation: ${observation.summary}`}
             </p>
           )}
           {run && direction === "evidence" && (
@@ -86,11 +86,13 @@ function TraceBanner({ nodeId, direction, onExit }: { nodeId: string; direction:
 function KnowledgeGraphInner({
   contextId,
   focusConstructId,
+  initialWorkerFilter,
   lifecycleFilter,
   onLifecycleConsumed,
 }: {
   contextId: string;
   focusConstructId: string | null;
+  initialWorkerFilter?: string | null;
   lifecycleFilter?: GraphFilters["lifecycle"] | null;
   onLifecycleConsumed?: () => void;
 }) {
@@ -98,7 +100,7 @@ function KnowledgeGraphInner({
   const rf = useReactFlow();
 
   const [mode, setMode] = useState<GraphMode>(focusConstructId ? "evidence" : "landscape");
-  const [filters, setFilters] = useState<GraphFilters>(defaultFilters);
+  const [filters, setFilters] = useState<GraphFilters>(() => (initialWorkerFilter ? { ...defaultFilters, worker: initialWorkerFilter } : defaultFilters));
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [trace, setTrace] = useState<{ nodeId: string; direction: "evidence" | "usage" } | null>(null);
@@ -304,6 +306,7 @@ function KnowledgeGraphInner({
 export function KnowledgeGraph(props: {
   contextId: string;
   focusConstructId?: string | null;
+  initialWorkerFilter?: string | null;
   lifecycleFilter?: GraphFilters["lifecycle"] | null;
   onLifecycleConsumed?: () => void;
 }) {
@@ -312,6 +315,7 @@ export function KnowledgeGraph(props: {
       <KnowledgeGraphInner
         contextId={props.contextId}
         focusConstructId={props.focusConstructId ?? null}
+        initialWorkerFilter={props.initialWorkerFilter}
         lifecycleFilter={props.lifecycleFilter}
         onLifecycleConsumed={props.onLifecycleConsumed}
       />

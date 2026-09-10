@@ -32,6 +32,10 @@ import VersionsRollouts from "@/pages/operate/versions-rollouts";
 import Monitoring from "@/pages/operate/monitoring";
 import DeployWorker from "@/pages/operate/deploy-worker";
 import DeploymentDetail from "@/pages/operate/deployment-detail";
+import { CapabilitiesLayout } from "@/pages/capabilities/capabilities-layout";
+import CapabilityLandscape from "@/pages/capabilities/capability-landscape";
+import WorkerRegistry from "@/pages/capabilities/worker-registry";
+import WorkerBrainTree from "@/pages/capabilities/worker-brain-tree";
 import { KnowledgeLayout } from "@/pages/knowledge/knowledge-layout";
 import LearningLandscape from "@/pages/knowledge/learning-landscape";
 import KnowledgeCoverage from "@/pages/knowledge/coverage";
@@ -87,6 +91,11 @@ export default function App() {
           </Route>
           <Route path="operations/deploy" element={<DeployWorker />} />
           <Route path="operations/deployments/:id" element={<DeploymentDetail />} />
+          <Route path="capabilities" element={<CapabilitiesLayout />}>
+            <Route index element={<CapabilityLandscape />} />
+            <Route path="workers" element={<WorkerRegistry />} />
+          </Route>
+          <Route path="capabilities/worker/:id" element={<WorkerBrainTree />} />
           <Route path="knowledge" element={<KnowledgeLayout />}>
             <Route index element={<LearningLandscape />} />
             <Route path="coverage" element={<KnowledgeCoverage />} />

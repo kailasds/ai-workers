@@ -1,12 +1,13 @@
 import { NavLink } from "react-router-dom";
-import { Gauge, Pencil, Lightbulb, Radio, BookOpen, Users, ListChecks, Scale, BarChart3, Settings } from "lucide-react";
+import { Gauge, Pencil, Lightbulb, Radio, BookOpen, Blocks, Users, ListChecks, Scale, BarChart3, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const workspaceNav = [
   { to: "/", label: "Dashboard", description: "Overview and insights", icon: Gauge, end: true },
   { to: "/workers/new", label: "Compose", description: "Create and configure AI Workers", icon: Pencil },
-  { to: "/knowledge", label: "Knowledge", description: "Evidence, coverage, and certified packs", icon: BookOpen },
+  { to: "/capabilities", label: "Capabilities", description: "What Workers are equipped to do", icon: Blocks },
+  { to: "/knowledge", label: "Knowledge", description: "What Workers have learned", icon: BookOpen },
   { to: "/experience-hub", label: "Experience Hub", description: "AI-recommended worker improvements", icon: Lightbulb },
   { to: "/operations", label: "Operate", description: "Deploy and manage customer worker instances", icon: Radio },
 ];

@@ -38,6 +38,7 @@ export default function LearningLandscape() {
   useKnowledgeOverlayVersion();
   const [searchParams] = useSearchParams();
   const focusConstructId = searchParams.get("focus");
+  const workerFilter = searchParams.get("worker");
   const [contextId, setContextId] = useState(PRIMARY_CONTEXT);
   const [lifecycleFilter, setLifecycleFilter] = useState<GraphFilters["lifecycle"] | null>(null);
   const [pulse, setPulse] = useState(0);
@@ -90,9 +91,10 @@ export default function LearningLandscape() {
       <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
         <div className="h-[640px]">
           <KnowledgeGraph
-            key={`${contextId}-${focusConstructId ?? ""}`}
+            key={`${contextId}-${focusConstructId ?? ""}-${workerFilter ?? ""}`}
             contextId={contextId}
             focusConstructId={focusConstructId}
+            initialWorkerFilter={workerFilter}
             lifecycleFilter={lifecycleFilter}
             onLifecycleConsumed={() => setLifecycleFilter(null)}
           />

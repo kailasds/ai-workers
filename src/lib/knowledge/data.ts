@@ -38,6 +38,10 @@ export const workers: Worker[] = [
   { id: "w-18", name: "Integration Modernization Worker · Service orchestration #18", boundedContext: "Service orchestration", runNumber: 18 },
   { id: "w-52", name: "Integration Modernization Worker · Service orchestration #52", boundedContext: "Service orchestration", runNumber: 52 },
   { id: "w-07", name: "Integration Modernization Worker · Service orchestration #07", boundedContext: "Service orchestration", runNumber: 7 },
+  { id: "w-payments", name: "Payments Modernization Worker", boundedContext: "Payments modernization", runNumber: 101 },
+  { id: "w-claims", name: "Claims Modernization Worker", boundedContext: "Claims modernization", runNumber: 102 },
+  { id: "w-regulatory", name: "Regulatory Intelligence Worker", boundedContext: "Regulatory intelligence", runNumber: 103 },
+  { id: "w-underwriting", name: "Underwriting Analysis Worker", boundedContext: "Underwriting analysis", runNumber: 104 },
 ];
 
 export function getWorker(id: string): Worker | undefined {

@@ -115,10 +115,16 @@ function WorkerPanel({ refId }: { refId: string }) {
         </div>
         <p className="mt-1.5 text-[11.5px] text-ink-mute leading-relaxed">{memory?.note}</p>
       </PanelSection>
-      <Link to={`/knowledge/memory/${refId}`} className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
-        View full memory record
-        <ExternalLink className="h-3 w-3" strokeWidth={2} />
-      </Link>
+      <div className="mt-3 flex flex-col items-start gap-1.5">
+        <Link to={`/knowledge/memory/${refId}`} className="inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
+          View full memory record
+          <ExternalLink className="h-3 w-3" strokeWidth={2} />
+        </Link>
+        <Link to={`/capabilities/worker/${refId}`} className="inline-flex items-center gap-1 text-[12px] font-medium text-accent-ink hover:underline">
+          View capabilities
+          <ExternalLink className="h-3 w-3" strokeWidth={2} />
+        </Link>
+      </div>
     </div>
   );
 }

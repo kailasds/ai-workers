@@ -21,10 +21,15 @@ export default function WorkerMemoryDetail() {
   return (
     <div className="pb-16">
       <div className="px-8 pt-6">
-        <Link to="/knowledge" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-mute hover:text-ink">
-          <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
-          Back to Knowledge Hub
-        </Link>
+        <div className="flex items-center justify-between gap-3">
+          <Link to="/knowledge" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-mute hover:text-ink">
+            <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
+            Back to Knowledge Hub
+          </Link>
+          <Link to={`/capabilities/worker/${worker.id}`} className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-accent-ink hover:underline">
+            View capabilities
+          </Link>
+        </div>
 
         <h1 className="mt-3 text-[22px] font-bold tracking-[-0.01em] text-ink">{worker.name}</h1>
         <p className="mt-1 text-[13px] text-ink-mute">Worker memory</p>
