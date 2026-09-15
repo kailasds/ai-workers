@@ -1,5 +1,33 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, X, ExternalLink, ShieldCheck, Lock } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  ChevronDown,
+  ChevronRight,
+  X,
+  ExternalLink,
+  ShieldCheck,
+  Lock,
+  FileText,
+  Brain,
+  ClipboardCheck,
+  Package,
+  History,
+  Server,
+  Database,
+  FileStack,
+  Users2,
+  Layers,
+  Link2,
+  RefreshCw,
+  Clock,
+  Cpu,
+  CheckCircle2,
+  Ban,
+  FileCode2,
+} from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,6 +43,13 @@ function fmt(iso: string) {
 export default function WorkerPackageDetail() {
   useParams();
   const w = workerDetail;
+  const [tab, setTab] = useState("package");
+  const [packageOpen, setPackageOpen] = useState<string | null>("intent");
+
+  function jumpToPackageSection(id: string) {
+    setTab("package");
+    setPackageOpen(id);
+  }
 
   return (
     <div className="pb-12">
@@ -24,29 +59,49 @@ export default function WorkerPackageDetail() {
           Worker Registry
         </Link>
       </div>
-      <PageHeader title={w.title} subtitle={w.subtitle} tone="accent" />
+      <PageHeader
+        title={w.title}
+        subtitle={w.subtitle}
+        tone="accent"
+        actions={
+          <>
+            <Button variant="secondary" size="sm" onClick={() => setTab("runs")}>
+              <History className="h-3.5 w-3.5" strokeWidth={1.9} />
+              View runs
+            </Button>
+            <Button variant="secondary" size="sm" onClick={() => setTab("runtimes")}>
+              <Server className="h-3.5 w-3.5" strokeWidth={1.9} />
+              View runtimes
+            </Button>
+          </>
+        }
+      />
 
       <div className="px-8 grid grid-cols-1 xl:grid-cols-[300px_1fr] gap-5 items-start">
         {/* Persistent summary rail */}
-        <div className="rounded-card border border-border bg-card shadow-card p-5 xl:sticky xl:top-6">
-          <div className="flex flex-wrap gap-1.5">
-            <Badge variant="accent">{w.workerType}</Badge>
-            <Badge variant="neutral">Revision {w.revision}</Badge>
-          </div>
-          <p className="mt-3 text-[11px] uppercase tracking-wider text-ink-mute">Bounded context</p>
-          <p className="text-[13px] font-medium text-ink">{w.boundedContext}</p>
+        <div className="space-y-5 xl:sticky xl:top-6">
+          <div className="rounded-card border border-border bg-card shadow-card p-5">
+            <div className="flex flex-wrap gap-1.5">
+              <Badge variant="accent">{w.workerType}</Badge>
+              <Badge variant="neutral">Revision {w.revision}</Badge>
+            </div>
+            <p className="mt-3 text-[11px] uppercase tracking-wider text-ink-mute">Bounded context</p>
+            <p className="text-[13px] font-medium text-ink">{w.boundedContext}</p>
 
-          <div className="mt-4 space-y-2.5 border-t border-border pt-4 text-[12.5px]">
-            <FactRow label="Owner" value={w.owner} />
-            <FactRow label="Readiness check" value={w.readinessCheck} />
-            <FactRow label="Runtime" value={w.runtime} />
-            <FactRow label="Last outcome" value={w.lastOutcome} tone={w.lastOutcome === "Not met" ? "red" : "green"} />
+            <div className="mt-4 space-y-2.5 border-t border-border pt-4 text-[12.5px]">
+              <FactRow label="Owner" value={w.owner} />
+              <FactRow label="Readiness check" value={w.readinessCheck} />
+              <FactRow label="Runtime" value={w.runtime} />
+              <FactRow label="Last outcome" value={w.lastOutcome} tone={w.lastOutcome === "Not met" ? "red" : "green"} />
+            </div>
+            <p className="mt-3 text-[11px] leading-relaxed text-ink-mute">{w.openException}</p>
           </div>
-          <p className="mt-3 text-[11px] leading-relaxed text-ink-mute">{w.openException}</p>
+
+          <PackageHeroCard w={w} onJumpTo={jumpToPackageSection} />
         </div>
 
         {/* Tabbed content */}
-        <Tabs defaultValue="package">
+        <Tabs value={tab} onValueChange={setTab}>
           <TabsList className="flex-wrap h-auto">
             <TabsTrigger value="package">Package</TabsTrigger>
             <TabsTrigger value="runs">Runs</TabsTrigger>
@@ -58,7 +113,7 @@ export default function WorkerPackageDetail() {
           </TabsList>
 
           <TabsContent value="package">
-            <PackagePanel />
+            <PackagePanel open={packageOpen} setOpen={setPackageOpen} />
           </TabsContent>
           <TabsContent value="runs">
             <RunsPanel />
@@ -93,6 +148,49 @@ function FactRow({ label, value, tone }: { label: string; value: string; tone?: 
   );
 }
 
+function PackageHeroCard({ w, onJumpTo }: { w: typeof workerDetail; onJumpTo: (id: string) => void }) {
+  const rows = [
+    { id: "intent", icon: FileText, title: "Worker intent", detail: w.package.intent.summary },
+    { id: "brain", icon: Brain, title: "Worker Brain", detail: `${w.package.brain.skills} skills · ${w.package.brain.languages} DSLs · ${w.package.brain.evals} EVALs` },
+    { id: "dod", icon: ClipboardCheck, title: "Definition of Done", detail: `${w.package.dodCount} release gates` },
+    { id: "autonomy", icon: ShieldCheck, title: "Autonomy", detail: w.package.autonomy },
+  ];
+
+  return (
+    <div className="rounded-card overflow-hidden border border-border shadow-float">
+      <div className="card-hero p-5 text-white">
+        <div className="flex items-start justify-between gap-3">
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/15">
+            <Package className="h-5 w-5" strokeWidth={1.9} />
+          </div>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-semibold">Revision {w.revision}</span>
+        </div>
+        <p className="mt-3 text-[11px] uppercase tracking-wider text-white/60">Worker package</p>
+        <p className="mt-1 text-[16px] font-bold leading-snug tracking-[-0.01em] font-display">{w.package.intent.summary}</p>
+      </div>
+
+      <div className="bg-card p-2 divide-y divide-border">
+        {rows.map((row) => (
+          <button
+            key={row.id}
+            onClick={() => onJumpTo(row.id)}
+            className="flex w-full items-start gap-3 px-3.5 py-3 text-left transition-colors hover:bg-card-sunken"
+          >
+            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-card-sunken text-ink-soft">
+              <row.icon className="h-4 w-4" strokeWidth={1.9} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-semibold text-ink">{row.title}</p>
+              <p className="truncate text-[11px] text-ink-mute">{row.detail}</p>
+            </div>
+            <ChevronRight className="mt-1.5 h-3.5 w-3.5 shrink-0 text-ink-faint" strokeWidth={2} />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function Card({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
   return (
     <div className="rounded-card border border-border bg-card shadow-card p-5">
@@ -103,25 +201,43 @@ function Card({ title, subtitle, children }: { title: string; subtitle?: string;
   );
 }
 
-function PackagePanel() {
+function PackagePanel({ open, setOpen }: { open: string | null; setOpen: (id: string | null) => void }) {
   const w = workerDetail;
-  return (
-    <div className="space-y-5">
-      <Card title="Worker intent" subtitle="Instructions, procedure and runtime arrive as one preset.">
-        <p className="text-[13px] font-medium text-ink">{w.package.intent.summary}</p>
-        <p className="mt-2 text-[12.5px] leading-relaxed text-ink-soft">{w.package.intent.outcome}</p>
-        <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {w.operatingProcedure.map((s) => (
-            <div key={s.step} className="rounded-[10px] bg-card-sunken p-3">
-              <p className="text-[10px] font-semibold text-accent-ink">Step {s.step}</p>
-              <p className="mt-0.5 text-[12.5px] font-semibold text-ink">{s.name}</p>
-              <p className="mt-0.5 text-[11px] leading-snug text-ink-mute">{s.description}</p>
-            </div>
-          ))}
-        </div>
-      </Card>
 
-      <Card title="Worker Brain snapshot">
+  const sections: {
+    id: string;
+    icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+    title: string;
+    status: string;
+    detail: React.ReactNode;
+  }[] = [
+    {
+      id: "intent",
+      icon: FileText,
+      title: "Worker intent",
+      status: `${w.package.intent.procedureStages} stages`,
+      detail: (
+        <>
+          <p className="text-[13px] font-medium text-ink">{w.package.intent.summary}</p>
+          <p className="mt-2 text-[12.5px] leading-relaxed text-ink-soft">{w.package.intent.outcome}</p>
+          <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {w.operatingProcedure.map((s) => (
+              <div key={s.step} className="rounded-[10px] bg-card-sunken p-3">
+                <p className="text-[10px] font-semibold text-accent-ink">Step {s.step}</p>
+                <p className="mt-0.5 text-[12.5px] font-semibold text-ink">{s.name}</p>
+                <p className="mt-0.5 text-[11px] leading-snug text-ink-mute">{s.description}</p>
+              </div>
+            ))}
+          </div>
+        </>
+      ),
+    },
+    {
+      id: "brain",
+      icon: Brain,
+      title: "Worker Brain",
+      status: `${w.package.brain.skills} skills · ${w.package.brain.languages} DSLs · ${w.package.brain.evals} EVALs`,
+      detail: (
         <div className="flex flex-wrap gap-2">
           <FacetBadge facet="skills" value={w.package.brain.skills} />
           <FacetBadge facet="languages" value={w.package.brain.languages} />
@@ -130,26 +246,70 @@ function PackagePanel() {
             {w.package.brain.sentinel}
           </Badge>
         </div>
-      </Card>
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card title="Definition of Done">
-          <FacetBadge facet="dod" value={`${w.package.dodCount} criteria`} className="text-[13px] px-2.5 py-1.5" />
-        </Card>
-        <Card title="Autonomy">
-          <p className="text-[15px] font-semibold text-ink">{w.package.autonomy}</p>
-        </Card>
-        <Card title="Packaged for">
-          <p className="text-[13px] font-medium text-ink">{w.package.packagedRuntime}</p>
-        </Card>
-      </div>
-
-      <Card title="Generated source">
+      ),
+    },
+    {
+      id: "dod",
+      icon: ClipboardCheck,
+      title: "Definition of Done",
+      status: `${w.package.dodCount} criteria`,
+      detail: <FacetBadge facet="dod" value={`${w.package.dodCount} criteria`} className="text-[13px] px-2.5 py-1.5" />,
+    },
+    {
+      id: "autonomy",
+      icon: ShieldCheck,
+      title: "Autonomy",
+      status: w.package.autonomy,
+      detail: <p className="text-[15px] font-semibold text-ink">{w.package.autonomy}</p>,
+    },
+    {
+      id: "packaged",
+      icon: Package,
+      title: "Packaged for",
+      status: w.package.packagedRuntime,
+      detail: <p className="text-[13px] font-medium text-ink">{w.package.packagedRuntime}</p>,
+    },
+    {
+      id: "source",
+      icon: ExternalLink,
+      title: "Generated source",
+      status: "View path",
+      detail: (
         <a href="#" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-accent-ink hover:underline underline-offset-2 break-all">
           {w.package.sourcePath}
           <ExternalLink className="h-3 w-3 shrink-0" strokeWidth={2} />
         </a>
-      </Card>
+      ),
+    },
+  ];
+
+  return (
+    <div className="rounded-card border border-border bg-card shadow-card divide-y divide-border overflow-hidden">
+      {sections.map((section) => {
+        const isOpen = open === section.id;
+        return (
+          <div key={section.id}>
+            <button
+              onClick={() => setOpen(isOpen ? null : section.id)}
+              className="flex w-full items-center gap-3 px-5 py-4 text-left transition-colors hover:bg-card-sunken"
+            >
+              {isOpen ? (
+                <ChevronDown className="h-3.5 w-3.5 shrink-0 text-ink-mute" strokeWidth={2} />
+              ) : (
+                <ChevronRight className="h-3.5 w-3.5 shrink-0 text-ink-mute" strokeWidth={2} />
+              )}
+              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-card-sunken text-ink-soft">
+                <section.icon className="h-4 w-4" strokeWidth={1.9} />
+              </div>
+              <span className="flex-1 text-[13.5px] font-bold text-ink">{section.title}</span>
+              <span className="hidden sm:block max-w-[45%] truncate text-[11.5px] font-medium text-ink-mute">{section.status}</span>
+            </button>
+            {isOpen && (
+              <div className="px-5 pb-5 pl-[56px] animate-in fade-in-0 slide-in-from-top-1 duration-150">{section.detail}</div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -252,22 +412,72 @@ function RunsPanel() {
   );
 }
 
+function StatTile({
+  label,
+  value,
+  icon: Icon,
+  tone,
+}: {
+  label: string;
+  value: React.ReactNode;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  tone: "blue" | "purple" | "amber" | "green";
+}) {
+  const toneClass: Record<string, string> = {
+    blue: "bg-status-blue-soft text-status-blue",
+    purple: "bg-status-purple-soft text-status-purple",
+    amber: "bg-status-amber-soft text-status-amber",
+    green: "bg-status-green-soft text-status-green",
+  };
+  return (
+    <div className="rounded-[10px] border border-border bg-card-sunken/60 p-3">
+      <div className={cn("grid h-7 w-7 place-items-center rounded-full", toneClass[tone])}>
+        <Icon className="h-3.5 w-3.5" strokeWidth={1.9} />
+      </div>
+      <p className="mt-2 truncate text-[16px] leading-none font-bold tabular-nums text-ink font-display">{value}</p>
+      <p className="mt-1 text-[10.5px] text-ink-mute">{label}</p>
+    </div>
+  );
+}
+
+function InfoRow({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex items-start gap-3 rounded-[10px] bg-card-sunken/60 p-3">
+      <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-border bg-card text-ink-soft">
+        <Icon className="h-3.5 w-3.5" strokeWidth={1.9} />
+      </div>
+      <div className="min-w-0">
+        <p className="text-[10.5px] font-semibold uppercase tracking-wider text-ink-mute">{label}</p>
+        <p className="mt-0.5 text-[12.5px] leading-relaxed text-ink">{value}</p>
+      </div>
+    </div>
+  );
+}
+
 function BrainActivityPanel() {
   const b = workerDetail.brainActivity;
   return (
     <Card title="Worker Brain activity" subtitle="What this Worker's GBrain has done, in the order it did it.">
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <MiniStat label="Records" value={b.records} />
-        <MiniStat label="Documents" value={b.documents} />
-        <MiniStat label="Entities" value={b.entities ?? "Not reported"} />
-        <MiniStat label="Passages" value={b.passages} />
-        <MiniStat label="Links" value={b.links} />
-        <MiniStat label="Timeline entries" value={b.timelineEntries} />
+        <StatTile label="Records" value={b.records} icon={Database} tone="blue" />
+        <StatTile label="Documents" value={b.documents} icon={FileStack} tone="purple" />
+        <StatTile label="Entities" value={b.entities ?? "Not reported"} icon={Users2} tone="amber" />
+        <StatTile label="Passages" value={b.passages} icon={Layers} tone="green" />
+        <StatTile label="Links" value={b.links} icon={Link2} tone="blue" />
+        <StatTile label="Timeline entries" value={b.timelineEntries} icon={History} tone="purple" />
       </div>
-      <div className="mt-4 space-y-2 border-t border-border pt-4 text-[12.5px]">
-        <FactRow label="When it consolidates" value={b.consolidatesAfter} />
-        <FactRow label="Last pass" value={b.lastPass} />
-        <FactRow label="Near memory" value={b.nearMemory} />
+      <div className="mt-4 space-y-2 border-t border-border pt-4">
+        <InfoRow icon={RefreshCw} label="When it consolidates" value={b.consolidatesAfter} />
+        <InfoRow icon={Clock} label="Last pass" value={b.lastPass} />
+        <InfoRow icon={Database} label="Near memory" value={b.nearMemory} />
       </div>
     </Card>
   );
@@ -279,36 +489,42 @@ function KnowledgePanel() {
     <div className="space-y-5">
       <Card title="Memory engine" subtitle="This Worker's own brain, asked directly.">
         <div className="grid grid-cols-3 gap-3">
-          <MiniStat label="Engine" value={k.engine} />
-          <MiniStat label="Status" value={k.status} />
-          <MiniStat label="Documents" value={k.documents} />
+          <StatTile label="Engine" value={k.engine} icon={Cpu} tone="purple" />
+          <StatTile label="Status" value={k.status} icon={CheckCircle2} tone="green" />
+          <StatTile label="Documents" value={k.documents} icon={FileStack} tone="blue" />
         </div>
       </Card>
 
       <Card title="What it compounds" subtitle="Many runs become one thing it knows. Not everything is allowed to.">
-        <div className="space-y-2.5 text-[12.5px]">
-          <FactRow label="Becomes knowledge after" value={k.becomesKnowledgeAfter} />
-          <FactRow label="Recalled without asking" value={k.recalledWithoutAsking} />
-          <FactRow label="Skills" value={k.skillsRule} />
+        <div className="space-y-2">
+          <InfoRow icon={RefreshCw} label="Becomes knowledge after" value={k.becomesKnowledgeAfter} />
+          <InfoRow icon={Clock} label="Recalled without asking" value={k.recalledWithoutAsking} />
+          <InfoRow icon={FileCode2} label="Skills" value={k.skillsRule} />
         </div>
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-mute mb-1.5">May become standing knowledge</p>
-            <ul className="space-y-1 text-[12px] text-ink-soft">
+          <div className="rounded-[12px] border border-status-green/20 bg-status-green-soft/25 p-3.5">
+            <p className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-status-green">
+              <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={2} />
+              May become standing knowledge
+            </p>
+            <ul className="space-y-1.5 text-[12px] text-ink-soft">
               {k.mayBecomeStanding.map((i) => (
                 <li key={i} className="flex items-start gap-1.5">
-                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-ink-faint" />
+                  <Check className="mt-0.5 h-3 w-3 shrink-0 text-status-green" strokeWidth={2.5} />
                   {i}
                 </li>
               ))}
             </ul>
           </div>
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-mute mb-1.5">Never does</p>
-            <ul className="space-y-1 text-[12px] text-ink-soft">
+          <div className="rounded-[12px] border border-status-red/20 bg-status-red-soft/25 p-3.5">
+            <p className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-status-red">
+              <Ban className="h-3.5 w-3.5" strokeWidth={2} />
+              Never does
+            </p>
+            <ul className="space-y-1.5 text-[12px] text-ink-soft">
               {k.neverDoes.map((i) => (
                 <li key={i} className="flex items-start gap-1.5">
-                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-ink-faint" />
+                  <X className="mt-0.5 h-3 w-3 shrink-0 text-status-red" strokeWidth={2.5} />
                   {i}
                 </li>
               ))}

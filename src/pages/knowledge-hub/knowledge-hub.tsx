@@ -110,22 +110,19 @@ function SkillsTab() {
 
   return (
     <div>
-      <div className="mb-4 rounded-card border border-border bg-card shadow-card p-5 flex flex-col sm:flex-row items-center gap-6">
-        <DonutChart data={skillsByGroup} centerValue={skillStats.total} centerLabel="Skills" />
-        <div className="min-w-0 w-full flex-1">
-          <h3 className="mb-2 text-[13px] font-bold text-ink">Skills by group</h3>
-          <DonutLegend data={skillsByGroup} />
+      <div className="mb-5 grid grid-cols-1 lg:grid-cols-[340px_repeat(4,1fr)] gap-4 items-stretch">
+        <div className="rounded-card border border-border bg-card shadow-card p-5 flex flex-row items-center gap-5">
+          <DonutChart data={skillsByGroup} centerValue={skillStats.total} centerLabel="Skills" size={96} thickness={13} />
+          <div className="min-w-0 flex-1">
+            <h3 className="mb-1.5 text-[12.5px] font-bold text-ink">Skills by group</h3>
+            <DonutLegend data={skillsByGroup} />
+          </div>
         </div>
+        <KpiCard label="Skills" value={skillStats.total} icon={FileCode2} />
+        <KpiCard label="Categories" value={skillStats.categories} icon={Layers} />
+        <KpiCard label="Live" value={skillStats.live} icon={CheckCircle2} />
+        <KpiCard label="TCS authored" value={skillStats.tcsAuthored} icon={Sparkles} />
       </div>
-
-      <StatStrip
-        items={[
-          { label: "Skills", value: skillStats.total, icon: FileCode2 },
-          { label: "Categories", value: skillStats.categories, icon: Layers },
-          { label: "Live", value: skillStats.live, icon: CheckCircle2 },
-          { label: "TCS authored", value: skillStats.tcsAuthored, icon: Sparkles },
-        ]}
-      />
 
       <div className="flex flex-wrap items-center gap-2 mb-4">
         <button

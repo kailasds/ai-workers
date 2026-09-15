@@ -51,17 +51,15 @@ export default function WorkerRegistryList() {
       <PageHeader title="Worker Registry" subtitle="Manage deployed Workers and customer-ready packages." icon={Users} tone="accent" />
 
       <div className="px-8 space-y-5">
-        {/* Distribution chart — the dominant, horizontal element */}
-        <div className="rounded-card border border-border bg-card shadow-card p-5 flex flex-col sm:flex-row items-center gap-6">
-          <DonutChart data={distributionData} centerValue={registryStats.workers} centerLabel="Workers" />
-          <div className="min-w-0 w-full flex-1">
-            <h3 className="mb-2 text-[13px] font-bold text-ink">Bounded-context distribution</h3>
-            <DonutLegend data={distributionData} />
+        {/* Distribution chart + KPIs, one row */}
+        <div className="grid grid-cols-1 lg:grid-cols-[340px_repeat(4,1fr)] gap-4 items-stretch">
+          <div className="rounded-card border border-border bg-card shadow-card p-5 flex flex-row items-center gap-5">
+            <DonutChart data={distributionData} centerValue={registryStats.workers} centerLabel="Workers" size={96} thickness={13} />
+            <div className="min-w-0 flex-1">
+              <h3 className="mb-1.5 text-[12.5px] font-bold text-ink">Bounded-context distribution</h3>
+              <DonutLegend data={distributionData} />
+            </div>
           </div>
-        </div>
-
-        {/* KPI row — smaller, underneath */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <KpiCard label="Workers" value={registryStats.workers} icon={Boxes} />
           <KpiCard
             label="Serving now"
