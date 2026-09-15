@@ -6,8 +6,15 @@ import { Input } from "@/components/ui/input";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { KpiCard } from "@/components/shared/kpi-card";
+import { DonutChart, DonutLegend } from "@/components/shared/donut-chart";
 import { registryStats, tcsManagedWorkers, customerPackages, type RegistryCard, type CustomerPackageRow } from "@/lib/registry-data";
 import { cn } from "@/lib/utils";
+
+const distributionColors = ["var(--color-status-blue)", "var(--color-status-purple)", "var(--color-status-amber)"];
+const distributionData = registryStats.boundedContextDistribution.map((d, i) => ({
+  ...d,
+  color: distributionColors[i % distributionColors.length],
+}));
 
 const statusTone: Record<RegistryCard["status"], "blue" | "amber" | "green"> = {
   New: "blue",
@@ -20,8 +27,6 @@ const statusIconTone: Record<RegistryCard["status"], string> = {
   Evolving: "bg-status-amber-soft text-status-amber",
   Learning: "bg-status-green-soft text-status-green",
 };
-
-const distributionTone = ["bg-status-blue-soft text-status-blue", "bg-status-purple-soft text-status-purple", "bg-status-amber-soft text-status-amber"];
 
 const packageStateTone: Record<CustomerPackageRow["state"], BadgeProps["variant"]> = {
   Prepared: "blue",
@@ -46,7 +51,16 @@ export default function WorkerRegistryList() {
       <PageHeader title="Worker Registry" subtitle="Manage deployed Workers and customer-ready packages." icon={Users} tone="accent" />
 
       <div className="px-8 space-y-5">
-        {/* KPI row */}
+        {/* Distribution chart — the dominant, horizontal element */}
+        <div className="rounded-card border border-border bg-card shadow-card p-5 flex flex-col sm:flex-row items-center gap-6">
+          <DonutChart data={distributionData} centerValue={registryStats.workers} centerLabel="Workers" />
+          <div className="min-w-0 w-full flex-1">
+            <h3 className="mb-2 text-[13px] font-bold text-ink">Bounded-context distribution</h3>
+            <DonutLegend data={distributionData} />
+          </div>
+        </div>
+
+        {/* KPI row — smaller, underneath */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <KpiCard label="Workers" value={registryStats.workers} icon={Boxes} />
           <KpiCard
@@ -62,21 +76,6 @@ export default function WorkerRegistryList() {
             icon={ShieldAlert}
             trend={registryStats.needsAttention > 0 ? { direction: "up", label: "Review recommended", goodWhenUp: false } : { direction: "flat", label: "Nothing flagged" }}
           />
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          {registryStats.boundedContextDistribution.map((d, i) => (
-            <span
-              key={d.label}
-              className={cn(
-                "inline-flex max-w-full items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[11px] font-semibold leading-none",
-                distributionTone[i % distributionTone.length]
-              )}
-            >
-              <span className="truncate">{d.label}</span>
-              <span className="tabular-nums">{d.value}</span>
-            </span>
-          ))}
         </div>
 
         <Tabs defaultValue="managed">

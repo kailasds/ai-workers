@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, Sparkles, FileCode2, Braces, ClipboardCheck, ShieldCheck, FolderOpen } from "lucide-react";
+import { Check, ChevronDown, ChevronRight, Sparkles, FileCode2, Braces, ClipboardCheck, ShieldCheck, FolderOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { assemblyLog } from "./script";
 import type { AssemblyLogEntry, BrainFacet, ComposeState } from "./types";
@@ -137,43 +137,7 @@ export function BrainStep({
           </div>
         )}
 
-        {done && (
-          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 border-t border-border pt-4 animate-in fade-in-0 slide-in-from-bottom-1 duration-300">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-mute mb-2">Knowledge</p>
-              <div className="space-y-2 text-[12.5px]">
-                <SummaryRow label="Skills added" value={String(compose.brain.skillsCount)} />
-                <SummaryRow label="Domain Specific Language (DSL)" value={compose.brain.dslsCount > 0 ? `${compose.brain.dslsCount} languages` : "None bound"} />
-                <SummaryRow label="EVALs" value={String(compose.brain.evalsCount)} />
-              </div>
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-mute mb-2">Learning</p>
-              <p className="text-[12.5px] font-semibold text-ink">GBrain</p>
-              <p className="text-[11.5px] text-ink-mute">Work history · Known facts</p>
-              <ul className="mt-2 space-y-1 text-[11.5px] text-ink-soft">
-                <li className="flex items-center gap-1.5">
-                  <span className="h-1 w-1 rounded-full bg-ink-faint" />
-                  Keeps 90 days
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <span className="h-1 w-1 rounded-full bg-ink-faint" />
-                  Agrees after 3 runs
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <span className="h-1 w-1 rounded-full bg-ink-faint" />8 learning passes
-                </li>
-              </ul>
-            </div>
-            <div className="sm:col-span-2 flex items-center justify-between border-t border-border pt-3">
-              <span className="text-[12px] font-medium text-ink-mute">Sentinel</span>
-              <span className="flex items-center gap-1.5 text-[12px] font-semibold text-status-green">
-                <ShieldCheck className="h-3.5 w-3.5" strokeWidth={2} />
-                Watching
-              </span>
-            </div>
-          </div>
-        )}
+        <FacetAccordion compose={compose} />
       </div>
 
       <p className="mt-4 flex items-center gap-1.5 text-[11px] text-ink-faint">
@@ -219,11 +183,117 @@ function LogRow({ entry, isNew }: { entry: AssemblyLogEntry; isNew: boolean }) {
   );
 }
 
-function SummaryRow({ label, value }: { label: string; value: string }) {
+function FacetAccordion({ compose }: { compose: ComposeState }) {
+  const [open, setOpen] = useState<string | null>(null);
+  const done = compose.brain.status === "done";
+
+  const skillNames = assemblyLog.filter((e) => e.facet === "skill").map((e) => e.label);
+  const dslNames = assemblyLog.filter((e) => e.facet === "dsl").map((e) => e.label);
+  const evalNames = assemblyLog.filter((e) => e.facet === "eval").map((e) => e.label);
+
+  const rows: {
+    id: string;
+    icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+    label: string;
+    status: string;
+    detail: React.ReactNode;
+  }[] = [
+    {
+      id: "skills",
+      icon: FileCode2,
+      label: "Skills added",
+      status: done ? `${compose.brain.skillsCount} skills` : "Selecting Skills",
+      detail: <NameList items={skillNames} empty="Still selecting — nothing bound yet." />,
+    },
+    {
+      id: "dsl",
+      icon: Braces,
+      label: "Domain Specific Language (DSL)",
+      status: done && compose.brain.dslsCount > 0 ? `${compose.brain.dslsCount} bound` : "None bound",
+      detail: <NameList items={dslNames} empty="No languages bound yet." />,
+    },
+    {
+      id: "evals",
+      icon: ClipboardCheck,
+      label: "EVALs",
+      status: String(compose.brain.evalsCount),
+      detail: <NameList items={evalNames} empty="Not started." />,
+    },
+    {
+      id: "gbrain",
+      icon: FolderOpen,
+      label: "GBrain",
+      status: done ? "Configured" : "Configuring memory and learning",
+      detail: (
+        <ul className="space-y-1 text-[11.5px] text-ink-soft">
+          <li className="flex items-center gap-1.5">
+            <span className="h-1 w-1 rounded-full bg-ink-faint" />
+            Keeps 90 days
+          </li>
+          <li className="flex items-center gap-1.5">
+            <span className="h-1 w-1 rounded-full bg-ink-faint" />
+            Agrees after 3 runs
+          </li>
+          <li className="flex items-center gap-1.5">
+            <span className="h-1 w-1 rounded-full bg-ink-faint" />8 learning passes
+          </li>
+        </ul>
+      ),
+    },
+    {
+      id: "sentinel",
+      icon: ShieldCheck,
+      label: "Sentinel",
+      status: done ? "Watching" : "Resolving",
+      detail: (
+        <p className="text-[11.5px] leading-relaxed text-ink-soft">
+          Not something the Worker knows or learns — it is the bar it is held to, and it does not set its own.
+        </p>
+      ),
+    },
+  ];
+
   return (
-    <div className="flex items-center justify-between">
-      <span className="text-ink-mute">{label}</span>
-      <span className="font-semibold text-ink">{value}</span>
+    <div className="mt-4 rounded-[12px] border border-border divide-y divide-border overflow-hidden">
+      {rows.map((row) => {
+        const isOpen = open === row.id;
+        return (
+          <div key={row.id}>
+            <button
+              onClick={() => setOpen(isOpen ? null : row.id)}
+              className="flex w-full items-center gap-3 px-3.5 py-3 text-left transition-colors hover:bg-card-sunken"
+            >
+              {isOpen ? (
+                <ChevronDown className="h-3.5 w-3.5 shrink-0 text-ink-mute" strokeWidth={2} />
+              ) : (
+                <ChevronRight className="h-3.5 w-3.5 shrink-0 text-ink-mute" strokeWidth={2} />
+              )}
+              <div className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-card-sunken text-ink-soft">
+                <row.icon className="h-3.5 w-3.5" strokeWidth={1.9} />
+              </div>
+              <span className="flex-1 text-[12.5px] font-medium text-ink">{row.label}</span>
+              <span className="text-[11.5px] font-semibold text-ink-mute">{row.status}</span>
+            </button>
+            {isOpen && (
+              <div className="px-3.5 pb-3.5 pl-[52px] animate-in fade-in-0 slide-in-from-top-1 duration-150">{row.detail}</div>
+            )}
+          </div>
+        );
+      })}
     </div>
+  );
+}
+
+function NameList({ items, empty }: { items: string[]; empty: string }) {
+  if (items.length === 0) return <p className="text-[11.5px] text-ink-faint">{empty}</p>;
+  return (
+    <ul className="space-y-1">
+      {items.map((n) => (
+        <li key={n} className="flex items-start gap-1.5 text-[11.5px] text-ink-soft">
+          <Check className="mt-0.5 h-3 w-3 shrink-0 text-status-green" strokeWidth={2.5} />
+          <span>{n}</span>
+        </li>
+      ))}
+    </ul>
   );
 }

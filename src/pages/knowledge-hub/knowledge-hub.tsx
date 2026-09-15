@@ -21,6 +21,7 @@ import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { KpiCard } from "@/components/shared/kpi-card";
+import { DonutChart, DonutLegend } from "@/components/shared/donut-chart";
 import { cn } from "@/lib/utils";
 
 type Icon = React.ComponentType<{ className?: string; strokeWidth?: number }>;
@@ -81,9 +82,9 @@ export default function KnowledgeHub() {
   );
 }
 
-function StatStrip({ items }: { items: { label: string; value: string | number; icon?: Icon }[] }) {
+function StatStrip({ items, className }: { items: { label: string; value: string | number; icon?: Icon }[]; className?: string }) {
   return (
-    <div className="mb-5 grid grid-cols-2 lg:grid-cols-4 gap-3">
+    <div className={cn("mb-5 grid grid-cols-2 lg:grid-cols-4 gap-3", className)}>
       {items.map((s) => (
         <KpiCard key={s.label} label={s.label} value={s.value} icon={s.icon} />
       ))}
@@ -109,6 +110,14 @@ function SkillsTab() {
 
   return (
     <div>
+      <div className="mb-4 rounded-card border border-border bg-card shadow-card p-5 flex flex-col sm:flex-row items-center gap-6">
+        <DonutChart data={skillsByGroup} centerValue={skillStats.total} centerLabel="Skills" />
+        <div className="min-w-0 w-full flex-1">
+          <h3 className="mb-2 text-[13px] font-bold text-ink">Skills by group</h3>
+          <DonutLegend data={skillsByGroup} />
+        </div>
+      </div>
+
       <StatStrip
         items={[
           { label: "Skills", value: skillStats.total, icon: FileCode2 },
@@ -117,17 +126,6 @@ function SkillsTab() {
           { label: "TCS authored", value: skillStats.tcsAuthored, icon: Sparkles },
         ]}
       />
-
-      <div className="flex items-center gap-4 mb-3">
-        <div className="flex flex-wrap gap-1.5">
-          {skillsByGroup.map((g) => (
-            <span key={g.label} className="inline-flex items-center gap-1.5 text-[11px] text-ink-mute">
-              <span className="h-2 w-2 rounded-full" style={{ backgroundColor: g.color }} />
-              {g.label} · {g.value}
-            </span>
-          ))}
-        </div>
-      </div>
 
       <div className="flex flex-wrap items-center gap-2 mb-4">
         <button
