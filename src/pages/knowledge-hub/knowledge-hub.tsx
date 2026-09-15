@@ -7,7 +7,6 @@ import {
   Cpu,
   Users2,
   FileCode2,
-  Layers,
   CheckCircle2,
   Sparkles,
   Braces,
@@ -15,6 +14,7 @@ import {
   ClipboardCheck,
   ShieldCheck,
   Boxes,
+  Zap,
 } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
@@ -92,6 +92,42 @@ function StatStrip({ items, className }: { items: { label: string; value: string
   );
 }
 
+const showcaseTone: Record<"blue" | "purple" | "green" | "amber", { icon: string; ghost: string }> = {
+  blue: { icon: "bg-status-blue-soft text-status-blue", ghost: "text-status-blue/[0.09]" },
+  purple: { icon: "bg-status-purple-soft text-status-purple", ghost: "text-status-purple/[0.09]" },
+  green: { icon: "bg-status-green-soft text-status-green", ghost: "text-status-green/[0.09]" },
+  amber: { icon: "bg-status-amber-soft text-status-amber", ghost: "text-status-amber/[0.09]" },
+};
+
+function ShowcaseKpiCard({
+  label,
+  value,
+  icon: Icon,
+  tone,
+}: {
+  label: string;
+  value: string | number;
+  icon: Icon;
+  tone: keyof typeof showcaseTone;
+}) {
+  const t = showcaseTone[tone];
+  return (
+    <div className="relative overflow-hidden rounded-card border border-border bg-card shadow-card p-4 transition-shadow hover:shadow-float">
+      <div className="flex items-center justify-between">
+        <div className={cn("grid h-9 w-9 shrink-0 place-items-center rounded-[10px]", t.icon)}>
+          <Icon className="h-4.5 w-4.5" strokeWidth={1.9} />
+        </div>
+        <div className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-border text-ink-faint">
+          <ChevronRight className="h-3 w-3" strokeWidth={2.25} />
+        </div>
+      </div>
+      <p className="mt-4 text-[26px] leading-none font-bold tracking-[-0.01em] tabular-nums text-ink font-display">{value}</p>
+      <p className="mt-1.5 text-[12px] font-medium text-ink-mute">{label}</p>
+      <Icon className={cn("pointer-events-none absolute -right-3 -bottom-3 h-20 w-20", t.ghost)} strokeWidth={1.2} />
+    </div>
+  );
+}
+
 function SkillsTab() {
   const [query, setQuery] = useState("");
   const [group, setGroup] = useState<string | "all">("all");
@@ -112,16 +148,25 @@ function SkillsTab() {
     <div>
       <div className="mb-5 grid grid-cols-1 lg:grid-cols-[340px_repeat(4,1fr)] gap-4 items-stretch">
         <div className="rounded-card border border-border bg-card shadow-card p-5 flex flex-row items-center gap-5">
-          <DonutChart data={skillsByGroup} centerValue={skillStats.total} centerLabel="Skills" size={96} thickness={13} />
-          <div className="min-w-0 flex-1">
-            <h3 className="mb-1.5 text-[12.5px] font-bold text-ink">Skills by group</h3>
-            <DonutLegend data={skillsByGroup} />
+          <div className="flex items-center justify-between flex-1 min-w-0 gap-5">
+            <DonutChart data={skillsByGroup} centerValue={skillStats.total} centerLabel="Skills" size={96} thickness={13} />
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-[12.5px] font-bold text-ink">Skills by group</h3>
+                <div className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-border text-ink-faint">
+                  <ChevronRight className="h-3 w-3" strokeWidth={2.25} />
+                </div>
+              </div>
+              <div className="mt-1.5">
+                <DonutLegend data={skillsByGroup} />
+              </div>
+            </div>
           </div>
         </div>
-        <KpiCard label="Skills" value={skillStats.total} icon={FileCode2} />
-        <KpiCard label="Categories" value={skillStats.categories} icon={Layers} />
-        <KpiCard label="Live" value={skillStats.live} icon={CheckCircle2} />
-        <KpiCard label="TCS authored" value={skillStats.tcsAuthored} icon={Sparkles} />
+        <ShowcaseKpiCard label="Skills" value={skillStats.total} icon={FileCode2} tone="blue" />
+        <ShowcaseKpiCard label="Categories" value={skillStats.categories} icon={Boxes} tone="purple" />
+        <ShowcaseKpiCard label="Live" value={skillStats.live} icon={Zap} tone="green" />
+        <ShowcaseKpiCard label="TCS authored" value={skillStats.tcsAuthored} icon={Sparkles} tone="amber" />
       </div>
 
       <div className="flex flex-wrap items-center gap-2 mb-4">

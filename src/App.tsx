@@ -8,6 +8,7 @@ import WorkerPackageDetail from "@/pages/registry/worker-package-detail";
 import Packaging from "@/pages/packaging";
 import CustomerDelivery from "@/pages/delivery";
 import KnowledgeHub from "@/pages/knowledge-hub/knowledge-hub";
+import LearningHub from "@/pages/learning-hub/learning-hub";
 import GlobalWork from "@/pages/global-work";
 import { ExperienceHubLayout } from "@/pages/experience-hub/hub-layout";
 import RecommendedUpdates from "@/pages/experience-hub/recommended-updates";
@@ -30,11 +31,6 @@ import { CapabilitiesLayout } from "@/pages/capabilities/capabilities-layout";
 import CapabilityLandscape from "@/pages/capabilities/capability-landscape";
 import WorkerRegistry from "@/pages/capabilities/worker-registry";
 import WorkerBrainTree from "@/pages/capabilities/worker-brain-tree";
-import { LearningLayout } from "@/pages/learning/learning-layout";
-import LearningLandscape from "@/pages/learning/learning-landscape";
-import KnowledgeCoverage from "@/pages/learning/coverage";
-import CandidateDecisions from "@/pages/learning/candidate-decisions";
-import KnowledgePacks from "@/pages/learning/packs";
 import ConstructDetail from "@/pages/learning/construct-detail";
 import CandidateDetail from "@/pages/learning/candidate-detail";
 import PackDetail from "@/pages/learning/pack-detail";
@@ -82,12 +78,7 @@ export default function App() {
             <Route path="workers" element={<WorkerRegistry />} />
           </Route>
           <Route path="capabilities/worker/:id" element={<WorkerBrainTree />} />
-          <Route path="learning" element={<LearningLayout />}>
-            <Route index element={<LearningLandscape />} />
-            <Route path="coverage" element={<KnowledgeCoverage />} />
-            <Route path="candidates" element={<CandidateDecisions />} />
-            <Route path="packs" element={<KnowledgePacks />} />
-          </Route>
+          <Route path="learning" element={<LearningHub />} />
           <Route path="learning/topics/:id" element={<TopicDetail />} />
           <Route path="learning/constructs/:id" element={<ConstructDetail />} />
           <Route path="learning/candidates/:id" element={<CandidateDetail />} />

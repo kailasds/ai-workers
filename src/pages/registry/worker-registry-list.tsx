@@ -51,31 +51,6 @@ export default function WorkerRegistryList() {
       <PageHeader title="Worker Registry" subtitle="Manage deployed Workers and customer-ready packages." icon={Users} tone="accent" />
 
       <div className="px-8 space-y-5">
-        {/* Distribution chart + KPIs, one row */}
-        <div className="grid grid-cols-1 lg:grid-cols-[340px_repeat(4,1fr)] gap-4 items-stretch">
-          <div className="rounded-card border border-border bg-card shadow-card p-5 flex flex-row items-center gap-5">
-            <DonutChart data={distributionData} centerValue={registryStats.workers} centerLabel="Workers" size={96} thickness={13} />
-            <div className="min-w-0 flex-1">
-              <h3 className="mb-1.5 text-[12.5px] font-bold text-ink">Bounded-context distribution</h3>
-              <DonutLegend data={distributionData} />
-            </div>
-          </div>
-          <KpiCard label="Workers" value={registryStats.workers} icon={Boxes} />
-          <KpiCard
-            label="Serving now"
-            value={registryStats.servingNow}
-            icon={Activity}
-            trend={{ direction: "up", label: `${registryStats.servingNow} of ${registryStats.workers} live` }}
-          />
-          <KpiCard label="Ready revision" value={registryStats.readyRevision} icon={RefreshCw} />
-          <KpiCard
-            label="Needs attention"
-            value={registryStats.needsAttention}
-            icon={ShieldAlert}
-            trend={registryStats.needsAttention > 0 ? { direction: "up", label: "Review recommended", goodWhenUp: false } : { direction: "flat", label: "Nothing flagged" }}
-          />
-        </div>
-
         <Tabs defaultValue="managed">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <TabsList>
@@ -88,7 +63,32 @@ export default function WorkerRegistryList() {
             </div>
           </div>
 
-          <TabsContent value="managed">
+          <TabsContent value="managed" className="space-y-5">
+            {/* Distribution chart + KPIs, one row — belongs to TCS-managed Workers */}
+            <div className="grid grid-cols-1 lg:grid-cols-[340px_repeat(4,1fr)] gap-4 items-stretch">
+              <div className="rounded-card border border-border bg-card shadow-card p-5 flex flex-row items-center gap-5">
+                <DonutChart data={distributionData} centerValue={registryStats.workers} centerLabel="Workers" size={96} thickness={13} />
+                <div className="min-w-0 flex-1">
+                  <h3 className="mb-1.5 text-[12.5px] font-bold text-ink">Bounded-context distribution</h3>
+                  <DonutLegend data={distributionData} />
+                </div>
+              </div>
+              <KpiCard label="Workers" value={registryStats.workers} icon={Boxes} />
+              <KpiCard
+                label="Serving now"
+                value={registryStats.servingNow}
+                icon={Activity}
+                trend={{ direction: "up", label: `${registryStats.servingNow} of ${registryStats.workers} live` }}
+              />
+              <KpiCard label="Ready revision" value={registryStats.readyRevision} icon={RefreshCw} />
+              <KpiCard
+                label="Needs attention"
+                value={registryStats.needsAttention}
+                icon={ShieldAlert}
+                trend={registryStats.needsAttention > 0 ? { direction: "up", label: "Review recommended", goodWhenUp: false } : { direction: "flat", label: "Nothing flagged" }}
+              />
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
               {filteredWorkers.map((w) => (
                 <Link
