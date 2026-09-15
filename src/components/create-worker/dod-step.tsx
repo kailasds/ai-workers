@@ -1,174 +1,38 @@
-import { Plus, X as XIcon, AlertTriangle, BadgeCheck, Sparkle } from "lucide-react";
-import { EditableField } from "@/components/shared/editable";
+import { ShieldAlert } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { AiPrepCard } from "./worker-brief";
-import { createComposeDefaults } from "./script";
-import type { ComposeState, ComposeDoDSection } from "./types";
-import type { DoDRequirement } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { dodGates } from "./script";
 
-export function DodStep({
-  compose,
-  update,
-}: {
-  compose: ComposeState;
-  update: <K extends keyof ComposeState>(key: K, value: ComposeState[K]) => void;
-}) {
-  const allReqs = compose.dodSections.flatMap((s) => s.requirements);
-  const hasPrivacyCriterion = allReqs.some((r) => /privacy|data protection/i.test(r.label));
-
-  function setSections(sections: ComposeDoDSection[]) {
-    update("dodSections", sections);
-  }
-
-  function updateRequirement(sectionId: string, reqId: string, patch: Partial<DoDRequirement>) {
-    setSections(
-      compose.dodSections.map((s) =>
-        s.id === sectionId ? { ...s, requirements: s.requirements.map((r) => (r.id === reqId ? { ...r, ...patch } : r)) } : s
-      )
-    );
-  }
-
-  function removeRequirement(sectionId: string, reqId: string) {
-    setSections(compose.dodSections.map((s) => (s.id === sectionId ? { ...s, requirements: s.requirements.filter((r) => r.id !== reqId) } : s)));
-  }
-
-  function addRequirement(sectionId: string) {
-    const newReq: DoDRequirement = { id: `custom-${Date.now()}`, label: "New criterion", status: "pending", evidence: [], check: "", owner: "" };
-    setSections(compose.dodSections.map((s) => (s.id === sectionId ? { ...s, requirements: [...s.requirements, newReq] } : s)));
-  }
-
-  function addPrivacyCriterion() {
-    const newReq: DoDRequirement = {
-      id: `custom-${Date.now()}`,
-      label: "Data privacy validation passed",
-      status: "pending",
-      evidence: [],
-      check: "PII handling reviewed against data privacy policy",
-      owner: "AI Sentinel",
-      adjudicator: "Human Reviewer",
-    };
-    setSections(
-      compose.dodSections.map((s, i) => (i === compose.dodSections.length - 1 ? { ...s, requirements: [...s.requirements, newReq] } : s))
-    );
-  }
-
-  function regenerate() {
-    setSections(createComposeDefaults(compose.templateId ?? undefined).dodSections);
-  }
-
+export function DodStep() {
   return (
-    <div className="space-y-5">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-[15px] font-bold text-ink">Definition of Done</p>
-          <p className="mt-0.5 text-[12.5px] text-ink-mute">Define how this Worker will determine that its work is complete.</p>
-        </div>
-        <div className="flex shrink-0 items-center gap-2">
-          <Button size="sm" variant="secondary" onClick={regenerate}>
-            <Sparkle className="h-3.5 w-3.5" strokeWidth={2} />
-            AI suggest criteria
-          </Button>
-          <Button size="sm" onClick={() => addRequirement(compose.dodSections.at(-1)?.id ?? "")}>
-            <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
-            Add criterion
-          </Button>
-        </div>
-      </div>
+    <div className="rounded-card border border-border bg-card shadow-card p-6">
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-accent-ink">Step 4 of 5</p>
+      <h2 className="mt-1 text-[19px] font-bold tracking-[-0.01em] text-ink font-display">Definition of Done</h2>
+      <p className="mt-1.5 text-[12.5px] text-ink-mute">
+        3 release gates, all gating. A release cannot happen while any of these are below their threshold.
+      </p>
 
-      <AiPrepCard title={`AI has prepared ${allReqs.length} success criteria for this Worker.`}>
-        <p className="text-[12px] leading-relaxed text-ink">
-          This Worker cannot mark work complete until every mandatory checkpoint below passes, with evidence attached.
-        </p>
-      </AiPrepCard>
-
-      {!hasPrivacyCriterion && (
-        <div className="rounded-card border border-status-amber/25 bg-status-amber-soft px-4 py-3">
-          <p className="flex items-center gap-1.5 text-[12px] font-semibold text-status-amber">
-            <AlertTriangle className="h-3.5 w-3.5" strokeWidth={2.5} />
-            AI Notice
-          </p>
-          <p className="mt-1 text-[12px] text-ink">This Worker processes customer data, but no data privacy validation has been added.</p>
-          <Button size="sm" className="mt-2" onClick={addPrivacyCriterion}>
-            Add Suggested Criterion
-          </Button>
-        </div>
-      )}
-
-      <div className="space-y-4">
-        {compose.dodSections.map((section) => (
-          <div key={section.id} className="rounded-card border border-border bg-card shadow-card overflow-hidden">
-            <div className="flex items-center justify-between border-b border-border bg-card-sunken px-4 py-2.5">
-              <p className="text-[12.5px] font-semibold text-ink">{section.title}</p>
-              <span className="text-[11px] text-ink-mute">{section.requirements.length} criteria</span>
-            </div>
-
-            <div className="grid grid-cols-[1.5fr_1.5fr_1.1fr_0.9fr_0.6fr_auto] gap-3 border-b border-border px-4 py-2 text-[10.5px] font-semibold uppercase tracking-wider text-ink-mute">
-              <span>Success Criteria</span>
-              <span>Validation Method</span>
-              <span>Evidence</span>
-              <span>Owner / Validator</span>
-              <span>Mandatory</span>
-              <span />
-            </div>
-
-            {section.requirements.map((r) => (
-              <div key={r.id} className="group/row grid grid-cols-[1.5fr_1.5fr_1.1fr_0.9fr_0.6fr_auto] items-start gap-3 border-b border-border px-4 py-2.5 last:border-b-0">
-                <EditableField value={r.label} aiValue={r.label} onChange={(v) => updateRequirement(section.id, r.id, { label: v })} textClassName="text-[12px] text-ink" />
-                <EditableField
-                  value={r.check ?? ""}
-                  aiValue={r.check ?? ""}
-                  onChange={(v) => updateRequirement(section.id, r.id, { check: v })}
-                  placeholder="How is this validated?"
-                  textClassName="text-[12px] text-ink-soft"
-                />
-                <EditableField
-                  value={r.evidence.join(", ")}
-                  aiValue={r.evidence.join(", ")}
-                  onChange={(v) => updateRequirement(section.id, r.id, { evidence: v ? v.split(",").map((x) => x.trim()).filter(Boolean) : [] })}
-                  placeholder="Evidence source"
-                  textClassName="text-[12px] text-ink-soft"
-                />
-                <EditableField
-                  value={r.owner ?? ""}
-                  aiValue={r.owner ?? ""}
-                  onChange={(v) => updateRequirement(section.id, r.id, { owner: v })}
-                  placeholder="Owner"
-                  textClassName="text-[12px] text-ink-soft"
-                />
-                <div className="pt-1">
-                  <Checkbox
-                    checked={r.mandatory !== false}
-                    onCheckedChange={(v) => updateRequirement(section.id, r.id, { mandatory: v === true })}
-                  />
-                </div>
-                <div className="flex items-center gap-2 pt-0.5">
-                  <Badge variant={r.status === "passed" ? "green" : "amber"}>
-                    {r.status === "passed" ? "Passed" : "Suggested"}
-                  </Badge>
-                  <button onClick={() => removeRequirement(section.id, r.id)} className="opacity-0 transition-opacity group-hover/row:opacity-100">
-                    <XIcon className="h-3 w-3 text-ink-faint hover:text-status-red" strokeWidth={2.5} />
-                  </button>
-                </div>
+      <div className="mt-5 divide-y divide-border rounded-[12px] border border-border">
+        {dodGates.map((g) => (
+          <div key={g.id} className="flex items-start justify-between gap-4 p-4">
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-status-red-soft text-status-red">
+                <ShieldAlert className="h-4 w-4" strokeWidth={1.9} />
               </div>
-            ))}
-
-            <button
-              onClick={() => addRequirement(section.id)}
-              className="flex w-full items-center gap-1.5 px-4 py-2.5 text-[11.5px] text-ink-mute transition hover:bg-card-sunken hover:text-accent-ink"
-            >
-              <Plus className="h-3 w-3" strokeWidth={2.5} /> Add criterion
-            </button>
+              <div>
+                <p className="text-[13px] font-semibold text-ink">{g.label}</p>
+                <p className="mt-0.5 text-[12px] leading-relaxed text-ink-mute">{g.description}</p>
+              </div>
+            </div>
+            <Badge variant="red" className="shrink-0">
+              Gating
+            </Badge>
           </div>
         ))}
       </div>
 
-      <p className={cn("flex items-center gap-1.5 text-[11px]", "text-ink-mute")}>
-        <BadgeCheck className="h-3.5 w-3.5 text-accent" strokeWidth={2} />
-        AI validation: {compose.dodSections.filter((s) => s.requirements.length > 0).length} of {compose.dodSections.length} critical
-        completion sections have criteria defined.
+      <p className="mt-4 text-[11px] text-ink-faint">
+        These thresholds are inherited from the bounded context and cannot be loosened here — only the customer's release owner can
+        request a change.
       </p>
     </div>
   );

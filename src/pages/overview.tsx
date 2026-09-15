@@ -1,192 +1,224 @@
-import { Link } from "react-router-dom";
-import { Plus, ArrowUpRight, Bot, Wallet, ClipboardList, LayoutGrid, Users, Activity, AlertTriangle, Flame } from "lucide-react";
+import { useState } from "react";
+import { LayoutGrid, RefreshCw, Layers, Package, Activity, CheckCircle2, Clock, Wallet, Coins, Database, Shuffle, Gauge } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
-import { StatusDot } from "@/components/shared/status-dot";
-import { ExecutionStepper } from "@/components/shared/execution-stepper";
-import { AutonomyBadge } from "@/components/shared/autonomy-badge";
-import { SentinelStatus } from "@/components/shared/sentinel-status";
-import { Button } from "@/components/ui/button";
+import { DeliveryBarChart } from "@/components/shared/delivery-bar-chart";
+import { KpiCard } from "@/components/shared/kpi-card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { workers, orgMetrics, attentionItems, getWorker } from "@/lib/data";
-import { workerStatusColor } from "@/lib/status";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useCountUp } from "@/hooks/use-count-up";
 import { cn } from "@/lib/utils";
+import {
+  deliveryPulse,
+  completedRunsByPeriod,
+  definitionOfDoneEvidence,
+  workersByIdentity,
+  workersByBoundedContext,
+  runsByAutonomy,
+  runCost,
+  modelRouting,
+  workerReadiness,
+  type PortfolioRow,
+} from "@/lib/dashboard-data";
 
-const featured = getWorker("cobol-modernization-worker")!;
-const otherActive = workers.filter((w) => w.id !== featured.id && w.currentWork).slice(0, 3);
-const healthy = workers.filter((w) => w.status !== "blocked" && w.status !== "review").length;
-const attention = workers.filter((w) => w.status === "review").length;
-const blocked = workers.filter((w) => w.status === "blocked").length;
+const ranges = ["7 days", "30 days", "90 days", "All time"] as const;
+
+const pulseIcon: Record<string, React.ComponentType<{ className?: string; strokeWidth?: number }>> = {
+  registered: Layers,
+  packaged: Package,
+  active: Activity,
+  completed: CheckCircle2,
+  avgRun: Clock,
+};
+
+const stageTones = ["blue", "purple", "amber", "green"] as const;
 
 export default function Overview() {
-  const cw = featured.currentWork!;
+  const [range, setRange] = useState<(typeof ranges)[number]>("30 days");
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  function refresh() {
+    if (refreshing) return;
+    setRefreshing(true);
+    setRefreshKey((k) => k + 1);
+    window.setTimeout(() => setRefreshing(false), 550);
+  }
 
   return (
-    <div className="pb-10">
+    <div className="pb-12">
       <PageHeader
-        title="AI Workforce"
-        subtitle="Manage and monitor your digital workforce."
+        title="Dashboard"
+        subtitle="What Workers deliver."
         icon={LayoutGrid}
         tone="accent"
         actions={
           <>
-            <Button asChild variant="secondary">
-              <Link to="/work/assign">
-                <ClipboardList className="h-4 w-4" strokeWidth={2} />
-                Assign Work
-              </Link>
-            </Button>
-            <Button asChild>
-              <Link to="/workers/new">
-                <Plus className="h-4 w-4" strokeWidth={2} />
-                Create Worker
-              </Link>
-            </Button>
+            <div className="flex items-center gap-0.5 rounded-full border border-border bg-card p-0.5">
+              {ranges.map((r) => (
+                <button
+                  key={r}
+                  onClick={() => setRange(r)}
+                  className={cn(
+                    "rounded-full px-3 py-1.5 text-[12px] font-medium transition-colors",
+                    range === r ? "bg-accent text-white" : "text-ink-mute hover:text-ink"
+                  )}
+                >
+                  {r}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={refresh}
+              className="flex h-9 items-center gap-1.5 rounded-lg border border-border-strong bg-card px-3.5 text-[13px] font-medium text-ink-soft transition-colors hover:bg-card-sunken"
+            >
+              <RefreshCw className={cn("h-3.5 w-3.5", refreshing && "animate-spin")} strokeWidth={2} />
+              Refresh
+            </button>
           </>
         }
       />
 
-      <div className="px-8 space-y-5">
-        {/* Metrics — equal-size cards, hierarchy signaled by color, not size */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
-          <MetricCard label="Active Workers" value={String(orgMetrics.activeWorkers)} icon={Users} hero />
-          <MetricCard label="Running Work" value={String(orgMetrics.runningWork)} icon={Activity} tone="blue" />
-          <MetricCard label="Requires Attention" value={String(orgMetrics.requiresAttention)} icon={AlertTriangle} tone="amber" />
-          <MetricCard label="Escalations" value={String(orgMetrics.escalations)} icon={Flame} tone="red" />
-          <div className="rounded-card border border-border bg-card shadow-card p-5">
-            <div className="flex items-center justify-between">
-              <p className="text-[11px] uppercase tracking-wider text-ink-mute">Monthly Spend</p>
-              <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-status-green-soft text-status-green">
-                <Wallet className="h-3.5 w-3.5" strokeWidth={2} />
-              </div>
-            </div>
-            <p className="mt-1.5 text-[26px] leading-none font-bold tracking-[-0.01em] tabular-nums text-ink font-display">
-              ${orgMetrics.monthlySpend.toLocaleString()}
-            </p>
-            <div className="mt-2.5 flex items-center gap-2">
-              <Progress value={56} className="h-1" />
-              <span className="text-[11px] text-ink-mute tabular-nums shrink-0">56%</span>
-            </div>
-          </div>
+      <div className="px-8 space-y-5" key={refreshKey}>
+        {/* All KPIs together, one uniform row */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-4">
+          {deliveryPulse.map((m) => (
+            <PulseKpi key={m.id} metric={m} />
+          ))}
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
-          {/* Workforce activity — dominant column */}
-          <div className="xl:col-span-2 space-y-5">
+        {/* Chart + DoD evidence — sized to their own content, no forced stretch */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-5 items-start">
+          <div className="xl:col-span-2 rounded-card border border-border bg-card shadow-card p-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-[18px] font-bold tracking-[-0.01em] text-ink font-display">
-                Workforce Activity
-              </h2>
+              <div>
+                <h2 className="text-[16px] font-bold text-ink">Completed runs</h2>
+                <p className="text-[12px] text-ink-mute">Daily, for the selected range</p>
+              </div>
+              <Badge variant="outline">Daily</Badge>
             </div>
+            <div className="mt-6">
+              <DeliveryBarChart data={completedRunsByPeriod} height={220} />
+            </div>
+          </div>
 
-            {/* Featured active worker — the one hero card, marked by the brand gradient */}
-            <div className="rounded-card card-hero p-6 text-white">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                    <StatusDot color={workerStatusColor[featured.status]} pulse={featured.status === "working"} />
-                    <span className="text-[11px] uppercase tracking-wider text-white/60">{featured.statusLabel}</span>
-                    <AutonomyBadge level={featured.autonomy} className="bg-white/15 text-white" />
-                    <SentinelStatus state={featured.sentinel} className="bg-white/15 text-white" />
-                  </div>
-                  <Link to={`/workers/${featured.id}`} className="text-[19px] font-bold tracking-[-0.01em] hover:underline underline-offset-4">
-                    {featured.name}
-                  </Link>
-                  <p className="mt-1 text-[13px] text-white/70">Current work: {cw.title}</p>
-                </div>
-                <Button asChild variant="secondary" className="border-white/20 bg-transparent text-white hover:bg-white/10 shrink-0">
-                  <Link to={`/workers/${featured.id}/operations`}>
-                    View Operations
-                    <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.5} />
-                  </Link>
-                </Button>
-              </div>
+          <div className="rounded-card border border-status-green/20 bg-status-green-soft/30 shadow-card p-5">
+            <h3 className="text-[14.5px] font-bold text-ink">Definition of Done evidence</h3>
+            <p className="text-[11px] text-ink-mute">Recorded quality checks</p>
 
-              <div className="mt-6">
-                <ExecutionStepper dark steps={cw.stages.map((s) => ({ label: s.label, state: s.state }))} />
-              </div>
-
-              <div className="mt-6 rounded-[14px] bg-white/5 border border-white/10 px-4 py-3">
-                <p className="text-[12.5px] text-white/80">
-                  <span className="text-white/50">Current stage —</span> {cw.stage}
+            <div className="mt-4 flex items-center gap-5">
+              <div>
+                <p className="text-[10.5px] uppercase tracking-wider text-ink-mute">Criteria</p>
+                <p className="mt-0.5 text-[20px] leading-none font-bold tracking-[-0.01em] tabular-nums text-ink font-display">
+                  {definitionOfDoneEvidence.criteriaMeasured}
                 </p>
               </div>
-
-              <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <HeroStat label="Progress" value={`${cw.progress}%`} />
-                <HeroStat label="Definition of Done" value={`${featured.definitionOfDone.sections.flatMap((s) => s.requirements).filter((r) => r.status === "passed").length} / ${featured.definitionOfDone.sections.flatMap((s) => s.requirements).length}`} />
-                <HeroStat label="Agent mesh" icon={<Bot className="h-3 w-3" strokeWidth={1.5} />} value={`${featured.agentMesh.filter((a) => a.status !== "idle").length} / ${featured.agentMesh.length}`} />
-                <HeroStat label="Task budget" icon={<Wallet className="h-3 w-3" strokeWidth={1.5} />} value={`$${cw.cost.toFixed(2)} / $${cw.budget}`} />
+              <div className="h-8 w-px bg-border" />
+              <div>
+                <p className="text-[10.5px] uppercase tracking-wider text-ink-mute">Recorded checks</p>
+                <p className="mt-0.5 text-[20px] leading-none font-bold tracking-[-0.01em] tabular-nums text-ink font-display">
+                  {definitionOfDoneEvidence.recordedChecks}
+                </p>
               </div>
             </div>
 
-            {/* Other active workers */}
-            {otherActive.length > 0 && (
-              <div className="rounded-card border border-border bg-card shadow-card divide-y divide-border">
-                {otherActive.map((w) => (
-                  <div key={w.id} className="flex items-center justify-between gap-4 px-5 py-4">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <StatusDot color={workerStatusColor[w.status]} pulse={w.status === "working"} />
-                        <Link to={`/workers/${w.id}`} className="text-[13.5px] font-medium text-ink hover:text-accent-ink truncate">
-                          {w.name}
-                        </Link>
-                        <Badge variant={w.status === "review" ? "amber" : w.status === "blocked" ? "red" : "blue"}>
-                          {w.statusLabel}
-                        </Badge>
-                        <AutonomyBadge level={w.autonomy} />
-                      </div>
-                      <p className="mt-1 text-[12.5px] text-ink-mute truncate">{w.currentWork?.title}</p>
+            <div className="mt-4 max-h-[220px] space-y-3 overflow-y-auto border-t border-border pt-4 pr-1">
+              {definitionOfDoneEvidence.criteria.map((c, i) => {
+                const pct = Math.round((c.passed / c.total) * 100);
+                const tone = pct >= 90 ? "green" : pct >= 50 ? "amber" : "red";
+                return (
+                  <div key={c.id}>
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="flex min-w-0 items-start gap-1.5 text-[12px] text-ink">
+                        <StatusBullet tone={tone} />
+                        <span className="truncate">{c.label}</span>
+                      </span>
+                      <span className="shrink-0 text-[11.5px] font-semibold tabular-nums text-ink">
+                        {c.passed}/{c.total}
+                      </span>
                     </div>
-                    <Button asChild size="sm" variant="secondary" className="shrink-0">
-                      <Link to={`/workers/${w.id}`}>{w.status === "review" ? "Review" : "View"}</Link>
-                    </Button>
+                    {c.hasBar && (
+                      <div className="mt-1.5 ml-3.5 h-1.5 overflow-hidden rounded-full bg-card-sunken">
+                        <BarFill pct={pct} tone={tone} delay={i * 80} />
+                      </div>
+                    )}
                   </div>
-                ))}
-              </div>
-            )}
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Portfolio (tabbed) + a compact operational stack alongside it */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-5 items-start">
+          <div className="xl:col-span-2 rounded-card border border-border bg-card shadow-card p-5">
+            <div className="flex items-center justify-between">
+              <h2 className="text-[15px] font-bold text-ink">Portfolio view</h2>
+              <span className="text-[11px] text-ink-faint">Registered, sealed and run</span>
+            </div>
+            <Tabs defaultValue="identity" className="mt-3">
+              <TabsList>
+                <TabsTrigger value="identity">Identity</TabsTrigger>
+                <TabsTrigger value="context">Bounded context</TabsTrigger>
+                <TabsTrigger value="autonomy">Autonomy</TabsTrigger>
+              </TabsList>
+              <TabsContent value="identity">
+                <PortfolioRows rows={workersByIdentity} />
+              </TabsContent>
+              <TabsContent value="context">
+                <PortfolioRows rows={workersByBoundedContext} />
+              </TabsContent>
+              <TabsContent value="autonomy">
+                <PortfolioRows rows={runsByAutonomy} tone="purple" />
+              </TabsContent>
+            </Tabs>
           </div>
 
-          {/* Right rail */}
           <div className="space-y-5">
-            <div className="rounded-card border border-border bg-card shadow-card p-5">
-              <div className="flex items-center justify-between">
-                <h3 className="text-[16px] font-bold text-ink">Requires Attention</h3>
-                <Badge variant="amber">{attentionItems.length}</Badge>
+            <div className="rounded-card border border-border bg-card shadow-card p-4">
+              <h3 className="text-[12.5px] font-bold text-ink">What runs cost</h3>
+              <div className="mt-3 space-y-2.5">
+                <CostRow icon={Wallet} label="Model cost / run" value={`$${runCost.modelCostPerRun.toFixed(2)}`} />
+                <CostRow icon={Coins} label="Tokens / run" value={runCost.tokensPerRun} />
+                <CostRow icon={Database} label="Tokens this period" value={runCost.tokensInPeriod} />
               </div>
-              <div className="mt-3 space-y-1">
-                {attentionItems.map((item) => (
-                  <div key={item.id} className="flex items-start gap-3 rounded-[12px] px-2.5 py-2.5 -mx-2.5 hover:bg-card-sunken transition-colors">
-                    <span
-                      className={cn(
-                        "mt-1 h-1.5 w-1.5 shrink-0 rounded-full",
-                        item.severity === "red" ? "bg-status-red" : "bg-status-amber"
-                      )}
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[12.5px] font-medium text-ink">{item.type}</p>
-                      <p className="text-[11.5px] text-ink-mute truncate">{item.worker}</p>
-                      <p className="mt-0.5 text-[12px] text-ink-soft">{item.detail}</p>
-                    </div>
-                    <Button size="sm" variant="ghost" className="shrink-0 -mr-1.5" asChild>
-                      <Link to="/operations">Review</Link>
-                    </Button>
-                  </div>
+            </div>
+
+            <div className="rounded-card border border-status-amber/20 bg-status-amber-soft/30 shadow-card p-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-[12.5px] font-bold text-ink">Model routing</h3>
+                <div className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-status-amber-soft text-status-amber">
+                  <Shuffle className="h-3 w-3" strokeWidth={2} />
+                </div>
+              </div>
+              <p className="mt-2 text-[13px] font-semibold text-ink">{modelRouting.model}</p>
+              <p className="text-[11px] text-ink-mute">{modelRouting.stagesRouted} stages routed here</p>
+              <div className="mt-2 flex max-h-[76px] flex-wrap gap-1.5 overflow-y-auto pr-1">
+                {modelRouting.stages.map((s, i) => (
+                  <Badge key={s} variant={stageTones[i % stageTones.length]}>
+                    {s}
+                  </Badge>
                 ))}
               </div>
             </div>
 
-            <div className="rounded-card border border-border bg-card shadow-card p-5">
-              <h3 className="text-[16px] font-bold text-ink">Workforce Health</h3>
-              <div className="mt-4 flex h-2 overflow-hidden rounded-full bg-card-sunken">
-                <div className="h-full bg-status-green" style={{ width: `${(healthy / workers.length) * 100}%` }} />
-                <div className="h-full bg-status-amber" style={{ width: `${(attention / workers.length) * 100}%` }} />
-                <div className="h-full bg-status-red" style={{ width: `${(blocked / workers.length) * 100}%` }} />
+            <div className="rounded-card border border-border bg-card shadow-card p-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-[12.5px] font-bold text-ink">Worker readiness</h3>
+                <Gauge className="h-3.5 w-3.5 text-ink-faint" strokeWidth={1.9} />
               </div>
-              <div className="mt-4 space-y-2.5">
-                <HealthRow color="green" label="Healthy" value={`${healthy} Workers`} />
-                <HealthRow color="amber" label="Attention" value={`${attention} Workers`} />
-                <HealthRow color="red" label="Blocked" value={`${blocked} Workers`} />
+              <div className="mt-3 flex items-center gap-6">
+                <div>
+                  <p className="text-[10.5px] uppercase tracking-wider text-ink-mute">Ready</p>
+                  <p className="mt-0.5 text-[20px] leading-none font-bold tracking-[-0.01em] tabular-nums text-ink font-display">
+                    {workerReadiness.ready}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10.5px] uppercase tracking-wider text-ink-mute">Active</p>
+                  <p className="mt-0.5 text-[20px] leading-none font-bold tracking-[-0.01em] tabular-nums text-status-green font-display">
+                    {workerReadiness.active}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -196,87 +228,81 @@ export default function Overview() {
   );
 }
 
-const metricIconTone: Record<string, string> = {
-  blue: "bg-status-blue-soft text-status-blue",
-  amber: "bg-status-amber-soft text-status-amber",
-  red: "bg-status-red-soft text-status-red",
-  green: "bg-status-green-soft text-status-green",
-};
+function PulseKpi({ metric }: { metric: (typeof deliveryPulse)[number] }) {
+  const Icon = pulseIcon[metric.id] ?? Activity;
+  const animated = useCountUp(metric.value, { duration: 750 });
+  const display = metric.suffix ? `${animated.toFixed(1)}${metric.suffix}` : String(Math.round(animated));
+  return <KpiCard label={metric.label} value={display} icon={Icon} trend={metric.trend} />;
+}
 
-function MetricCard({
+function PortfolioRows({ rows, tone = "accent" }: { rows: PortfolioRow[]; tone?: "accent" | "purple" }) {
+  return (
+    <div className="max-h-[260px] space-y-4 overflow-y-auto pr-1">
+      {rows.map((row) => (
+        <div key={row.id}>
+          <div className="flex items-baseline justify-between gap-3">
+            <p className="min-w-0 truncate text-[12.5px] font-medium text-ink">{row.label}</p>
+            <Badge variant={tone === "purple" ? "purple" : "accent"} className="shrink-0">
+              {row.value}
+            </Badge>
+          </div>
+          <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-card-sunken">
+            <div
+              className={cn("h-full rounded-full transition-all duration-500", tone === "purple" ? "bg-status-purple" : "bg-accent")}
+              style={{ width: `${Math.max(row.pct, 2)}%` }}
+            />
+          </div>
+          <p className="mt-1 truncate text-[10.5px] text-ink-mute">{row.sub}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function StatusBullet({ tone }: { tone: "green" | "amber" | "red" }) {
+  return (
+    <span
+      className={cn(
+        "mt-1 h-1.5 w-1.5 shrink-0 rounded-full",
+        tone === "green" && "bg-status-green",
+        tone === "amber" && "bg-status-amber",
+        tone === "red" && "bg-status-red"
+      )}
+    />
+  );
+}
+
+function BarFill({ pct, tone, delay }: { pct: number; tone: "green" | "amber" | "red"; delay: number }) {
+  const width = useCountUp(pct, { duration: 700 });
+  return (
+    <div
+      className={cn(
+        "h-full rounded-full",
+        tone === "green" && "bg-status-green",
+        tone === "amber" && "bg-status-amber",
+        tone === "red" && "bg-status-red"
+      )}
+      style={{ width: `${width}%`, transitionDelay: `${delay}ms` }}
+    />
+  );
+}
+
+function CostRow({
+  icon: Icon,
   label,
   value,
-  tone,
-  hero,
-  icon: Icon,
 }: {
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
   label: string;
   value: string;
-  tone?: "blue" | "amber" | "red";
-  hero?: boolean;
-  icon?: React.ComponentType<{ className?: string; strokeWidth?: number }>;
 }) {
-  if (hero) {
-    return (
-      <div className="rounded-card card-hero p-5 text-white">
-        <div className="flex items-center justify-between">
-          <p className="text-[11px] uppercase tracking-wider text-white/60">{label}</p>
-          {Icon && (
-            <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white/15 text-white">
-              <Icon className="h-3.5 w-3.5" strokeWidth={2} />
-            </div>
-          )}
-        </div>
-        <p className="mt-1.5 text-[26px] leading-none font-bold tracking-[-0.01em] tabular-nums font-display">
-          {value}
-        </p>
-      </div>
-    );
-  }
   return (
-    <div className="rounded-card border border-border bg-card shadow-card p-5">
-      <div className="flex items-center justify-between">
-        <p className="text-[11px] uppercase tracking-wider text-ink-mute">{label}</p>
-        {Icon && (
-          <div className={cn("grid h-7 w-7 shrink-0 place-items-center rounded-full", tone ? metricIconTone[tone] : "bg-card-sunken text-ink-soft")}>
-            <Icon className="h-3.5 w-3.5" strokeWidth={2} />
-          </div>
-        )}
-      </div>
-      <p
-        className={cn(
-          "mt-1.5 text-[26px] leading-none font-bold tracking-[-0.01em] tabular-nums font-display",
-          tone === "amber" && "text-status-amber",
-          tone === "red" && "text-status-red",
-          !tone && "text-ink"
-        )}
-      >
-        {value}
-      </p>
-    </div>
-  );
-}
-
-function HeroStat({ label, value, icon }: { label: string; value: string; icon?: React.ReactNode }) {
-  return (
-    <div>
-      <p className="flex items-center gap-1 text-[10.5px] uppercase tracking-wider text-white/45">
-        {icon}
-        {label}
-      </p>
-      <p className="mt-1 text-[16px] tabular-nums text-white font-display">{value}</p>
-    </div>
-  );
-}
-
-function HealthRow({ color, label, value }: { color: "green" | "amber" | "red"; label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between text-[12.5px]">
-      <span className="flex items-center gap-2 text-ink-soft">
-        <StatusDot color={color} />
-        {label}
+    <div className="flex items-center justify-between gap-3">
+      <span className="flex min-w-0 items-center gap-2 text-[11.5px] text-ink-mute">
+        <Icon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.9} />
+        <span className="truncate">{label}</span>
       </span>
-      <span className="tabular-nums text-ink font-medium">{value}</span>
+      <span className="shrink-0 text-[12.5px] font-semibold tabular-nums text-ink">{value}</span>
     </div>
   );
 }

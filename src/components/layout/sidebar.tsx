@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Gauge, Pencil, Users, Library, BrainCircuit, ShieldAlert, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Gauge, Wrench, Package, Send, Users, Library, BrainCircuit, ShieldAlert, UserCog, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 const primaryNav = [
-  { to: "/", label: "Dashboard", description: "What needs attention", icon: Gauge, end: true },
-  { to: "/workers/new", label: "Compose", description: "Create and configure a Worker", icon: Pencil },
-  { to: "/workers", label: "Registry", description: "What Workers exist", icon: Users },
-  { to: "/knowledge", label: "Knowledge", description: "What knowledge exists", icon: Library },
-  { to: "/learning", label: "Learning", description: "How the platform is learning", icon: BrainCircuit },
-  { to: "/sentinel", label: "Sentinel", description: "What watches and protects", icon: ShieldAlert },
+  { to: "/", label: "Dashboard", description: "What Workers deliver", icon: Gauge, end: true },
+  { to: "/workers/new", label: "Compose", description: "Create Workers", icon: Wrench },
+  { to: "/packaging", label: "Packaging", description: "Seal composed Workers", icon: Package },
+  { to: "/delivery", label: "Customer delivery", description: "Prepare for a customer", icon: Send },
+  { to: "/workers", label: "Worker Registry", description: "Manage Workers", icon: Users, end: true },
+  { to: "/knowledge", label: "Knowledge", description: "TCS knowledge", icon: Library },
+  { to: "/learning", label: "Learning", description: "What Workers add", icon: BrainCircuit },
+  { to: "/sentinel", label: "Sentinel", description: "Oversight", icon: ShieldAlert },
 ];
 
 const COLLAPSE_KEY = "ai-worker-platform:sidebar-collapsed";
@@ -63,6 +65,38 @@ export function Sidebar() {
       </nav>
 
       <div className="border-t border-border p-3">
+        {collapsed ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <NavLink
+                to="/user-management"
+                className={({ isActive }) =>
+                  cn(
+                    "mb-1 flex items-center justify-center rounded-lg p-2.5 transition-colors",
+                    isActive ? "bg-card-sunken text-ink" : "text-ink-mute hover:bg-card-sunken hover:text-ink"
+                  )
+                }
+              >
+                <UserCog className="h-[16px] w-[16px] shrink-0" strokeWidth={1.75} />
+              </NavLink>
+            </TooltipTrigger>
+            <TooltipContent side="right">User management</TooltipContent>
+          </Tooltip>
+        ) : (
+          <NavLink
+            to="/user-management"
+            className={({ isActive }) =>
+              cn(
+                "mb-1 flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[12.5px] font-medium transition-colors",
+                isActive ? "bg-card-sunken text-ink" : "text-ink-mute hover:bg-card-sunken hover:text-ink"
+              )
+            }
+          >
+            <UserCog className="h-[16px] w-[16px] shrink-0" strokeWidth={1.75} />
+            User management
+          </NavLink>
+        )}
+
         <button
           onClick={toggleCollapsed}
           className={cn(

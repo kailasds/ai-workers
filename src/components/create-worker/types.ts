@@ -1,82 +1,106 @@
-import type { DeploymentConfig, DoDRequirement, ModelConfig, OperatingMode } from "@/lib/types";
+import type { ComponentType } from "react";
 
-export type StepId = "purpose" | "capabilities" | "models" | "dod" | "customer" | "safety" | "package";
+export type StepId = "identity" | "intent" | "brain" | "dod" | "autonomy";
 
-export interface WorkerTemplate {
+type Icon = ComponentType<{ className?: string; strokeWidth?: number }>;
+
+export interface WorkerTypeOption {
   id: string;
   name: string;
   description: string;
-  capabilityCount: number;
-  suggestedModels: string;
-  suggestedSafety: string;
-  suggestedDoDCount: number;
-  namePrefill: string;
-  objectivePrefill: string;
-  inputBoundaryPrefill: string;
-  businessContextPrefill: string;
-  willList: string[];
-  skills: string[];
-  tools: string[];
+  icon: Icon;
+  available: boolean;
 }
 
-export interface ImportedPackage {
+export interface IdentityOption {
   id: string;
   name: string;
-  team: string;
-  version: string;
-  agents: number;
-  skills: string[];
-  tools: string[];
-  apis: number;
-  lastUpdated: string;
-  compatibility: "Compatible" | "Needs Review";
+  description: string;
+  scopeCount: number;
+  available: boolean;
 }
 
-export type ConfigControl = "platform" | "view" | "customer";
+export interface BusinessDomainOption {
+  id: string;
+  name: string;
+  description: string;
+  skillCount: number;
+  dslCount: number;
+}
 
-export interface CustomerConfigItem {
+export interface BoundedContextOption {
+  id: string;
+  name: string;
+  description: string;
+  icon: Icon;
+  produces: string;
+  procedureLabel: string;
+  procedureStages: number;
+  excludedActions: string[];
+}
+
+export interface AutonomyLevelOption {
+  level: 1 | 2 | 3 | 4;
+  name: string;
+  description: string;
+  release: string;
+  whereItMayRun: string;
+  needsAPerson: string;
+}
+
+export interface DodGate {
   id: string;
   label: string;
-  control: ConfigControl;
-  requiresApproval: boolean;
+  description: string;
 }
 
-export interface ConfigChangeLogItem {
+export interface SampleProject {
   id: string;
-  setting: string;
-  from: string;
-  to: string;
-  changedBy: string;
-  status: "Pending Review" | "Approved" | "Rejected";
-  timestamp: string;
+  name: string;
+  path: string;
 }
 
-export interface ComposeDoDSection {
+export type BrainFacet = "skill" | "dsl" | "eval" | "meta";
+
+export interface AssemblyLogEntry {
   id: string;
-  title: string;
-  requirements: DoDRequirement[];
+  facet: BrainFacet;
+  label: string;
+  detail: string;
+}
+
+export interface WorkerIntentState {
+  agentCount: number;
+  harnessLabel: string;
+  tools: string[];
+}
+
+export interface BrainState {
+  status: "idle" | "assembling" | "done";
+  read: number;
+  bound: number;
+  screenedOut: number;
+  skillsCount: number;
+  dslsCount: number;
+  evalsCount: number;
+  sentinelState: string;
 }
 
 export interface ComposeState {
-  templateId: string | null;
-  name: string;
-  owner: string;
-  businessContext: string;
-  objective: string;
-  inputBoundary: string;
-  willList: string[];
-  wontList: string[];
-  capabilitiesMode: "build" | "import";
-  skills: string[];
-  tools: string[];
-  importedPackage: ImportedPackage | null;
-  operatingMode: OperatingMode;
-  alwaysRequireApproval: string[];
-  modelConfig: ModelConfig;
-  deployment: DeploymentConfig;
-  dodSections: ComposeDoDSection[];
-  perTaskLimit: number;
-  monthlyBudget: number;
-  customerConfig: CustomerConfigItem[];
-  syncMethod: string;
+  workerTypeId: string | null;
+  identityId: string | null;
+  businessDomainId: string | null;
+  boundedContextId: string;
+  autoAssemblePreset: boolean;
+  identityConfirmed: boolean;
+  workerIntent: WorkerIntentState;
+  intentConfirmed: boolean;
+  brain: BrainState;
+  dodConfirmed: boolean;
+  autonomyLevel: 1 | 2 | 3 | 4;
+  autonomyConfirmed: boolean;
+  revision: number;
+  selectedSampleProjects: string[];
+  publishToGitLab: boolean;
+  packageState: "idle" | "building" | "built";
 }
