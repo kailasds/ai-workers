@@ -1,0 +1,204 @@
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { Plus, Search, ArrowUpDown, ShieldCheck, Users, UsersRound, CircleDot, Zap, ListChecks, CheckCircle2, Award } from "lucide-react";
+import { PageHeader } from "@/components/shared/page-header";
+import { AutonomyBadge } from "@/components/shared/autonomy-badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { workers } from "@/lib/data";
+import { dodStatusMeta, workerStatusColor } from "@/lib/status";
+import { getWorkerMaturity, type MaturityTier } from "@/lib/registry/maturity";
+
+const maturityTone: Record<MaturityTier, "neutral" | "amber" | "onyx"> = {
+  Silver: "neutral",
+  Gold: "amber",
+  Platinum: "onyx",
+};
+
+const domains = Array.from(new Set(workers.map((w) => w.domain)));
+const environments = Array.from(new Set(workers.map((w) => w.identity.environment)));
+
+type SortKey = "name" | "cost";
+
+export default function WorkersDirectory() {
+  const [query, setQuery] = useState("");
+  const [domain, setDomain] = useState<string>("all");
+  const [status, setStatus] = useState<string>("all");
+  const [autonomy, setAutonomy] = useState<string>("all");
+  const [environment, setEnvironment] = useState<string>("all");
+  const [sort, setSort] = useState<SortKey>("name");
+
+  const filtered = useMemo(() => {
+    let list = workers.filter((w) => {
+      const matchesQuery =
+        query.trim() === "" ||
+        w.name.toLowerCase().includes(query.toLowerCase()) ||
+        w.role.toLowerCase().includes(query.toLowerCase());
+      const matchesDomain = domain === "all" || w.domain === domain;
+      const matchesStatus = status === "all" || w.status === status;
+      const matchesAutonomy = autonomy === "all" || w.autonomy === autonomy;
+      const matchesEnv = environment === "all" || w.identity.environment === environment;
+      return matchesQuery && matchesDomain && matchesStatus && matchesAutonomy && matchesEnv;
+    });
+    list = [...list].sort((a, b) => (sort === "cost" ? a.costPerTask - b.costPerTask : a.name.localeCompare(b.name)));
+    return list;
+  }, [query, domain, status, autonomy, environment, sort]);
+
+  return (
+    <div className="pb-10">
+      <PageHeader
+        title="Registry"
+        subtitle="What Workers exist, what can they do, how mature are they, and how are they performing?"
+        icon={Users}
+        tone="blue"
+        actions={
+          <Button asChild>
+            <Link to="/workers/new">
+              <Plus className="h-4 w-4" strokeWidth={2} />
+              Create AI Worker
+            </Link>
+          </Button>
+        }
+      />
+
+      <div className="px-8 space-y-4">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-ink-faint" strokeWidth={1.5} />
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search workers…"
+              className="rounded-full pl-9"
+            />
+          </div>
+
+          <Select value={domain} onValueChange={setDomain}>
+            <SelectTrigger className="w-44">
+              <SelectValue placeholder="Domain" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All domains</SelectItem>
+              {domains.map((d) => (
+                <SelectItem key={d} value={d}>
+                  {d}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={status} onValueChange={setStatus}>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All statuses</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="working">Working</SelectItem>
+              <SelectItem value="review">Needs Review</SelectItem>
+              <SelectItem value="paused">Paused</SelectItem>
+              <SelectItem value="blocked">Blocked</SelectItem>
+              <SelectItem value="idle">Idle</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={autonomy} onValueChange={setAutonomy}>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Autonomy" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All autonomy levels</SelectItem>
+              <SelectItem value="supervised">Supervised</SelectItem>
+              <SelectItem value="guarded">Guarded</SelectItem>
+              <SelectItem value="autonomous">Autonomous</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={environment} onValueChange={setEnvironment}>
+            <SelectTrigger className="w-44">
+              <SelectValue placeholder="Environment" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All environments</SelectItem>
+              {environments.map((e) => (
+                <SelectItem key={e} value={e}>
+                  {e}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <button
+            onClick={() => setSort(sort === "name" ? "cost" : "name")}
+            className="flex h-9 items-center gap-1.5 rounded-full border border-border-strong bg-card px-3.5 text-[12.5px] font-medium text-ink-soft transition hover:bg-card-sunken ml-auto"
+          >
+            <ArrowUpDown className="h-3.5 w-3.5" strokeWidth={1.5} />
+            Sort: {sort === "name" ? "Name" : "Cost"}
+          </button>
+        </div>
+
+        <div className="rounded-card border border-border bg-card shadow-card overflow-hidden">
+          <div className="overflow-x-auto">
+          <div className="min-w-[980px] grid grid-cols-[2fr_0.9fr_0.9fr_0.9fr_1.4fr_1.2fr_0.9fr] items-center gap-4 border-b border-accent-border bg-accent-soft px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-accent-ink">
+            <span className="flex items-center gap-1.5"><UsersRound className="h-3 w-3 text-accent" strokeWidth={2} />Worker</span>
+            <span className="flex items-center gap-1.5"><CircleDot className="h-3 w-3 text-accent" strokeWidth={2} />Status</span>
+            <span className="flex items-center gap-1.5"><Award className="h-3 w-3 text-accent" strokeWidth={2} />Maturity</span>
+            <span className="flex items-center gap-1.5"><Zap className="h-3 w-3 text-accent" strokeWidth={2} />Autonomy</span>
+            <span className="flex items-center gap-1.5"><ListChecks className="h-3 w-3 text-accent" strokeWidth={2} />Active Work</span>
+            <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3 w-3 text-accent" strokeWidth={2} />Definition of Done</span>
+            <span className="flex items-center gap-1.5"><ShieldCheck className="h-3 w-3 text-accent" strokeWidth={2} />Governance</span>
+          </div>
+
+          {filtered.map((w) => {
+            const dod = dodStatusMeta[w.definitionOfDone.overallStatus];
+            const maturity = getWorkerMaturity(w);
+            return (
+              <Link
+                key={w.id}
+                to={`/workers/${w.id}`}
+                className="min-w-[980px] grid grid-cols-[2fr_0.9fr_0.9fr_0.9fr_1.4fr_1.2fr_0.9fr] items-center gap-4 border-b border-border px-5 py-3.5 last:border-b-0 transition-colors hover:bg-card-sunken/50"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback>{w.avatarInitials}</AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0">
+                    <p className="truncate text-[13.5px] font-medium text-ink">{w.name}</p>
+                    <p className="truncate text-[12px] text-ink-mute">{w.role}</p>
+                  </div>
+                </div>
+                <Badge variant={workerStatusColor[w.status]} dot>
+                  {w.statusLabel}
+                </Badge>
+                <Badge variant={maturityTone[maturity.tier]}>{maturity.tier}</Badge>
+                <AutonomyBadge level={w.autonomy} />
+                <span className="truncate text-[12.5px] text-ink-soft">{w.currentWork?.title ?? "—"}</span>
+                <Badge variant={dod.color}>{dod.label}</Badge>
+                <span className="flex items-center gap-1.5 text-[12px] text-ink-soft">
+                  <ShieldCheck className="h-3.5 w-3.5 text-ink-faint shrink-0" strokeWidth={1.75} />
+                  {w.governance.policies.length > 0 ? `${w.governance.policies.length} policies` : "Not configured"}
+                </span>
+              </Link>
+            );
+          })}
+          </div>
+
+          {filtered.length === 0 && (
+            <div className="px-5 py-14 text-center">
+              <p className="text-[13px] text-ink-mute">No workers match these filters.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
