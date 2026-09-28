@@ -1,0 +1,443 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=block" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: #0C2426; }
+  body { font-family: Inter, sans-serif; -webkit-font-smoothing: antialiased; color: #fff; }
+  #root { position: absolute; inset: 0; overflow: hidden; background: linear-gradient(165deg, #0F2A2E, #0C2426); }
+  #texture { position: absolute; inset: 0; background-image: repeating-radial-gradient(circle at 85% 12%, rgba(255,255,255,0.035) 0 1px, transparent 1px 13px); }
+  .glow { position: absolute; border-radius: 50%; }
+  .abs { position: absolute; }
+  .cap { position: absolute; font-weight: 800; letter-spacing: -0.025em; line-height: 1.08; white-space: nowrap; }
+  .cap .w { display: inline-block; }
+  .accent { color: #F2662A; }
+  .eyebrow { position: absolute; display: flex; align-items: center; gap: 12px; font-family: "IBM Plex Mono", monospace; font-weight: 600; font-size: 19px; letter-spacing: 0.22em; color: #F2662A; white-space: nowrap; }
+  .eyebrow .ic { width: 34px; height: 34px; border-radius: 10px; background: rgba(242,102,42,0.14); display: grid; place-items: center; }
+  .eyebrow .ic svg { width: 19px; height: 19px; }
+  .shot { position: absolute; overflow: hidden; }
+  .shot img { display: block; width: 100%; height: 100%; }
+  #stage { position: absolute; left: 120px; top: 222px; width: 1680px; height: 780px; border-radius: 18px; overflow: hidden; background: #fff; box-shadow: 0 40px 100px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06); }
+  .cam { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  .cam > img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .ring { position: absolute; border: 3px solid #F2662A; border-radius: 12px; }
+  #strip { position: absolute; left: 0; right: 0; top: 0; height: 46px; background: #F7F8F8; border-bottom: 1px solid #E5E7EA; display: flex; align-items: center; gap: 10px; padding: 0 26px; }
+  #strip span.l { position: relative; font-size: 15px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #9CA3AF; }
+  #strip span.l u { position: absolute; left: 0; bottom: -7px; height: 3px; border-radius: 2px; background: #F2662A; display: block; }
+  #strip svg { width: 16px; height: 16px; color: #9CA3AF; }
+  #cursor { position: absolute; left: 0; top: 0; width: 40px; height: 40px; transform-origin: 6px 4px; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.35)); }
+  .ripple { position: absolute; border-radius: 50%; border: 3px solid #F2662A; }
+  .logo { display: inline-grid; place-items: center; border-radius: 14px; background: rgba(255,255,255,0.15); font-weight: 800; color: #C9D2D0; }
+  .node { position: absolute; display: flex; align-items: center; gap: 12px; height: 70px; padding: 0 26px 0 18px; border-radius: 35px; background: #fff; color: #0F2A2E; font-size: 25px; font-weight: 700; box-shadow: 0 18px 40px rgba(0,0,0,0.35); white-space: nowrap; }
+  .node .ic { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: #E4EDEC; color: #29524F; }
+  .node .ic svg { width: 24px; height: 24px; }
+  .arclabel { position: absolute; font-size: 18px; font-weight: 600; color: #8FA19E; white-space: nowrap; }
+  #rail { position: absolute; left: 0; right: 0; top: 1026px; display: flex; justify-content: center; gap: 30px; font-family: "IBM Plex Mono", monospace; font-size: 15px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+  #rail span { position: relative; color: rgba(201,210,208,0.45); }
+  #rail span u { position: absolute; left: 0; right: 0; bottom: -8px; height: 2px; background: #F2662A; display: block; transform-origin: 0 50%; }
+  .navhl { position: absolute; border-radius: 10px; background: rgba(242,102,42,0.16); box-shadow: inset 3px 0 0 #F2662A; }
+</style>
+</head>
+<body>
+<div id="root">
+  <div id="texture"></div>
+  <div class="glow" id="glowA"></div>
+  <div class="glow" id="glowB"></div>
+
+  <!-- hook -->
+  <div id="hookLines"></div>
+  <div id="side" class="shot" style="border-radius:18px; box-shadow:0 40px 90px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08)">
+    <img src="cap/dashboard.png" style="position:absolute; left:0; top:0; width:1600px; height:900px" />
+    <div id="navhl"></div>
+  </div>
+
+  <!-- reveal -->
+  <div id="shell" class="shot" style="border-radius:18px; box-shadow:0 50px 120px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.08)"><img src="cap/dashboard.png" /></div>
+  <div id="lockup" class="abs" style="left:0; right:0; top:104px; text-align:center">
+    <div id="lkEye" style="display:inline-block; font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:19px; letter-spacing:0.22em; color:#F2662A">TCS</div>
+    <div id="lkMark" style="margin-top:14px; display:flex; align-items:center; justify-content:center; gap:22px">
+      <span class="logo" style="width:82px; height:82px; font-size:40px">A</span>
+      <span style="font-size:92px; font-weight:800; letter-spacing:-0.03em">AI Worker Platform</span>
+    </div>
+    <div id="lkTag" style="margin-top:18px; font-size:34px; font-weight:500; color:#C9D2D0">Do the work. Learn from it. <span style="color:#fff; font-weight:700">Stay governed.</span></div>
+  </div>
+
+  <!-- chapters -->
+  <div id="eyebrows"></div>
+  <div id="caps"></div>
+  <div id="stage">
+    <div id="shots"></div>
+    <div id="strip"></div>
+  </div>
+  <div id="rail"></div>
+
+  <!-- outro -->
+  <div id="o1" class="cap" style="left:150px; top:372px; font-size:78px"></div>
+  <div id="o2" class="cap accent" style="left:150px; top:466px; font-size:78px"></div>
+  <div id="oLock" class="abs" style="left:152px; top:640px; display:flex; align-items:center; gap:18px">
+    <span class="logo" style="width:60px; height:60px; font-size:29px">A</span>
+    <span>
+      <span style="display:block; font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:15px; letter-spacing:0.22em; color:#F2662A">TCS</span>
+      <span style="display:block; font-size:32px; font-weight:800; letter-spacing:-0.02em; margin-top:2px">AI Worker Platform</span>
+    </span>
+  </div>
+  <svg id="loop" width="1920" height="1080" style="position:absolute; left:0; top:0"></svg>
+  <div id="loopNodes"></div>
+
+  <div id="ripples"></div>
+  <svg id="cursor" viewBox="0 0 40 40"><path d="M6 4 L6 31 L13.2 24.6 L18.4 36 L23.4 33.8 L18.3 22.6 L28 22.4 Z" fill="#fff" stroke="#0F2A2E" stroke-width="2.2" stroke-linejoin="round"/></svg>
+</div>
+
+<script>
+const META = __META__;
+const B = META.boxes;
+const $ = (s) => document.getElementById(s);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const lerp = (a, b, p) => a + (b - a) * p;
+const eOut = (p) => 1 - Math.pow(1 - p, 3);
+const eIn = (p) => p * p * p;
+const eIO = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
+const eBack = (p) => { const c1 = 1.4, c3 = c1 + 1; return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); };
+const set = (el, o) => Object.assign(el.style, o);
+const ctr = (b, fx = 0.5, fy = 0.5) => [b.x + b.w * fx, b.y + b.h * fy];
+const html = (s) => { const d = document.createElement("div"); d.innerHTML = s.trim(); return d.firstElementChild; };
+
+// ---------------- captions ----------------
+const caps = [];
+function makeCap(parent, words, tin, tout, style, stg = 0.05) {
+  const el = html(`<div class="cap"></div>`);
+  Object.assign(el.style, style);
+  el.innerHTML = words.map((w) => `<span class="w${w.a ? " accent" : ""}">${w.t}</span>`).join(" ");
+  parent.appendChild(el);
+  const c = { el, spans: [...el.querySelectorAll(".w")], tin, tout, stg };
+  caps.push(c);
+  return c;
+}
+const W = (s, accentFrom = Infinity) => s.split(" ").map((t, i) => ({ t, a: i >= accentFrom }));
+function renderCap(c, t) {
+  let vis = 0;
+  c.spans.forEach((s, i) => {
+    const pin = eOut(seg(t, c.tin + i * c.stg, c.tin + i * c.stg + 0.42));
+    const pout = eIn(seg(t, c.tout + i * 0.02, c.tout + i * 0.02 + 0.2));
+    const o = pin * (1 - pout);
+    vis = Math.max(vis, o);
+    set(s, { opacity: o, transform: `translateY(${(1 - pin) * 30 - pout * 18}px)` });
+  });
+  c.el.style.visibility = vis > 0.001 ? "visible" : "hidden";
+}
+
+// ---------------- hook ----------------
+const hookSpec = [
+  { text: "Build AI Workers.", t: 0.2, nav: ["/workers/new", "/packaging", "/delivery"] },
+  { text: "Run them.", t: 0.85, nav: ["/workers", "/"] },
+  { text: "Let them learn.", t: 1.5, nav: ["/learning"] },
+  { text: "Decide what becomes trusted.", t: 2.15, nav: ["/sentinel", "/knowledge"], accent: true },
+];
+hookSpec.forEach((h, i) => makeCap($("hookLines"), W(h.text, h.accent ? 0 : Infinity), h.t, 4.75, { left: "150px", top: `${322 + i * 104}px`, fontSize: "82px" }, 0.06));
+const navEls = [];
+hookSpec.forEach((h) => h.nav.forEach((href) => {
+  const n = META.nav.find((x) => x.href === href);
+  const el = html(`<div class="navhl"></div>`);
+  set(el, { left: `${n.x}px`, top: `${n.y}px`, width: `${n.w}px`, height: `${n.h}px` });
+  $("navhl").appendChild(el);
+  navEls.push({ el, t: h.t + 0.15 });
+}));
+
+// ---------------- chapters ----------------
+const ICON = META.icons;
+const chapters = [
+  { key: "Compose", href: "/workers/new", t0: 8.5, t1: 20.0, caps: [["Compose a Worker in five guided steps.", 8.7, 15.62], ["Every Worker ships as one package.", 15.95, 19.82]] },
+  { key: "Packaging", href: "/packaging", t0: 20.0, t1: 23.0, caps: [["Seal a composed Worker into a signed artefact.", 20.22, 22.82]] },
+  { key: "Customer delivery", href: "/delivery", t0: 23.0, t1: 26.0, caps: [["Deliver it to a customer, digest and all.", 23.22, 25.82]] },
+  { key: "Registry", href: "/workers", t0: 26.0, t1: 31.0, caps: [["See every Worker, and how mature it really is.", 26.22, 30.82]] },
+  { key: "Dashboard", href: "/", t0: 31.0, t1: 36.0, caps: [["Track what they deliver against their Definition of Done.", 31.22, 35.82]] },
+  { key: "Learning", href: "/learning", t0: 36.0, t1: 42.5, caps: [["Workers learn on the job. Trace any claim to its source.", 36.22, 42.32]] },
+  { key: "Sentinel", href: "/sentinel", t0: 42.5, t1: 49.0, caps: [["Nothing is shared until Sentinel checks the evidence.", 42.72, 48.82]] },
+  { key: "Knowledge", href: "/knowledge", t0: 49.0, t1: 55.0, caps: [["Trusted knowledge lands in one catalog every Worker draws on.", 49.22, 54.82]] },
+];
+chapters.forEach((c) => {
+  c.eye = html(`<div class="eyebrow" style="left:120px; top:66px"><span class="ic">${ICON[c.href]}</span>${c.key.toUpperCase()}</div>`);
+  $("eyebrows").appendChild(c.eye);
+  c.capObjs = c.caps.map(([s, a, b]) => makeCap($("caps"), W(s), a, b, { left: "120px", top: "116px", fontSize: "52px", fontWeight: "750" }));
+  c.railEl = html(`<span>${c.key}<u></u></span>`);
+  $("rail").appendChild(c.railEl);
+});
+
+// ---------------- shots ----------------
+const STAGE = { x: 120, y: 222, w: 1680, h: 780 };
+const S = (n) => META.shots[n];
+const shots = [];
+function addShot(o) {
+  const size = S(o.img);
+  o.w = size.w; o.h = size.h;
+  o.el = html(`<div class="cam" style="width:${o.w}px; height:${o.h}px"><img src="cap/${o.img}.png" /><div class="ov"></div></div>`);
+  if (o.after) { const a = html(`<img src="cap/${o.after.img}.png" style="opacity:0" />`); o.el.insertBefore(a, o.el.querySelector(".ov")); o.after.el = a; }
+  $("shots").appendChild(o.el);
+  o.ov = o.el.querySelector(".ov");
+  if (o.init) o.init(o);
+  shots.push(o);
+  return o;
+}
+const K = (t, cx, cy, s) => ({ t, cx, cy, s });
+function camOf(o, t) {
+  const k = o.cams;
+  let c;
+  if (t <= k[0].t) c = { ...k[0] };
+  else if (t >= k[k.length - 1].t) c = { ...k[k.length - 1] };
+  else {
+    let i = 0; while (t > k[i + 1].t) i++;
+    const p = eIO(seg(t, k[i].t, k[i + 1].t));
+    c = { cx: lerp(k[i].cx, k[i + 1].cx, p), cy: lerp(k[i].cy, k[i + 1].cy, p), s: lerp(k[i].s, k[i + 1].s, p) };
+  }
+  // keep the view inside the capture so no blank bands show at the edges
+  const hw = STAGE.w / 2 / c.s, hh = STAGE.h / 2 / c.s;
+  c.cx = o.w > 2 * hw ? clamp(c.cx, hw, o.w - hw) : o.w / 2;
+  c.cy = o.h > 2 * hh ? clamp(c.cy, hh, o.h - hh) : hh;
+  return c;
+}
+const toVideo = (c, px, py) => ({ x: STAGE.x + STAGE.w / 2 + (px - c.cx) * c.s, y: STAGE.y + STAGE.h / 2 + (py - c.cy) * c.s });
+const FULL = (t) => K(t, 800, 372, 1.05);
+
+// Compose
+addShot({ img: "c_type", t0: 8.45, t1: 10.1, fin: 0.3, fout: 0.08, cams: [FULL(8.5), K(9.9, 700, 360, 1.14)], cursor: [[8.9, 1250, 700], [9.5, ...ctr(B.startBuilding, 0.3)], [10.1, ...ctr(B.startBuilding, 0.3)]], clicks: [9.58] });
+addShot({ img: "c_identity_full", t0: 10.16, t1: 11.8, fin: 0.14, fout: 0.08, cams: [FULL(10.16), K(11.6, 945, 400, 1.3)] });
+addShot({ img: "c_brain_mid", t0: 11.86, t1: 13.2, fin: 0.14, fout: 0.25, cams: [FULL(11.86), K(14.05, 944, 440, 1.28)] });
+addShot({ img: "c_brain_done", t0: 12.95, t1: 14.1, fin: 0.25, fout: 0.08, cams: [FULL(11.86), K(14.05, 944, 440, 1.28)] });
+addShot({ img: "c_dod", t0: 14.16, t1: 14.95, fin: 0.12, fout: 0.08, cams: [FULL(14.16), K(14.95, 800, 390, 1.09)] });
+addShot({ img: "c_autonomy", t0: 15.01, t1: 15.85, fin: 0.12, fout: 0.08, cams: [K(15.0, 800, 529, 1.05)], cursor: [[15.05, 900, 420], [15.55, ...ctr(B.packageDeploy, 0.45)], [15.85, ...ctr(B.packageDeploy, 0.45)]], clicks: [15.62] });
+addShot({ img: "c_package_full", t0: 15.91, t1: 17.05, fin: 0.14, fout: 0.15, cams: [FULL(15.91), K(16.7, 800, 430, 1.16)], cursor: [[15.95, 1100, 700], [16.62, ...ctr(B.brainFacet)], [17.05, ...ctr(B.brainFacet)]], clicks: [16.7] });
+addShot({ img: "c_package_brain_full", t0: 16.92, t1: 18.52, fin: 0.15, fout: 0.08, cams: [K(16.7, 800, 430, 1.16), K(17.35, 790, 560, 1.36), K(17.85, 790, 560, 1.38), K(18.4, 1000, 1085, 1.2)], cursor: [[16.95, ...ctr(B.brainFacet)], [17.6, 1100, 640], [17.95, 1100, 640], [18.35, ...ctr(B.buildPackage, 0.35)], [18.52, ...ctr(B.buildPackage, 0.35)]], clicks: [18.42] });
+addShot({ img: "c_building", t0: 18.58, t1: 19.35, fin: 0.12, fout: 0.2, cams: [FULL(18.58), K(20.0, 745, 430, 1.22)] });
+addShot({ img: "c_built", t0: 19.2, t1: 20.0, fin: 0.2, fout: 0.14, cams: [FULL(18.58), K(20.0, 745, 430, 1.22)] });
+// Packaging & delivery
+addShot({ img: "packaging_full", t0: 20.06, t1: 23.0, fin: 0.25, fout: 0.14, cams: [FULL(20.06), K(21.0, 800, 372, 1.08), K(22.7, 1000, 760, 1.28)] });
+addShot({ img: "delivery", t0: 23.06, t1: 26.0, fin: 0.25, fout: 0.14, cams: [FULL(23.06), K(23.8, 800, 372, 1.07), K(25.6, 1030, 520, 1.36)] });
+// Registry
+addShot({
+  img: "registry", t0: 26.06, t1: 31.0, fin: 0.25, fout: 0.14, cams: [FULL(26.06), K(26.6, 800, 372, 1.05), K(27.5, 830, 640, 1.55), K(31, 830, 640, 1.58)],
+  cursor: [[26.7, 1020, 520], [27.45, ...ctr(B.gold, 0.45, 0.6)], [29.8, ...ctr(B.gold, 0.45, 0.6)]], clicks: [27.55],
+  init(o) { o.pop = html(`<div class="abs" style="overflow:hidden"><img src="cap/registry_popover.png" style="position:absolute; width:1600px; height:900px" /></div>`); o.ov.appendChild(o.pop); },
+  draw(o, t) {
+    const pb = B.popover, m = 26, p = eOut(seg(t, 27.58, 27.74));
+    const L = pb.x - m, T = pb.y - m, Wd = pb.w + 2 * m, Ht = pb.h + 2 * m;
+    set(o.pop, { left: `${L}px`, top: `${T}px`, width: `${Wd}px`, height: `${Ht}px`, opacity: p, transform: `scale(${lerp(0.95, 1, p)})`, transformOrigin: `${B.gold.x + 20 - L}px ${Ht}px`, visibility: p > 0 ? "visible" : "hidden" });
+    set(o.pop.firstElementChild, { left: `${-L}px`, top: `${-T}px` });
+  },
+});
+// Dashboard
+addShot({ img: "dashboard", t0: 31.06, t1: 36.0, fin: 0.25, fout: 0.14, cams: [FULL(31.06), K(31.8, 900, 300, 1.12), K(33.6, 1040, 474, 1.5), K(36, 1040, 474, 1.53)], cursor: [[33.2, 1250, 760], [34.0, 1330, 620], [35.3, 1330, 620]] });
+// Learning graph
+const G = META.graph;
+const pick = (prefix) => G.nodes.find((n) => n.text.startsWith(prefix));
+const traceNodes = [pick("WORKER Integration Modernization Worker #36"), pick("TOPIC Service conversion with tests and traceability"), pick("KNOWLEDGE CONSTRUCT Acknowledgement mode"), pick("CANDIDATE KNOWLEDGE JMS acknowledgement")];
+const traceT = [37.05, 37.55, 38.05, 38.55];
+META.shots.graph = G.size;
+addShot({
+  img: "graph", t0: 36.06, t1: 42.5, fin: 0.3, fout: 0.14, cams: [K(36.0, 989, 580, 0.98), K(36.9, 989, 580, 0.99), K(38.8, 700, 404, 1.46), K(40.4, 905, 392, 1.72), K(42.5, 905, 392, 1.76)],
+  init(o) {
+    o.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    o.svg.setAttribute("width", o.w); o.svg.setAttribute("height", o.h); o.svg.style.cssText = "position:absolute; left:0; top:0; overflow:visible";
+    o.ov.appendChild(o.svg);
+    o.rings = traceNodes.map(() => { const r = html(`<div class="ring"></div>`); o.ov.appendChild(r); return r; });
+    o.paths = [];
+    for (let i = 0; i < 3; i++) {
+      const a = traceNodes[i], b = traceNodes[i + 1];
+      const x1 = a.x + a.w, y1 = a.y + a.h / 2, x2 = b.x, y2 = b.y + Math.min(b.h / 2, 40), dx = (x2 - x1) / 2;
+      const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      p.setAttribute("d", `M${x1} ${y1} C${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`);
+      p.setAttribute("fill", "none"); p.setAttribute("stroke", "#F2662A"); p.setAttribute("stroke-linecap", "round");
+      o.svg.appendChild(p); o.paths.push({ el: p, len: p.getTotalLength() });
+    }
+  },
+  draw(o, t, c) {
+    o.rings.forEach((r, i) => {
+      const n = { ...traceNodes[i] }; if (i === 3) n.h = 122;
+      const p = eOut(seg(t, traceT[i], traceT[i] + 0.32)), pad = 5;
+      set(r, { left: `${n.x - pad}px`, top: `${n.y - pad}px`, width: `${n.w + 2 * pad}px`, height: `${n.h + 2 * pad}px`, borderWidth: `${3 / c.s}px`, opacity: p, transform: `scale(${lerp(1.08, 1, p)})`, boxShadow: `0 0 0 ${7 / c.s}px rgba(242,102,42,${0.16 * p})` });
+    });
+    o.paths.forEach((pth, i) => {
+      const p = eIO(seg(t, traceT[i] + 0.08, traceT[i + 1]));
+      pth.el.setAttribute("stroke-width", String(3.2 / c.s)); pth.el.setAttribute("stroke-dasharray", `${pth.len}`); pth.el.setAttribute("stroke-dashoffset", `${pth.len * (1 - p)}`); pth.el.style.opacity = p > 0 ? 1 : 0;
+    });
+  },
+});
+// Sentinel
+addShot({
+  img: "sentinel", t0: 42.56, t1: 44.05, fin: 0.25, fout: 0.07, cams: [FULL(42.56), K(44.0, 800, 390, 1.09)],
+  cursor: [[43.0, 1150, 720], [43.55, 640, 380], [44.05, 640, 380]], clicks: [43.62],
+  init(o) { o.hover = html(`<div class="abs" style="border-radius:16px; background:rgba(15,42,46,0.05)"></div>`); o.ov.appendChild(o.hover); const r = B.sentinelRow; set(o.hover, { left: `${r.x}px`, top: `${r.y}px`, width: `${r.w}px`, height: `${r.h}px` }); },
+  draw(o, t) { o.hover.style.opacity = seg(t, 43.4, 43.5); },
+});
+addShot({
+  img: "review_before", after: { img: "review_after", t: 44.95 }, t0: 44.12, t1: 49.0, fin: 0.12, fout: 0.14,
+  cams: [FULL(44.12), K(45.1, 800, 372, 1.05), K(45.75, 1133, 398, 1.8), K(49, 1133, 398, 1.84)],
+  cursor: [[44.15, 640, 380], [44.85, ...ctr(B.accept, 0.42, 0.55)], [45.1, ...ctr(B.accept, 0.42, 0.55)], [45.55, B.accept.x - 150, B.accept.y + 330], [45.75, B.accept.x - 150, B.accept.y + 330]], clicks: [44.92],
+  init(o) { o.ring = html(`<div class="abs" style="border-radius:20px; border:3px solid #17A34A"></div>`); o.ov.appendChild(o.ring); const p = B.panel; set(o.ring, { left: `${p.x - 4}px`, top: `${p.y - 4}px`, width: `${p.w + 8}px`, height: `${p.h + 8}px` }); },
+  draw(o, t) { const p = eOut(seg(t, 45.0, 45.35)), q = seg(t, 47.4, 47.9); set(o.ring, { opacity: p * (1 - q), transform: `scale(${lerp(1.06, 1, p)})`, boxShadow: `0 0 0 8px rgba(23,163,74,${0.14 * p})` }); },
+});
+// Knowledge
+addShot({ img: "knowledge", t0: 49.06, t1: 51.3, fin: 0.25, fout: 0.07, cams: [FULL(49.06), K(51.2, 760, 330, 1.18)], cursor: [[49.9, 1200, 720], [50.85, B.rowTibco.x + 170, B.rowTibco.y + B.rowTibco.h / 2], [51.3, B.rowTibco.x + 170, B.rowTibco.y + B.rowTibco.h / 2]], clicks: [50.95] });
+addShot({ img: "knowledge_detail_full", t0: 51.37, t1: 55.12, fin: 0.12, fout: 0.3, cams: [FULL(51.37), K(52.1, 800, 372, 1.05), K(53.4, 870, 760, 1.45), K(55, 870, 760, 1.48)] });
+
+// sticky strip for the graph
+const chevron = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>`;
+const stageNames = ["Workers", "Topics", "Knowledge", "Candidate Knowledge", "Certified Knowledge", "Knowledge Packs"];
+$("strip").innerHTML = stageNames.map((n, i) => `<span class="l">${n}<u></u></span>${i < 5 ? chevron : ""}`).join("");
+const stripLabels = [...document.querySelectorAll("#strip span.l")];
+
+// ---------------- outro ----------------
+const o1 = makeCap($("o1").parentNode, W("One Worker learns it."), 55.3, 999, { left: "150px", top: "372px", fontSize: "78px" }, 0.08);
+const o2 = makeCap($("o1").parentNode, W("Every Worker knows it.", 0), 55.62, 999, { left: "150px", top: "466px", fontSize: "78px" }, 0.08);
+const LC = { x: 1488, y: 548, r: 232 };
+const loopSpec = [{ href: "/workers", label: "Worker", ang: -90 }, { href: "/learning", label: "Learning", ang: 0 }, { href: "/sentinel", label: "Sentinel", ang: 90 }, { href: "/knowledge", label: "Knowledge", ang: 180 }];
+const arcLabels = ["experience", "candidate", "trusted", "reusable"];
+$("loopNodes").innerHTML = loopSpec.map((n) => `<div class="node"><span class="ic">${ICON[n.href]}</span>${n.label}</div>`).join("") + arcLabels.map((l) => `<div class="arclabel">${l}</div>`).join("");
+const loopNodes = [...document.querySelectorAll("#loopNodes .node")];
+const arcLbl = [...document.querySelectorAll("#loopNodes .arclabel")];
+const svgNS = "http://www.w3.org/2000/svg", loopSvg = $("loop"), arcs = [];
+for (let i = 0; i < 4; i++) {
+  const a0 = ((loopSpec[i].ang + 17) * Math.PI) / 180, a1 = ((loopSpec[i].ang + 73) * Math.PI) / 180;
+  const x0 = LC.x + LC.r * Math.cos(a0), y0 = LC.y + LC.r * Math.sin(a0), x1 = LC.x + LC.r * Math.cos(a1), y1 = LC.y + LC.r * Math.sin(a1);
+  const base = document.createElementNS(svgNS, "path");
+  base.setAttribute("d", `M${x0} ${y0} A${LC.r} ${LC.r} 0 0 1 ${x1} ${y1}`); base.setAttribute("fill", "none"); base.setAttribute("stroke", "rgba(255,255,255,0.22)"); base.setAttribute("stroke-width", "3"); base.setAttribute("stroke-linecap", "round");
+  const head = document.createElementNS(svgNS, "path");
+  const tx = -Math.sin(a1), ty = Math.cos(a1), nx = Math.cos(a1), ny = Math.sin(a1);
+  head.setAttribute("d", `M${x1 - tx * 14 + nx * 8} ${y1 - ty * 14 + ny * 8} L${x1} ${y1} L${x1 - tx * 14 - nx * 8} ${y1 - ty * 14 - ny * 8}`);
+  head.setAttribute("fill", "none"); head.setAttribute("stroke", "rgba(255,255,255,0.55)"); head.setAttribute("stroke-width", "3"); head.setAttribute("stroke-linecap", "round"); head.setAttribute("stroke-linejoin", "round");
+  loopSvg.appendChild(base); loopSvg.appendChild(head); arcs.push({ base, head, len: base.getTotalLength() });
+}
+const cometGlow = document.createElementNS(svgNS, "circle"); cometGlow.setAttribute("r", "24"); cometGlow.setAttribute("fill", "rgba(242,102,42,0.25)");
+const comet = document.createElementNS(svgNS, "circle"); comet.setAttribute("r", "9"); comet.setAttribute("fill", "#F2662A");
+loopSvg.appendChild(cometGlow); loopSvg.appendChild(comet);
+const cometAngle = (t) => -90 + Math.max(0, t - 56.0) * 180;
+
+// ---------------- cursor ----------------
+function cursorAt(t) {
+  for (const o of shots) {
+    if (!o.cursor) continue;
+    const k = o.cursor;
+    if (t < k[0][0] || t > k[k.length - 1][0]) continue;
+    let i = 0; while (i < k.length - 2 && t > k[i + 1][0]) i++;
+    const p = eIO(seg(t, k[i][0], k[i + 1][0]));
+    const c = camOf(o, t);
+    const pt = toVideo(c, lerp(k[i][1], k[i + 1][1], p), lerp(k[i][2], k[i + 1][2], p));
+    const vis = seg(t, k[0][0], k[0][0] + 0.15) * (1 - seg(t, k[k.length - 1][0] - 0.2, k[k.length - 1][0]));
+    const press = Math.max(0, ...(o.clicks || []).map((ct) => seg(t, ct - 0.06, ct - 0.01) - seg(t, ct + 0.01, ct + 0.08)));
+    return { ...pt, vis, press };
+  }
+  return null;
+}
+const clickList = shots.flatMap((o) => (o.clicks || []));
+$("ripples").innerHTML = clickList.map(() => `<div class="ripple"></div>`).join("");
+const ripples = [...document.querySelectorAll(".ripple")];
+
+// ---------------- render ----------------
+function renderAt(t) {
+  set($("glowA"), { left: `${-260 + 60 * Math.sin(t * 0.25)}px`, top: `${640 + 40 * Math.cos(t * 0.2)}px`, width: "900px", height: "900px", background: "radial-gradient(circle, rgba(242,102,42,0.16), transparent 62%)" });
+  set($("glowB"), { left: `${1180 + 50 * Math.cos(t * 0.22)}px`, top: `${-420 + 40 * Math.sin(t * 0.3)}px`, width: "1100px", height: "1100px", background: "radial-gradient(circle, rgba(127,163,159,0.14), transparent 62%)" });
+
+  caps.forEach((c) => renderCap(c, t));
+
+  // hook sidebar
+  {
+    const pin = eOut(seg(t, 0.05, 0.65)), pout = eIn(seg(t, 4.72, 5.05));
+    set($("side"), { left: `${1540 + (1 - pin) * 120 + pout * 140}px`, top: "90px", width: "280px", height: "900px", opacity: pin * (1 - pout), visibility: t < 5.1 ? "visible" : "hidden" });
+    navEls.forEach((n) => { const p = eOut(seg(t, n.t, n.t + 0.3)); set(n.el, { opacity: p, transform: `scaleX(${lerp(0.9, 1, p)})`, transformOrigin: "0 50%" }); });
+  }
+  // reveal
+  {
+    const pin = eOut(seg(t, 5.0, 5.85)), pout = eIn(seg(t, 8.12, 8.36));
+    const s = 0.95;
+    set($("shell"), { width: `${1600 * s}px`, height: `${900 * s}px`, left: `${(1920 - 1600 * s) / 2}px`, top: `${lerp(1180, 372, pin) - 26 * seg(t, 5.85, 8.12) + pout * 90}px`, opacity: 1 - pout, transform: `perspective(1600px) rotateX(${(1 - pin) * 16}deg) scale(${1 - 0.03 * pout})`, transformOrigin: "50% 0%", visibility: t > 4.95 && t < 8.4 ? "visible" : "hidden" });
+    const lk = (a) => eOut(seg(t, a, a + 0.45)), lout = eIn(seg(t, 8.02, 8.24));
+    [["lkEye", 5.12], ["lkMark", 5.22], ["lkTag", 5.45]].forEach(([id, a]) => set($(id), { opacity: lk(a) * (1 - lout), transform: `translateY(${(1 - lk(a)) * 26 - lout * 20}px)` }));
+    $("lockup").style.visibility = t > 5.0 && t < 8.3 ? "visible" : "hidden";
+  }
+  // stage + chapters
+  {
+    const pin = eOut(seg(t, 8.4, 8.8)), pout = eIn(seg(t, 54.82, 55.1));
+    set($("stage"), { opacity: pin * (1 - pout), transform: `translateY(${(1 - pin) * 46 + pout * 36}px) scale(${lerp(0.975, 1, pin)})`, visibility: t > 8.35 && t < 55.12 ? "visible" : "hidden" });
+    set($("rail"), { opacity: seg(t, 8.6, 9.0) * (1 - seg(t, 54.8, 55.05)) });
+    chapters.forEach((c) => {
+      const a = c.caps[0][1], b = c.caps[c.caps.length - 1][2];
+      set(c.eye, { opacity: eOut(seg(t, a - 0.05, a + 0.3)) * (1 - seg(t, b, b + 0.18)), transform: `translateY(${(1 - eOut(seg(t, a - 0.05, a + 0.3))) * 14}px)` });
+      const act = t >= c.t0 && t < c.t1;
+      c.railEl.style.color = act ? "#F2662A" : t >= c.t1 ? "rgba(201,210,208,0.75)" : "rgba(201,210,208,0.4)";
+      set(c.railEl.querySelector("u"), { transform: `scaleX(${act ? eOut(seg(t, c.t0, c.t0 + 0.4)) : 0})` });
+    });
+    shots.forEach((o) => {
+      const vis = seg(t, o.t0, o.t0 + o.fin) * (1 - seg(t, o.t1 - o.fout, o.t1));
+      if (vis <= 0) { o.el.style.display = "none"; return; }
+      const c = camOf(o, t);
+      set(o.el, { display: "block", opacity: vis, transform: `translate(${STAGE.w / 2 - c.cx * c.s}px, ${STAGE.h / 2 - c.cy * c.s}px) scale(${c.s})` });
+      if (o.after) o.after.el.style.opacity = t >= o.after.t ? 1 : 0;
+      if (o.draw) o.draw(o, t, c);
+    });
+    const gShot = shots.find((o) => o.img === "graph");
+    const gv = seg(t, gShot.t0, gShot.t0 + gShot.fin) * (1 - seg(t, gShot.t1 - gShot.fout, gShot.t1));
+    set($("strip"), { opacity: gv, visibility: gv > 0 ? "visible" : "hidden" });
+    stripLabels.forEach((l, i) => {
+      const p = i < 4 ? eOut(seg(t, traceT[i], traceT[i] + 0.3)) : 0;
+      l.style.color = p > 0 ? `rgb(${lerp(156, 242, p)},${lerp(163, 102, p)},${lerp(175, 42, p)})` : "#9CA3AF";
+      l.querySelector("u").style.width = `${p * 100}%`;
+    });
+  }
+  // cursor
+  {
+    const c = cursorAt(t);
+    if (c && c.vis > 0) set($("cursor"), { visibility: "visible", opacity: c.vis, transform: `translate(${c.x - 6}px, ${c.y - 4}px) scale(${1 - 0.14 * clamp(c.press)})` });
+    else $("cursor").style.visibility = "hidden";
+    ripples.forEach((r, i) => {
+      const t0 = clickList[i], p = seg(t, t0, t0 + 0.45);
+      if (p <= 0 || p >= 1) { r.style.visibility = "hidden"; return; }
+      const cc = cursorAt(t0);
+      if (!cc) { r.style.visibility = "hidden"; return; }
+      const rad = lerp(6, 46, eOut(p));
+      set(r, { visibility: "visible", left: `${cc.x - rad}px`, top: `${cc.y - rad}px`, width: `${rad * 2}px`, height: `${rad * 2}px`, opacity: 1 - p });
+    });
+  }
+  // outro
+  {
+    const lp = eOut(seg(t, 56.15, 56.6));
+    set($("oLock"), { opacity: lp, transform: `translateY(${(1 - lp) * 22}px)` });
+    const on = t > 55.05;
+    loopSvg.style.visibility = on ? "visible" : "hidden";
+    arcs.forEach((a, i) => {
+      const p = eIO(seg(t, 55.2 + i * 0.2, 55.62 + i * 0.2));
+      a.base.setAttribute("stroke-dasharray", `${a.len}`); a.base.setAttribute("stroke-dashoffset", `${a.len * (1 - p)}`);
+      a.head.style.opacity = seg(t, 55.55 + i * 0.2, 55.65 + i * 0.2);
+    });
+    const ca = cometAngle(t);
+    loopNodes.forEach((n, i) => {
+      const p = seg(t, 55.14 + i * 0.16, 55.5 + i * 0.16);
+      const ang = (loopSpec[i].ang * Math.PI) / 180;
+      const d = Math.abs(((ca - loopSpec[i].ang) % 360 + 540) % 360 - 180);
+      const hot = t > 56.05 ? clamp(1 - d / 28) : 0;
+      set(n, { left: `${LC.x + LC.r * Math.cos(ang) - n.offsetWidth / 2}px`, top: `${LC.y + LC.r * Math.sin(ang) - 35}px`, opacity: clamp(p * 1.8), transform: `scale(${lerp(0.6, 1, eBack(p)) * (1 + 0.05 * hot)})`, visibility: on ? "visible" : "hidden" });
+      const ic = n.querySelector(".ic");
+      ic.style.background = hot > 0 ? `rgba(242,102,42,${0.18 + 0.82 * hot})` : "#E4EDEC";
+      ic.style.color = hot > 0.4 ? "#fff" : "#29524F";
+    });
+    arcLbl.forEach((l, i) => {
+      const ang = ((loopSpec[i].ang + 45) * Math.PI) / 180, rr = LC.r + 58, p = eOut(seg(t, 55.7 + i * 0.12, 56.1 + i * 0.12));
+      set(l, { left: `${LC.x + rr * Math.cos(ang) - l.offsetWidth / 2}px`, top: `${LC.y + rr * Math.sin(ang) - 12}px`, opacity: p, visibility: on ? "visible" : "hidden" });
+    });
+    const cp = seg(t, 56.0, 56.25), cr = (ca * Math.PI) / 180;
+    [comet, cometGlow].forEach((c) => { c.setAttribute("cx", LC.x + LC.r * Math.cos(cr)); c.setAttribute("cy", LC.y + LC.r * Math.sin(cr)); c.style.opacity = cp; });
+  }
+}
+
+window.renderAt = renderAt;
+window.ready = (async () => {
+  for (const f of ["800 80px Inter", "750 50px Inter", "700 30px Inter", "500 30px Inter", "600 20px 'IBM Plex Mono'"]) await document.fonts.load(f);
+  await document.fonts.ready;
+  await Promise.all([...document.images].map((i) => i.decode()));
+  renderAt(0);
+  return true;
+})();
+</script>
+</body>
+</html>

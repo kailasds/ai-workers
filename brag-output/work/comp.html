@@ -1,0 +1,448 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=block" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: #0C2426; }
+  body { font-family: Inter, sans-serif; -webkit-font-smoothing: antialiased; color: #fff; }
+  #root { position: absolute; inset: 0; overflow: hidden; background: linear-gradient(165deg, #0F2A2E, #0C2426); }
+  #texture { position: absolute; inset: 0; background-image: repeating-radial-gradient(circle at 85% 12%, rgba(255,255,255,0.035) 0 1px, transparent 1px 13px); }
+  .glow { position: absolute; border-radius: 50%; pointer-events: none; }
+  .abs { position: absolute; }
+  .cap { position: absolute; font-weight: 800; letter-spacing: -0.025em; line-height: 1.08; white-space: nowrap; }
+  .cap .w { display: inline-block; will-change: transform, opacity; }
+  .eyebrow { position: absolute; font-family: "IBM Plex Mono", monospace; font-weight: 600; font-size: 19px; letter-spacing: 0.22em; color: #F2662A; }
+  .accent { color: #F2662A; }
+  .chip { position: absolute; display: flex; align-items: center; gap: 12px; padding: 0 26px; height: 60px; border-radius: 30px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.14); font-size: 26px; font-weight: 600; color: #fff; white-space: nowrap; }
+  .chip b { font-weight: 800; color: #F2662A; font-variant-numeric: tabular-nums; }
+  .chip i { width: 9px; height: 9px; border-radius: 50%; background: #F2662A; display: block; }
+  .shot { position: absolute; transform-origin: 0 0; }
+  .shot img { display: block; width: 100%; height: 100%; }
+  #stage { position: absolute; left: 120px; top: 222px; width: 1680px; height: 810px; border-radius: 18px; overflow: hidden; background: #fff; box-shadow: 0 40px 100px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06); }
+  .cam { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  .cam img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .ring { position: absolute; border: 3px solid #F2662A; border-radius: 12px; }
+  #strip { position: absolute; left: 0; right: 0; top: 0; height: 46px; background: #F7F8F8; border-bottom: 1px solid #E5E7EA; display: flex; align-items: center; gap: 10px; padding: 0 26px; }
+  #strip span.l { position: relative; font-size: 15px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #9CA3AF; }
+  #strip span.l u { position: absolute; left: 0; bottom: -7px; height: 3px; border-radius: 2px; background: #F2662A; display: block; text-decoration: none; }
+  #strip svg { width: 16px; height: 16px; color: #9CA3AF; }
+  #cursor { position: absolute; left: 0; top: 0; width: 40px; height: 40px; transform-origin: 6px 4px; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.35)); }
+  .ripple { position: absolute; border-radius: 50%; border: 3px solid #F2662A; }
+  .logo { display: inline-grid; place-items: center; border-radius: 14px; background: rgba(255,255,255,0.15); font-weight: 800; color: #C9D2D0; }
+  .node { position: absolute; display: flex; align-items: center; gap: 12px; height: 70px; padding: 0 26px 0 18px; border-radius: 35px; background: #fff; color: #0F2A2E; font-size: 25px; font-weight: 700; box-shadow: 0 18px 40px rgba(0,0,0,0.35); white-space: nowrap; }
+  .node .ic { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: #E4EDEC; color: #29524F; }
+  .node .ic svg { width: 24px; height: 24px; }
+  .arclabel { position: absolute; font-size: 18px; font-weight: 600; color: #8FA19E; letter-spacing: 0.02em; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div id="root">
+  <div id="texture"></div>
+  <div class="glow" id="glowA"></div>
+  <div class="glow" id="glowB"></div>
+
+  <!-- S1/S2 -->
+  <div id="c1" class="cap" style="font-size:78px"></div>
+  <div id="c2" class="cap" style="font-size:78px"></div>
+  <div id="cand" class="shot" style="border-radius:20px; overflow:hidden; box-shadow:0 36px 90px rgba(0,0,0,0.45)"><img src="cap/cand_card.png" /></div>
+  <div id="chips"></div>
+
+  <!-- S3 -->
+  <div id="shell" class="shot" style="border-radius:18px; overflow:hidden; box-shadow:0 50px 120px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.08)"><img src="cap/learning_shell.png" /></div>
+  <div id="lockup" class="abs" style="left:0; right:0; top:104px; text-align:center">
+    <div id="lkEye" class="eyebrow" style="position:relative; display:inline-block">TCS</div>
+    <div id="lkMark" style="margin-top:14px; display:flex; align-items:center; justify-content:center; gap:22px">
+      <span class="logo" style="width:82px; height:82px; font-size:40px">A</span>
+      <span style="font-size:92px; font-weight:800; letter-spacing:-0.03em">AI Worker Platform</span>
+    </div>
+    <div id="lkTag" style="margin-top:18px; font-size:34px; font-weight:500; color:#C9D2D0">Workers learn. <span style="color:#fff; font-weight:700">Sentinel decides what becomes trusted.</span></div>
+  </div>
+
+  <!-- S4–S6 captions -->
+  <div id="e4" class="eyebrow" style="left:122px; top:78px">LEARNING</div>
+  <div id="c4" class="cap" style="left:120px; top:112px; font-size:54px; font-weight:750"></div>
+  <div id="e5" class="eyebrow" style="left:122px; top:78px">SENTINEL</div>
+  <div id="c5" class="cap" style="left:120px; top:112px; font-size:54px"></div>
+  <div id="e6" class="eyebrow" style="left:122px; top:78px">REGISTRY</div>
+  <div id="c6" class="cap" style="left:120px; top:112px; font-size:54px"></div>
+
+  <div id="stage">
+    <div id="camG" class="cam" style="width:1976px; height:1321.25px">
+      <img src="cap/graph_big.png" />
+      <svg id="trace" width="1976" height="1321.25" viewBox="0 0 1976 1321.25" style="position:absolute; left:0; top:0; overflow:visible"></svg>
+      <div id="rings"></div>
+    </div>
+    <div id="strip"></div>
+    <div id="camS" class="cam" style="width:1600px; height:900px">
+      <img src="cap/sentinel.png" />
+      <div id="rowHover" class="abs" style="left:312px; top:334px; width:1256px; height:96px; border-radius:16px; background:rgba(15,42,46,0.05)"></div>
+    </div>
+    <div id="camR" class="cam" style="width:1600px; height:900px">
+      <img id="rvBefore" src="cap/review_before.png" />
+      <img id="rvAfter" src="cap/review_after.png" />
+      <div id="panelRing" class="abs" style="left:1244px; top:185px; width:328px; height:301px; border-radius:20px; border:3px solid #17A34A"></div>
+    </div>
+    <div id="camW" class="cam" style="width:1600px; height:900px">
+      <img id="rgBefore" src="cap/registry.png" />
+      <div id="pop" class="abs" style="overflow:hidden"><img src="cap/registry_popover.png" style="position:absolute; width:1600px; height:900px" /></div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div id="o1" class="cap" style="left:150px; top:372px; font-size:78px"></div>
+  <div id="o2" class="cap accent" style="left:150px; top:466px; font-size:78px"></div>
+  <div id="oLock" class="abs" style="left:152px; top:640px; display:flex; align-items:center; gap:18px">
+    <span class="logo" style="width:60px; height:60px; font-size:29px">A</span>
+    <span>
+      <span class="eyebrow" style="position:relative; display:block; font-size:15px">TCS</span>
+      <span style="display:block; font-size:32px; font-weight:800; letter-spacing:-0.02em; margin-top:2px">AI Worker Platform</span>
+    </span>
+  </div>
+  <svg id="loop" width="1920" height="1080" style="position:absolute; left:0; top:0"></svg>
+  <div id="loopNodes"></div>
+
+  <div id="ripples"></div>
+  <svg id="cursor" viewBox="0 0 40 40"><path d="M6 4 L6 31 L13.2 24.6 L18.4 36 L23.4 33.8 L18.3 22.6 L28 22.4 Z" fill="#fff" stroke="#0F2A2E" stroke-width="2.2" stroke-linejoin="round"/></svg>
+</div>
+
+<script>
+const META = __META__;
+const GM = __GMETA__;
+const $ = (s) => document.getElementById(s);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const lerp = (a, b, p) => a + (b - a) * p;
+const eOut = (p) => 1 - Math.pow(1 - p, 3);
+const eIn = (p) => p * p * p;
+const eIO = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
+const eBack = (p) => { const c1 = 1.4, c3 = c1 + 1; return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); };
+const set = (el, o) => Object.assign(el.style, o);
+
+// ---------- captions (word-by-word in, staggered out) ----------
+const caps = {};
+function makeCap(id, words, tin, tout, opts = {}) {
+  const el = $(id);
+  el.innerHTML = words.map((w) => `<span class="w${w.accent ? " accent" : ""}">${w.t}</span>`).join(" ");
+  caps[id] = { el, spans: [...el.querySelectorAll(".w")], tin, tout, stg: opts.stg ?? 0.07 };
+}
+const W = (s, accentFrom = Infinity) => s.split(" ").map((t, i) => ({ t, accent: i >= accentFrom }));
+makeCap("c1", W("Your AI Workers learn on the job."), 0.1, 2.85);
+makeCap("c2", W("But learning isn't knowledge. Yet.", 4), 3.1, 5.1);
+makeCap("c4", W("Trace every claim back to the Worker who found it."), 8.62, 11.66, { stg: 0.05 });
+makeCap("c5", W("Sentinel checks the evidence before it's shared."), 12.2, 15.7, { stg: 0.05 });
+makeCap("c6", W("Maturity is earned with evidence, not activity."), 16.24, 18.74, { stg: 0.05 });
+makeCap("o1", W("One Worker learns it."), 19.3, 99, { stg: 0.08 });
+makeCap("o2", W("Every Worker knows it."), 19.62, 99, { stg: 0.08 });
+
+function renderCap(c, t) {
+  let vis = 0;
+  c.spans.forEach((s, i) => {
+    const pin = eOut(seg(t, c.tin + i * c.stg, c.tin + i * c.stg + 0.42));
+    const pout = eIn(seg(t, c.tout + i * 0.025, c.tout + i * 0.025 + 0.22));
+    const o = pin * (1 - pout);
+    vis = Math.max(vis, o);
+    set(s, { opacity: o, transform: `translateY(${(1 - pin) * 30 - pout * 18}px)` });
+  });
+  c.el.style.visibility = vis > 0.001 ? "visible" : "hidden";
+}
+// centered captions
+function center(el) { set(el, { left: `${(1920 - el.offsetWidth) / 2}px` }); }
+
+// ---------- S2 chips ----------
+const chipSpec = [["6", "observations"], ["3", "independent Workers"], ["6", "runs"], ["0", "contradictions"]];
+$("chips").innerHTML = chipSpec.map(([n, l]) => `<div class="chip"><i></i><b>${n}</b>${l}</div>`).join("");
+const chips = [...document.querySelectorAll(".chip")];
+
+// ---------- S4 strip + trace ----------
+const chevron = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>`;
+const stageNames = ["Workers", "Topics", "Knowledge", "Candidate Knowledge", "Certified Knowledge", "Knowledge Packs"];
+$("strip").innerHTML = stageNames.map((n, i) => `<span class="l">${n}<u></u></span>${i < 5 ? chevron : ""}`).join("");
+const stripLabels = [...document.querySelectorAll("#strip span.l")];
+
+const pick = (prefix) => GM.nodes.find((n) => n.text.startsWith(prefix));
+const traceNodes = [
+  pick("WORKER Integration Modernization Worker #36"),
+  pick("TOPIC Service conversion with tests and traceability"),
+  pick("KNOWLEDGE CONSTRUCT Acknowledgement mode"),
+  pick("CANDIDATE KNOWLEDGE JMS acknowledgement"),
+];
+const traceT = [9.35, 9.8, 10.25, 10.7];
+$("rings").innerHTML = traceNodes.map(() => `<div class="ring"></div>`).join("");
+const rings = [...document.querySelectorAll("#rings .ring")];
+const paths = [];
+for (let i = 0; i < 3; i++) {
+  const a = traceNodes[i], b = traceNodes[i + 1];
+  const x1 = a.x + a.w, y1 = a.y + a.h / 2, x2 = b.x, y2 = b.y + Math.min(b.h / 2, 40);
+  const dx = (x2 - x1) / 2;
+  const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  p.setAttribute("d", `M${x1} ${y1} C${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`);
+  p.setAttribute("fill", "none");
+  p.setAttribute("stroke", "#F2662A");
+  p.setAttribute("stroke-linecap", "round");
+  $("trace").appendChild(p);
+  paths.push({ el: p, len: p.getTotalLength() });
+}
+
+// ---------- S7 loop ----------
+const LC = { x: 1488, y: 548, r: 232 };
+const loopSpec = [
+  { href: "/workers", label: "Worker", ang: -90 },
+  { href: "/learning", label: "Learning", ang: 0 },
+  { href: "/sentinel", label: "Sentinel", ang: 90 },
+  { href: "/knowledge", label: "Knowledge", ang: 180 },
+];
+const arcLabels = ["experience", "candidate", "trusted", "reusable"];
+$("loopNodes").innerHTML =
+  loopSpec.map((n) => `<div class="node"><span class="ic">${META.icons[n.href]}</span>${n.label}</div>`).join("") +
+  arcLabels.map((l) => `<div class="arclabel">${l}</div>`).join("");
+const loopNodes = [...document.querySelectorAll("#loopNodes .node")];
+const arcLbl = [...document.querySelectorAll("#loopNodes .arclabel")];
+const svgNS = "http://www.w3.org/2000/svg";
+const loopSvg = $("loop");
+const arcs = [];
+for (let i = 0; i < 4; i++) {
+  const a0 = ((loopSpec[i].ang + 17) * Math.PI) / 180, a1 = ((loopSpec[i].ang + 90 - 17) * Math.PI) / 180;
+  const x0 = LC.x + LC.r * Math.cos(a0), y0 = LC.y + LC.r * Math.sin(a0);
+  const x1 = LC.x + LC.r * Math.cos(a1), y1 = LC.y + LC.r * Math.sin(a1);
+  const base = document.createElementNS(svgNS, "path");
+  const d = `M${x0} ${y0} A${LC.r} ${LC.r} 0 0 1 ${x1} ${y1}`;
+  base.setAttribute("d", d); base.setAttribute("fill", "none"); base.setAttribute("stroke", "rgba(255,255,255,0.22)"); base.setAttribute("stroke-width", "3"); base.setAttribute("stroke-linecap", "round");
+  const head = document.createElementNS(svgNS, "path");
+  const ah = a1, tx = -Math.sin(ah), ty = Math.cos(ah); // tangent (clockwise)
+  const nx = Math.cos(ah), ny = Math.sin(ah);
+  head.setAttribute("d", `M${x1 - tx * 14 + nx * 8} ${y1 - ty * 14 + ny * 8} L${x1} ${y1} L${x1 - tx * 14 - nx * 8} ${y1 - ty * 14 - ny * 8}`);
+  head.setAttribute("fill", "none"); head.setAttribute("stroke", "rgba(255,255,255,0.55)"); head.setAttribute("stroke-width", "3"); head.setAttribute("stroke-linecap", "round"); head.setAttribute("stroke-linejoin", "round");
+  loopSvg.appendChild(base); loopSvg.appendChild(head);
+  arcs.push({ base, head, len: base.getTotalLength() });
+}
+const comet = document.createElementNS(svgNS, "circle");
+comet.setAttribute("r", "9"); comet.setAttribute("fill", "#F2662A");
+const cometGlow = document.createElementNS(svgNS, "circle");
+cometGlow.setAttribute("r", "24"); cometGlow.setAttribute("fill", "rgba(242,102,42,0.25)");
+loopSvg.appendChild(cometGlow); loopSvg.appendChild(comet);
+
+// ---------- cameras ----------
+const STAGE = { x: 120, y: 222, w: 1680, h: 810 };
+function applyCam(el, c) {
+  const tx = STAGE.w / 2 - c.cx * c.s, ty = STAGE.h / 2 - c.cy * c.s;
+  el.style.transform = `translate(${tx}px, ${ty}px) scale(${c.s})`;
+}
+const toVideo = (c, px, py) => ({ x: STAGE.x + STAGE.w / 2 + (px - c.cx) * c.s, y: STAGE.y + STAGE.h / 2 + (py - c.cy) * c.s });
+const mixCam = (a, b, p) => ({ cx: lerp(a.cx, b.cx, p), cy: lerp(a.cy, b.cy, p), s: lerp(a.s, b.s, p) });
+
+function camGraph(t) {
+  const a = { cx: 989, cy: 585, s: 0.98 }, b = { cx: 700, cy: 404, s: 1.46 }, c = { cx: 905, cy: 392, s: 1.72 };
+  const drift = { ...a, s: a.s * (1 + 0.012 * seg(t, 8.4, 9.1)) };
+  return mixCam(mixCam(drift, b, eIO(seg(t, 9.1, 10.85))), c, eIO(seg(t, 10.85, 12.05)));
+}
+const camSent = (t) => ({ cx: 800, cy: lerp(386, 400, seg(t, 12.0, 13.1)), s: lerp(1.05, 1.09, eOut(seg(t, 12.0, 13.1))) });
+function camReview(t) {
+  const a = { cx: 800, cy: 386, s: 1.05 }, b = { cx: 1133, cy: 398, s: 1.8 };
+  const c = mixCam(a, b, eIO(seg(t, 13.95, 14.6)));
+  c.s *= 1 + 0.02 * seg(t, 14.6, 16);
+  return c;
+}
+function camReg(t) {
+  const a = { cx: 800, cy: 386, s: 1.05 }, b = { cx: 562, cy: 640, s: 1.55 };
+  const c = mixCam(a, b, eIO(seg(t, 16.3, 16.95)));
+  c.s *= 1 + 0.018 * seg(t, 16.95, 19);
+  return c;
+}
+
+// cursor path helpers (CSS coords in each page)
+function cursorAt(t) {
+  // returns { x, y, press, vis } in video coords or null
+  if (t >= 12.25 && t < 13.05) {
+    const c = camSent(t);
+    const p = eIO(seg(t, 12.3, 12.85));
+    const pt = toVideo(c, lerp(1150, 640, p), lerp(720, 380, p));
+    return { ...pt, press: seg(t, 12.88, 12.93) - seg(t, 12.95, 13.02), vis: seg(t, 12.25, 12.4) };
+  }
+  if (t >= 13.05 && t < 14.6) {
+    const c = camReview(t);
+    const p = eIO(seg(t, 13.12, 13.7));
+    const a = META.accept;
+    const q = eIO(seg(t, 13.95, 14.4));
+    const pt = toVideo(c, lerp(lerp(640, a.x + a.w * 0.42, p), a.x - 150, q), lerp(lerp(380, a.y + a.h * 0.55, p), a.y + 330, q));
+    return { ...pt, press: seg(t, 13.74, 13.79) - seg(t, 13.81, 13.88), vis: 1 - seg(t, 14.3, 14.5) };
+  }
+  if (t >= 16.3 && t < 18.5) {
+    const c = camReg(t);
+    const p = eIO(seg(t, 16.4, 16.95));
+    const g = META.gold;
+    const pt = toVideo(c, lerp(1020, g.x + g.w * 0.45, p), lerp(520, g.y + g.h * 0.6, p));
+    return { ...pt, press: seg(t, 16.98, 17.03) - seg(t, 17.05, 17.12), vis: seg(t, 16.3, 16.45) * (1 - seg(t, 18.1, 18.35)) };
+  }
+  return null;
+}
+const clicks = [12.92, 13.8, 17.04];
+$("ripples").innerHTML = clicks.map(() => `<div class="ripple"></div>`).join("");
+const ripples = [...document.querySelectorAll(".ripple")];
+
+// ---------- main render ----------
+function renderAt(t) {
+  // background glows drift
+  set($("glowA"), { left: `${-260 + 60 * Math.sin(t * 0.25)}px`, top: `${640 + 40 * Math.cos(t * 0.2)}px`, width: "900px", height: "900px", background: "radial-gradient(circle, rgba(242,102,42,0.16), transparent 62%)" });
+  set($("glowB"), { left: `${1180 + 50 * Math.cos(t * 0.22)}px`, top: `${-420 + 40 * Math.sin(t * 0.3)}px`, width: "1100px", height: "1100px", background: "radial-gradient(circle, rgba(127,163,159,0.14), transparent 62%)" });
+
+  // S1 / S2
+  renderCap(caps.c1, t); center(caps.c1.el); set(caps.c1.el, { top: "262px" });
+  renderCap(caps.c2, t); center(caps.c2.el); set(caps.c2.el, { top: "262px" });
+  {
+    const cw = 1096 * 1.42, ch = 212 * 1.42;
+    const pin = seg(t, 0.42, 1.02), pout = eIn(seg(t, 5.08, 5.42));
+    const y = 436 + (1 - eBack(pin)) * 110 - pout * 120 - 8 * seg(t, 1.02, 5.1);
+    set($("cand"), { width: `${cw}px`, height: `${ch}px`, left: `${(1920 - cw) / 2}px`, top: `${y}px`, opacity: clamp(pin * 2.2) * (1 - pout), transform: `scale(${lerp(0.955, 1, eOut(pin))})`, transformOrigin: "50% 50%", visibility: t < 5.5 ? "visible" : "hidden" });
+  }
+  {
+    const gap = 18;
+    const widths = chips.map((c) => c.offsetWidth);
+    const total = widths.reduce((a, b) => a + b, 0) + gap * (chips.length - 1);
+    let x = (1920 - total) / 2;
+    chips.forEach((c, i) => {
+      const t0 = 3.48 + i * 0.25;
+      const pin = seg(t, t0, t0 + 0.34), pout = eIn(seg(t, 5.05 + i * 0.03, 5.3 + i * 0.03));
+      set(c, { left: `${x}px`, top: `${790 - pout * 60}px`, opacity: clamp(pin * 1.6) * (1 - pout), transform: `scale(${lerp(0.7, 1, eBack(pin))})`, visibility: t > 3.4 && t < 5.5 ? "visible" : "hidden" });
+      x += widths[i] + gap;
+    });
+  }
+
+  // S3 reveal
+  {
+    const pin = eOut(seg(t, 5.5, 6.35)), pout = eIn(seg(t, 8.12, 8.36));
+    const s = 0.95;
+    const top = lerp(1180, 372, pin) - 26 * seg(t, 6.35, 8.12) + pout * 90;
+    set($("shell"), { width: `${1600 * s}px`, height: `${900 * s}px`, left: `${(1920 - 1600 * s) / 2}px`, top: `${top}px`, opacity: (1 - pout), transform: `perspective(1600px) rotateX(${(1 - pin) * 16}deg) scale(${1 - 0.03 * pout})`, transformOrigin: "50% 0%", visibility: t > 5.45 && t < 8.4 ? "visible" : "hidden" });
+    const lk = (a) => eOut(seg(t, a, a + 0.45));
+    const lout = eIn(seg(t, 8.02, 8.24));
+    [["lkEye", 5.62], ["lkMark", 5.72], ["lkTag", 5.95]].forEach(([id, a]) => set($(id), { opacity: lk(a) * (1 - lout), transform: `translateY(${(1 - lk(a)) * 26 - lout * 20}px)` }));
+    $("lockup").style.visibility = t > 5.5 && t < 8.45 ? "visible" : "hidden";
+  }
+
+  // Stage (S4–S6)
+  {
+    const pin = eOut(seg(t, 8.4, 8.8)), pout = eIn(seg(t, 18.78, 19.08));
+    set($("stage"), { opacity: pin * (1 - pout), transform: `translateY(${(1 - pin) * 46 + pout * 36}px) scale(${lerp(0.975, 1, pin)})`, visibility: t > 8.35 && t < 19.1 ? "visible" : "hidden" });
+    [["e4", 8.6, 11.66], ["e5", 12.2, 15.7], ["e6", 16.24, 18.74]].forEach(([id, a, b]) => set($(id), { opacity: eOut(seg(t, a, a + 0.35)) * (1 - seg(t, b, b + 0.18)) }));
+    renderCap(caps.c4, t); renderCap(caps.c5, t); renderCap(caps.c6, t);
+
+    // graph
+    const gVis = 1 - seg(t, 11.84, 12.04);
+    const cg = camGraph(t);
+    applyCam($("camG"), cg);
+    set($("camG"), { opacity: gVis, visibility: t < 12.05 ? "visible" : "hidden" });
+    set($("strip"), { opacity: gVis, visibility: t < 12.05 ? "visible" : "hidden" });
+    stripLabels.forEach((l, i) => {
+      const p = i < 4 ? eOut(seg(t, traceT[i], traceT[i] + 0.3)) : 0;
+      l.style.color = p > 0 ? `rgb(${lerp(156, 242, p)},${lerp(163, 102, p)},${lerp(175, 42, p)})` : "#9CA3AF";
+      set(l.querySelector("u"), { width: `${p * 100}%` });
+    });
+    rings.forEach((r, i) => {
+      const n = { ...traceNodes[i] }, p = eOut(seg(t, traceT[i], traceT[i] + 0.32));
+      if (i === 3) n.h = 122;
+      const pad = 5;
+      set(r, { left: `${n.x - pad}px`, top: `${n.y - pad}px`, width: `${n.w + pad * 2}px`, height: `${n.h + pad * 2}px`, borderWidth: `${3 / cg.s}px`, borderRadius: `${12}px`, opacity: p, transform: `scale(${lerp(1.08, 1, p)})`, boxShadow: `0 0 0 ${7 / cg.s}px rgba(242,102,42,${0.16 * p})` });
+    });
+    paths.forEach((pth, i) => {
+      const p = eIO(seg(t, traceT[i] + 0.08, traceT[i + 1]));
+      pth.el.setAttribute("stroke-width", String(3.2 / cg.s));
+      pth.el.setAttribute("stroke-dasharray", `${pth.len}`);
+      pth.el.setAttribute("stroke-dashoffset", `${pth.len * (1 - p)}`);
+      pth.el.style.opacity = p > 0 ? 1 : 0;
+    });
+
+    // sentinel
+    const sVis = seg(t, 12.04, 12.3) * (1 - seg(t, 12.98, 13.05));
+    applyCam($("camS"), camSent(t));
+    set($("camS"), { opacity: sVis, visibility: sVis > 0 ? "visible" : "hidden" });
+    set($("rowHover"), { opacity: seg(t, 12.7, 12.8) });
+
+    // review
+    const rVis = seg(t, 13.08, 13.2) * (1 - seg(t, 15.86, 16.04));
+    applyCam($("camR"), camReview(t));
+    set($("camR"), { opacity: rVis, visibility: rVis > 0 ? "visible" : "hidden" });
+    $("rvAfter").style.opacity = t >= 13.8 ? 1 : 0;
+    {
+      const p = eOut(seg(t, 13.84, 14.2)), q = seg(t, 15.2, 15.7);
+      set($("panelRing"), { opacity: p * (1 - q), transform: `scale(${lerp(1.06, 1, p)})`, boxShadow: `0 0 0 8px rgba(23,163,74,${0.14 * p})` });
+    }
+
+    // registry
+    const wVis = seg(t, 16.04, 16.3);
+    applyCam($("camW"), camReg(t));
+    set($("camW"), { opacity: wVis, visibility: wVis > 0 ? "visible" : "hidden" });
+    {
+      const pb = META.popover, m = 26, p = eOut(seg(t, 17.05, 17.2));
+      const L = pb.x - m, T = pb.y - m, Wd = pb.w + 2 * m, Ht = pb.h + 2 * m;
+      set($("pop"), { left: `${L}px`, top: `${T}px`, width: `${Wd}px`, height: `${Ht}px`, opacity: p, transform: `scale(${lerp(0.95, 1, p)})`, transformOrigin: `${META.gold.x + 20 - L}px ${Ht}px`, visibility: p > 0 ? "visible" : "hidden" });
+      set($("pop").querySelector("img"), { left: `${-L}px`, top: `${-T}px` });
+    }
+  }
+
+  // cursor + ripples
+  {
+    const c = cursorAt(t);
+    if (c && c.vis > 0) set($("cursor"), { visibility: "visible", opacity: c.vis, transform: `translate(${c.x - 6}px, ${c.y - 4}px) scale(${1 - 0.14 * clamp(c.press)})` });
+    else $("cursor").style.visibility = "hidden";
+    ripples.forEach((r, i) => {
+      const t0 = clicks[i], p = seg(t, t0, t0 + 0.45);
+      if (p <= 0 || p >= 1) { r.style.visibility = "hidden"; return; }
+      const cc = cursorAt(t0 + 0.001);
+      const rad = lerp(6, 46, eOut(p));
+      set(r, { visibility: "visible", left: `${cc.x - rad}px`, top: `${cc.y - rad}px`, width: `${rad * 2}px`, height: `${rad * 2}px`, opacity: 1 - p });
+    });
+  }
+
+  // S7 outro
+  {
+    renderCap(caps.o1, t); renderCap(caps.o2, t);
+    const lp = eOut(seg(t, 20.15, 20.6));
+    set($("oLock"), { opacity: lp, transform: `translateY(${(1 - lp) * 22}px)` });
+    const on = t > 19.05;
+    loopSvg.style.visibility = on ? "visible" : "hidden";
+    arcs.forEach((a, i) => {
+      const p = eIO(seg(t, 19.2 + i * 0.2, 19.62 + i * 0.2));
+      a.base.setAttribute("stroke-dasharray", `${a.len}`);
+      a.base.setAttribute("stroke-dashoffset", `${a.len * (1 - p)}`);
+      a.head.style.opacity = seg(t, 19.55 + i * 0.2, 19.65 + i * 0.2);
+    });
+    loopNodes.forEach((n, i) => {
+      const p = seg(t, 19.14 + i * 0.16, 19.5 + i * 0.16);
+      const ang = (loopSpec[i].ang * Math.PI) / 180;
+      const x = LC.x + LC.r * Math.cos(ang), y = LC.y + LC.r * Math.sin(ang);
+      // comet proximity highlight
+      const ca = cometAngle(t);
+      let d = Math.abs(((ca - loopSpec[i].ang) % 360 + 540) % 360 - 180);
+      const hot = t > 20.05 ? clamp(1 - d / 28) : 0;
+      set(n, { left: `${x - n.offsetWidth / 2}px`, top: `${y - 35}px`, opacity: clamp(p * 1.8), transform: `scale(${lerp(0.6, 1, eBack(p)) * (1 + 0.05 * hot)})`, visibility: on ? "visible" : "hidden" });
+      const ic = n.querySelector(".ic");
+      ic.style.background = hot > 0 ? `rgba(242,102,42,${0.18 + 0.82 * hot})` : "#E4EDEC";
+      ic.style.color = hot > 0.4 ? "#fff" : "#29524F";
+    });
+    arcLbl.forEach((l, i) => {
+      const ang = ((loopSpec[i].ang + 45) * Math.PI) / 180;
+      const rr = LC.r + 58;
+      const p = eOut(seg(t, 19.7 + i * 0.12, 20.1 + i * 0.12));
+      set(l, { left: `${LC.x + rr * Math.cos(ang) - l.offsetWidth / 2}px`, top: `${LC.y + rr * Math.sin(ang) - 12}px`, opacity: p, visibility: on ? "visible" : "hidden" });
+    });
+    const cp = seg(t, 20.0, 20.25);
+    const ca = (cometAngle(t) * Math.PI) / 180;
+    const cx = LC.x + LC.r * Math.cos(ca), cy = LC.y + LC.r * Math.sin(ca);
+    [comet, cometGlow].forEach((c) => { c.setAttribute("cx", cx); c.setAttribute("cy", cy); c.style.opacity = cp; });
+  }
+}
+function cometAngle(t) { return -90 + Math.max(0, t - 20.0) * 180; }
+
+window.renderAt = renderAt;
+window.ready = (async () => {
+  await document.fonts.load("800 80px Inter"); await document.fonts.load("700 50px Inter"); await document.fonts.load("600 20px 'IBM Plex Mono'"); await document.fonts.load("500 30px Inter");
+  await document.fonts.ready;
+  await Promise.all([...document.images].map((i) => i.decode()));
+  renderAt(0);
+  return true;
+})();
+</script>
+</body>
+</html>

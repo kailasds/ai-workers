@@ -1,0 +1,219 @@
+{
+  "size": {
+    "w": 1976,
+    "h": 1321.25
+  },
+  "strip": {
+    "x": 1,
+    "y": 54,
+    "w": 1974,
+    "h": 28
+  },
+  "stages": [
+    {
+      "text": "Workers",
+      "x": 17,
+      "y": 60,
+      "w": 53.875,
+      "h": 15
+    },
+    {
+      "text": "Topics",
+      "x": 94.875,
+      "y": 60,
+      "w": 40.0625,
+      "h": 15
+    },
+    {
+      "text": "Knowledge",
+      "x": 158.9375,
+      "y": 60,
+      "w": 69.328125,
+      "h": 15
+    },
+    {
+      "text": "Candidate Knowledge",
+      "x": 252.265625,
+      "y": 60,
+      "w": 134.703125,
+      "h": 15
+    },
+    {
+      "text": "Certified Knowledge",
+      "x": 410.96875,
+      "y": 60,
+      "w": 128.078125,
+      "h": 15
+    },
+    {
+      "text": "Knowledge Packs",
+      "x": 563.046875,
+      "y": 60,
+      "w": 108.1875,
+      "h": 15
+    }
+  ],
+  "nodes": [
+    {
+      "text": "TOPIC Service conversion 9 observations · 4 Workers",
+      "x": 463.0919189453125,
+      "y": 668.2567138671875,
+      "w": 202.9820556640625,
+      "h": 73.81170654296875
+    },
+    {
+      "text": "TOPIC Service conversion with unit tests 8 observations · 2 Workers",
+      "x": 463.0919189453125,
+      "y": 418.2197265625,
+      "w": 202.9820556640625,
+      "h": 80.84683227539062
+    },
+    {
+      "text": "TOPIC Service conversion with tests and traceability 5 observations · 2 Workers",
+      "x": 463.0919189453125,
+      "y": 289.04931640625,
+      "w": 202.9820556640625,
+      "h": 80.84686279296875
+    },
+    {
+      "text": "WORKER Integration Modernization Worker #36 9 observations recorded",
+      "x": 166,
+      "y": 404.3800354003906,
+      "w": 202.9820556640625,
+      "h": 99.53042602539062
+    },
+    {
+      "text": "WORKER Integration Modernization Worker #29 5 observations recorded",
+      "x": 166,
+      "y": 533.5504150390625,
+      "w": 202.9820556640625,
+      "h": 99.53045654296875
+    },
+    {
+      "text": "WORKER Integration Modernization Worker #11 7 observations recorded",
+      "x": 166,
+      "y": 662.7208862304688,
+      "w": 202.9820556640625,
+      "h": 99.5303955078125
+    },
+    {
+      "text": "WORKER Integration Modernization Worker #42 1 observation recorded",
+      "x": 166,
+      "y": 791.8912963867188,
+      "w": 202.9820556640625,
+      "h": 99.5303955078125
+    },
+    {
+      "text": "KNOWLEDGE CONSTRUCT JMS delivery guarantee Observed 1 obs",
+      "x": 750.9573974609375,
+      "y": 704.2399291992188,
+      "w": 202.9820556640625,
+      "h": 80.5008544921875
+    },
+    {
+      "text": "KNOWLEDGE CONSTRUCT Acknowledgement mode Corroborated 6 obs",
+      "x": 750.9573974609375,
+      "y": 316.72869873046875,
+      "w": 202.9820556640625,
+      "h": 80.5008544921875
+    },
+    {
+      "text": "KNOWLEDGE CONSTRUCT Message ordering Observed 1 obs",
+      "x": 750.9573974609375,
+      "y": 833.4103393554688,
+      "w": 202.9820556640625,
+      "h": 80.5008544921875
+    },
+    {
+      "text": "KNOWLEDGE CONSTRUCT DLQ routing and payload Observed 2 obs",
+      "x": 750.9573974609375,
+      "y": 575.0695190429688,
+      "w": 202.9820556640625,
+      "h": 80.5008544921875
+    },
+    {
+      "text": "KNOWLEDGE CONSTRUCT Service orchestration Published 5 obs",
+      "x": 750.9573974609375,
+      "y": 962.5807495117188,
+      "w": 202.9820556640625,
+      "h": 80.50079345703125
+    },
+    {
+      "text": "KNOWLEDGE CONSTRUCT Unit test generation Published 4 obs",
+      "x": 750.9573974609375,
+      "y": 445.89910888671875,
+      "w": 202.9820556640625,
+      "h": 80.50079345703125
+    },
+    {
+      "text": "KNOWLEDGE CONSTRUCT Source-to-target traceability Corroborated 3 obs",
+      "x": 750.9573974609375,
+      "y": 187.55828857421875,
+      "w": 202.9820556640625,
+      "h": 87.5360107421875
+    },
+    {
+      "text": "CANDIDATE KNOWLEDGE JMS acknowledgement mode CLIENT_ACKNOWLEDGE maps to Spring B",
+      "x": 1036.9775390625,
+      "y": 316.72869873046875,
+      "w": 202.9820556640625,
+      "h": 147.7386474609375
+    },
+    {
+      "text": "CANDIDATE KNOWLEDGE Convert a TIBCO service orchestration process to a Spring Bo",
+      "x": 1036.9775390625,
+      "y": 962.5807495117188,
+      "w": 202.9820556640625,
+      "h": 133.14923095703125
+    },
+    {
+      "text": "CERTIFIED KNOWLEDGE Service orchestration — Certified Certified",
+      "x": 1322.9976806640625,
+      "y": 575.0695190429688,
+      "w": 202.982177734375,
+      "h": 89.38128662109375
+    },
+    {
+      "text": "KNOWLEDGE PACK Spring Boot Migration Pack · v1.0 Published",
+      "x": 1609.0179443359375,
+      "y": 459.7388000488281,
+      "w": 202.9820556640625,
+      "h": 89.38131713867188
+    },
+    {
+      "text": "CANDIDATE KNOWLEDGE Generate JUnit 5 test scaffolding mirroring TIBCO test cases",
+      "x": 1036.9775390625,
+      "y": 445.89910888671875,
+      "w": 202.9820556640625,
+      "h": 118.55999755859375
+    },
+    {
+      "text": "CERTIFIED KNOWLEDGE Unit test generation — Certified Certified",
+      "x": 1322.9976806640625,
+      "y": 445.89910888671875,
+      "w": 202.982177734375,
+      "h": 89.38128662109375
+    },
+    {
+      "text": "CANDIDATE KNOWLEDGE Generate a source-to-target traceability matrix entry for ea",
+      "x": 1036.9775390625,
+      "y": 187.55828857421875,
+      "w": 202.9820556640625,
+      "h": 133.14932250976562
+    },
+    {
+      "text": "CANDIDATE KNOWLEDGE DLQ payload envelope shape after redelivery differs dependin",
+      "x": 1036.9775390625,
+      "y": 575.0695190429688,
+      "w": 202.9820556640625,
+      "h": 147.7386474609375
+    },
+    {
+      "text": "CANDIDATE KNOWLEDGE FIFO message ordering is not guaranteed after conversion wit",
+      "x": 1036.9775390625,
+      "y": 833.4103393554688,
+      "w": 202.9820556640625,
+      "h": 133.1492919921875
+    }
+  ]
+}

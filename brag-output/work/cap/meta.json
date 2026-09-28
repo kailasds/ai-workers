@@ -1,0 +1,224 @@
+{
+  "cand": {
+    "x": 312,
+    "y": 310.796875,
+    "w": 1096,
+    "h": 212.3125
+  },
+  "graph": {
+    "x": 312,
+    "y": 159.234375,
+    "w": 1576,
+    "h": 761.25
+  },
+  "stages": [],
+  "nodes": [
+    {
+      "text": "TOPIC Service conversion 9 observations · 4 Workers",
+      "x": 517.481689453125,
+      "y": 375.26318359375,
+      "w": 104.41058349609375,
+      "h": 37.967529296875
+    },
+    {
+      "text": "TOPIC Service conversion with unit tests 8 observations · 2 Workers",
+      "x": 517.481689453125,
+      "y": 246.64837646484375,
+      "w": 104.41058349609375,
+      "h": 41.58624267578125
+    },
+    {
+      "text": "TOPIC Service conversion with tests and traceability 5 observations · 2 Workers",
+      "x": 517.481689453125,
+      "y": 180.20529174804688,
+      "w": 104.41058349609375,
+      "h": 41.58624267578125
+    },
+    {
+      "text": "WORKER Integration Modernization Worker #36 9 observations recorded",
+      "x": 364.66259765625,
+      "y": 239.52947998046875,
+      "w": 104.4105224609375,
+      "h": 51.19677734375
+    },
+    {
+      "text": "WORKER Integration Modernization Worker #29 5 observations recorded",
+      "x": 364.66259765625,
+      "y": 305.9725646972656,
+      "w": 104.4105224609375,
+      "h": 51.196746826171875
+    },
+    {
+      "text": "WORKER Integration Modernization Worker #11 7 observations recorded",
+      "x": 364.66259765625,
+      "y": 372.4156494140625,
+      "w": 104.4105224609375,
+      "h": 51.19677734375
+    },
+    {
+      "text": "WORKER Integration Modernization Worker #42 1 observation recorded",
+      "x": 364.66259765625,
+      "y": 438.8587646484375,
+      "w": 104.4105224609375,
+      "h": 51.19677734375
+    },
+    {
+      "text": "KNOWLEDGE CONSTRUCT JMS delivery guarantee Observed 1 obs",
+      "x": 665.5548706054688,
+      "y": 393.7723388671875,
+      "w": 104.41058349609375,
+      "h": 41.4083251953125
+    },
+    {
+      "text": "KNOWLEDGE CONSTRUCT Acknowledgement mode Corroborated 6 obs",
+      "x": 665.5548706054688,
+      "y": 194.44308471679688,
+      "w": 104.41058349609375,
+      "h": 41.408294677734375
+    },
+    {
+      "text": "KNOWLEDGE CONSTRUCT Message ordering Observed 1 obs",
+      "x": 665.5548706054688,
+      "y": 460.2154541015625,
+      "w": 104.41058349609375,
+      "h": 41.40826416015625
+    },
+    {
+      "text": "KNOWLEDGE CONSTRUCT DLQ routing and payload Observed 2 obs",
+      "x": 665.5548706054688,
+      "y": 327.3292541503906,
+      "w": 104.41058349609375,
+      "h": 41.408294677734375
+    },
+    {
+      "text": "KNOWLEDGE CONSTRUCT Service orchestration Published 5 obs",
+      "x": 665.5548706054688,
+      "y": 526.6585693359375,
+      "w": 104.41058349609375,
+      "h": 41.408203125
+    },
+    {
+      "text": "KNOWLEDGE CONSTRUCT Unit test generation Published 4 obs",
+      "x": 665.5548706054688,
+      "y": 260.88616943359375,
+      "w": 104.41058349609375,
+      "h": 41.408294677734375
+    },
+    {
+      "text": "KNOWLEDGE CONSTRUCT Source-to-target traceability Corroborated 3 obs",
+      "x": 665.5548706054688,
+      "y": 128,
+      "w": 104.41058349609375,
+      "h": 45.02703857421875
+    },
+    {
+      "text": "CANDIDATE KNOWLEDGE JMS acknowledgement mode CLIENT_ACKNOWLEDGE maps to Spring Boot's manu",
+      "x": 812.6788330078125,
+      "y": 194.44308471679688,
+      "w": 104.4105224609375,
+      "h": 75.99429321289062
+    },
+    {
+      "text": "CANDIDATE KNOWLEDGE Convert a TIBCO service orchestration process to a Spring Boot @Servic",
+      "x": 812.6788330078125,
+      "y": 526.6585693359375,
+      "w": 104.4105224609375,
+      "h": 68.48974609375
+    },
+    {
+      "text": "CERTIFIED KNOWLEDGE Service orchestration — Certified Certified",
+      "x": 959.8028564453125,
+      "y": 327.3292541503906,
+      "w": 104.4105224609375,
+      "h": 45.976287841796875
+    },
+    {
+      "text": "KNOWLEDGE PACK Spring Boot Migration Pack · v1.0 Published",
+      "x": 1106.9267578125,
+      "y": 268.00506591796875,
+      "w": 104.41064453125,
+      "h": 45.97625732421875
+    },
+    {
+      "text": "CANDIDATE KNOWLEDGE Generate JUnit 5 test scaffolding mirroring TIBCO test cases for each ",
+      "x": 812.6788330078125,
+      "y": 260.88616943359375,
+      "w": 104.4105224609375,
+      "h": 60.985260009765625
+    },
+    {
+      "text": "CERTIFIED KNOWLEDGE Unit test generation — Certified Certified",
+      "x": 959.8028564453125,
+      "y": 260.88616943359375,
+      "w": 104.4105224609375,
+      "h": 45.97625732421875
+    },
+    {
+      "text": "CANDIDATE KNOWLEDGE Generate a source-to-target traceability matrix entry for each convert",
+      "x": 812.6788330078125,
+      "y": 128,
+      "w": 104.4105224609375,
+      "h": 68.48977661132812
+    },
+    {
+      "text": "CANDIDATE KNOWLEDGE DLQ payload envelope shape after redelivery differs depending on wheth",
+      "x": 812.6788330078125,
+      "y": 327.3292541503906,
+      "w": 104.4105224609375,
+      "h": 75.99429321289062
+    },
+    {
+      "text": "CANDIDATE KNOWLEDGE FIFO message ordering is not guaranteed after conversion without an ex",
+      "x": 812.6788330078125,
+      "y": 460.2154541015625,
+      "w": 104.4105224609375,
+      "h": 68.48974609375
+    }
+  ],
+  "icons": {
+    "/": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-gauge h-[18px] w-[18px] shrink-0 mt-0.5 text-sidebar-ink-faint\" aria-hidden=\"true\"><path d=\"m12 14 4-4\"></path><path d=\"M3.34 19a10 10 0 1 1 17.32 0\"></path></svg>",
+    "/workers/new": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-wrench h-[18px] w-[18px] shrink-0 mt-0.5 text-sidebar-ink-faint\" aria-hidden=\"true\"><path d=\"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z\"></path></svg>",
+    "/workers": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-users h-[18px] w-[18px] shrink-0 mt-0.5 text-sidebar-ink-faint\" aria-hidden=\"true\"><path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"></path><path d=\"M16 3.128a4 4 0 0 1 0 7.744\"></path><path d=\"M22 21v-2a4 4 0 0 0-3-3.87\"></path><circle cx=\"9\" cy=\"7\" r=\"4\"></circle></svg>",
+    "/knowledge": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-library h-[18px] w-[18px] shrink-0 mt-0.5 text-sidebar-ink-faint\" aria-hidden=\"true\"><path d=\"m16 6 4 14\"></path><path d=\"M12 6v14\"></path><path d=\"M8 8v12\"></path><path d=\"M4 4v16\"></path></svg>",
+    "/learning": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-brain-circuit h-[18px] w-[18px] shrink-0 mt-0.5 text-sidebar-accent\" aria-hidden=\"true\"><path d=\"M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z\"></path><path d=\"M9 13a4.5 4.5 0 0 0 3-4\"></path><path d=\"M6.003 5.125A3 3 0 0 0 6.401 6.5\"></path><path d=\"M3.477 10.896a4 4 0 0 1 .585-.396\"></path><path d=\"M6 18a4 4 0 0 1-1.967-.516\"></path><path d=\"M12 13h4\"></path><path d=\"M12 18h6a2 2 0 0 1 2 2v1\"></path><path d=\"M12 8h8\"></path><path d=\"M16 8V5a2 2 0 0 1 2-2\"></path><circle cx=\"16\" cy=\"13\" r=\".5\"></circle><circle cx=\"18\" cy=\"3\" r=\".5\"></circle><circle cx=\"20\" cy=\"21\" r=\".5\"></circle><circle cx=\"20\" cy=\"8\" r=\".5\"></circle></svg>",
+    "/sentinel": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-shield-alert h-[18px] w-[18px] shrink-0 mt-0.5 text-sidebar-ink-faint\" aria-hidden=\"true\"><path d=\"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z\"></path><path d=\"M12 8v4\"></path><path d=\"M12 16h.01\"></path></svg>",
+    "/packaging": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-package h-[18px] w-[18px] shrink-0 mt-0.5 text-sidebar-ink-faint\" aria-hidden=\"true\"><path d=\"M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z\"></path><path d=\"M12 22V12\"></path><polyline points=\"3.29 7 12 12 20.71 7\"></polyline><path d=\"m7.5 4.27 9 5.15\"></path></svg>",
+    "/delivery": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-send h-[18px] w-[18px] shrink-0 mt-0.5 text-sidebar-ink-faint\" aria-hidden=\"true\"><path d=\"M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z\"></path><path d=\"m21.854 2.147-10.94 10.939\"></path></svg>"
+  },
+  "sentinelRow": {
+    "x": 312,
+    "y": 334.046875,
+    "w": 1256,
+    "h": 95.75
+  },
+  "accept": {
+    "x": 1269,
+    "y": 230.125,
+    "w": 278,
+    "h": 36
+  },
+  "panel": {
+    "x": 1248,
+    "y": 188.625,
+    "w": 320,
+    "h": 293
+  },
+  "card": {
+    "x": 312,
+    "y": 728.171875,
+    "w": 408,
+    "h": 255.4375
+  },
+  "gold": {
+    "x": 329,
+    "y": 850.859375,
+    "w": 56.6875,
+    "h": 21.25
+  },
+  "popover": {
+    "x": 329,
+    "y": 427.5,
+    "w": 320,
+    "h": 415.125
+  }
+}

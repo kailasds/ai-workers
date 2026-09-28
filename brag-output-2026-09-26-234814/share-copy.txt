@@ -1,0 +1,1 @@
+A one-minute tour of the TCS AI Worker Platform: compose a Worker as one governed package, ship it to a customer, and track every run against its Definition of Done. Workers learn on the job, but nothing becomes shared knowledge until Sentinel checks the evidence.
