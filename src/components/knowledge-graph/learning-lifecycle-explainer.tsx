@@ -3,17 +3,16 @@ import { ChevronDown, ChevronUp, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const pipeline = [
-  "Worker run",
-  "Observation",
-  "Possible new learning",
-  "Candidate Knowledge",
-  "Evidence + corroboration",
-  "Certified Knowledge",
-  "Published",
-  "Reused by Workers",
+  "Worker does work",
+  "Patterns emerge",
+  "Learning identified",
+  "Worker Sentinel reviews",
+  "Gained knowledge",
+  "Platform Sentinel decides",
+  "Shared with platform",
 ];
 
-const alternateOutcomes = ["Awaiting evidence", "Contradictory", "Not retained", "Rejected"];
+const alternateOutcomes = ["Needs more evidence", "Contradictory", "Not kept", "Rejected"];
 
 export function LearningLifecycleExplainer() {
   const [open, setOpen] = useState(false);
@@ -22,9 +21,9 @@ export function LearningLifecycleExplainer() {
     <div className="rounded-card border border-border bg-card shadow-card">
       <button onClick={() => setOpen((o) => !o)} className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left">
         <span className="text-[12.5px] leading-relaxed">
-          <span className="font-semibold text-ink">How does GBrain learn? </span>
+          <span className="font-semibold text-ink">How do Workers learn? </span>
           <span className="text-ink-mute">
-            Workers run tasks → generate observations → evidence is compared → candidate knowledge is evaluated → trusted knowledge is certified and published.
+            Workers do work, useful patterns emerge, Worker Sentinel decides what to keep, and Platform Sentinel decides what is worth sharing.
           </span>
         </span>
         {open ? <ChevronUp className="h-4 w-4 shrink-0 text-ink-mute" strokeWidth={2} /> : <ChevronDown className="h-4 w-4 shrink-0 text-ink-mute" strokeWidth={2} />}
@@ -42,7 +41,7 @@ export function LearningLifecycleExplainer() {
             ))}
           </div>
           <p className="mt-3 text-[11px] font-semibold uppercase tracking-wider text-ink-faint">
-            Not every observation becomes published knowledge — Candidate Knowledge can instead land on:
+            Not every pattern is kept. Learning can instead end up as:
           </p>
           <div className={cn("mt-1.5 flex flex-wrap gap-1.5")}>
             {alternateOutcomes.map((o) => (

@@ -13,8 +13,9 @@ export const steps: StepDef[] = [
   { id: "identity", index: 1, label: "Bounded context", description: "Identity · domain · scope" },
   { id: "intent", index: 2, label: "Worker intent", description: "Agent · harness · tools" },
   { id: "brain", index: 3, label: "Worker Brain", description: "Skills · DSLs · EVALs · Memory · Sentinel" },
-  { id: "dod", index: 4, label: "Definition of Done", description: "Release gates" },
-  { id: "autonomy", index: 5, label: "Autonomy", description: "How far it may act" },
+  { id: "growth", index: 4, label: "Knowledge & growth", description: "Assigned knowledge · Learning · Evolution" },
+  { id: "dod", index: 5, label: "Definition of Done", description: "Release gates" },
+  { id: "autonomy", index: 6, label: "Autonomy", description: "How far it may act" },
 ];
 
 export function WorkerStepper({

@@ -1,19 +1,18 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Gauge, Wrench, Package, Send, Users, Library, BrainCircuit, ShieldAlert, UserCog, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Gauge, Wrench, Users, Library, BrainCircuit, ShieldCheck, UserCog, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { needsAttentionCount, useV2 } from "@/lib/v2/store";
 
 const primaryNav = [
-  { to: "/", label: "Dashboard", description: "What Workers deliver", icon: Gauge, end: true },
-  { to: "/workers/new", label: "Compose", description: "Create Workers", icon: Wrench },
-  { to: "/packaging", label: "Packaging", description: "Seal composed Workers", icon: Package },
-  { to: "/delivery", label: "Customer delivery", description: "Prepare for a customer", icon: Send },
-  { to: "/workers", label: "Worker Registry", description: "Manage Workers", icon: Users, end: true },
-  { to: "/knowledge", label: "Knowledge", description: "TCS knowledge", icon: Library },
-  { to: "/learning", label: "Learning", description: "What Workers add", icon: BrainCircuit },
-  { to: "/sentinel", label: "Sentinel", description: "Oversight", icon: ShieldAlert },
+  { to: "/", label: "Dashboard", description: "What's happening across my Workers?", icon: Gauge, end: true },
+  { to: "/workers/new", label: "Compose", description: "What Worker do I want to create?", icon: Wrench },
+  { to: "/workers", label: "Registry", description: "What Workers do I have?", icon: Users, end: true },
+  { to: "/knowledge", label: "Knowledge", description: "What is available, and where?", icon: Library },
+  { to: "/learning", label: "Learning", description: "What are Workers learning?", icon: BrainCircuit },
+  { to: "/sentinel", label: "Sentinel", description: "What needs review or control?", icon: ShieldCheck },
 ];
 
 const COLLAPSE_KEY = "ai-worker-platform:sidebar-collapsed";
@@ -28,6 +27,7 @@ function getInitialCollapsed() {
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(getInitialCollapsed);
+  const attention = needsAttentionCount(useV2());
 
   function toggleCollapsed() {
     setCollapsed((prev) => {
@@ -61,7 +61,7 @@ export function Sidebar() {
       </div>
 
       <nav className={cn("flex-1 overflow-y-auto pb-4", collapsed ? "px-2" : "px-3")}>
-        <NavGroup items={primaryNav} collapsed={collapsed} />
+        <NavGroup items={primaryNav} collapsed={collapsed} counts={{ "/sentinel": attention }} />
       </nav>
 
       <div className="border-t border-sidebar-border p-3">
@@ -128,6 +128,7 @@ export function Sidebar() {
 function NavGroup({
   items,
   collapsed,
+  counts = {},
 }: {
   items: {
     to: string;
@@ -137,6 +138,7 @@ function NavGroup({
     end?: boolean;
   }[];
   collapsed: boolean;
+  counts?: Record<string, number>;
 }) {
   return (
     <div className="flex flex-col gap-1">
@@ -163,11 +165,15 @@ function NavGroup({
                       )}
                     />
                     <item.icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} />
+                    {counts[item.to] > 0 && <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-sidebar-accent" />}
                   </>
                 )}
               </NavLink>
             </TooltipTrigger>
-            <TooltipContent side="right">{item.label}</TooltipContent>
+            <TooltipContent side="right">
+              {item.label}
+              {counts[item.to] > 0 ? ` · ${counts[item.to]} need review` : ""}
+            </TooltipContent>
           </Tooltip>
         ) : (
           <NavLink
@@ -193,7 +199,7 @@ function NavGroup({
                   className={cn("h-[18px] w-[18px] shrink-0 mt-0.5", isActive ? "text-sidebar-accent" : "text-sidebar-ink-faint")}
                   strokeWidth={1.75}
                 />
-                <span className="min-w-0">
+                <span className="min-w-0 flex-1">
                   <span className="block truncate text-[13.5px] font-semibold text-sidebar-ink">
                     {item.label}
                   </span>
@@ -201,6 +207,14 @@ function NavGroup({
                     {item.description}
                   </span>
                 </span>
+                {counts[item.to] > 0 && (
+                  <span
+                    className="mt-0.5 shrink-0 rounded-full bg-sidebar-accent px-1.5 py-0.5 text-[10.5px] font-bold leading-none text-white"
+                    aria-label={`${counts[item.to]} items need review`}
+                  >
+                    {counts[item.to]}
+                  </span>
+                )}
               </>
             )}
           </NavLink>

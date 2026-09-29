@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 
-export type StepId = "identity" | "intent" | "brain" | "dod" | "autonomy";
+export type StepId = "identity" | "intent" | "brain" | "growth" | "dod" | "autonomy";
 
 type Icon = ComponentType<{ className?: string; strokeWidth?: number }>;
 
@@ -96,6 +96,12 @@ export interface ComposeState {
   workerIntent: WorkerIntentState;
   intentConfirmed: boolean;
   brain: BrainState;
+  /** Assigned knowledge ids, learning behaviour and evolution policy. */
+  assignedKnowledgeIds: string[];
+  learningEnabled: boolean;
+  evolutionEnabled: boolean;
+  autoEvolve: boolean;
+  growthConfirmed: boolean;
   dodConfirmed: boolean;
   autonomyLevel: 1 | 2 | 3 | 4;
   autonomyConfirmed: boolean;

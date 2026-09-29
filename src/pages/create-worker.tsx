@@ -8,6 +8,7 @@ import { WorkerTypeStep } from "@/components/create-worker/worker-type-step";
 import { IdentityStep } from "@/components/create-worker/identity-step";
 import { IntentStep } from "@/components/create-worker/intent-step";
 import { BrainStep } from "@/components/create-worker/brain-step";
+import { GrowthStep } from "@/components/create-worker/growth-step";
 import { DodStep } from "@/components/create-worker/dod-step";
 import { AutonomyStep } from "@/components/create-worker/autonomy-step";
 import { PackageStep } from "@/components/create-worker/package-step";
@@ -42,6 +43,7 @@ export default function CreateWorker() {
         ["identity", compose.identityConfirmed],
         ["intent", compose.intentConfirmed],
         ["brain", compose.brain.status === "done"],
+        ["growth", compose.growthConfirmed],
         ["dod", compose.dodConfirmed],
         ["autonomy", compose.autonomyConfirmed],
       ] as [StepId, boolean][]
@@ -53,7 +55,8 @@ export default function CreateWorker() {
   const reachable = new Set<StepId>(["identity"]);
   if (compose.identityConfirmed) reachable.add("intent");
   if (compose.intentConfirmed) reachable.add("brain");
-  if (compose.brain.status === "done") reachable.add("dod");
+  if (compose.brain.status === "done") reachable.add("growth");
+  if (compose.growthConfirmed) reachable.add("dod");
   if (compose.dodConfirmed) reachable.add("autonomy");
 
   const showPackage = currentStep === "autonomy" && compose.autonomyConfirmed;
@@ -74,9 +77,12 @@ export default function CreateWorker() {
     }
 
     if (currentStep === "brain" && compose.brain.status === "done") {
-      const t = window.setTimeout(() => goTo("dod"), 600);
+      const t = window.setTimeout(() => goTo("growth"), 600);
       return () => window.clearTimeout(t);
     }
+
+    // "growth" is deliberately not auto-advanced: what a Worker is given and
+    // whether it may learn or evolve are decisions, not presets.
 
     if (currentStep === "dod" && !compose.dodConfirmed) {
       const t = window.setTimeout(() => {
@@ -99,6 +105,7 @@ export default function CreateWorker() {
     currentStep,
     compose.brain.status,
     compose.intentConfirmed,
+    compose.growthConfirmed,
     compose.dodConfirmed,
     compose.autonomyConfirmed,
     showPackage,
@@ -151,6 +158,7 @@ export default function CreateWorker() {
                 {currentStep === "identity" && <IdentityStep compose={compose} update={updateCompose} />}
                 {currentStep === "intent" && <IntentStep compose={compose} update={updateCompose} />}
                 {currentStep === "brain" && <BrainStep compose={compose} update={updateCompose} />}
+                {currentStep === "growth" && <GrowthStep compose={compose} update={updateCompose} />}
                 {currentStep === "dod" && <DodStep />}
                 {currentStep === "autonomy" && <AutonomyStep compose={compose} update={updateCompose} />}
 
@@ -165,7 +173,7 @@ export default function CreateWorker() {
                   >
                     Back
                   </Button>
-                  {compose.autoAssemblePreset && currentStep !== "identity" ? (
+                  {compose.autoAssemblePreset && currentStep !== "identity" && currentStep !== "growth" ? (
                     <AutoAdvanceIndicator step={currentStep} brainDone={compose.brain.status === "done"} />
                   ) : (
                     <StepAction compose={compose} currentStep={currentStep} update={updateCompose} goTo={goTo} />
@@ -231,8 +239,19 @@ function StepAction({
       );
     case "brain":
       return (
-        <Button disabled={compose.brain.status !== "done"} onClick={() => goTo("dod")}>
+        <Button disabled={compose.brain.status !== "done"} onClick={() => goTo("growth")}>
           {compose.brain.status === "done" ? "Continue" : "Assembling…"}
+        </Button>
+      );
+    case "growth":
+      return (
+        <Button
+          onClick={() => {
+            update("growthConfirmed", true);
+            goTo("dod");
+          }}
+        >
+          Confirm knowledge and growth
         </Button>
       );
     case "dod":

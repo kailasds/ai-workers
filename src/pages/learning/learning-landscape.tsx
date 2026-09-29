@@ -29,10 +29,10 @@ function timeAgo(iso: string) {
 
 const lifecycleStages: { key: "observed" | "corroborated" | "certified" | "published" | "reused"; label: string; filter: GraphFilters["lifecycle"] }[] = [
   { key: "observed", label: "Observed", filter: "Observed" },
-  { key: "corroborated", label: "Corroborated", filter: "Corroborated" },
-  { key: "certified", label: "Certified", filter: "Certified" },
-  { key: "published", label: "Published", filter: "Published" },
-  { key: "reused", label: "Reused", filter: "Reused" },
+  { key: "corroborated", label: "Under review", filter: "Corroborated" },
+  { key: "certified", label: "Kept by Worker", filter: "Certified" },
+  { key: "published", label: "Shared with platform", filter: "Published" },
+  { key: "reused", label: "Used by Workers", filter: "Reused" },
 ];
 
 export default function LearningLandscape() {
@@ -60,7 +60,7 @@ export default function LearningLandscape() {
         <div className="rounded-card border border-accent-border bg-accent-soft p-4 flex-1">
           <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-accent-ink mb-1.5">
             <Sparkle className="h-3.5 w-3.5" strokeWidth={2} />
-            GBrain knowledge
+            What Workers have learned
           </p>
           <p className="text-[13px] leading-relaxed text-ink">{summary}</p>
         </div>
@@ -103,7 +103,7 @@ export default function LearningLandscape() {
           />
         </div>
         <div className="border-t border-border p-4">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-faint mb-2.5">Knowledge Lifecycle</p>
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-faint mb-2.5">Learning stages</p>
           <div className="flex items-stretch gap-2">
             {lifecycleStages.map((s, i) => (
               <div key={s.key} className="flex items-center flex-1">

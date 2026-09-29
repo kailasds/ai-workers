@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
+  ArrowLeft,
   BrainCircuit,
   Search,
   Database,
@@ -46,8 +48,14 @@ function fmtDate(iso: string) {
 export default function LearningHub() {
   return (
     <div className="pb-12">
+      <div className="px-8 pt-6">
+        <Link to="/learning" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-accent-ink hover:underline underline-offset-2">
+          <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
+          Learning
+        </Link>
+      </div>
       <PageHeader
-        title="Learning"
+        title="Detailed reports"
         subtitle="What Workers have worked out from doing the work, and what it changed."
         icon={BrainCircuit}
         tone="purple"

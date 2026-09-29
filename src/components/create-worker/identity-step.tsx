@@ -21,11 +21,11 @@ export function IdentityStep({
 
   return (
     <div className="rounded-card border border-border bg-card shadow-card p-6">
-      <p className="text-[11px] font-semibold uppercase tracking-wider text-accent-ink">Step 1 of 5</p>
-      <h2 className="mt-1 text-[19px] font-bold tracking-[-0.01em] text-ink font-display">Assign identity and select bounded context</h2>
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-accent-ink">Step 1 of 6</p>
+      <h2 className="mt-1 text-[19px] font-bold tracking-[-0.01em] text-ink font-display">Define the Worker: what it does, and where its work stops</h2>
 
       <div className="mt-5">
-        <p className="text-[13.5px] font-bold text-ink">Assign identity</p>
+        <p className="text-[13.5px] font-bold text-ink">What kind of work does it perform?</p>
         <p className="mt-1 text-[12.5px] leading-relaxed text-ink-mute">
           The identity decides which scopes this Worker may be bound to. A business domain decides which Skills, Domain Specific
           Languages and EVALs come with it, and can be left out.
@@ -62,7 +62,8 @@ export function IdentityStep({
         )}
       >
         <div className="overflow-hidden">
-          <p className="text-[13.5px] font-bold text-ink mb-3">Select bounded context</p>
+          <p className="text-[13.5px] font-bold text-ink">What does this Worker do, and where does its work stop?</p>
+          <p className="mb-3 mt-0.5 text-[12px] text-ink-mute">This is its bounded context: the work it takes on, and the work it leaves alone.</p>
           <div className="space-y-2.5">
             {boundedContexts.map((b) => {
               const selected = b.id === compose.boundedContextId;

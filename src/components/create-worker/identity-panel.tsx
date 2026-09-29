@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, ChevronDown, ChevronRight, FileText, Brain, ClipboardCheck, ShieldCheck, Loader2, Fingerprint } from "lucide-react";
+import { Check, ChevronDown, ChevronRight, FileText, Brain, ClipboardCheck, ShieldCheck, Loader2, Fingerprint, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { businessDomains, boundedContexts, identities, autonomyLevels } from "./script";
 import type { ComposeState, StepId } from "./types";
@@ -88,6 +88,7 @@ function ConfirmedRail({
   const confirmedCount = [
     compose.intentConfirmed,
     compose.brain.status === "done",
+    compose.growthConfirmed,
     compose.dodConfirmed,
     compose.autonomyConfirmed,
   ].filter(Boolean).length;
@@ -128,12 +129,12 @@ function ConfirmedRail({
         <div className="mt-4 border-t border-border pt-4">
           <div className="flex items-center justify-between mb-2">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-mute">Package progress</p>
-            <span className="text-[12px] font-semibold tabular-nums text-ink">{confirmedCount} of 4 sections confirmed</span>
+            <span className="text-[12px] font-semibold tabular-nums text-ink">{confirmedCount} of 5 sections confirmed</span>
           </div>
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-card-sunken">
             <div
               className="h-full rounded-full bg-accent transition-all duration-500 ease-out"
-              style={{ width: `${(confirmedCount / 4) * 100}%` }}
+              style={{ width: `${(confirmedCount / 5) * 100}%` }}
             />
           </div>
         </div>
@@ -147,6 +148,13 @@ function ConfirmedRail({
             onClick={() => onJumpTo("intent")}
           />
           <BrainSectionRow compose={compose} onClick={() => onJumpTo("brain")} />
+          <SectionRow
+            icon={TrendingUp}
+            title="Knowledge & growth"
+            detail={`${compose.assignedKnowledgeIds.length} assigned · Learning ${compose.learningEnabled ? "on" : "off"} · Evolution ${compose.evolutionEnabled ? "on" : "off"}`}
+            done={compose.growthConfirmed}
+            onClick={() => onJumpTo("growth")}
+          />
           <SectionRow
             icon={ClipboardCheck}
             title="Definition of Done"

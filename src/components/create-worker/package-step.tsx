@@ -4,6 +4,9 @@ import { ArrowLeft, Check, Loader2, Package as PackageIcon, Rocket } from "lucid
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { WorkerPackageSummary, type PackageSummaryData } from "@/components/v2/worker-package-summary";
+import { capabilityLadder } from "@/lib/v2/data";
+import { addComposedWorker, useV2 } from "@/lib/v2/store";
 import { sampleProjects, provisioningSteps, businessDomains, identities, boundedContexts } from "./script";
 import type { ComposeState } from "./types";
 
@@ -18,12 +21,53 @@ export function PackageStep({
   onReset: () => void;
   onBackToWorker: () => void;
 }) {
-  if (compose.packageState === "building") return <BuildingPanel onDone={() => update("packageState", "built")} />;
-  if (compose.packageState === "built") return <BuiltPanel compose={compose} onReset={onReset} />;
-
+  const state = useV2();
   const identity = identities.find((i) => i.id === compose.identityId);
   const domain = businessDomains.find((d) => d.id === compose.businessDomainId);
   const boundedContext = boundedContexts.find((b) => b.id === compose.boundedContextId);
+  const workerName = [identity?.name, domain?.name].filter(Boolean).join(" · ") || "New Worker";
+
+  if (compose.packageState === "building") {
+    return (
+      <BuildingPanel
+        onDone={() => {
+          addComposedWorker({
+            name: workerName,
+            purpose: boundedContext?.description ?? "A new Worker",
+            context: boundedContext?.name ?? "",
+            learningEnabled: compose.learningEnabled,
+            evolutionEnabled: compose.evolutionEnabled,
+            autoEvolve: compose.autoEvolve,
+            assignedKnowledgeIds: compose.assignedKnowledgeIds,
+          });
+          update("packageState", "built");
+        }}
+      />
+    );
+  }
+  if (compose.packageState === "built") return <BuiltPanel compose={compose} onReset={onReset} />;
+
+  const summary: PackageSummaryData = {
+    name: workerName,
+    intent: {
+      summary: `${compose.workerIntent.agentCount} Agent · ${compose.workerIntent.harnessLabel}`,
+      outcome: boundedContext?.produces,
+    },
+    assigned: state.knowledge.filter((k) => compose.assignedKnowledgeIds.includes(k.id)),
+    learningEnabled: compose.learningEnabled,
+    brainExtra: (
+      <p className="border-t border-border pt-3 text-[12px] text-ink-mute">
+        {compose.brain.skillsCount} skills · {compose.brain.dslsCount} domain languages · {compose.brain.evalsCount} EVALs bound during assembly.
+      </p>
+    ),
+    evolution: {
+      enabled: compose.evolutionEnabled,
+      autoEvolve: compose.autoEvolve,
+      current: capabilityLadder[0],
+      upcoming: capabilityLadder.slice(1),
+    },
+    dod: { count: 3 },
+  };
 
   function toggleProject(id: string) {
     const set = new Set(compose.selectedSampleProjects);
@@ -33,12 +77,6 @@ export function PackageStep({
   }
 
   const configEntries = [
-    { label: "Worker identity", value: `${identity?.name} · ${domain?.name ?? "No domain"}` },
-    { label: "Worker intent", value: "Rendered from every stage at build time" },
-    { label: "Skills", value: `${compose.brain.skillsCount} selected` },
-    { label: "Domain languages", value: `${compose.brain.dslsCount} bound` },
-    { label: "EVALs", value: `${compose.brain.evalsCount} attached` },
-    { label: "Definition of Done", value: "3 release gates, all gating" },
     { label: "Autonomy", value: `Level ${compose.autonomyLevel}` },
     { label: "Bounded context", value: boundedContext?.description ?? "—" },
   ];
@@ -105,10 +143,15 @@ export function PackageStep({
           </label>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-6">
+          <p className="text-[13.5px] font-bold text-ink">Worker anatomy</p>
+          <p className="mt-0.5 mb-4 text-[11.5px] text-ink-mute">What you are about to package. Select a part to see what is inside.</p>
+          <WorkerPackageSummary data={summary} />
+        </div>
+
+        <div className="mt-6">
           <div className="flex items-center justify-between">
-            <p className="text-[13.5px] font-bold text-ink">Configuration to be packaged</p>
-            <span className="text-[12px] text-ink-mute">{configEntries.length} entries</span>
+            <p className="text-[13.5px] font-bold text-ink">Also packaged</p>
           </div>
           <p className="mt-0.5 mb-2.5 text-[11.5px] text-ink-mute">Read from the composition you confirmed.</p>
           <div className="divide-y divide-border">
@@ -184,8 +227,11 @@ function BuiltPanel({ compose, onReset }: { compose: ComposeState; onReset: () =
         <Button variant="secondary" onClick={onReset}>
           Start another Worker
         </Button>
-        <Button asChild>
+        <Button variant="secondary" asChild>
           <Link to="/packaging">Go to Packaging</Link>
+        </Button>
+        <Button asChild>
+          <Link to="/workers">View in Registry</Link>
         </Button>
       </div>
     </div>

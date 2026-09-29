@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
+  ArrowLeft,
   Library,
   Search,
   ChevronRight,
@@ -49,7 +51,13 @@ function tagTone(tag: string): BadgeProps["variant"] {
 export default function KnowledgeHub() {
   return (
     <div className="pb-12">
-      <PageHeader title="Knowledge" subtitle="What Workers can draw on: skills, languages, evaluations and models." icon={Library} tone="accent" />
+      <div className="px-8 pt-6">
+        <Link to="/knowledge" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-accent-ink hover:underline underline-offset-2">
+          <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
+          Knowledge
+        </Link>
+      </div>
+      <PageHeader title="Knowledge catalogue" subtitle="Everything Workers can draw on: skills, languages, evaluations and models." icon={Library} tone="accent" />
 
       <div className="px-8">
         <Tabs defaultValue="skills">

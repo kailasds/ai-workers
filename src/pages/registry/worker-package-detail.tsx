@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
-  ArrowLeft,
   ArrowRight,
   Check,
   ChevronDown,
@@ -10,12 +9,8 @@ import {
   ExternalLink,
   ShieldCheck,
   Lock,
-  FileText,
-  Brain,
-  ClipboardCheck,
   Package,
   History,
-  Server,
   Database,
   FileStack,
   Users2,
@@ -28,114 +23,59 @@ import {
   Ban,
   FileCode2,
 } from "lucide-react";
-import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { FacetBadge } from "@/components/shared/facet-badge";
+import { WorkerPackageSummary, type PackageSummaryData } from "@/components/v2/worker-package-summary";
 import { workerDetail } from "@/lib/registry-data";
+import { givenTo, useV2 } from "@/lib/v2/store";
+import type { V2Worker } from "@/lib/v2/types";
 import { cn } from "@/lib/utils";
 
 function fmt(iso: string) {
   return new Date(iso).toLocaleString(undefined, { month: "numeric", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
 }
 
-export default function WorkerPackageDetail() {
-  useParams();
-  const w = workerDetail;
+/** The technical layer of a Worker: package, runs, memory, runtimes. Shown on request. */
+export default function WorkerTechnicalDetails({ worker }: { worker: V2Worker }) {
   const [tab, setTab] = useState("package");
   const [packageOpen, setPackageOpen] = useState<string | null>("intent");
 
-  function jumpToPackageSection(id: string) {
-    setTab("package");
-    setPackageOpen(id);
-  }
-
   return (
-    <div className="pb-12">
-      <div className="px-8 pt-6">
-        <Link to="/workers" className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-accent-ink hover:underline underline-offset-2">
-          <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
-          Worker Registry
-        </Link>
-      </div>
-      <PageHeader
-        title={w.title}
-        subtitle={w.subtitle}
-        tone="accent"
-        actions={
-          <>
-            <Button variant="secondary" size="sm" onClick={() => setTab("runs")}>
-              <History className="h-3.5 w-3.5" strokeWidth={1.9} />
-              View runs
-            </Button>
-            <Button variant="secondary" size="sm" onClick={() => setTab("runtimes")}>
-              <Server className="h-3.5 w-3.5" strokeWidth={1.9} />
-              View runtimes
-            </Button>
-          </>
-        }
-      />
+    <Tabs value={tab} onValueChange={setTab}>
+      <TabsList className="flex-wrap h-auto">
+        <TabsTrigger value="package">Package</TabsTrigger>
+        <TabsTrigger value="runs">Runs</TabsTrigger>
+        <TabsTrigger value="brain">Memory activity</TabsTrigger>
+        <TabsTrigger value="knowledge">Memory & learning rules</TabsTrigger>
+        <TabsTrigger value="sentinel">Sentinel policy</TabsTrigger>
+        <TabsTrigger value="runtimes">Runtimes</TabsTrigger>
+        <TabsTrigger value="delivery">Delivery</TabsTrigger>
+      </TabsList>
 
-      <div className="px-8 grid grid-cols-1 xl:grid-cols-[300px_1fr] gap-5 items-start">
-        {/* Persistent summary rail */}
-        <div className="space-y-5 xl:sticky xl:top-6">
-          <div className="rounded-card border border-border bg-card shadow-card p-5">
-            <div className="flex flex-wrap gap-1.5">
-              <Badge variant="accent">{w.workerType}</Badge>
-              <Badge variant="neutral">Revision {w.revision}</Badge>
-            </div>
-            <p className="mt-3 text-[11px] uppercase tracking-wider text-ink-mute">Bounded context</p>
-            <p className="text-[13px] font-medium text-ink">{w.boundedContext}</p>
-
-            <div className="mt-4 space-y-2.5 border-t border-border pt-4 text-[12.5px]">
-              <FactRow label="Owner" value={w.owner} />
-              <FactRow label="Readiness check" value={w.readinessCheck} />
-              <FactRow label="Runtime" value={w.runtime} />
-              <FactRow label="Last outcome" value={w.lastOutcome} tone={w.lastOutcome === "Not met" ? "red" : "green"} />
-            </div>
-            <p className="mt-3 text-[11px] leading-relaxed text-ink-mute">{w.openException}</p>
-          </div>
-
-          <PackageHeroCard w={w} onJumpTo={jumpToPackageSection} />
-        </div>
-
-        {/* Tabbed content */}
-        <Tabs value={tab} onValueChange={setTab}>
-          <TabsList className="flex-wrap h-auto">
-            <TabsTrigger value="package">Package</TabsTrigger>
-            <TabsTrigger value="runs">Runs</TabsTrigger>
-            <TabsTrigger value="brain">Worker Brain activity</TabsTrigger>
-            <TabsTrigger value="knowledge">Knowledge & learning</TabsTrigger>
-            <TabsTrigger value="sentinel">Sentinel</TabsTrigger>
-            <TabsTrigger value="runtimes">Runtimes</TabsTrigger>
-            <TabsTrigger value="delivery">Delivery</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="package">
-            <PackagePanel open={packageOpen} setOpen={setPackageOpen} />
-          </TabsContent>
-          <TabsContent value="runs">
-            <RunsPanel />
-          </TabsContent>
-          <TabsContent value="brain">
-            <BrainActivityPanel />
-          </TabsContent>
-          <TabsContent value="knowledge">
-            <KnowledgePanel />
-          </TabsContent>
-          <TabsContent value="sentinel">
-            <SentinelPanel />
-          </TabsContent>
-          <TabsContent value="runtimes">
-            <RuntimesPanel />
-          </TabsContent>
-          <TabsContent value="delivery">
-            <DeliveryPanel />
-          </TabsContent>
-        </Tabs>
-      </div>
-    </div>
+      <TabsContent value="package">
+        <PackagePanel worker={worker} open={packageOpen} setOpen={setPackageOpen} />
+      </TabsContent>
+      <TabsContent value="runs">
+        <RunsPanel />
+      </TabsContent>
+      <TabsContent value="brain">
+        <BrainActivityPanel />
+      </TabsContent>
+      <TabsContent value="knowledge">
+        <KnowledgePanel />
+      </TabsContent>
+      <TabsContent value="sentinel">
+        <SentinelPanel />
+      </TabsContent>
+      <TabsContent value="runtimes">
+        <RuntimesPanel />
+      </TabsContent>
+      <TabsContent value="delivery">
+        <DeliveryPanel />
+      </TabsContent>
+    </Tabs>
   );
 }
 
@@ -144,49 +84,6 @@ function FactRow({ label, value, tone }: { label: string; value: string; tone?: 
     <div className="flex items-center justify-between gap-3">
       <span className="text-ink-mute">{label}</span>
       <span className={cn("font-semibold text-right", tone === "red" ? "text-status-red" : tone === "green" ? "text-status-green" : "text-ink")}>{value}</span>
-    </div>
-  );
-}
-
-function PackageHeroCard({ w, onJumpTo }: { w: typeof workerDetail; onJumpTo: (id: string) => void }) {
-  const rows = [
-    { id: "intent", icon: FileText, title: "Worker intent", detail: w.package.intent.summary },
-    { id: "brain", icon: Brain, title: "Worker Brain", detail: `${w.package.brain.skills} skills · ${w.package.brain.languages} DSLs · ${w.package.brain.evals} EVALs` },
-    { id: "dod", icon: ClipboardCheck, title: "Definition of Done", detail: `${w.package.dodCount} release gates` },
-    { id: "autonomy", icon: ShieldCheck, title: "Autonomy", detail: w.package.autonomy },
-  ];
-
-  return (
-    <div className="rounded-card overflow-hidden border border-border shadow-float">
-      <div className="card-hero p-5 text-white">
-        <div className="flex items-start justify-between gap-3">
-          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/15">
-            <Package className="h-5 w-5" strokeWidth={1.9} />
-          </div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-semibold">Revision {w.revision}</span>
-        </div>
-        <p className="mt-3 text-[11px] uppercase tracking-wider text-white/60">Worker package</p>
-        <p className="mt-1 text-[16px] font-bold leading-snug tracking-[-0.01em] font-display">{w.package.intent.summary}</p>
-      </div>
-
-      <div className="bg-card p-2 divide-y divide-border">
-        {rows.map((row) => (
-          <button
-            key={row.id}
-            onClick={() => onJumpTo(row.id)}
-            className="flex w-full items-start gap-3 px-3.5 py-3 text-left transition-colors hover:bg-card-sunken"
-          >
-            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-card-sunken text-ink-soft">
-              <row.icon className="h-4 w-4" strokeWidth={1.9} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-semibold text-ink">{row.title}</p>
-              <p className="truncate text-[11px] text-ink-mute">{row.detail}</p>
-            </div>
-            <ChevronRight className="mt-1.5 h-3.5 w-3.5 shrink-0 text-ink-faint" strokeWidth={2} />
-          </button>
-        ))}
-      </div>
     </div>
   );
 }
@@ -201,8 +98,41 @@ function Card({ title, subtitle, children }: { title: string; subtitle?: string;
   );
 }
 
-function PackagePanel({ open, setOpen }: { open: string | null; setOpen: (id: string | null) => void }) {
+function PackagePanel({ worker, open, setOpen }: { worker: V2Worker; open: string | null; setOpen: (id: string | null) => void }) {
   const w = workerDetail;
+  const state = useV2();
+  const summary: PackageSummaryData = {
+    name: worker.name,
+    intent: {
+      summary: w.package.intent.summary,
+      outcome: w.package.intent.outcome,
+      extra: (
+        <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {w.operatingProcedure.map((s) => (
+            <div key={s.step} className="rounded-[10px] bg-card-sunken p-3">
+              <p className="text-[10px] font-semibold text-accent-ink">Step {s.step}</p>
+              <p className="mt-0.5 text-[12.5px] font-semibold text-ink">{s.name}</p>
+              <p className="mt-0.5 text-[11px] leading-snug text-ink-mute">{s.description}</p>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    assigned: givenTo(state, worker),
+    learningEnabled: worker.learningEnabled,
+    brainExtra: (
+      <div className="flex flex-wrap gap-2 border-t border-border pt-3">
+        <FacetBadge facet="skills" value={w.package.brain.skills} />
+        <FacetBadge facet="languages" value={w.package.brain.languages} />
+        <FacetBadge facet="evals" value={w.package.brain.evals} />
+        <Badge variant="green" dot>
+          {w.package.brain.sentinel}
+        </Badge>
+      </div>
+    ),
+    evolution: { enabled: worker.evolution.enabled, autoEvolve: worker.evolution.autoEvolve, current: worker.evolution.currentCapability, upcoming: worker.evolution.availablePaths },
+    dod: { count: w.package.dodCount },
+  };
 
   const sections: {
     id: string;
@@ -211,50 +141,6 @@ function PackagePanel({ open, setOpen }: { open: string | null; setOpen: (id: st
     status: string;
     detail: React.ReactNode;
   }[] = [
-    {
-      id: "intent",
-      icon: FileText,
-      title: "Worker intent",
-      status: `${w.package.intent.procedureStages} stages`,
-      detail: (
-        <>
-          <p className="text-[13px] font-medium text-ink">{w.package.intent.summary}</p>
-          <p className="mt-2 text-[12.5px] leading-relaxed text-ink-soft">{w.package.intent.outcome}</p>
-          <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {w.operatingProcedure.map((s) => (
-              <div key={s.step} className="rounded-[10px] bg-card-sunken p-3">
-                <p className="text-[10px] font-semibold text-accent-ink">Step {s.step}</p>
-                <p className="mt-0.5 text-[12.5px] font-semibold text-ink">{s.name}</p>
-                <p className="mt-0.5 text-[11px] leading-snug text-ink-mute">{s.description}</p>
-              </div>
-            ))}
-          </div>
-        </>
-      ),
-    },
-    {
-      id: "brain",
-      icon: Brain,
-      title: "Worker Brain",
-      status: `${w.package.brain.skills} skills · ${w.package.brain.languages} DSLs · ${w.package.brain.evals} EVALs`,
-      detail: (
-        <div className="flex flex-wrap gap-2">
-          <FacetBadge facet="skills" value={w.package.brain.skills} />
-          <FacetBadge facet="languages" value={w.package.brain.languages} />
-          <FacetBadge facet="evals" value={w.package.brain.evals} />
-          <Badge variant="green" dot>
-            {w.package.brain.sentinel}
-          </Badge>
-        </div>
-      ),
-    },
-    {
-      id: "dod",
-      icon: ClipboardCheck,
-      title: "Definition of Done",
-      status: `${w.package.dodCount} criteria`,
-      detail: <FacetBadge facet="dod" value={`${w.package.dodCount} criteria`} className="text-[13px] px-2.5 py-1.5" />,
-    },
     {
       id: "autonomy",
       icon: ShieldCheck,
@@ -284,6 +170,8 @@ function PackagePanel({ open, setOpen }: { open: string | null; setOpen: (id: st
   ];
 
   return (
+    <div className="space-y-5">
+    <WorkerPackageSummary data={summary} />
     <div className="rounded-card border border-border bg-card shadow-card divide-y divide-border overflow-hidden">
       {sections.map((section) => {
         const isOpen = open === section.id;
@@ -310,6 +198,7 @@ function PackagePanel({ open, setOpen }: { open: string | null; setOpen: (id: st
           </div>
         );
       })}
+    </div>
     </div>
   );
 }

@@ -17,13 +17,13 @@ const nodeLegend: { kind: keyof typeof kindLabel; className: string }[] = [
 
 const statusLegend: { label: string; className: string }[] = [
   { label: "Observed", className: "bg-status-blue" },
-  { label: "Corroborated", className: "bg-status-amber" },
-  { label: "Awaiting evidence", className: "bg-status-amber" },
+  { label: "Under review", className: "bg-status-amber" },
+  { label: "Needs more evidence", className: "bg-status-amber" },
   { label: "Contradictory", className: "bg-status-red" },
   { label: "Accepted", className: "bg-status-green" },
-  { label: "Certified", className: "bg-status-green" },
-  { label: "Published", className: "bg-status-green" },
-  { label: "Not retained", className: "bg-ink-faint" },
+  { label: "Kept by Worker", className: "bg-status-green" },
+  { label: "Shared with platform", className: "bg-status-green" },
+  { label: "Not kept", className: "bg-ink-faint" },
   { label: "Rejected", className: "bg-status-red" },
 ];
 

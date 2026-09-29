@@ -72,13 +72,13 @@ const kindMeta: Record<GraphNodeKind, { icon: typeof Users2; accent: string; ico
 export const kindLabel: Record<GraphNodeKind, string> = {
   worker: "Worker",
   topic: "Topic",
-  construct: "Knowledge Construct",
+  construct: "Pattern",
   run: "Run",
   observation: "Observation",
   evidence: "Evidence",
-  candidate: "Candidate Knowledge",
-  certified: "Certified Knowledge",
-  pack: "Knowledge Pack",
+  candidate: "Learning",
+  certified: "Gained knowledge",
+  pack: "Platform knowledge",
 };
 
 function Subtitle({ data }: { data: GraphNodeData }) {

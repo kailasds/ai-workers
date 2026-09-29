@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { LayoutGrid, RefreshCw, Layers, Package, Boxes, Activity, CheckCircle2, Clock, Wallet, Coins, Database, Shuffle, Gauge } from "lucide-react";
-import { PageHeader } from "@/components/shared/page-header";
+import { RefreshCw, Layers, Package, Boxes, Activity, CheckCircle2, Clock, Wallet, Coins, Database, Shuffle, Gauge } from "lucide-react";
 import { DeliveryBarChart } from "@/components/shared/delivery-bar-chart";
 import { KpiCard } from "@/components/shared/kpi-card";
 import { Badge } from "@/components/ui/badge";
@@ -31,7 +30,8 @@ const pulseIcon: Record<string, React.ComponentType<{ className?: string; stroke
 
 const stageTones = ["blue", "purple", "amber", "green"] as const;
 
-export default function Overview() {
+/** Delivery and operations metrics. Lives under a disclosure on the Dashboard. */
+export default function DeliveryOverview() {
   const [range, setRange] = useState<(typeof ranges)[number]>("30 days");
   const [refreshing, setRefreshing] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -44,40 +44,33 @@ export default function Overview() {
   }
 
   return (
-    <div className="pb-12">
-      <PageHeader
-        title="Dashboard"
-        subtitle="What Workers deliver."
-        icon={LayoutGrid}
-        tone="accent"
-        actions={
-          <>
-            <div className="flex items-center gap-0.5 rounded-full border border-border bg-card p-0.5">
-              {ranges.map((r) => (
-                <button
-                  key={r}
-                  onClick={() => setRange(r)}
-                  className={cn(
-                    "rounded-full px-3 py-1.5 text-[12px] font-medium transition-colors",
-                    range === r ? "bg-accent text-accent-foreground" : "text-ink-mute hover:text-ink"
-                  )}
-                >
-                  {r}
-                </button>
-              ))}
-            </div>
+    <div>
+      <div className="mb-5 flex flex-wrap items-center justify-end gap-2">
+        <div className="flex items-center gap-0.5 rounded-full border border-border bg-card p-0.5">
+          {ranges.map((r) => (
             <button
-              onClick={refresh}
-              className="flex h-9 items-center gap-1.5 rounded-lg border border-border-strong bg-card px-3.5 text-[13px] font-medium text-ink-soft transition-colors hover:bg-card-sunken"
+              key={r}
+              onClick={() => setRange(r)}
+              aria-pressed={range === r}
+              className={cn(
+                "rounded-full px-3 py-1.5 text-[12px] font-medium transition-colors",
+                range === r ? "bg-accent text-accent-foreground" : "text-ink-mute hover:text-ink"
+              )}
             >
-              <RefreshCw className={cn("h-3.5 w-3.5", refreshing && "animate-spin")} strokeWidth={2} />
-              Refresh
+              {r}
             </button>
-          </>
-        }
-      />
+          ))}
+        </div>
+        <button
+          onClick={refresh}
+          className="flex h-9 items-center gap-1.5 rounded-lg border border-border-strong bg-card px-3.5 text-[13px] font-medium text-ink-soft transition-colors hover:bg-card-sunken"
+        >
+          <RefreshCw className={cn("h-3.5 w-3.5", refreshing && "animate-spin")} strokeWidth={2} />
+          Refresh
+        </button>
+      </div>
 
-      <div className="px-8 space-y-6" key={refreshKey}>
+      <div className="space-y-6" key={refreshKey}>
         {/* Delivery pulse */}
         <section className="space-y-3">
           <SectionHeading title="Delivery pulse" />

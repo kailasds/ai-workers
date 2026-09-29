@@ -19,6 +19,27 @@ const modeOptions: { key: GraphMode; label: string }[] = [
 
 const lifecycleOptions: GraphFilters["lifecycle"][] = ["all", "Observed", "Corroborated", "Certified", "Published", "Reused", "Contradictory"];
 
+// Friendly labels only; the filter values themselves are unchanged.
+const lifecycleLabel: Record<string, string> = {
+  Observed: "Observed",
+  Corroborated: "Under review",
+  Certified: "Kept by Worker",
+  Published: "Shared with platform",
+  Reused: "Used by Workers",
+  Contradictory: "Contradictory",
+};
+
+const kindChipLabel = {
+  all: "All",
+  worker: "Workers",
+  topic: "Topics",
+  construct: "Patterns",
+  observation: "Observations",
+  evidence: "Evidence",
+  candidate: "Learning",
+  pack: "Platform knowledge",
+} as const;
+
 function FilterChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
     <button
@@ -92,7 +113,7 @@ export function GraphToolbar({
             }}
             onFocus={() => setShowResults(true)}
             onBlur={() => setTimeout(() => setShowResults(false), 150)}
-            placeholder="Search Workers, constructs, packs…"
+            placeholder="Search Workers, patterns, knowledge…"
             className="h-8 w-64 pl-8 text-[12.5px]"
           />
         </div>
@@ -130,7 +151,7 @@ export function GraphToolbar({
               <p className="text-[10.5px] font-semibold uppercase tracking-wider text-ink-faint mb-1.5">Knowledge type</p>
               <div className="flex flex-wrap gap-1.5">
                 {(["all", "worker", "topic", "construct", "observation", "evidence", "candidate", "pack"] as const).map((k) => (
-                  <FilterChip key={k} label={k === "all" ? "All" : k[0].toUpperCase() + k.slice(1) + "s"} active={filters.kind === k} onClick={() => onFiltersChange({ ...filters, kind: k })} />
+                  <FilterChip key={k} label={kindChipLabel[k]} active={filters.kind === k} onClick={() => onFiltersChange({ ...filters, kind: k })} />
                 ))}
               </div>
             </div>
@@ -138,7 +159,7 @@ export function GraphToolbar({
               <p className="text-[10.5px] font-semibold uppercase tracking-wider text-ink-faint mb-1.5">Lifecycle status</p>
               <div className="flex flex-wrap gap-1.5">
                 {lifecycleOptions.map((l) => (
-                  <FilterChip key={l} label={l === "all" ? "All" : l} active={filters.lifecycle === l} onClick={() => onFiltersChange({ ...filters, lifecycle: l })} />
+                  <FilterChip key={l} label={l === "all" ? "All" : (lifecycleLabel[l] ?? l)} active={filters.lifecycle === l} onClick={() => onFiltersChange({ ...filters, lifecycle: l })} />
                 ))}
               </div>
             </div>

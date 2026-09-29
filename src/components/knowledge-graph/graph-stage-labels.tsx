@@ -1,6 +1,6 @@
 import { ChevronRight } from "lucide-react";
 
-const stages = ["Workers", "Topics", "Knowledge", "Candidate Knowledge", "Certified Knowledge", "Knowledge Packs"];
+const stages = ["Workers", "Topics", "Patterns", "Learning", "Gained knowledge", "Platform knowledge"];
 
 export function GraphStageLabels() {
   return (

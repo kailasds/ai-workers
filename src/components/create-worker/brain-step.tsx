@@ -95,7 +95,7 @@ export function BrainStep({
 
   return (
     <div className="rounded-card border border-border bg-card shadow-card p-6">
-      <p className="text-[11px] font-semibold uppercase tracking-wider text-accent-ink">Step 3 of 5</p>
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-accent-ink">Step 3 of 6</p>
       <h2 className="mt-1 text-[19px] font-bold tracking-[-0.01em] text-ink font-display">Worker Brain</h2>
       <p className="mt-1.5 text-[12.5px] text-ink-mute">Every part of it, and what is inside each one.</p>
 

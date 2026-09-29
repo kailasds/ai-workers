@@ -1,14 +1,18 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppShell } from "@/components/layout/app-shell";
-import Overview from "@/pages/overview";
+import Dashboard from "@/pages/dashboard";
 import CreateWorker from "@/pages/create-worker";
 import AssignWork from "@/pages/assign-work";
 import WorkerRegistryList from "@/pages/registry/worker-registry-list";
-import WorkerPackageDetail from "@/pages/registry/worker-package-detail";
+import WorkerDetail from "@/pages/registry/worker-detail";
 import Packaging from "@/pages/packaging";
 import CustomerDelivery from "@/pages/delivery";
+import KnowledgePage from "@/pages/knowledge/knowledge-page";
+import KnowledgeDetailPage from "@/pages/knowledge/knowledge-detail-page";
 import KnowledgeHub from "@/pages/knowledge-hub/knowledge-hub";
+import LearningPage from "@/pages/learning-hub/learning-page";
 import LearningHub from "@/pages/learning-hub/learning-hub";
+import LearningMap from "@/pages/learning/learning-map";
 import GlobalWork from "@/pages/global-work";
 import { ExperienceHubLayout } from "@/pages/experience-hub/hub-layout";
 import RecommendedUpdates from "@/pages/experience-hub/recommended-updates";
@@ -48,10 +52,10 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<AppShell />}>
-          <Route index element={<Overview />} />
+          <Route index element={<Dashboard />} />
           <Route path="workers" element={<WorkerRegistryList />} />
           <Route path="workers/new" element={<CreateWorker />} />
-          <Route path="workers/:workerId" element={<WorkerPackageDetail />} />
+          <Route path="workers/:workerId" element={<WorkerDetail />} />
           <Route path="work" element={<GlobalWork />} />
           <Route path="work/assign" element={<AssignWork />} />
           <Route path="experience-hub" element={<ExperienceHubLayout />}>
@@ -78,14 +82,18 @@ export default function App() {
             <Route path="workers" element={<WorkerRegistry />} />
           </Route>
           <Route path="capabilities/worker/:id" element={<WorkerBrainTree />} />
-          <Route path="learning" element={<LearningHub />} />
+          <Route path="learning" element={<LearningPage />} />
+          <Route path="learning/reports" element={<LearningHub />} />
+          <Route path="learning/map" element={<LearningMap />} />
           <Route path="learning/topics/:id" element={<TopicDetail />} />
           <Route path="learning/constructs/:id" element={<ConstructDetail />} />
           <Route path="learning/candidates/:id" element={<CandidateDetail />} />
           <Route path="learning/packs/:id" element={<PackDetail />} />
           <Route path="learning/observations/:id" element={<ObservationDetail />} />
           <Route path="learning/memory/:id" element={<WorkerMemoryDetail />} />
-          <Route path="knowledge" element={<KnowledgeHub />} />
+          <Route path="knowledge" element={<KnowledgePage />} />
+          <Route path="knowledge/catalogue" element={<KnowledgeHub />} />
+          <Route path="knowledge/:id" element={<KnowledgeDetailPage />} />
           <Route path="sentinel" element={<Sentinel />} />
           <Route path="packaging" element={<Packaging />} />
           <Route path="delivery" element={<CustomerDelivery />} />
