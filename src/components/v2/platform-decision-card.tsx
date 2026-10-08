@@ -32,7 +32,7 @@ export function PlatformDecisionCard({ review }: { review: SentinelReview }) {
   return (
     <div className="rounded-card border border-border bg-card p-5 shadow-card">
       <div className="flex items-start gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-control bg-brand-800 text-white">
+        <div className="grid h-10 w-10 shrink-0 place-items-center text-ai">
           <Icon className="h-5 w-5" strokeWidth={2} />
         </div>
         <div className="min-w-0 flex-1">

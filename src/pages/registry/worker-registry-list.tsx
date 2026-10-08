@@ -92,9 +92,9 @@ export default function WorkerRegistryList() {
           <TabsContent value="managed" className="space-y-6">
             <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
               <MetricCard icon={Users} label="Workers" value={state.workers.length} hint={`${state.workers.length - active} not active yet`} />
-              <MetricCard icon={CircleDot} label="Active" value={active} tone="orange" hint="Doing work now" />
+              <MetricCard icon={CircleDot} label="Active" value={active} hint="Doing work now" />
               <MetricCard icon={BookOpen} label="Assigned knowledge" value={assignedTotal} hint="Given in Compose" />
-              <MetricCard icon={Lightbulb} label="Learned knowledge" value={learnedTotal} tone="orange" hint={underReview > 0 ? `${underReview} under review` : "Nothing waiting"} />
+              <MetricCard icon={Lightbulb} label="Learned knowledge" value={learnedTotal} hint={underReview > 0 ? `${underReview} under review` : "Nothing waiting"} />
             </div>
             <p className="flex items-center gap-2 text-[12px] text-ink-mute">
               <TrendingUp className="h-3.5 w-3.5" strokeWidth={2} />

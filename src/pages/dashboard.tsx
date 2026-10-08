@@ -70,9 +70,9 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           <MetricCard icon={Users} label="Active Workers" value={`${active} of ${state.workers.length}`} hint={`${state.workers.length - active} not active yet`} />
-          <MetricCard icon={BrainCircuit} label="Knowledge gained" value={gained} tone="orange" hint={underReview > 0 ? `${underReview} under review` : "Nothing waiting"} />
+          <MetricCard icon={BrainCircuit} label="Knowledge gained" ai value={gained} hint={underReview > 0 ? `${underReview} under review` : "Nothing waiting"} />
           <MetricCard icon={Library} label="Shared with platform" value={shared} hint={`${decisions.length} decisions made by Sentinel`} />
-          <MetricCard icon={AlertTriangle} label="Needs attention" value={attention} tone="orange" hint={attention === 0 ? "Everything is up to date" : "In Sentinel"} />
+          <MetricCard icon={AlertTriangle} label="Needs attention" value={attention} hint={attention === 0 ? "Everything is up to date" : "In Sentinel"} />
         </div>
 
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
@@ -93,7 +93,7 @@ export default function Dashboard() {
                 <div key={i} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
                   <span className="text-[12px] font-semibold tabular-nums text-ink-mute">{d.count}</span>
                   <div
-                    className={d.count === peak && d.count > 0 ? "w-full rounded-t-control bg-accent" : "w-full rounded-t-control bg-brand-300"}
+                    className={d.count === peak && d.count > 0 ? "w-full rounded-t-control bg-ai" : "w-full rounded-t-control bg-ai-soft"}
                     style={{ height: `${Math.max((d.count / peak) * 72, 4)}px` }}
                   />
                 </div>
@@ -117,7 +117,7 @@ export default function Dashboard() {
 
           <section className="flex flex-col rounded-card border border-border bg-card p-5 shadow-card">
             <div className="flex items-center gap-2">
-              <Bot className="h-4 w-4 text-brand-600" strokeWidth={2} />
+              <Bot className="h-4 w-4 text-ai" strokeWidth={2} />
               <h2 className="text-[15px] font-bold text-ink font-display">Platform Sentinel</h2>
             </div>
             <p className="mt-1 text-[12px] text-ink-mute">Decides on its own. You can override.</p>
@@ -129,7 +129,7 @@ export default function Dashboard() {
                 const Icon = isEvolution ? TrendingUp : r.decision === "Shared with platform" ? Share2 : CheckCircle2;
                 return (
                   <li key={r.id} className="flex items-start gap-3 py-3 first:pt-0">
-                    <Icon className="mt-0.5 h-4 w-4 shrink-0 text-brand-600" strokeWidth={2} />
+                    <Icon className="mt-0.5 h-4 w-4 shrink-0 text-ai" strokeWidth={2} />
                     <div className="min-w-0 flex-1">
                       <p className="text-[14px] font-medium text-ink">{r.decision}</p>
                       <p className="truncate text-[12px] text-ink-mute">{title}</p>

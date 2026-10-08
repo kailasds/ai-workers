@@ -7,14 +7,14 @@ import { useV2, workerById } from "@/lib/v2/store";
 type Icon = React.ComponentType<{ className?: string; strokeWidth?: number }>;
 
 const meta: Record<LearningEventType, { icon: Icon; tone: string }> = {
-  "pattern-identified": { icon: Lightbulb, tone: "bg-brand-100 text-brand-600" },
-  "learning-reviewed": { icon: ShieldCheck, tone: "bg-brand-100 text-brand-600" },
-  "knowledge-gained": { icon: CheckCircle2, tone: "bg-status-green-soft text-status-green" },
-  "knowledge-shared": { icon: Share2, tone: "bg-status-green-soft text-status-green" },
-  "knowledge-revoked": { icon: Ban, tone: "bg-status-red-soft text-status-red" },
-  "learning-rejected": { icon: XCircle, tone: "bg-status-red-soft text-status-red" },
-  "evolution-proposed": { icon: AlertTriangle, tone: "bg-status-amber-soft text-status-amber" },
-  "evolution-approved": { icon: TrendingUp, tone: "bg-status-green-soft text-status-green" },
+  "pattern-identified": { icon: Lightbulb, tone: "text-ink-soft" },
+  "learning-reviewed": { icon: ShieldCheck, tone: "text-ink-soft" },
+  "knowledge-gained": { icon: CheckCircle2, tone: "text-status-green" },
+  "knowledge-shared": { icon: Share2, tone: "text-status-green" },
+  "knowledge-revoked": { icon: Ban, tone: "text-status-red" },
+  "learning-rejected": { icon: XCircle, tone: "text-status-red" },
+  "evolution-proposed": { icon: AlertTriangle, tone: "text-status-amber" },
+  "evolution-approved": { icon: TrendingUp, tone: "text-status-green" },
 };
 
 function timeAgo(iso: string) {
@@ -31,7 +31,7 @@ export function LearningEventItem({ event, showConnector }: { event: LearningEve
   const worker = workerById(state, event.workerId);
   const body = (
     <div className="flex items-start gap-3">
-      <div className={cn("grid h-8 w-8 shrink-0 place-items-center rounded-full", m.tone)}>
+      <div className={cn("grid h-8 w-8 shrink-0 place-items-center", m.tone)}>
         <m.icon className="h-4 w-4" strokeWidth={2} />
       </div>
       <div className="min-w-0 flex-1">

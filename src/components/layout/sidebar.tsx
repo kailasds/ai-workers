@@ -49,8 +49,8 @@ export function Sidebar() {
       )}
     >
       <div className={cn("flex items-center gap-2.5 pt-6 pb-6", collapsed ? "justify-center px-3" : "px-5")}>
-        <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white/15">
-          <span className="text-[15px] font-extrabold text-sidebar-ink">A</span>
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-accent">
+          <span className="text-[15px] font-extrabold text-white">A</span>
         </div>
         {!collapsed && (
           <div className="min-w-0">
@@ -111,7 +111,7 @@ export function Sidebar() {
 
         <div className={cn("flex items-center gap-2.5 rounded-lg px-2.5 py-2", collapsed && "justify-center px-0")}>
           <Avatar className="h-8 w-8">
-            <AvatarFallback className="bg-white/15 text-sidebar-ink">AW</AvatarFallback>
+            <AvatarFallback className="bg-card-sunken text-sidebar-ink">AW</AvatarFallback>
           </Avatar>
           {!collapsed && (
             <div className="min-w-0 flex-1">

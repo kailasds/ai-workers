@@ -139,7 +139,7 @@ export function WorkerPackageSummary({ data, defaultOpen = "intent" }: { data: P
                 className="flex w-full items-center gap-3 px-5 py-3.5 text-left hover:bg-card-sunken"
               >
                 {isOpen ? <ChevronDown className="h-3.5 w-3.5 shrink-0 text-ink-mute" strokeWidth={2} /> : <ChevronRight className="h-3.5 w-3.5 shrink-0 text-ink-mute" strokeWidth={2} />}
-                <div className="grid h-8 w-8 shrink-0 place-items-center rounded-control bg-brand-100 text-brand-600">
+                <div className="grid h-8 w-8 shrink-0 place-items-center text-ink-soft">
                   <s.icon className="h-4 w-4" strokeWidth={2} />
                 </div>
                 <span className="min-w-0 flex-1">

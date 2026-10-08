@@ -1,149 +1,126 @@
-# design.md — Adnex ad-campaign analytics dashboard
+---
+version: "alpha"
+name: "Estilo de IA Ética"
+description: "Clean and trustworthy landing page for a safe conversational AI. Ideal for landing pages, modern websites. AI-ready template."
+colors:
+  primary: "#1A73E8"
+  secondary: "#FFFFFF"
+  tertiary: "#F8F9FA"
+  neutral: "#3C4043"
+  surface: "#34A853"
+  accent: "#FBBC05"
+typography:
+  h1:
+    fontFamily: Roboto
+    fontSize: 2.5rem
+    fontWeight: 700
+  body-md:
+    fontFamily: Roboto
+    fontSize: 1rem
+    fontWeight: 400
+rounded:
+  sm: 8px
+  md: 16px
+  lg: 24px
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.neutral}"
+    rounded: "{rounded.sm}"
+    padding: 12px
+---
 
-Extracted from the pasted Adnex dashboard reference. No image file was reachable on disk for pixel
-sampling this session, so **every value below is visually estimated and marked `~approx`** —
-verify with a real sampler (ImageMagick/Pillow) against the source file before treating hexes as final.
-Light theme with a dark "shell" sidebar framing a light content area; density feels compact/data-dense
-(small type, tight card padding) but with generous gaps between major sections.
+## Overview
 
-## 1. Corrections to the source
-No supplied swatch/token sheet was present in the reference — nothing to verify against. N/A.
+Clean and trustworthy landing page for a safe conversational AI. Ideal for landing pages, modern websites. AI-ready template. The first wave of AI ethics organizations faced an impossible design brief: look trustworthy without looking like you're trying to look trustworthy. Early attempts leaned hard into blue gradients and shield iconography — borrowed credibility from fintech and cybersecurity. It felt hollow. The visual language of 'responsible AI' was indistinguishable from the companies it claimed to hold accountable.
 
-## 2. shadcn/ui theme variables
-```css
-:root {
-  --background: 0 0% 100%;            /* #FFFFFF ~approx — main content area */
-  --foreground: 180 14% 12%;          /* #1A2422 ~approx — near-black, faint teal tint */
+What emerged next was more interesting. Organizations like the Partnership on AI and Montreal AI Ethics Institute started developing identities that prioritized legibility over mystique. Open typography. Generous whitespace. Diagrams that actually explained something instead of decorating a hero section. The shift was philosophical: if your mission is transparency, your design language can't hide behind abstraction.
 
-  --card: 0 0% 100%;                  /* #FFFFFF ~approx */
-  --card-foreground: 180 14% 12%;     /* #1A2422 ~approx */
+The real tension persists today. How do you communicate futurism — because AI is genuinely novel — without the techno-utopian aesthetic that erodes trust? The best work in this space threads that needle by grounding speculative technology in human-scale design decisions. Readable type. Honest color. Structure that invites scrutiny rather than deflecting it.
 
-  --primary: 16 92% 58%;              /* #F2662A ~approx — Adnex orange, the single accent/CTA color */
-  --primary-foreground: 0 0% 100%;    /* #FFFFFF */
+- Density: 3/10 — Airy
+- Variance: 3/10 — Restrained
+- Motion: 4/10 — Subtle
 
-  --secondary: 183 45% 14%;           /* #0F2A2E ~approx — dark teal, sidebar/shell + secondary icon fill */
-  --secondary-foreground: 0 0% 100%;  /* #FFFFFF */
+- **Style:** Clean, Trustworthy, Thoughtful
+- **Keywords:** AI, ethical AI, safe AI, conversational AI, trustworthy, thoughtful, clean, minimalist, responsible, secure
+- **Era:** 2026+ Responsible AI
+- **Light/Dark:** ✓ Full / ✗ No
 
-  --muted: 210 20% 96%;               /* #F4F5F6 ~approx — subtle card/section fill on light bg */
-  --muted-foreground: 210 9% 46%;     /* #6B7280 ~approx — secondary/caption text */
+## Colors
 
-  --accent: 183 45% 14%;              /* #0F2A2E ~approx — reuses sidebar teal as the icon-container accent */
-  --accent-foreground: 0 0% 100%;
+- **Azul Ético** (#1A73E8) — Accent highlight, links and focus states
+- **Branco** (#FFFFFF) — Light surface, card backgrounds
+- **Cinza Claro** (#F8F9FA) — Secondary text, borders, muted elements
+- **Cinza Escuro** (#3C4043) — Dark surface, primary background
+- **Verde** (#34A853) — Success states, positive indicators
+- **Amarelo** (#FBBC05) — Warning states, attention indicators
+- **Vermelho** (#EA4335) — Error states, destructive actions
+- **Ciano** (#00BCD4) — Extended palette, decorative use
 
-  --success: 142 71% 35%;             /* #17A34A ~approx — positive delta */
-  --success-foreground: 0 0% 100%;
 
-  --destructive: 0 72% 51%;           /* #DC2626 ~approx — negative delta */
-  --destructive-foreground: 0 0% 100%;
+## Typography
 
-  --border: 210 16% 90%;              /* #E5E7EA ~approx — card hairlines */
-  --input: 210 16% 90%;
-  --ring: 16 92% 58%;                 /* matches primary */
+- **Display / Hero:** Roboto — Weight 700, tight tracking, used for headline impact
+- **Body:** Roboto — Weight 400, 16px/1.6 line-height, max 72ch per line
+- **UI Labels / Captions:** Roboto — 0.875rem, weight 500, slight letter-spacing
+- **Monospace:** JetBrains Mono — Used for code, metadata, and technical values
 
-  --radius: 0.75rem;                  /* 12px base — see §6 for per-element tiers */
+Scale:
+- Hero: clamp(2.5rem, 5vw, 4rem)
+- H1: 2.25rem
+- H2: 1.5rem
+- Body: 1rem / 1.6
+- Small: 0.875rem
 
-  /* extra tokens this design needs */
-  --sidebar: 183 48% 11%;             /* #0C2426 ~approx — slightly darker than --secondary, the shell itself */
-  --sidebar-foreground: 180 10% 82%;  /* #C9D2D0 ~approx — sidebar label text */
-  --sidebar-active: 183 30% 22%;      /* #29524F ~approx — active nav item fill */
-  --chart-teal: 183 45% 14%;          /* #0F2A2E ~approx — series 1 (Banner Ads) */
-  --chart-orange: 16 92% 58%;         /* #F2662A ~approx — series 2 (Login Ads) */
-  --chart-mint: 174 40% 55%;          /* #55B3A6 ~approx — series 3 (Swipe Ads) */
-}
-/* No dark-mode variant shown in the reference — see §9. */
-```
 
-## 3. Color roles
-| Color | Role |
-|---|---|
-| Dark teal `#0F2A2E` ~approx | Brand/shell color — sidebar background, and the fill for one of the two icon-container tints. Never used for text or as a page background outside the sidebar. |
-| Orange `#F2662A` ~approx | The single accent/CTA color — logo mark, primary buttons ("Export Report" is actually rendered dark, see below), "Upgrade Now" button, and the second icon-container tint. Alternates with dark teal across the 4 stat-card icons and the 3 channel-card icons so no two adjacent cards share a tint. |
-| White/near-white `#FFFFFF` | Page and card surface. |
-| Light gray `#F4F5F6` ~approx | Rare recessed/muted fill (chart axis area, hover states) — not a primary surface. |
-| Green `#17A34A` ~approx | Status/role: positive delta only. Never decorative. |
-| Red `#DC2626` ~approx | Status/role: negative delta only. |
-| Near-black `#1A2422` ~approx | Primary text — has a faint cool/teal tint rather than true neutral gray, echoing the brand teal. |
-| Mid gray `#6B7280` ~approx | Secondary text, captions, axis labels, comparison-period text ("vs May 5 – May 11"). |
-| Mint teal `#55B3A6` ~approx | Third categorical color, used only in the multi-series line chart and donut (Swipe Ads) — not used anywhere else in the UI. |
+## Layout
 
-Logic: this is a **two-tone brand system** (teal + orange) plus a strictly categorical third mint tone confined to charts, plus semantic green/red for deltas. Teal and orange never mix inside one component (a stat card's icon square is one or the other, never both), and green/red are reserved exclusively for trend direction — they never appear as decorative accents elsewhere.
+- **Grid:** CSS Grid primary. Max-width containment: 1280px centered with 1.5rem side padding.
+- **Spacing rhythm:** Balanced. Base unit: 0.5rem (8px).
+- **Section vertical gaps:** clamp(4rem, 8vw, 8rem).
+- **Hero layout:** Split-screen (text left, visual right).
+- **Feature sections:** Zig-zag alternating text+image rows. No 3-equal-columns.
+- **Mobile collapse:** All multi-column layouts collapse below 768px. No horizontal overflow.
+- **z-index contract:** base (0) / sticky-nav (100) / overlay (200) / modal (300) / toast (500).
 
-## 4. Hierarchy mechanism
-Primary hierarchy is **size**: each stat card and channel card leads with one large bold numeral (impressions/clicks/spend), dwarfing its label above and its delta below. Secondary hierarchy is **color-as-punctuation on icon containers**: every icon sits in a small solid-color (teal or orange) square, which is the only saturated color block at the card level — it draws the eye to "what kind of metric is this" before the numeral is read. The sidebar's active nav item is marked by a filled lighter-teal pill against the otherwise flat-dark sidebar, the same "one filled block among flat ground" logic repeated at nav scale.
 
-## 5. Typography
-Family: a clean geometric/humanist sans with tabular-looking numerals — closest free equivalent is **Inter** (use `Inter` for all UI text and numerals; it is not distinguishable from a paid alternative like Söhne at this size in the reference). No second/mono family is used anywhere in the reference — dates, IDs-like values ("May 12 – May 18, 2024") all render in the same sans, not monospace.
+## Elevation & Depth
 
-Weights in use: Regular (400) for body/labels, Medium (500) for card titles and nav labels, Semibold/Bold (600–700) for the large stat numerals and the "Welcome back, John!" heading.
+Visualizações de fluxo de conversação, diagramas de segurança de IA, brilhos sutis em elementos de confiança, tipografia limpa e legível (sans-serif), micro-interações de feedback de segurança, elementos modulares, animações de progresso de pesquisa ética.
 
-Type scale (approx, px):
-- Display numeral (stat cards, e.g. "24.68M"): ~28–30px, bold
-- Section/page heading ("Welcome back, John! 👋"): ~22px, semibold
-- Card title (e.g. "Banner Ads", "Impressions Over Time"): ~15px, medium
-- Body/value rows (Clicks, CTR, Spend rows): ~14px, regular
-- Label/caption (stat card labels, chart axis ticks, comparison text): ~12px, regular, often muted-gray
-- Sidebar nav label: ~14px, medium
+- **Physics:** Ease-out curves, 200-300ms duration. Smooth and predictable.
+- **Entry animations:** Fade + translate-Y (16px → 0) over 420ms ease-out. Staggered cascades for lists: 80ms between items.
+- **Hover states:** Subtle color shift + shadow adjustment over 200ms.
+- **Page transitions:** Fade only (200ms).
+- **Performance:** Only transform and opacity animated. No layout-triggering properties.
 
-## 6. Radius & spacing
-**Shell: framed**, not edge-to-edge — a persistent dark sidebar (fixed width, ~260px ~approx) forms a shell around the light content area, which itself sits with its own outer gutter.
 
-Radius tiers (px, ~approx):
-- Shell/outer: sidebar itself is square-cornered against the viewport edge (0px) — it's a full-bleed panel, not a floating card
-- Card tier (stat cards, channel cards, chart panels, the sidebar's "Unlock more" promo card): **16px**
-- Control tier (buttons — "Export Report", "Upgrade Now"; inputs; the date-range dropdown; sidebar active-nav pill): **10px**
-- Icon-container tier (the small colored squares holding stat/channel icons): **10px** (rounded-square, same as control tier, not fully round)
-- Pill/chip tier (fully round): used only for the small avatar circle and the colored legend dots — **full/9999px**
+## Shapes
 
-Spacing scale (px, ~approx):
-- Outer page gutter (content area padding against the shell edge): **32px**
-- Section gap (between header row → stat-card row → channel-card row → chart row): **24px**
-- Card internal padding: **20px**
-- Inline gap (icon-to-label, legend dot-to-text, delta arrow-to-percentage): **8px**
-- Grid gap between cards in a row (stat cards, channel cards): **16–20px**
+Base corner radius: 8px. See rounded tokens in front matter for the full scale.
 
-Density feel: compact data density inside cards (tight line-height on stacked value rows) balanced by generous 24px+ gaps between major sections, so the page reads as organized rather than cramped.
 
-## 7. Signature components
-1. **Stat card with tinted icon square**: white rounded-16px card, top-left a 40×40px rounded-10px square filled solid teal or orange holding a white lucide icon, to its right a two-line label/value stack, and a small delta line below (colored text + directional arrow, no pill). This exact pattern repeats at both the top-level 4-stat row and inside each of the 3 channel cards.
-2. **Channel card with embedded sparkline + metric list**: a taller card that stacks an icon+title+"View Details →" header, a small area/line sparkline with a soft color-matched gradient fill beneath the line, then a 4-row metric list (Impressions/Clicks/CTR/Spend) each with its own inline delta, ending in a "Top Campaign" row with a plain-text (not linked-styled) campaign name.
-3. **Donut chart with centered total**: a ring chart with 3 segments (teal/orange/mint), a large bold total numeral + "Total" caption centered inside the ring, and a stacked legend below listing each series' color dot, name, value, and percentage.
+## Components
 
-## 8. Recurring micro-patterns
-- **Status/state indicator**: N/A — no explicit status badges/pills appear in this reference (no "active/paused" campaign states shown). If added later, default to a **filled, low-opacity tint pill** (e.g. `bg-success/10 text-success`) to match the card's already-soft, non-outline aesthetic — do not default to a bare colored dot.
-- **Delta/trend indicator**: **plain colored text with a small arrow glyph**, never a pill/chip (e.g. "↑ 18.6%" in green, "↓ 4.8%" in red, directly beside the muted-gray comparison text). Use lucide `ArrowUp`/`ArrowDown` at a small size (~12px) inline before the percentage.
-- **Icon containers**: solid-fill **rounded-square (10px radius), 40×40px**, alternating teal/orange fill, white icon at ~20px, stroke width ~2. No circular icon containers appear anywhere in the reference.
-- **List termination**: not shown — no long list/table appears in the reference (see §9).
-- **Icon set**: rounded-cap, ~2px stroke outline icons (not filled) — consistent with lucide-react defaults. Named mappings for every icon visible:
-  - Sidebar Overview → `LayoutGrid`
-  - Sidebar Campaigns → `Megaphone`
-  - Sidebar Ad Channels → `Radio`
-  - Sidebar Analytics → `BarChart3`
-  - Sidebar Reports → `FileText`
-  - Sidebar Audience → `Users`
-  - Sidebar Billing → `CreditCard`
-  - Sidebar Settings → `Settings`
-  - Sidebar Integrations → `Puzzle`
-  - Sidebar promo rocket → `Rocket`
-  - "Export Report" button → `Download`
-  - Date-range control → `Calendar`
-  - Dropdown chevrons (date range, user menu) → `ChevronDown`
-  - Total Impressions stat → `Eye`
-  - Total Clicks stat → `MousePointerClick`
-  - Avg. CTR stat → `TrendingUp`
-  - Total Spend stat → `DollarSign`
-  - Banner Ads card icon → `Image`
-  - Login Ads card icon → `LogIn`
-  - Swipe Ads card icon → `Smartphone`
-  - "View Details →" / "View Full Breakdown →" links → `ArrowRight`
-  - Positive delta arrow → `ArrowUp`
-  - Negative delta arrow → `ArrowDown`
+- **Primary Button:** Rounded (8px) shape. Accent color fill. Hover: 8% darken + subtle lift shadow. Active: -1px translate tactile press. Font weight 600. No outer glows.
+- **Secondary / Ghost Button:** Outline variant. 1.5px border in muted color. Text in primary color. Hover: subtle background fill.
+- **Cards:** Rounded (8px) corners. Surface background. Subtle shadow (0 2px 12px rgba(0,0,0,0.06)). 1px border stroke.
+- **Inputs:** Label above input. 1px border stroke. Focus ring: 2px accent color offset 2px. Error text below in semantic red. No floating labels.
+- **Navigation:** Primary surface background. Active item: accent color indicator. Font weight 500 when active.
+- **Skeletons:** Shimmer animation matching component dimensions. No circular spinners.
+- **Empty States:** Icon-based composition with descriptive text and action button.
 
-  App-wide stroke width: **2px** (lucide default `strokeWidth={2}`), at 16–20px for stat/nav icons and 12px for inline delta arrows.
 
-## 9. What the reference doesn't cover
-- **Empty/error/loading states**: none shown — every card has full data. Loading skeletons, zero-campaign empty states, and API-error states need fresh design (suggest skeleton cards matching the 16px-radius card shape, and a centered icon+message empty state reusing the muted-gray caption style).
-- **Scale behavior**: only 3 channels and a handful of chart points are shown. A campaigns/channels list with dozens of rows, or a chart with hundreds of data points, isn't addressed — needs pagination/virtualization and chart-decimation decisions.
-- **List/table termination**: no data table appears at all (e.g. a full campaigns list) — pagination vs. "Load more" vs. infinite scroll must be decided fresh when that view is built.
-- **Status badges**: no active/paused/ended campaign state is shown anywhere, despite this being an ad-campaign product — this will need a new component, not just a reused pattern (see §8 recommendation).
-- **Accessibility gaps**: the muted-gray caption text (`#6B7280` ~approx on white) and especially white text on the mint-teal chart segment likely sit close to or below WCAG AA for small text — verify contrast ratios before shipping. Delta indicators rely on color (green/red) plus an arrow glyph, which is good, but confirm the arrow renders distinctly enough at small sizes for color-blind users. Sidebar text (light gray on very dark teal) should also be checked for AA contrast at its actual rendered size.
-- **Dark mode**: the reference is light-mode only (aside from the sidebar shell); no dark-mode content-area palette is implied and would need to be designed, not derived.
+## Do's and Don'ts
+
+- No emojis in UI — use icon system only (Lucide, Heroicons)
+- No decorative gradients — flat color only
+- No shadows heavier than 0 2px 8px rgba(0,0,0,0.08)
+- No pure black (#000000) — use off-black or charcoal variants
+- No oversaturated accent colors (saturation cap: 80%)
+- No 3-column equal-width feature layouts — use zig-zag or asymmetric grid
+- No `h-screen` — use `min-h-[100dvh]`
+- No AI copywriting clichés: "Elevate", "Seamless", "Unleash", "Next-Gen"
+- No broken external image links — use picsum.photos or inline SVG
+- No generic lorem ipsum in demos

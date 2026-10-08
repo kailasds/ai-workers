@@ -64,7 +64,7 @@ function Part({
   const isActive = active === id;
   const body = (
     <>
-      <div className="grid h-8 w-8 shrink-0 place-items-center rounded-control bg-brand-100 text-brand-600">
+      <div className="grid h-8 w-8 shrink-0 place-items-center text-ink-soft">
         <Icon className="h-4 w-4" strokeWidth={2} />
       </div>
       <div className="min-w-0">

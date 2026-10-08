@@ -24,7 +24,7 @@ export function WorkerCard({ worker, assigned, learned }: { worker: V2Worker; as
       className="group flex h-full flex-col rounded-card border border-border bg-card p-5 shadow-card hover:border-border-strong hover:shadow-float"
     >
       <div className="flex items-start justify-between gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-control bg-brand-800 text-white">
+        <div className="grid h-10 w-10 shrink-0 place-items-center text-ink-soft">
           <Users className="h-5 w-5" strokeWidth={2} />
         </div>
         <div className="flex flex-col items-end gap-1.5">

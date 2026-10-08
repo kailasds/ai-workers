@@ -42,7 +42,7 @@ export function KnowledgeCard({ k, onOpen }: { k: Knowledge; onOpen: (id: string
     <div className={cn("relative flex h-full flex-col rounded-card border border-border bg-card p-5 shadow-card hover:shadow-float", dim && "bg-card-sunken/60")}>
       <div className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-start gap-2.5">
-          <div className="grid h-8 w-8 shrink-0 place-items-center rounded-control bg-brand-100 text-brand-600">
+          <div className="grid h-8 w-8 shrink-0 place-items-center text-ink-soft">
             <kind.icon className="h-4 w-4" strokeWidth={2} />
           </div>
           <div className="min-w-0">

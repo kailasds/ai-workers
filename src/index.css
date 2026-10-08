@@ -2,93 +2,78 @@
 @import "tw-animate-css";
 
 @theme {
-  /* Adnex design.md: a single family (Inter) for everything, no display/body
-     split this time — the previous project's Fredoka/Nunito pairing does
-     not apply here. */
-  --font-display: "Inter", "Segoe UI", sans-serif;
-  --font-sans: "Inter", "Segoe UI", sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  /* design.md: Roboto throughout, JetBrains Mono for code and metadata. */
+  --font-display: "Roboto", "Segoe UI", sans-serif;
+  --font-sans: "Roboto", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
 
-  /* Page / shell / card — Adnex is edge-to-edge, not a floating panel over
-     a tinted backdrop like the last three extractions: the dark sidebar
-     and light content area both run flush to the viewport, so there's no
-     separate "page canvas" color distinct from the card surface. */
-  --color-page: #FFFFFF;
+  /* Surfaces: light grey canvas, white cards, 1px hairline borders. */
+  --color-page: #F8F9FA;
   --color-shell: #FFFFFF;
   --color-card: #FFFFFF;
-  --color-card-sunken: #F4F5F6;
-  --color-border: #E5E7EA;
-  --color-border-strong: #D4D8DC;
+  --color-card-sunken: #F1F3F4;
+  --color-border: #E3E5E8;
+  --color-border-strong: #CDD0D4;
 
-  /* Ink — near-black with a faint cool/teal tint (design.md §3), not true
-     neutral gray, echoing the brand teal. */
-  --color-ink: #1A2422;
-  --color-ink-soft: #3D4744;
-  --color-ink-mute: #6B7280;
-  --color-ink-faint: #9CA3AF;
+  /* Ink: charcoal, never pure black. */
+  --color-ink: #202124;
+  --color-ink-soft: #3C4043;
+  --color-ink-mute: #5F6368;
+  --color-ink-faint: #80868B;
 
-  /* onyx (tooltips/overlays/high-contrast chips) reuses the brand teal
-     rather than true black — this design's only "dark surface" register. */
-  --color-onyx: #0F2A2E;
-  --color-onyx-soft: #16383C;
+  --color-onyx: #202124;
+  --color-onyx-soft: #3C4043;
 
-  /* Brand ramp = the TEAL half of this design's two-tone system (design.md
-     §3: "teal + orange... never mix inside one component"). Orange is kept
-     separate as --color-accent below, mirroring design.md's own split
-     between --secondary (teal/shell) and --primary (orange/CTA). */
-  --color-brand-900: #0C2426;
-  --color-brand-800: #0F2A2E;
-  --color-brand-600: #29524F;
-  --color-brand-500: #3D6D69;
-  --color-brand-300: #7FA39F;
-  --color-brand-100: #E4EDEC;
+  /* Primary blue carries links, focus and the main action. The old "brand"
+     and "accent" role names map onto it so existing components follow. */
+  --color-brand-900: #174EA6;
+  --color-brand-800: #1A56C4;
+  --color-brand-600: #1A73E8;
+  --color-brand-500: #4285F4;
+  --color-brand-300: #8AB4F8;
+  --color-brand-100: #E8F0FE;
 
-  --color-accent: #F2662A;
-  --color-accent-ink: #D6551E;
-  --color-accent-soft: #FDE8DD;
-  --color-accent-border: #F7C7AE;
+  --color-accent: #1A73E8;
+  --color-accent-ink: #1557B0;
+  --color-accent-soft: #E8F0FE;
+  --color-accent-border: #AECBFA;
   --color-accent-foreground: #FFFFFF;
 
-  /* Status colors — green/red are directly confirmed (delta indicators,
-     design.md §8). Blue/amber/purple have no source in this two-tone +
-     mint-chart-only design (§3 explicitly reserves mint for charts only),
-     so they're bridging inventions kept out of teal/orange/mint's way. */
-  --color-status-blue: #2E6FE0;
-  --color-status-blue-soft: #E4EBFC;
-  --color-status-green: #17A34A;
-  --color-status-green-soft: #E1F5E9;
-  --color-status-amber: #B8860B;
-  --color-status-amber-soft: #FBF0DA;
-  --color-status-red: #DC2626;
-  --color-status-red-soft: #FBE2E2;
+  /* Model-generated signal reuses the primary blue family. */
+  --color-ai: #1A73E8;
+  --color-ai-ink: #1557B0;
+  --color-ai-soft: #D2E3FC;
+
+  /* Status: green success, amber warning, red error. */
+  --color-status-blue: #1A73E8;
+  --color-status-blue-soft: #E8F0FE;
+  --color-status-green: #1E8E3E;
+  --color-status-green-soft: #E6F4EA;
+  --color-status-amber: #B06000;
+  --color-status-amber-soft: #FEF7E0;
+  --color-status-red: #D93025;
+  --color-status-red-soft: #FCE8E6;
   --color-status-purple: #7C5CBF;
   --color-status-purple-soft: #F0EAFB;
 
-  /* Radius tiers per design.md §6 — note control and icon-container share
-     10px, and buttons are NOT full-pill in this design (a real difference
-     from the last three extractions this kit produced). */
+  /* Radius: 8px base, 16px and 24px for larger surfaces. */
   --radius-shell: 0px;
-  --radius-card: 16px;
-  --radius-control: 10px;
+  --radius-card: 8px;
+  --radius-control: 8px;
 
-  /* Sidebar chrome — dark teal shell, confirmed directly in design.md
-     (--sidebar #0C2426, --sidebar-foreground #C9D2D0, --sidebar-active
-     #29524F for the filled active-nav pill). Active-icon accent borrows
-     the orange CTA color: design.md's own two-tone logic treats orange as
-     the "attention" color, so using it for "this is your current page" is
-     consistent rather than inventing a third hue. */
-  --color-sidebar-grad-start: #0F2A2E;
-  --color-sidebar-grad-end: #0C2426;
-  --color-sidebar-ink: #C9D2D0;
-  --color-sidebar-ink-mute: #8FA19E;
-  --color-sidebar-ink-faint: #6B8280;
-  --color-sidebar-accent: #F2662A;
-  --color-sidebar-hover: rgb(255 255 255 / 0.06);
-  --color-sidebar-border: rgb(255 255 255 / 0.08);
+  --color-sidebar-grad-start: #FFFFFF;
+  --color-sidebar-grad-end: #FFFFFF;
+  --color-sidebar-ink: #202124;
+  --color-sidebar-ink-mute: #5F6368;
+  --color-sidebar-ink-faint: #80868B;
+  --color-sidebar-accent: #1A73E8;
+  --color-sidebar-hover: #F1F3F4;
+  --color-sidebar-border: #E3E5E8;
 
-  --shadow-card: 0 1px 2px rgba(10, 20, 20, 0.06);
-  --shadow-float: 0 20px 48px rgba(10, 20, 20, 0.18);
-  --shadow-pill: 0 6px 16px rgba(10, 20, 20, 0.16);
+  /* Nothing heavier than 0 2px 8px rgba(0,0,0,0.08). */
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-float: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-pill: 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 
 @layer base {
@@ -106,7 +91,7 @@
     background: var(--color-page);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    font-size: 13.5px;
+    font-size: 13px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -117,8 +102,8 @@
   }
 
   ::selection {
-    background: var(--color-accent-soft);
-    color: var(--color-accent-ink);
+    background: var(--color-ai-soft);
+    color: var(--color-ink);
   }
 
   * {
@@ -126,6 +111,7 @@
     scrollbar-color: var(--color-border-strong) transparent;
   }
 
+  /* design.md: focus ring is 2px in the accent colour, offset 2px. */
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
@@ -134,23 +120,12 @@
 }
 
 @layer utilities {
-  /* Hatch/noise textures aren't part of this reference (no hatch pattern
-     shown anywhere in Adnex) — kept defined but dark-surface-oriented so
-     they still work if ever layered on the teal shell or an onyx chip. */
   .hatch {
-    background-image: repeating-linear-gradient(
-      45deg,
-      transparent 0 4px,
-      rgb(255 255 255 / 0.06) 4px 5px
-    );
+    background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgb(255 255 255 / 0.06) 4px 5px);
   }
 
   .hatch-bar {
-    background-image: repeating-linear-gradient(
-      45deg,
-      transparent 0 5px,
-      rgb(255 255 255 / 0.08) 5px 6.5px
-    );
+    background-image: repeating-linear-gradient(45deg, transparent 0 5px, rgb(255 255 255 / 0.08) 5px 6.5px);
   }
 
   .noise-veil {
@@ -158,25 +133,17 @@
     background-size: 14px 14px;
   }
 
-  /* hero/punctuation card — no such card exists in this reference; kept in
-     the teal→orange family (this design's two real hues) for any future
-     promo/hero surface, echoing the sidebar's own "Unlock more" promo card
-     register rather than inventing an unrelated gradient. */
+  /* Solid deep blue; design.md bans decorative gradients. */
   .card-hero {
-    background-image: linear-gradient(135deg, var(--color-brand-800), var(--color-accent));
+    background-color: var(--color-brand-900);
   }
 
-  /* sidebar rail chrome — the confirmed dark teal shell */
   .sidebar-gradient {
-    background-image: linear-gradient(165deg, var(--color-sidebar-grad-start), var(--color-sidebar-grad-end));
+    background-color: var(--color-card);
   }
 
   .ring-texture {
-    background-color: var(--color-brand-900);
-    background-image: repeating-radial-gradient(
-      circle at 85% 15%,
-      rgb(255 255 255 / 0.05) 0 1px,
-      transparent 1px 10px
-    );
+    background-color: var(--color-onyx);
+    background-image: repeating-radial-gradient(circle at 85% 15%, rgb(255 255 255 / 0.05) 0 1px, transparent 1px 10px);
   }
 }

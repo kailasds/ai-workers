@@ -37,7 +37,7 @@ export default function Sentinel() {
 
       <div className="space-y-6 px-8">
         <div className="flex items-start gap-3 rounded-card border border-border bg-card-sunken/60 p-5">
-          <Bot className="mt-0.5 h-4 w-4 shrink-0 text-brand-600" strokeWidth={2} />
+          <Bot className="mt-0.5 h-4 w-4 shrink-0 text-ai" strokeWidth={2} />
           <p className="text-[14px] leading-relaxed text-ink-soft">
             <span className="font-semibold text-ink">Platform Sentinel decides on its own</span> what to share and which Workers may evolve. You are not asked to approve. Every decision is recorded here with its reason, and you can override it.
           </p>
