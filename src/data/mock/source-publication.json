@@ -1,0 +1,8 @@
+{
+ "schema_version": "source-publication-capability-v2",
+ "available": true,
+ "publish_by_default": true,
+ "project": "ai_worker/modernization_worker",
+ "project_url": "http://gitlab.internal.example/ai_worker/modernization_worker",
+ "detail": "Publishes to ai_worker/modernization_worker, one folder per Worker revision"
+}

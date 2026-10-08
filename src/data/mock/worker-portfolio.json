@@ -1,0 +1,2958 @@
+{
+ "schema_version": "worker-portfolio-v1",
+ "generated_at": "2026-10-06T08:45:21.173994Z",
+ "freshness": {
+  "state": "CURRENT",
+  "observed_at": "2026-10-06T08:45:09.182834Z"
+ },
+ "totals": {
+  "workers": 50,
+  "serving": 1,
+  "attention": 1
+ },
+ "bounded_contexts": [
+  {
+   "key": "qe-testcases-to-executed-scripts",
+   "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+   "workers": 29
+  },
+  {
+   "key": "tibco-bw-to-spring-boot-services",
+   "label": "Converts Integration Service to Target Code",
+   "workers": 16
+  },
+  {
+   "key": "tibco-bw-to-spring-boot-services-tests",
+   "label": "Converts Integration Service to Unit Tested Target Code",
+   "workers": 4
+  },
+  {
+   "key": "tibco-bw-to-spring-boot-services-tests-traceability",
+   "label": "Converts Integration Service to Traced Target Code",
+   "workers": 1
+  }
+ ],
+ "workers": [
+  {
+   "composition_id": "a9cb82d0-4508-4a8b-bd56-fbdbb856018b",
+   "created_at": "2026-10-05T10:13:57.819947Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-55311e89"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 1,
+    "stopped": 0,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": "804ced56-4056-4c39-a0e7-c9143a9e6c03"
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "WORKER_RUNTIME",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "0d6ab218-2350-4479-aaba-01a3d796008c",
+   "created_at": "2026-09-30T11:57:02.041315Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-e46f9ef5"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "MET",
+    "finished_at": "2026-09-30T12:01:14.881172Z",
+    "last_run_at": "2026-09-30T12:01:14.881172Z",
+    "runs": 1
+   },
+   "learning": {
+    "memories": 1,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 1,
+    "last_at": "2026-09-30T12:01:21.736373Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-30T12:01:21.736373Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "eeb05fe4-2caf-4b3a-b3e0-05c846226ade",
+   "created_at": "2026-09-30T11:46:15.218343Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-8e2a52b4"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "NOT_MET",
+    "finished_at": "2026-09-30T11:51:29.469736Z",
+    "last_run_at": "2026-09-30T11:51:29.469736Z",
+    "runs": 2
+   },
+   "learning": {
+    "memories": 2,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 2,
+    "last_at": "2026-09-30T11:51:39.135033Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-30T11:51:39.135033Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "b23c427c-0b41-47ee-a130-abaf2502f20b",
+   "created_at": "2026-09-30T11:28:21.814765Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-2753d86d"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "NOT_MET",
+    "finished_at": "2026-09-30T11:32:19.677296Z",
+    "last_run_at": "2026-09-30T11:32:19.677296Z",
+    "runs": 1
+   },
+   "learning": {
+    "memories": 1,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 1,
+    "last_at": "2026-09-30T11:32:23.176958Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-30T11:32:23.176958Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "110edc5b-cec6-45c6-a053-8e31cf7b704f",
+   "created_at": "2026-09-30T10:09:41.224983Z",
+   "name": "Integration modernisation · Payments",
+   "worker_type": "modernization",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services-tests/integration-modernisation-payments-50832c69"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services-tests",
+    "label": "Converts Integration Service to Unit Tested Target Code",
+    "statement": "Converts Integration Service to Unit Tested Target Code",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "NOT_ADJUDICABLE",
+    "finished_at": "2026-09-30T10:42:42.671942Z",
+    "last_run_at": "2026-09-30T10:42:42.671942Z",
+    "runs": 1
+   },
+   "learning": {
+    "memories": 1,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 1,
+    "last_at": "2026-09-30T11:23:24.444331Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-30T11:23:24.444331Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "2ee9527a-af13-47d1-91c9-c91df621c4d5",
+   "created_at": "2026-09-30T10:02:15.424961Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-ee0cabd9"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "MET",
+    "finished_at": "2026-09-30T10:09:07.724383Z",
+    "last_run_at": "2026-09-30T10:09:07.724383Z",
+    "runs": 3
+   },
+   "learning": {
+    "memories": 3,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 3,
+    "last_at": "2026-09-30T10:09:16.737900Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-30T10:09:16.737900Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "823a7b65-da84-4a45-9422-cbae71d64913",
+   "created_at": "2026-09-30T06:46:01.448609Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-2b52f8cc"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "MET",
+    "finished_at": "2026-09-30T06:54:08.746305Z",
+    "last_run_at": "2026-09-30T06:54:08.746305Z",
+    "runs": 4
+   },
+   "learning": {
+    "memories": 4,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 4,
+    "last_at": "2026-09-30T06:54:17.836830Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-30T06:54:17.836830Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "530d02a6-bd59-413a-af56-aa433e018e10",
+   "created_at": "2026-09-30T06:36:10.041736Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-67256e4d"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "NOT_MET",
+    "finished_at": "2026-09-30T06:40:46.389396Z",
+    "last_run_at": "2026-09-30T06:40:46.389396Z",
+    "runs": 1
+   },
+   "learning": {
+    "memories": 1,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 1,
+    "last_at": "2026-09-30T06:40:54.259836Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-30T06:40:54.259836Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "131ebf4a-e657-4e3e-9a49-189ed6860392",
+   "created_at": "2026-09-30T05:32:55.932349Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-ec7ce7fb"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "MET",
+    "finished_at": "2026-09-30T05:46:04.389049Z",
+    "last_run_at": "2026-09-30T05:46:04.389049Z",
+    "runs": 7
+   },
+   "learning": {
+    "memories": 7,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 7,
+    "last_at": "2026-09-30T05:46:05.222106Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-30T05:46:05.222106Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "451f647c-4cd1-4e6f-9cdb-a47da367f11f",
+   "created_at": "2026-09-30T05:24:28.891395Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-970cf520"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "NOT_MET",
+    "finished_at": "2026-09-30T05:30:08.825904Z",
+    "last_run_at": "2026-09-30T05:30:08.825904Z",
+    "runs": 2
+   },
+   "learning": {
+    "memories": 2,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 2,
+    "last_at": "2026-09-30T05:30:09.266989Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-30T05:30:09.266989Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "6f26c1f0-0647-4e2c-95ff-363ff36ac9fc",
+   "created_at": "2026-09-25T15:21:20.207445Z",
+   "name": "Integration modernisation · Insurance claims",
+   "worker_type": "modernization",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/insurance-claims/tibco-bw-to-spring-boot-services/integration-modernisation-insurance-claims-4f769c74"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services",
+    "label": "Converts Integration Service to Target Code",
+    "statement": "Converts Integration Service to Target Code",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "MET",
+    "finished_at": "2026-09-25T16:01:57.412541Z",
+    "last_run_at": "2026-09-25T16:01:57.412541Z",
+    "runs": 1
+   },
+   "learning": {
+    "memories": 1,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 1,
+    "last_at": "2026-09-25T16:02:38.770862Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-25T16:02:38.770862Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "0a3bf7d3-76c4-413a-9fd0-6fa9072bcf11",
+   "created_at": "2026-09-25T15:21:19.839338Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-7a62d7e0"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "NOT_MET",
+    "finished_at": "2026-09-25T15:27:34.141011Z",
+    "last_run_at": "2026-09-25T15:27:34.141011Z",
+    "runs": 1
+   },
+   "learning": {
+    "memories": 1,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 1,
+    "last_at": "2026-09-25T15:27:38.422848Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-25T15:27:38.422848Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "a33315d7-9113-4a75-919b-f4a61ce40cdd",
+   "created_at": "2026-09-25T13:57:35.884926Z",
+   "name": "Integration modernisation · Insurance claims",
+   "worker_type": "modernization",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/insurance-claims/tibco-bw-to-spring-boot-services/integration-modernisation-insurance-claims-aef91dfb"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services",
+    "label": "Converts Integration Service to Target Code",
+    "statement": "Converts Integration Service to Target Code",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "MET",
+    "finished_at": "2026-09-25T14:33:17.724310Z",
+    "last_run_at": "2026-09-25T14:33:17.724310Z",
+    "runs": 1
+   },
+   "learning": {
+    "memories": 1,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 1,
+    "last_at": "2026-09-25T14:33:59.671067Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-25T14:33:59.671067Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "7bca59bf-3f7c-4d43-97ff-89cb343dc888",
+   "created_at": "2026-09-25T13:35:34.934484Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-0c08e667"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "NOT_MET",
+    "finished_at": "2026-09-25T13:41:43.786694Z",
+    "last_run_at": "2026-09-25T13:41:43.786694Z",
+    "runs": 1
+   },
+   "learning": {
+    "memories": 1,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 1,
+    "last_at": "2026-09-25T13:41:46.322051Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-25T13:41:46.322051Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "3f092b32-efa7-4654-8873-e71302b37acf",
+   "created_at": "2026-09-16T01:13:21.484320Z",
+   "name": "Integration modernisation · Commercial lending",
+   "worker_type": "modernization",
+   "owner": "rebuild",
+   "owner_subject": "rebuild",
+   "revision": 11,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/commercial-lending/tibco-bw-to-spring-boot-services-tests-traceability/integration-modernisation-commercial-lending-6f456ab9"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services-tests-traceability",
+    "label": "Converts Integration Service to Traced Target Code",
+    "statement": "Converts Integration Service to Traced Target Code",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 2,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "NOT_MET",
+    "finished_at": "2026-09-16T06:36:33.877126Z",
+    "last_run_at": "2026-09-16T06:36:33.877126Z",
+    "runs": 15
+   },
+   "learning": {
+    "memories": 15,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 15,
+    "last_at": "2026-09-16T06:42:15.555404Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-16T06:42:15.555404Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "ebebd2fd-767d-4b67-93ec-44073023a3ff",
+   "created_at": "2026-09-16T01:18:22.143959Z",
+   "name": "Test Script Generation · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "rebuild",
+   "owner_subject": "rebuild",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-insurance-fa7b485e"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Generate Test Scripts + Execution",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "MET",
+    "finished_at": "2026-09-16T06:07:38.208199Z",
+    "last_run_at": "2026-09-16T06:07:38.208199Z",
+    "runs": 2
+   },
+   "learning": {
+    "memories": 2,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 2,
+    "last_at": "2026-09-16T06:12:14.956669Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-16T06:12:14.956669Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "e49f9fc5-5674-4206-9f00-46c55f301739",
+   "created_at": "2026-09-16T01:16:03.548433Z",
+   "name": "Integration modernisation · Insurance claims",
+   "worker_type": "modernization",
+   "owner": "rebuild",
+   "owner_subject": "rebuild",
+   "revision": 11,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/insurance-claims/tibco-bw-to-spring-boot-services/integration-modernisation-insurance-claims-4980aaeb"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services",
+    "label": "Converts Integration Service to Target Code",
+    "statement": "Converts Integration Service to Target Code",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "MET",
+    "finished_at": "2026-09-16T01:51:17.123374Z",
+    "last_run_at": "2026-09-16T01:51:17.123374Z",
+    "runs": 2
+   },
+   "learning": {
+    "memories": 2,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 2,
+    "last_at": "2026-09-16T01:56:30.002019Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-16T01:56:30.002019Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "86124f81-4a4a-492f-ab32-b399f01d6671",
+   "created_at": "2026-09-16T01:11:30.518666Z",
+   "name": "Integration modernisation · Payments",
+   "worker_type": "modernization",
+   "owner": "rebuild",
+   "owner_subject": "rebuild",
+   "revision": 11,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services-tests/integration-modernisation-payments-83110d68"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services-tests",
+    "label": "Converts Integration Service to Unit Tested Target Code",
+    "statement": "Converts Integration Service to Unit Tested Target Code",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 1,
+    "substrates": [
+     "LOCAL"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": "NOT_MET",
+    "finished_at": "2026-09-16T01:44:37.660965Z",
+    "last_run_at": "2026-09-16T01:44:37.660965Z",
+    "runs": 1
+   },
+   "learning": {
+    "memories": 1,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 1,
+    "last_at": "2026-09-16T01:56:29.387647Z"
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": "2026-09-16T01:56:29.387647Z"
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "6a6cf0fe-c55a-4415-b151-a8f987572659",
+   "created_at": "2026-10-06T05:30:09.803494Z",
+   "name": "QE worker 0610",
+   "worker_type": "quality-engineering",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "PROVISIONED",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/qe-worker-0610-0c2a6718"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test automation from written test cases",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 0,
+    "attention": 0,
+    "substrates": [],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.60.27.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "22f029ab-f080-46c4-ad59-8c884a016b44",
+   "created_at": "2026-10-06T05:09:01.962250Z",
+   "name": "Integration modernisation · Payments",
+   "worker_type": "modernization",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 11,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "PROVISIONED",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-353e1adf"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services",
+    "label": "Converts Integration Service to Target Code",
+    "statement": "Service orchestration modernisation",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 0,
+    "attention": 0,
+    "substrates": [],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "9f4ae70f-ca73-4370-b23e-20a8f18699bb",
+   "created_at": "2026-09-30T07:08:04.075995Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-e95a181c"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "6a6a6863-bb31-4cbd-b53f-e5d41d2f08ca",
+   "created_at": "2026-09-30T06:44:36.207511Z",
+   "name": "Integration modernisation · Payments",
+   "worker_type": "modernization",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 4,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "PROVISIONED",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-a9be2909"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services",
+    "label": "Converts Integration Service to Target Code",
+    "statement": "Service orchestration modernisation",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 0,
+    "attention": 0,
+    "substrates": [],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "UNKNOWN",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "fdd4279a-4ef8-4247-99ef-4251912003b9",
+   "created_at": "2026-09-29T07:00:12.732493Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-b58b2973"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "f66289bb-4566-488d-921e-466591b37f1b",
+   "created_at": "2026-09-29T06:27:18.677611Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-0e60f66d"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "a9cc55d7-b7de-4d97-9942-de82d0dae112",
+   "created_at": "2026-09-28T06:08:59.533749Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-36342a9e"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "c63cb158-830f-4953-b0e5-e07c5abdf476",
+   "created_at": "2026-09-28T05:59:28.011493Z",
+   "name": "Integration modernisation · Payments",
+   "worker_type": "modernization",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 11,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-30dee241"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services",
+    "label": "Converts Integration Service to Target Code",
+    "statement": "Converts Integration Service to Target Code",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "cf746b60-63e3-428e-bc27-84da531bb603",
+   "created_at": "2026-09-28T05:51:26.720025Z",
+   "name": "Integration modernisation · Payments",
+   "worker_type": "modernization",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services-tests/integration-modernisation-payments-9be654b2"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services-tests",
+    "label": "Converts Integration Service to Unit Tested Target Code",
+    "statement": "Converts Integration Service to Unit Tested Target Code",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "572d03a8-7e3c-4ab4-8ceb-074b5ac33635",
+   "created_at": "2026-09-28T05:41:17.145481Z",
+   "name": "Integration modernisation · Payments",
+   "worker_type": "modernization",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 10,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "PROVISIONED",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-030245d2"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services",
+    "label": "Converts Integration Service to Target Code",
+    "statement": "Service orchestration modernisation",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 0,
+    "attention": 0,
+    "substrates": [],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "443269eb-6a55-4c2a-b630-ec99e42f6f04",
+   "created_at": "2026-09-25T14:11:40.946303Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-a4eda59f"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "3c1917eb-11cb-495b-87bc-ac729a9bb165",
+   "created_at": "2026-09-25T13:43:49.671734Z",
+   "name": "Integration modernisation · Insurance claims",
+   "worker_type": "modernization",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 4,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "PROVISIONED",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/insurance-claims/tibco-bw-to-spring-boot-services/integration-modernisation-insurance-claims-7f331f67"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services",
+    "label": "Converts Integration Service to Target Code",
+    "statement": "Service orchestration modernisation",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 0,
+    "attention": 0,
+    "substrates": [],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "UNKNOWN",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "0155f471-f4c8-439e-946d-32b7ddefb7fd",
+   "created_at": "2026-09-25T13:33:07.210222Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "PROVISIONED",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-1025c280"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test automation from written test cases",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 0,
+    "attention": 0,
+    "substrates": [],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "0082459f-4e7f-4aba-aeec-8d43af080969",
+   "created_at": "2026-09-25T12:54:58.588938Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 7,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "PROVISIONED",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-da22d7c4"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test automation from written test cases",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 0,
+    "attention": 0,
+    "substrates": [],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "ec4a86bb-829d-4b43-8206-bbcb2bc75cac",
+   "created_at": "2026-09-25T12:14:59.371503Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 7,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "PROVISIONED",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-9ed7b07b"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test automation from written test cases",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 0,
+    "attention": 0,
+    "substrates": [],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "92084452-b811-49ea-bbc6-d6b8d9054f45",
+   "created_at": "2026-09-25T11:46:27.449659Z",
+   "name": "Test Script Generation and Execution · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 7,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "PROVISIONED",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-a455c3a0"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test automation from written test cases",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 0,
+    "attention": 0,
+    "substrates": [],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "48a8b0e4-88aa-43de-9fb1-8d5ca34d7005",
+   "created_at": "2026-09-17T10:22:34.511164Z",
+   "name": "Test Script Generation · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-insurance-75dc7ea2"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Generate Test Scripts + Execution",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 0,
+    "attention": 0,
+    "substrates": [],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "5ab8d7c2-990b-438b-bce7-aaa74128da82",
+   "created_at": "2026-09-17T09:15:27.775157Z",
+   "name": "Test Script Generation · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-insurance-2d7c8c96"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Generate Test Scripts + Execution",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 0,
+    "attention": 0,
+    "substrates": [],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "d676aea3-c31f-4964-ad58-1ef4557df250",
+   "created_at": "2026-09-17T08:49:17.454515Z",
+   "name": "Test Script Generation · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-insurance-d1fd3c68"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Generate Test Scripts + Execution",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "eece40f5-6aaf-40cc-9492-b8b87ed56025",
+   "created_at": "2026-09-17T08:40:09.045508Z",
+   "name": "Test Script Generation · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "Reni P",
+   "owner_subject": "16e6d63e-b62e-46cd-8191-e5eb31eca918",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-insurance-43e4a182"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Generate Test Scripts + Execution",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "cb1cf761-f3ad-4915-bb39-3d21ada069aa",
+   "created_at": "2026-09-17T07:46:56.988182Z",
+   "name": "Integration modernisation · Payments",
+   "worker_type": "modernization",
+   "owner": "Reni P",
+   "owner_subject": "16e6d63e-b62e-46cd-8191-e5eb31eca918",
+   "revision": 11,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-a066160e"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services",
+    "label": "Converts Integration Service to Target Code",
+    "statement": "Converts Integration Service to Target Code",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "e92efccf-9c21-4553-bfb1-066ecd0bf16b",
+   "created_at": "2026-09-17T06:48:26.994636Z",
+   "name": "Integration modernisation · Payments",
+   "worker_type": "modernization",
+   "owner": "Reni P",
+   "owner_subject": "16e6d63e-b62e-46cd-8191-e5eb31eca918",
+   "revision": 11,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-c5a767ff"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services",
+    "label": "Converts Integration Service to Target Code",
+    "statement": "Converts Integration Service to Target Code",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 0,
+    "attention": 0,
+    "substrates": [],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "d4a36412-1048-4bc5-9ccb-c8bead17fbfe",
+   "created_at": "2026-09-17T06:33:08.698888Z",
+   "name": "Integration modernisation · Payments",
+   "worker_type": "modernization",
+   "owner": "Reni P",
+   "owner_subject": "16e6d63e-b62e-46cd-8191-e5eb31eca918",
+   "revision": 11,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-b5bd5b09"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services",
+    "label": "Converts Integration Service to Target Code",
+    "statement": "Converts Integration Service to Target Code",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "185dfb2e-2958-4810-8adb-eabe840af05c",
+   "created_at": "2026-09-16T10:52:53.393400Z",
+   "name": "Integration modernisation · Payments",
+   "worker_type": "modernization",
+   "owner": "awpadmin",
+   "owner_subject": "awpadmin",
+   "revision": 11,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services-tests/integration-modernisation-payments-dfdadf30"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services-tests",
+    "label": "Converts Integration Service to Unit Tested Target Code",
+    "statement": "Converts Integration Service to Unit Tested Target Code",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "58198fb2-04a8-470f-8908-7efea24ba8f8",
+   "created_at": "2026-09-16T09:16:32.890921Z",
+   "name": "Test Script Generation · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-insurance-cad626bf"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Generate Test Scripts + Execution",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "ec1e1206-0ff7-4a90-9bfa-7540ad9f8664",
+   "created_at": "2026-09-16T06:45:06.713775Z",
+   "name": "Integration modernisation · Payments",
+   "worker_type": "modernization",
+   "owner": "Account not in People",
+   "owner_subject": "d0fe0ec1-d733-4236-971c-60ea7cf13921",
+   "revision": 12,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-8bdea61c"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services",
+    "label": "Converts Integration Service to Target Code",
+    "statement": "Converts Integration Service to Target Code",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "ba82ac6f-3f45-4d27-a83b-d80ce4163845",
+   "created_at": "2026-09-16T06:27:37.234297Z",
+   "name": "Test Script Generation · Insurance",
+   "worker_type": "quality-engineering",
+   "owner": "Account not in People",
+   "owner_subject": "d0fe0ec1-d733-4236-971c-60ea7cf13921",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-insurance-b751da94"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Generate Test Scripts + Execution",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "063dc05d-bc2a-48c0-a3b7-e0d26ccccf7e",
+   "created_at": "2026-09-16T06:08:23.636745Z",
+   "name": "Integration modernisation · Payments",
+   "worker_type": "modernization",
+   "owner": "Ancy P S",
+   "owner_subject": "f0f0a27c-6290-49a5-b723-58713e9cf70f",
+   "revision": 12,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-4ed89987"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services",
+    "label": "Converts Integration Service to Target Code",
+    "statement": "Converts Integration Service to Target Code",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "2a56255a-c88d-4175-9756-c4e613bcc3df",
+   "created_at": "2026-09-16T05:59:27.031956Z",
+   "name": "Integration modernisation · Payments",
+   "worker_type": "modernization",
+   "owner": "Account not in People",
+   "owner_subject": "d0fe0ec1-d733-4236-971c-60ea7cf13921",
+   "revision": 11,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "ACTIVE",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-e7b26a8f"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services",
+    "label": "Converts Integration Service to Target Code",
+    "statement": "Converts Integration Service to Target Code",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 1,
+    "attention": 0,
+    "substrates": [
+     "ECS"
+    ],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "0887d74e-d9ce-4873-9cce-65d4954de4c1",
+   "created_at": "2026-09-16T05:10:18.672307Z",
+   "name": "Test Script Generation",
+   "worker_type": "quality-engineering",
+   "owner": "Satya Mittapalli",
+   "owner_subject": "a7f057e1-0a79-4b34-962d-4392f101441e",
+   "revision": 11,
+   "outcome": "Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.",
+   "identity": {
+    "state": "PROVISIONED",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/test-script-generation-e1e34a39"
+   },
+   "bounded_context": {
+    "key": "qe-testcases-to-executed-scripts",
+    "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "statement": "Test automation from written test cases",
+    "exclusions": 4
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 0,
+    "attention": 0,
+    "substrates": [],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "c90d4faa-7ccd-493f-b277-c312faa77fc8",
+   "created_at": "2026-09-16T05:03:27.784040Z",
+   "name": "Integration modernisation",
+   "worker_type": "modernization",
+   "owner": "Satya Mittapalli",
+   "owner_subject": "a7f057e1-0a79-4b34-962d-4392f101441e",
+   "revision": 11,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "PROVISIONED",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/integration-modernisation-05dff744"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services",
+    "label": "Converts Integration Service to Target Code",
+    "statement": "Service orchestration modernisation",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 0,
+    "attention": 0,
+    "substrates": [],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  },
+  {
+   "composition_id": "212463b9-fb65-4713-8e05-b006928e1f56",
+   "created_at": "2026-09-16T03:43:36.259825Z",
+   "name": "Integration modernisation · Payments",
+   "worker_type": "modernization",
+   "owner": "Account not in People",
+   "owner_subject": "d0fe0ec1-d733-4236-971c-60ea7cf13921",
+   "revision": 11,
+   "outcome": "Convert the supplied legacy source into a compiling, testable target-language service that preserves the behaviour and integration contract of the source.",
+   "identity": {
+    "state": "PROVISIONED",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-d8df8a4d"
+   },
+   "bounded_context": {
+    "key": "tibco-bw-to-spring-boot-services",
+    "label": "Converts Integration Service to Target Code",
+    "statement": "Service orchestration modernisation",
+    "exclusions": 6
+   },
+   "runtime": {
+    "serving": 0,
+    "stopped": 0,
+    "attention": 0,
+    "substrates": [],
+    "reachable_worker_id": null
+   },
+   "last_outcome": {
+    "verdict": null,
+    "finished_at": null,
+    "last_run_at": null,
+    "runs": 0
+   },
+   "learning": {
+    "memories": 0,
+    "recent_delta": 0,
+    "contradictions": 0,
+    "runs": 0,
+    "last_at": null
+   },
+   "brain": {
+    "state": "CONFIGURED",
+    "engine": "GBrain",
+    "composed_engine_version": "0.48.1.0",
+    "durability": "EPHEMERAL",
+    "observed_at": null
+   },
+   "sentinel": {
+    "state": "CONFIGURED",
+    "worker_runtime": "NOT_RUNNING",
+    "last_action": null,
+    "observed_at": null
+   },
+   "routing": {
+    "mode": "pinned",
+    "router": null
+   }
+  }
+ ],
+ "next_cursor": null
+}

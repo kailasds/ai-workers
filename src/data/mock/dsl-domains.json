@@ -1,0 +1,298 @@
+{
+ "schema_version": "aiworker-dsl-catalog-v1",
+ "domains": [
+  {
+   "domain_id": "payments-cards",
+   "name": "Card authorisation and acquiring",
+   "path": "Payments > Merchant Payments > Card authorisation and acquiring",
+   "version": "1.0.0",
+   "market": "Global",
+   "industry": "Banking & Financial Services",
+   "lines_of_business": [
+    "Card Present",
+    "Card Not Present",
+    "Merchant Acquiring",
+    "Issuing"
+   ],
+   "statistics": {
+    "axioms": 11,
+    "metrics": 8,
+    "entities": 15,
+    "class_codes": 0,
+    "hybrid_rules": 6,
+    "process_steps": 11,
+    "rule_categories": 4,
+    "individual_rules": 30,
+    "discovery_patterns": 9,
+    "deterministic_rules": 21,
+    "non_deterministic_rules": 3
+   },
+   "use_case_node_slug": "banking.merchant_payments.transaction_processing",
+   "plugin_slug": "domain-intelligence-payments-cards",
+   "published": true
+  },
+  {
+   "domain_id": "payments-core",
+   "name": "Correspondent and instant payment rails",
+   "path": "Payments > Payments Processing > Correspondent and instant payment rails",
+   "version": "1.1.0",
+   "market": "Global",
+   "industry": "Banking & Financial Services",
+   "lines_of_business": [
+    "High Value Wire",
+    "Instant Payment",
+    "Bulk Low Value Transfer",
+    "Card Authorisation"
+   ],
+   "statistics": {
+    "axioms": 14,
+    "metrics": 7,
+    "entities": 10,
+    "class_codes": 0,
+    "hybrid_rules": 4,
+    "process_steps": 10,
+    "rule_categories": 4,
+    "individual_rules": 19,
+    "discovery_patterns": 9,
+    "deterministic_rules": 11,
+    "non_deterministic_rules": 4
+   },
+   "use_case_node_slug": "banking.payments_processing",
+   "plugin_slug": "domain-intelligence-payments-core",
+   "published": true
+  },
+  {
+   "domain_id": "disability-income-claims",
+   "name": "Disability income claims",
+   "path": "Insurance > Claims > Disability income claims",
+   "version": "1.0.0",
+   "market": "United States",
+   "industry": "Insurance",
+   "lines_of_business": [
+    "Group Short Term Disability",
+    "Group Long Term Disability",
+    "Individual Disability Income",
+    "Statutory Disability",
+    "Supplemental Disability"
+   ],
+   "statistics": {
+    "axioms": 12,
+    "metrics": 14,
+    "entities": 19,
+    "class_codes": 0,
+    "hybrid_rules": 7,
+    "process_steps": 15,
+    "rule_categories": 8,
+    "individual_rules": 46,
+    "discovery_patterns": 17,
+    "deterministic_rules": 34,
+    "non_deterministic_rules": 5
+   },
+   "use_case_node_slug": "",
+   "plugin_slug": "domain-intelligence-disability-income-claims",
+   "published": true
+  },
+  {
+   "domain_id": "reinsurance-longevity-risk",
+   "name": "Longevity Risk",
+   "path": "Reinsurance > Longevity > Longevity Risk",
+   "version": "1.0.0",
+   "market": "UK_Global",
+   "industry": "Insurance",
+   "lines_of_business": [
+    "Longevity Swap",
+    "Longevity Reinsurance Treaty"
+   ],
+   "statistics": {
+    "axioms": 12,
+    "metrics": 8,
+    "entities": 13,
+    "class_codes": 0,
+    "hybrid_rules": 5,
+    "process_steps": 13,
+    "rule_categories": 4,
+    "individual_rules": 24,
+    "discovery_patterns": 5,
+    "deterministic_rules": 15,
+    "non_deterministic_rules": 4
+   },
+   "use_case_node_slug": "insurance.reinsurance",
+   "plugin_slug": "",
+   "published": false
+  },
+  {
+   "domain_id": "payments-merchant",
+   "name": "Merchant onboarding and risk",
+   "path": "Payments > Merchant Payments > Merchant onboarding and risk",
+   "version": "1.0.0",
+   "market": "Global",
+   "industry": "Banking & Financial Services",
+   "lines_of_business": [
+    "Merchant Acquiring",
+    "Payment Facilitation",
+    "Marketplace"
+   ],
+   "statistics": {
+    "axioms": 8,
+    "metrics": 8,
+    "entities": 13,
+    "class_codes": 0,
+    "hybrid_rules": 7,
+    "process_steps": 8,
+    "rule_categories": 4,
+    "individual_rules": 32,
+    "discovery_patterns": 10,
+    "deterministic_rules": 20,
+    "non_deterministic_rules": 5
+   },
+   "use_case_node_slug": "banking.merchant_payments.onboarding",
+   "plugin_slug": "domain-intelligence-payments-merchant",
+   "published": true
+  },
+  {
+   "domain_id": "parametric-insurance-product-lifecycle",
+   "name": "Parametric product, policy and payout",
+   "path": "Insurance > Policy administration > Parametric product, policy and payout",
+   "version": "1.0.0",
+   "market": "United States",
+   "industry": "Insurance",
+   "lines_of_business": [
+    "Wildfire",
+    "Flight Delay",
+    "Freight Transport",
+    "Transit Delay"
+   ],
+   "statistics": {
+    "axioms": 7,
+    "metrics": 4,
+    "entities": 11,
+    "class_codes": 0,
+    "hybrid_rules": 1,
+    "process_steps": 13,
+    "rule_categories": 4,
+    "individual_rules": 15,
+    "discovery_patterns": 0,
+    "deterministic_rules": 14,
+    "non_deterministic_rules": 0
+   },
+   "use_case_node_slug": "",
+   "plugin_slug": "domain-intelligence-parametric-insurance-product-lifecycle",
+   "published": true
+  },
+  {
+   "domain_id": "payments-exceptions",
+   "name": "Payment exception and repair",
+   "path": "Payments > Payments Processing > Payment exception and repair",
+   "version": "1.0.0",
+   "market": "Global",
+   "industry": "Banking & Financial Services",
+   "lines_of_business": [
+    "High Value Wire",
+    "Instant Payment",
+    "Bulk Low Value Transfer",
+    "Correspondent Banking"
+   ],
+   "statistics": {
+    "axioms": 9,
+    "metrics": 10,
+    "entities": 14,
+    "class_codes": 0,
+    "hybrid_rules": 8,
+    "process_steps": 8,
+    "rule_categories": 4,
+    "individual_rules": 32,
+    "discovery_patterns": 11,
+    "deterministic_rules": 21,
+    "non_deterministic_rules": 3
+   },
+   "use_case_node_slug": "banking.payments_processing.exception_repair",
+   "plugin_slug": "domain-intelligence-payments-exceptions",
+   "published": true
+  },
+  {
+   "domain_id": "test-design-and-coverage",
+   "name": "Test design and coverage",
+   "path": "Cross-industry > Quality engineering > Test design and coverage",
+   "version": "1.0.0",
+   "market": "Global",
+   "industry": "Cross-industry",
+   "lines_of_business": [
+    "Functional UI Automation",
+    "API Contract Testing",
+    "Regression Suites"
+   ],
+   "statistics": {
+    "axioms": 7,
+    "metrics": 5,
+    "entities": 4,
+    "class_codes": 0,
+    "hybrid_rules": 1,
+    "process_steps": 7,
+    "rule_categories": 3,
+    "individual_rules": 11,
+    "discovery_patterns": 0,
+    "deterministic_rules": 5,
+    "non_deterministic_rules": 5
+   },
+   "use_case_node_slug": "",
+   "plugin_slug": "domain-intelligence-test-design-and-coverage",
+   "published": true
+  },
+  {
+   "domain_id": "ui-automation-semantics",
+   "name": "UI automation semantics",
+   "path": "Cross-industry > Quality engineering > UI automation semantics",
+   "version": "1.0.0",
+   "market": "Global",
+   "industry": "Cross-industry",
+   "lines_of_business": [
+    "Browser Automation",
+    "Bdd Suites"
+   ],
+   "statistics": {
+    "axioms": 9,
+    "metrics": 2,
+    "entities": 0,
+    "class_codes": 0,
+    "hybrid_rules": 0,
+    "process_steps": 5,
+    "rule_categories": 3,
+    "individual_rules": 16,
+    "discovery_patterns": 0,
+    "deterministic_rules": 16,
+    "non_deterministic_rules": 0
+   },
+   "use_case_node_slug": "",
+   "plugin_slug": "domain-intelligence-ui-automation-semantics",
+   "published": true
+  },
+  {
+   "domain_id": "underwriting-us-small-commercial",
+   "name": "US Small Commercial",
+   "path": "Underwriting > US > US Small Commercial",
+   "version": "1.0.0",
+   "market": "US",
+   "industry": "Insurance",
+   "lines_of_business": [
+    "Workers Compensation",
+    "Business Owners Policy"
+   ],
+   "statistics": {
+    "axioms": 14,
+    "metrics": 14,
+    "entities": 14,
+    "class_codes": 27,
+    "hybrid_rules": 5,
+    "process_steps": 12,
+    "rule_categories": 4,
+    "individual_rules": 54,
+    "discovery_patterns": 14,
+    "deterministic_rules": 44,
+    "non_deterministic_rules": 5
+   },
+   "use_case_node_slug": "insurance.underwriting",
+   "plugin_slug": "domain-intelligence-underwriting-us-small-commercial",
+   "published": true
+  }
+ ]
+}

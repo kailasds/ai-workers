@@ -1,0 +1,164 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/inter";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Type scale: five levels, each a clear step from the next (design.md §5 + §10).
+   page → section → item → body → meta. Display sizes are for single hero numerals only. */
+@theme {
+    --text-page: 1.5rem;
+    --text-page--line-height: 2rem;
+    --text-page--letter-spacing: -0.015em;
+    --text-page--font-weight: 600;
+    --text-section: 1.0625rem;
+    --text-section--line-height: 1.5rem;
+    --text-section--letter-spacing: -0.01em;
+    --text-section--font-weight: 600;
+    --text-item: 0.875rem;
+    --text-item--line-height: 1.25rem;
+    --text-item--font-weight: 500;
+    --text-body: 0.875rem;
+    --text-body--line-height: 1.375rem;
+    --text-meta: 0.75rem;
+    --text-meta--line-height: 1.125rem;
+    --text-overline: 0.6875rem;
+    --text-overline--line-height: 1rem;
+    --text-overline--letter-spacing: 0.06em;
+    --text-overline--font-weight: 500;
+}
+
+@theme inline {
+    --color-brand: var(--brand);
+    --color-brand-foreground: var(--brand-foreground);
+    --color-success: var(--success);
+    --color-success-foreground: var(--success-foreground);
+    --color-warning: var(--warning);
+    --color-warning-foreground: var(--warning-foreground);
+    --color-info: var(--info);
+    --color-info-foreground: var(--info-foreground);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-chart-teal: var(--chart-teal);
+    --color-chart-orange: var(--chart-orange);
+    --color-chart-mint: var(--chart-mint);
+    --color-sidebar-muted: var(--sidebar-muted);
+    --font-heading: var(--font-sans);
+    --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: 1rem; /* card tier, design.md §6 */
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* Values from .claude/skills/frontend-kit/references/design.md §2 (+ addendum). Light theme only. */
+:root {
+    --background: hsl(0 0% 100%);
+    --foreground: hsl(180 14% 12%);
+    --card: hsl(0 0% 100%);
+    --card-foreground: hsl(180 14% 12%);
+    --popover: hsl(0 0% 100%);
+    --popover-foreground: hsl(180 14% 12%);
+
+    /* Orange fills carry dark-teal text: white on this orange is ~3:1 and fails AA. */
+    --primary: hsl(16 92% 58%);
+    --primary-foreground: hsl(183 45% 12%);
+    --secondary: hsl(183 45% 14%);
+    --secondary-foreground: hsl(0 0% 100%);
+
+    --muted: hsl(210 20% 96%);
+    --muted-foreground: hsl(210 9% 40%);
+    /* shadcn's accent is the light hover/selected surface in menus; brand teal lives in --brand. */
+    --accent: hsl(210 20% 95%);
+    --accent-foreground: hsl(180 14% 12%);
+    --brand: hsl(183 45% 14%);
+    --brand-foreground: hsl(0 0% 100%);
+
+    --success: hsl(142 72% 28%);
+    --success-foreground: hsl(0 0% 100%);
+    --warning: hsl(28 90% 32%);
+    --warning-foreground: hsl(0 0% 100%);
+    --info: hsl(205 78% 34%);
+    --info-foreground: hsl(0 0% 100%);
+    --destructive: hsl(0 72% 47%);
+    --destructive-foreground: hsl(0 0% 100%);
+
+    --border: hsl(210 16% 90%);
+    --input: hsl(210 16% 86%);
+    --ring: hsl(16 92% 58%);
+
+    --chart-teal: hsl(183 45% 14%);
+    --chart-orange: hsl(16 92% 58%);
+    --chart-mint: hsl(174 40% 48%);
+    --chart-1: var(--chart-teal);
+    --chart-2: var(--chart-orange);
+    --chart-3: var(--chart-mint);
+    --chart-4: hsl(210 9% 60%);
+    --chart-5: hsl(210 16% 80%);
+
+    --radius: 0.625rem; /* control tier, 10px */
+
+    --sidebar: hsl(183 48% 11%);
+    --sidebar-foreground: hsl(180 10% 82%);
+    --sidebar-muted: hsl(180 8% 62%);
+    --sidebar-primary: hsl(16 92% 58%);
+    --sidebar-primary-foreground: hsl(183 45% 12%);
+    --sidebar-accent: hsl(183 30% 22%);
+    --sidebar-accent-foreground: hsl(0 0% 100%);
+    --sidebar-border: hsl(183 30% 20%);
+    --sidebar-ring: hsl(16 92% 58%);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+  html {
+    @apply bg-background font-sans antialiased;
+    }
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

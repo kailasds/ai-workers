@@ -1,0 +1,832 @@
+{
+ "schema_version": "dod-rubric-catalog-v1",
+ "rubrics": [
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "functional-equivalence",
+   "display_name": "Functional Equivalence",
+   "method": "llm_judge",
+   "skill_ref": "dod-tibco-springboot-modernisation#functional-equivalence",
+   "implementation_ref": "/api/compose/dod-rubrics/functional-equivalence",
+   "calculation": "Percentage of functions and features that maintain equivalent behaviour between source and modernized code (normalized 0-100) - LLM as Judge",
+   "computation": {
+    "summary": "Whether the modernised application still does what the source did: the activities and transitions, the field mappings, the routing decisions and the fault paths.",
+    "steps": [
+     "The MODERNIZER writes the target into /target_codebase/.",
+     "The validation pass reads the source tree and the generated tree and judges, per behaviour, whether the target does what the source did.",
+     "The reporting agent writes the result into display_insights/insights.json as a percentage in 0-100."
+    ],
+    "rule": "PASS only when every selected metric's score is at or above its pass score. Any one below makes the whole run FAIL - there is no weighting and no average.",
+    "source_files": [
+     "backend/config_json/dod.json",
+     "backend/config_json/pipeline.json",
+     "backend/prompts/code_2_spec_2_code/INSIGHTS.md",
+     "backend/utils/DAUtil.py"
+    ],
+    "code": "# backend/utils/DAUtil.py - update_result\nall_passed = True\nfor metric in selected_metrics:\n    score = metric.get(\"score\", 0)\n    pass_score = metric.get(\"pass_score\", 100)\n    if not score >= pass_score:          # one miss decides the run\n        all_passed = False\nstate_manager.write_state(result=\"PASS\" if all_passed else \"FAIL\")",
+    "evaluation_slugs": [
+     "codeplus.tibco_springboot.functional_equivalence"
+    ],
+    "dataset": null
+   },
+   "aliases": [
+    "Functional parity",
+    "tibco-logic-parity"
+   ],
+   "measurement": {
+    "document": "insights",
+    "paths": [
+     "Functional Equivalence",
+     "functional_equivalence",
+     "scores.functional_equivalence",
+     "validation.functional_equivalence"
+    ],
+    "normalisation": "percent_0_100"
+   },
+   "unit": "percent",
+   "default_threshold": ">= 85",
+   "threshold_configurable": true,
+   "gating_by_default": true,
+   "availability": "AVAILABLE",
+   "availability_detail": "Judged by the validation pass and reported as a percentage in the run's insights document."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "spec-coverage",
+   "display_name": "SPEC Coverage",
+   "method": "llm_judge",
+   "skill_ref": "dod-tibco-springboot-modernisation#functional-coverage",
+   "implementation_ref": "/api/compose/dod-rubrics/spec-coverage",
+   "calculation": "Overall coverage of source code behaviors captured in specifications (normalized 0-100) - LLM as Judge",
+   "computation": {
+    "summary": "Whether the source system's requirements, behaviours and business rules reached the generated specification - which, in a spec-driven pipeline, is what the code is then written from.",
+    "steps": [
+     "The SPEC_GENERATOR writes specifications into /specs/.",
+     "The specification is judged against the source for what it captured, and the evaluation lands in /specs_eval/.",
+     "The reporting agent writes the result into display_insights/insights.json as a percentage in 0-100, beside the count of use cases the specification identified.",
+     "This measures the SPECIFICATION, not the code: a behaviour absent here was never going to be built."
+    ],
+    "rule": "PASS only when every selected metric's score is at or above its pass score. Any one below makes the whole run FAIL - there is no weighting and no average.",
+    "source_files": [
+     "backend/config_json/dod.json",
+     "backend/config_json/pipeline.json",
+     "backend/prompts/code_2_spec_2_code/INSIGHTS.md",
+     "backend/utils/DAUtil.py"
+    ],
+    "code": "# backend/utils/DAUtil.py - update_result\nall_passed = True\nfor metric in selected_metrics:\n    score = metric.get(\"score\", 0)\n    pass_score = metric.get(\"pass_score\", 100)\n    if not score >= pass_score:          # one miss decides the run\n        all_passed = False\nstate_manager.write_state(result=\"PASS\" if all_passed else \"FAIL\")",
+    "evaluation_slugs": [
+     "codeplus.tibco_springboot.specs_coverage"
+    ],
+    "dataset": null
+   },
+   "aliases": [
+    "Specs Coverage",
+    "Specification coverage",
+    "Functional Coverage",
+    "functional-coverage"
+   ],
+   "measurement": {
+    "document": "insights",
+    "paths": [
+     "Specs Coverage",
+     "Functional Coverage",
+     "functional_coverage",
+     "scores.functional_coverage",
+     "specs_coverage"
+    ],
+    "normalisation": "percent_0_100"
+   },
+   "unit": "percent",
+   "default_threshold": ">= 85",
+   "threshold_configurable": true,
+   "gating_by_default": true,
+   "availability": "AVAILABLE",
+   "availability_detail": "Judged against the generated specification and reported as 'Specs Coverage' in the run's insights document."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "codebleu-score",
+   "display_name": "CodeBleu Score",
+   "method": "llm_judge",
+   "skill_ref": "harness:backend/prompts/code_2_code/c_validator.md",
+   "implementation_ref": "/api/compose/dod-rubrics/codebleu-score",
+   "calculation": "An estimate of CodeBLEU - n-gram overlap between the generated code and the reference, weighted by syntax-tree and data-flow match - produced by the delivered harness's validation agent rather than by an implementation of the metric. Reported, never gated.",
+   "computation": {
+    "summary": "How close the generated code is to the reference in form, as distinct from whether it behaves the same - which is what Functional Equivalence measures.",
+    "steps": [
+     "CodeBLEU, as published, is a weighted sum of four parts: n-gram overlap with the reference; the same overlap with keywords of the target language weighted higher; the share of the reference's abstract syntax tree the generated code reproduces; and the share of its data-flow relations between variables that survive.",
+     "The first two say the tokens match, the third says the structure matches, and the fourth says values still move between the same places. A conversion can score well on the first two and badly on the last two, which is why the metric has four parts rather than being BLEU.",
+     "THIS HARNESS DOES NOT COMPUTE IT. Its validation agent is asked, in the prompt, to compute the CodeBleu Score for the input against the output, and whatever the model answers is written into the insights document as a percentage from 0 to 100.",
+     "So the number is a model's estimate of the metric, not the metric. It is reported because it is informative and gated by nothing because an estimate of a similarity score is not a bar a release can turn on."
+    ],
+    "rule": "No threshold and no gate. It is absent from the harness's own dod.json, so no run has ever passed or failed on it. A correct conversion idiomatic in the target language scores LOWER here than a literal transliteration that is worse code, which is the second reason not to gate it.",
+    "source_files": [
+     "backend/prompts/code_2_code/c_validator.md",
+     "backend/prompts/code_2_spec_2_code/INSIGHTS.md",
+     "backend/config_json/dod.json"
+    ],
+    "code": "",
+    "evaluation_slugs": [
+     "codeplus.tibco_springboot.codebleu"
+    ],
+    "dataset": null
+   },
+   "aliases": [
+    "CodeBLEU",
+    "codebleu"
+   ],
+   "measurement": {
+    "document": "insights",
+    "paths": [
+     "CodeBleu Score",
+     "CodeBLEU",
+     "codebleu_score",
+     "scores.codebleu"
+    ],
+    "normalisation": "percent_0_100"
+   },
+   "unit": "percent",
+   "default_threshold": "",
+   "threshold_configurable": true,
+   "gating_by_default": false,
+   "availability": "AVAILABLE",
+   "availability_detail": "Answered by the delivered harness's validation agent and written into the run's insights document. Read and not gated."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "code-quality",
+   "display_name": "Code Quality",
+   "method": "harness_metric",
+   "skill_ref": null,
+   "implementation_ref": "/api/compose/dod-rubrics/code-quality",
+   "calculation": "Readability, maintainability and target-language practice of the generated code, as a score from 0 to 100.",
+   "computation": null,
+   "aliases": [
+    "code-quality-score"
+   ],
+   "measurement": {
+    "document": "insights",
+    "paths": [
+     "Code Quality",
+     "code_quality",
+     "scores.code_quality"
+    ],
+    "normalisation": "percent_0_100"
+   },
+   "unit": "percent",
+   "default_threshold": "",
+   "threshold_configurable": true,
+   "gating_by_default": false,
+   "availability": "NOT_IMPLEMENTED",
+   "availability_detail": "The delivered harness emits no such figure. Its pipelines compute Functional Equivalence, Specs Coverage and EVALs Pass Rate, and the closest thing to this is SonarQube, which is a separate criterion and needs an endpoint this deployment has not been given."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "golden-dataset-eval-pass-rate",
+   "display_name": "Golden Dataset EVALs Pass Rate",
+   "method": "llm_judge",
+   "skill_ref": "dod-tibco-springboot-modernisation#golden-dataset",
+   "implementation_ref": "/api/compose/dod-rubrics/golden-dataset-eval-pass-rate",
+   "calculation": "Percentage of the delivered golden dataset's cases the generated code matches the conversion pattern of, one judgement per case on the interface dimension that case declares - LLM as Judge",
+   "computation": {
+    "summary": "The share of the delivered golden dataset's enabled cases whose conversion matches the reference, each judged on the interface dimension that case itself declares.",
+    "steps": [
+     "Every enabled case in the dataset is converted by the run.",
+     "The dataset's geval_mapping says what the judge is given: the source as input, the generated Java as actual output, the reference as expected output, and the case's integration pattern and interface dimension as context.",
+     "The expected answer is null in the dataset itself and is filled from the conversion at evaluation time. A dataset carrying answers would be scoring itself.",
+     "Each case is judged against its own dimension's rubric rather than one rubric for all of them, so a case about error handling is not graded on source traceability.",
+     "The rate is the share of cases that met their dimension's bar."
+    ],
+    "rule": "PASS only when every selected metric's score is at or above its pass score. Any one below makes the whole run FAIL - there is no weighting and no average.",
+    "source_files": [
+     "backend/config_json/dod.json",
+     "backend/config_json/eval.json",
+     "backend/config_json/pipeline.json",
+     "backend/utils/DAUtil.py"
+    ],
+    "code": "# backend/utils/DAUtil.py - update_result\nall_passed = True\nfor metric in selected_metrics:\n    score = metric.get(\"score\", 0)\n    pass_score = metric.get(\"pass_score\", 100)\n    if not score >= pass_score:          # one miss decides the run\n        all_passed = False\nstate_manager.write_state(result=\"PASS\" if all_passed else \"FAIL\")",
+    "evaluation_slugs": [
+     "codeplus.tibco_springboot.evals_pass_rate"
+    ],
+    "dataset": {
+     "name": "TIBCO_to_Springboot_GoldenDataSet",
+     "total_cases": 29,
+     "enabled_cases": 25,
+     "skipped_reason": "Four cases are disabled in the delivery, with its own reason: the rows carry neither TIBCO nor Spring Boot code.",
+     "dimensions": [
+      "BW Processes - Process starters, activities, transitions",
+      "Mapping & Transformation - Render/ Parse/ Mapper",
+      "Routing Logic",
+      "Error Handling",
+      "Connection Logic",
+      "Inbound & Outbound Interfaces",
+      "Configuration"
+     ]
+    }
+   },
+   "aliases": [
+    "GD EVALs Pass Rate",
+    "EVALs Pass Rate",
+    "Golden Data Set EVAL Pass Rate"
+   ],
+   "measurement": {
+    "document": "insights",
+    "paths": [
+     "EVALs Pass Rate",
+     "GD EVALs Pass Rate",
+     "Golden Data Set EVAL Pass Rate",
+     "golden_pass_rate",
+     "scores.golden_pass_rate",
+     "eval.pass_rate"
+    ],
+    "normalisation": "percent_0_100"
+   },
+   "unit": "percent",
+   "default_threshold": ">= 80",
+   "threshold_configurable": true,
+   "gating_by_default": true,
+   "availability": "AVAILABLE",
+   "availability_detail": "The Worker executes the golden dataset delivered in its harness image against the code the run generated, and writes a per-case report into the run's workspace. ADR 0083. Distinct from the readiness run, which converts those same cases rather than measuring against them."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "ut-coverage",
+   "display_name": "UT Coverage",
+   "method": "code_skill",
+   "skill_ref": "modernisation-unit-test-runner",
+   "implementation_ref": "/api/compose/dod-rubrics/ut-coverage",
+   "calculation": "Number of unit tests passed / Total number of unit test cases (Code Builder Agent)",
+   "computation": {
+    "summary": "The share of generated unit tests that pass, counted from the build rather than judged.",
+    "steps": [
+     "The isolated build runner compiles the generated target.",
+     "Maven Surefire writes a report per test class.",
+     "Passed divided by total, as a percentage."
+    ],
+    "rule": "Deterministic: no model reads this. The build either ran the tests or it did not, and a build that did not run them reports NOT_MEASURED rather than zero.",
+    "source_files": [
+     "backend/config_json/pipeline.json"
+    ],
+    "code": "# Surefire reports, summed across test classes\npassed = sum(int(s.get(\"tests\")) - int(s.get(\"failures\"))\n             - int(s.get(\"errors\")) for s in suites)\ntotal  = sum(int(s.get(\"tests\")) for s in suites)\npercentage = 100.0 * passed / total if total else None",
+    "evaluation_slugs": [],
+    "dataset": null
+   },
+   "aliases": [
+    "UT Pass Percentage",
+    "unit-test-pass-percentage",
+    "unit-test-cases-passed",
+    "Unit test Cases passed"
+   ],
+   "measurement": {
+    "document": "insights",
+    "paths": [
+     "UT Pass Percentage",
+     "unit_test_pass_percentage",
+     "build.unit_tests.pass_percentage",
+     "validation.unit_tests.pass_rate"
+    ],
+    "normalisation": "percent_0_100"
+   },
+   "unit": "percent",
+   "default_threshold": ">= 85",
+   "threshold_configurable": true,
+   "gating_by_default": true,
+   "availability": "AVAILABLE",
+   "availability_detail": "The isolated build runner compiles the generated target and reports the passed-test percentage from Maven Surefire results."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "sonarqube-quality-score",
+   "display_name": "SonarQube Run score",
+   "method": "external_tool",
+   "skill_ref": "mcp:sonarqube",
+   "implementation_ref": "/api/compose/dod-rubrics/sonarqube-quality-score",
+   "calculation": "Code Quality score returned from SonarQube (MCP to SonarQube)",
+   "computation": null,
+   "aliases": [],
+   "measurement": {
+    "document": "insights",
+    "paths": [
+     "SonarQube Run score",
+     "sonarqube_score",
+     "quality.sonarqube.score",
+     "validation.sonarqube.score"
+    ],
+    "normalisation": "percent_0_100"
+   },
+   "unit": "score",
+   "default_threshold": "",
+   "threshold_configurable": true,
+   "gating_by_default": false,
+   "availability": "REQUIRES_TOOL",
+   "availability_detail": "The managed MCP Tool is packaged, but the score remains unavailable until deployment supplies its endpoint and credential references."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "test-script-traceability",
+   "display_name": "Test Script to Test Case Traceability",
+   "method": "harness_metric",
+   "skill_ref": "qe-coverage-audit-rubric#test-script-traceability",
+   "implementation_ref": "/api/compose/dod-rubrics/test-script-traceability",
+   "calculation": "Supplied test cases with a working script that executed to a pass, fail or skipped verdict, divided by the test cases supplied. The join is the case id the suite is tagged with, not a resemblance between names, so it holds in both directions: a case no scenario claims and a scenario claiming no case are both counted against it. Working scripts, not passing tests — an application defect must fail the application.",
+   "computation": {
+    "summary": "Whether every supplied test case ended up with a script that ran, and whether every script that ran belongs to a supplied case.",
+    "steps": [
+     "The supplied sheet is read into cases, each keyed by the case id in its own id column.",
+     "One feature file is generated per case, and the scenario is tagged with that case id. The tag is the join - not a resemblance between a scenario name and a case description.",
+     "The suite runs. A scenario that reached a pass, fail or skipped verdict counts as covered; one that could not start does not.",
+     "The rate is the matched ids over the union of supplied and claimed ids, so it is scored in both directions."
+    ],
+    "rule": "Gated at 100%. Working scripts, not passing tests: a defect in the application under test must fail the application, not the Worker. Until 2026-09-18 this was covered over supplied, and a scenario claiming a case nobody supplied was printed beside the number without changing it - so a run could reach 100% with a wrong join, which is the one thing a traceability criterion exists to catch.",
+    "source_files": [
+     "deploy/harnesses/qe-automation/testcases.py",
+     "deploy/harnesses/qe-automation/serve.py"
+    ],
+    "code": "# testcases.coverage - scored in BOTH directions\nunion    = set(supplied_ids) | set(claimed_ids)\nmatched  = set(supplied_ids) & set(claimed_ids)\npercentage = 0.0 if not union else 100.0 * len(matched) / len(union)\n# a case with no script and a script with no case are the same defect,\n# counted from opposite ends. 100% only when the two sets are equal.",
+    "evaluation_slugs": [
+     "qe.test_script_traceability"
+    ],
+    "dataset": null
+   },
+   "aliases": [
+    "Automation Script Coverage",
+    "automation-script-coverage",
+    "Script coverage",
+    "Automation coverage",
+    "qe-coverage",
+    "Test script traceability",
+    "Traceability"
+   ],
+   "measurement": {
+    "document": "workspace",
+    "paths": [
+     "Test Script to Test Case Traceability",
+     "test_script_traceability",
+     "scores.test_script_traceability",
+     "execution.traceability",
+     "Automation Script Coverage",
+     "automation_script_coverage",
+     "execution.coverage"
+    ],
+    "normalisation": "percent_0_100"
+   },
+   "unit": "percent",
+   "default_threshold": "100%",
+   "threshold_configurable": true,
+   "gating_by_default": true,
+   "availability": "AVAILABLE",
+   "availability_detail": "Counted from the run's own results and the supplied case list, not estimated: each case is matched to the scenario tagged with its id. Counted toward certification only as the Worker Runtime's own recomputation from the artifacts; the harness's figure is shown."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "gherkin-conformance",
+   "display_name": "Gherkin Conformance to Standards",
+   "method": "code_skill",
+   "skill_ref": "qe-bdd-authoring-standards#gherkin-conformance",
+   "implementation_ref": "/api/compose/dod-rubrics/gherkin-conformance",
+   "calculation": "Generated feature files conforming to the Gherkin standards the framework declares, divided by those written. Four rules, each checked by parsing the file rather than by reading it: one scenario per supplied case, an assertion only after an action, no setup after the action, no step defined twice inside a suite, and no credential written into a step.",
+   "computation": {
+    "summary": "Whether each generated feature file obeys four rules that are decidable by parsing it, checked before the suite runs.",
+    "steps": [
+     "ONE SCENARIO PER CASE. A feature carrying two scenarios covers a case the sheet never supplied.",
+     "AN ASSERTION ONLY AFTER AN ACTION, AND NO SETUP AFTER IT. And and But resolve to the phase they continue. A Then before any When asserts against a page the action has not reached. A Given after the action sets nothing up. When after Then is NOT a violation: it is a second action-assertion pair, which every interleaved manual case produces.",
+     "NO STEP DEFINED TWICE IN A SUITE. behave raises AmbiguousStep before a single scenario runs - it happened, nothing executed, and the report was silent about all of it.",
+     "NO CREDENTIAL THE CASE DID NOT SUPPLY. A secret in a feature file is a secret in a run artefact, and the artefact reaches a report and memory. A value the supplied case already holds is not one: a negative login case cannot be written without it.",
+     "Whether the file parses as Gherkin is deliberately NOT a fifth rule. It was one, as patterns approximating a parser, and it failed a valid feature for its own description block. behave already decides the question properly: a file that does not parse runs no scenario, so its case reaches no verdict, so traceability - gated at the same 100% - already fails on it."
+    ],
+    "rule": "Gated at 100%, over the features WRITTEN rather than the cases supplied: a case whose generation failed outright already fails traceability, and one defect scored twice fails two gates for one reason. Zero features written is 0.0, not 100%.",
+    "source_files": [
+     "deploy/harnesses/qe-automation/conformance.py"
+    ],
+    "code": "# conformance.conformance - share of the features WRITTEN\ntotal      = len(verdicts)\nconforming = sum(1 for v in verdicts if not v.violations)\npercentage = 0.0 if not total else 100.0 * conforming / total\n# zero features written is 0.0, not 100%: a gate at 100% must not be\n# satisfied by having produced nothing to check.",
+    "evaluation_slugs": [
+     "qe.gherkin_conformance"
+    ],
+    "dataset": null
+   },
+   "aliases": [
+    "Gherkin conformance",
+    "BDD conformance",
+    "qe-gherkin"
+   ],
+   "measurement": {
+    "document": "validation",
+    "paths": [
+     "Gherkin Conformance to Standards",
+     "gherkin_conformance",
+     "scores.gherkin_conformance",
+     "validation.gherkin_conformance"
+    ],
+    "normalisation": "percent_0_100"
+   },
+   "unit": "percent",
+   "default_threshold": "100%",
+   "threshold_configurable": true,
+   "gating_by_default": true,
+   "availability": "AVAILABLE",
+   "availability_detail": "Applied before the suite runs, over the feature files the run wrote. A file that does not parse fails the rule rather than being skipped. Counted toward certification only as the Worker Runtime's own recomputation from the artifacts; the harness's figure is shown."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "test-data-mapped",
+   "display_name": "Test Data Mapped to Test Scripts",
+   "method": "harness_metric",
+   "skill_ref": "qe-synthetic-data-rules#test-data-mapped",
+   "implementation_ref": "/api/compose/dod-rubrics/test-data-mapped",
+   "calculation": "Scripts whose every data value is bound to a named fixture before the suite runs, divided by the scripts to be run. Checked against the fixtures the run actually holds, so a script reaching for a credential or a record nothing supplies is a gap in the data — reported as such, rather than surfacing later as an application failure it is not.",
+   "computation": {
+    "summary": "Whether every value a generated script reaches for is bound to a fixture the run actually holds, checked before execution starts.",
+    "steps": [
+     "Three kinds of value are read off the two files a case produces, not guessed: a placeholder in angle brackets the feature parameterised, a name a step definition asks the fixture for by name, and the credentials a sign-in step needs.",
+     "A placeholder bound by the feature's own Examples table needs no fixture. One with neither an Examples column nor a fixture cannot bind at run time.",
+     "Each required name is looked up against the fixtures the run holds, which come from the deployment's configuration and never from the harness image.",
+     "A script with no unbound name is complete. The rate is complete scripts over the scripts to be run."
+    ],
+    "rule": "Gated at 100%, and checked BEFORE the suite runs rather than explained afterwards. A script reaching for something nothing supplies fails in the browser, against a page that never loaded, and the report then reads as a defect in the application under test. Avoiding that misattribution is why it runs first. Zero scripts is 0.0, not 100%.",
+    "source_files": [
+     "deploy/harnesses/qe-automation/fixtures.py"
+    ],
+    "code": "# fixtures.availability - over the scripts that will RUN\ntotal    = len(bindings)\ncomplete = sum(1 for b in bindings if not b.unbound)\npercentage = 0.0 if not total else 100.0 * complete / total\n# a case whose generation failed is NOT counted here. It already fails\n# traceability, and one defect scored twice fails two gates for one reason.",
+    "evaluation_slugs": [
+     "qe.test_data_availability"
+    ],
+    "dataset": null
+   },
+   "aliases": [
+    "Test data mapped",
+    "Test data availability",
+    "qe-test-data"
+   ],
+   "measurement": {
+    "document": "workspace",
+    "paths": [
+     "Test Data Mapped to Test Scripts",
+     "test_data_mapped",
+     "scores.test_data_mapped",
+     "execution.test_data_mapped"
+    ],
+    "normalisation": "percent_0_100"
+   },
+   "unit": "percent",
+   "default_threshold": "100%",
+   "threshold_configurable": true,
+   "gating_by_default": true,
+   "availability": "AVAILABLE",
+   "availability_detail": "Read from the binding the run performs between each script's required values and the fixtures available to it, before execution starts."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "report-generation",
+   "display_name": "Report Generation",
+   "method": "harness_metric",
+   "skill_ref": "qe-coverage-audit-rubric#report-generation",
+   "implementation_ref": "/api/compose/dod-rubrics/report-generation",
+   "calculation": "A test report was produced after execution, is readable, and reports pass, fail or skipped for every scenario that ran.",
+   "computation": {
+    "summary": "Whether the run produced a readable test report, rather than whether a report folder exists.",
+    "steps": [
+     "behave writes one result file per scenario as the suite runs.",
+     "If it wrote nothing at all the run is NO_RESULTS and this is 0. behave writing nothing is not a pass; it means nothing ran, which is the one outcome a report would otherwise be silent about.",
+     "The report generator is run over those results. Which generator is the harness's business - the commitment is a readable report with a verdict per scenario, and naming a tool here would make the choice of reporter a contractual term.",
+     "The criterion is met only when the generator exited 0 AND an index.html exists in the report directory. Either alone is not enough: an exit code with no file is a report nobody can open."
+    ],
+    "rule": "Gated, and met or not met rather than scored - 100 or 0. Read from the run's own results: a report that cannot be parsed is a failure, not an absence.",
+    "source_files": [
+     "deploy/harnesses/qe-automation/pipeline.py",
+     "deploy/harnesses/qe-automation/serve.py"
+    ],
+    "code": "",
+    "evaluation_slugs": [
+     "qe.report_generation"
+    ],
+    "dataset": null
+   },
+   "aliases": [
+    "Test report",
+    "qe-report",
+    "Allure report"
+   ],
+   "measurement": {
+    "document": "workspace",
+    "paths": [
+     "Report Generation",
+     "report_generation",
+     "execution.report_present"
+    ],
+    "normalisation": "percent_0_100"
+   },
+   "unit": "percent",
+   "default_threshold": "100%",
+   "threshold_configurable": true,
+   "gating_by_default": true,
+   "availability": "AVAILABLE",
+   "availability_detail": "Read from the run's own results rather than from the presence of a folder. A report that cannot be parsed is a failure, not an absence. Counted toward certification only as the Worker Runtime's own recomputation from the artifacts; the harness's figure is shown."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "locator-durability",
+   "display_name": "Locator Durability",
+   "method": "harness_metric",
+   "skill_ref": null,
+   "implementation_ref": "/api/compose/dod-rubrics/locator-durability",
+   "calculation": "Share of the application's own interactive elements that can be reached by a test id, or by an ARIA role together with an accessible name, rather than by position in the document.",
+   "computation": {
+    "summary": "Whether the application under test can be automated durably at all, which is a fact about the application rather than about the suite written against it.",
+    "steps": [
+     "The survey opens each route and records every visible interactive element, with its role, its accessible name, its test id and its id or name attribute.",
+     "An element counts as durable when it carries a test id, or when it has both a role and an accessible name and that name is not the element's own text content.",
+     "A clickable paragraph is excluded deliberately: it is reachable only by its own wording, which changes whenever the copy does. Findable is not the same as durable.",
+     "The rate is durable elements over every element that has a locator at all."
+    ],
+    "rule": "Reported, not gated by the offered tiers. A low score is a finding about the application's markup, not about the Worker's output, and gating a Worker on somebody else's HTML would fail it for work it cannot do.",
+    "source_files": [
+     "deploy/harnesses/qe-automation/survey.py"
+    ],
+    "code": "",
+    "evaluation_slugs": [
+     "qe.locator_grounding"
+    ],
+    "dataset": null
+   },
+   "aliases": [
+    "Locator quality",
+    "Selector durability"
+   ],
+   "measurement": {
+    "document": "workspace",
+    "paths": [
+     "Locator Durability",
+     "locator_durability",
+     "scores.locator_durability",
+     "application_locator_durability"
+    ],
+    "normalisation": "percent_0_100"
+   },
+   "unit": "percent",
+   "default_threshold": ">= 80",
+   "threshold_configurable": true,
+   "gating_by_default": false,
+   "availability": "AVAILABLE",
+   "availability_detail": "Counted by the survey over the application under test, before any script is written."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "assertion-fidelity",
+   "display_name": "Assertion Fidelity",
+   "method": "llm_judge",
+   "skill_ref": "qe-test-design-standards#assertion-fidelity",
+   "implementation_ref": "/api/compose/dod-rubrics/assertion-fidelity",
+   "calculation": "Share of scenarios whose assertion tests the expected output the case states, rather than something weaker that holds whatever the application does.",
+   "computation": null,
+   "aliases": [
+    "Assertion strength",
+    "Expected output match"
+   ],
+   "measurement": {
+    "document": "insights",
+    "paths": [
+     "Assertion Fidelity",
+     "assertion_fidelity",
+     "scores.assertion_fidelity"
+    ],
+    "normalisation": "percent_0_100"
+   },
+   "unit": "percent",
+   "default_threshold": "",
+   "threshold_configurable": true,
+   "gating_by_default": false,
+   "availability": "NOT_IMPLEMENTED",
+   "availability_detail": "Nothing in this platform measures this yet. The harness screens scripts and counts verdicts; comparing an assertion against the expected output a case states is not among the checks it runs, so a run reports it as not measured rather than scoring it."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "framework-conformance",
+   "display_name": "Framework Conformance",
+   "method": "code_skill",
+   "skill_ref": "qe-bdd-authoring-standards#framework-conformance",
+   "implementation_ref": "/api/compose/dod-rubrics/framework-conformance",
+   "calculation": "Findings from the script-validation rules, as a rate. What the generated suite must look like to be maintained by the team that owns it.",
+   "computation": {
+    "summary": "Whether the generated scripts avoid four habits that make a suite unmaintainable, each one decided by pattern rather than judged.",
+    "steps": [
+     "A fixed sleep, which is how a suite becomes flaky: it passes on a fast machine and fails on a loaded one, and the failure is not about the application.",
+     "An XPath locator, which breaks the moment the page is restyled. Both spellings are screened - a locator call opening with a slash, and an explicit xpath argument.",
+     "A script starting its own browser, when the framework already provides one per scenario. Two browsers means the assertions run against a page nothing navigated.",
+     "The rate is scripts with no finding over the scripts that were generated usably. A script that failed to generate is not counted here; it already fails traceability."
+    ],
+    "rule": "Reported, not gated by the offered tiers. A finding is a maintainability cost rather than a wrong answer, and the four counted gates are the ones a release turns on.",
+    "source_files": [
+     "deploy/harnesses/qe-automation/pipeline.py"
+    ],
+    "code": "# pipeline - findings from four patterns, as a rate\n_BANNED = (\n    (r\"\\btime\\.sleep\\(\",      \"a fixed sleep, which is how a suite becomes flaky\"),\n    (r\"\\.locator\\(\\s*[\"']//\", \"an XPath, which breaks when the page is restyled\"),\n    (r\"\\bxpath\\s*=\",           \"an XPath, which breaks when the page is restyled\"),\n    (r\"\\bsync_playwright\\(\",    \"its own browser; the framework provides one\"),\n)\nscreened = sum(1 for s in scripts if s.usable)\npercentage = 100.0 * sum(1 for s in scripts if s.usable and not s.findings) / screened",
+    "evaluation_slugs": [],
+    "dataset": null
+   },
+   "aliases": [
+    "Script validation",
+    "Standards conformance"
+   ],
+   "measurement": {
+    "document": "validation",
+    "paths": [
+     "Framework Conformance",
+     "framework_conformance",
+     "validation.framework_conformance"
+    ],
+    "normalisation": "percent_0_100"
+   },
+   "unit": "percent",
+   "default_threshold": ">= 90",
+   "threshold_configurable": true,
+   "gating_by_default": false,
+   "availability": "AVAILABLE",
+   "availability_detail": "Screened by the pipeline over each generated script, before the suite is run."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "build",
+   "display_name": "The generated services compile",
+   "method": "code_skill",
+   "skill_ref": "runtime:services/worker-runtime/aiworker_runtime/verifiers.py#build",
+   "implementation_ref": "/api/compose/dod-rubrics/build",
+   "calculation": "The Worker Runtime compiles the generated target in its own build runner. Met when the build succeeds; any compile error fails it.",
+   "computation": {
+    "summary": "Whether the code the run produced compiles, decided by the platform rather than by the harness that wrote it.",
+    "steps": [
+     "The harness hands its output to the Worker Runtime as an artifact, addressed by digest.",
+     "The Runtime unpacks the artifact into its build runner and compiles it with the target's own build tool.",
+     "The result is recorded as true or false in the run's verifier result, with the passed and failed test counts beside it."
+    ],
+    "rule": "Gated, and met or not met rather than scored. No model reads this. A run with no archive to build reports NOT_MEASURED, and a gate that is not measured fails.",
+    "source_files": [
+     "services/worker-runtime/aiworker_runtime/verifiers.py",
+     "docs/HARNESS_CONTRACT.md"
+    ],
+    "code": "",
+    "evaluation_slugs": [],
+    "dataset": null
+   },
+   "aliases": [
+    "Build",
+    "Compiles",
+    "compiles"
+   ],
+   "measurement": {
+    "document": "validation",
+    "paths": [
+     "build"
+    ],
+    "normalisation": "count"
+   },
+   "unit": "pass or fail",
+   "default_threshold": "true",
+   "threshold_configurable": true,
+   "gating_by_default": true,
+   "availability": "AVAILABLE",
+   "availability_detail": "Measured by the Worker Runtime's build runner, which is registered for every harness. The harness cannot report this figure for itself."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "structural-coverage",
+   "display_name": "Every source process maps to a generated service",
+   "method": "code_skill",
+   "skill_ref": "runtime:services/worker-runtime/aiworker_runtime/verifiers.py#structural_coverage",
+   "implementation_ref": "/api/compose/dod-rubrics/structural-coverage",
+   "calculation": "Source processes with a generated service, divided by all source processes, found by parsing the source and the target rather than by reading them.",
+   "computation": {
+    "summary": "Whether every process in the source estate has a generated service, so that nothing was left out of the conversion without a record.",
+    "steps": [
+     "The Runtime parses the source archive and lists its processes.",
+     "It parses the generated target and lists the services it contains.",
+     "Each source process is matched to the service generated for it.",
+     "The rate is matched processes over all source processes."
+    ],
+    "rule": "Gated at 100%. Deterministic: a parser decides it, not a model. Zero source processes found is NOT_MEASURED, not 100%.",
+    "source_files": [
+     "services/worker-runtime/aiworker_runtime/verifiers.py",
+     "docs/HARNESS_CONTRACT.md"
+    ],
+    "code": "",
+    "evaluation_slugs": [],
+    "dataset": null
+   },
+   "aliases": [
+    "Structural coverage",
+    "Source process coverage"
+   ],
+   "measurement": {
+    "document": "validation",
+    "paths": [
+     "structural-coverage"
+    ],
+    "normalisation": "ratio_0_1"
+   },
+   "unit": "percent",
+   "default_threshold": "",
+   "threshold_configurable": true,
+   "gating_by_default": false,
+   "availability": "NOT_IMPLEMENTED",
+   "availability_detail": "Defined by the harness contract and not yet built: the Worker Runtime has no source parser for TIBCO BusinessWorks. Until it has, a run reports this as not measured, and the gate fails."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "golden-judge",
+   "display_name": "Held-out golden cases pass an independent judge",
+   "method": "llm_judge",
+   "skill_ref": "runtime:services/worker-runtime/aiworker_runtime/verifiers.py#golden_judge",
+   "implementation_ref": "/api/compose/dod-rubrics/golden-judge",
+   "calculation": "Mean score from 0 to 1 over golden cases the harness never sees, each judged by a model from a different family than the one that did the conversion. The counted form of EVALs Pass Rate.",
+   "computation": {
+    "summary": "Whether the Worker converts cases it was never shown, as judged by a model that did not write the code.",
+    "steps": [
+     "A held-out split of the golden dataset is drawn with a secret seed. It is not in the Worker's context, bundle or memory.",
+     "The run's output for each held-out case is sent to the judge with the case's input and reference answer.",
+     "The Runtime refuses a judge from the maker's model family, and a judge whose family it cannot tell.",
+     "Each case scores 0 to 1; an unreadable answer scores 0. The value is the mean."
+    ],
+    "rule": "Gated at 0.8. EVALs Pass Rate stays on the Definition of Done as the harness's own figure, shown and not counted.",
+    "source_files": [
+     "services/worker-runtime/aiworker_runtime/verifiers.py",
+     "docs/HARNESS_CONTRACT.md"
+    ],
+    "code": "",
+    "evaluation_slugs": [],
+    "dataset": {
+     "name": "TIBCO_to_Springboot_GoldenDataSet",
+     "total_cases": 29,
+     "enabled_cases": 25,
+     "skipped_reason": "Four cases are disabled in the delivery, with its own reason: the rows carry neither TIBCO nor Spring Boot code.",
+     "dimensions": [
+      "BW Processes - Process starters, activities, transitions",
+      "Mapping & Transformation - Render/ Parse/ Mapper",
+      "Routing Logic",
+      "Error Handling",
+      "Connection Logic",
+      "Inbound & Outbound Interfaces",
+      "Configuration"
+     ]
+    }
+   },
+   "aliases": [
+    "Golden judge",
+    "Held-out golden cases"
+   ],
+   "measurement": {
+    "document": "validation",
+    "paths": [
+     "golden-judge"
+    ],
+    "normalisation": "ratio_0_1"
+   },
+   "unit": "percent",
+   "default_threshold": "",
+   "threshold_configurable": true,
+   "gating_by_default": false,
+   "availability": "REQUIRES_TOOL",
+   "availability_detail": "The Worker Runtime holds the judging method, and a modernisation verifier plugin that supplies it the held-out cases is not registered yet. Until it is, a run reports this as not measured, and the gate fails."
+  },
+  {
+   "schema_version": "dod-rubric-v1",
+   "criterion_key": "script-intent-fidelity",
+   "display_name": "Scripts do what their test cases say",
+   "method": "llm_judge",
+   "skill_ref": "runtime:services/worker-runtime/aiworker_runtime/verifiers.py#golden_judge",
+   "implementation_ref": "/api/compose/dod-rubrics/script-intent-fidelity",
+   "calculation": "Mean score from 0 to 1 over a sample of supplied test cases, each read beside its script by a judge from a different model family than the one that wrote the scripts. The sample is drawn with a seed the harness never sees.",
+   "computation": {
+    "summary": "Whether a generated script tests what its case asks for: the same steps, the same data and the same expected result.",
+    "steps": [
+     "The Runtime draws a sample of the supplied cases with a seed it keeps. The harness cannot know which cases will be read.",
+     "For each sampled case the judge is given the case and the feature file and step code written for it.",
+     "The Runtime refuses a judge from the model family that wrote the scripts, and a judge whose family it cannot tell.",
+     "Each case scores 0 to 1; an unreadable answer scores 0. The value is the mean."
+    ],
+    "rule": "Gated at 0.8. Traceability says every case has a script that ran; this says the script tests the case. A suite can pass the first and fail the second.",
+    "source_files": [
+     "services/worker-runtime/aiworker_runtime/verifiers.py",
+     "docs/HARNESS_CONTRACT.md"
+    ],
+    "code": "",
+    "evaluation_slugs": [],
+    "dataset": null
+   },
+   "aliases": [
+    "Script intent fidelity",
+    "Intent fidelity"
+   ],
+   "measurement": {
+    "document": "validation",
+    "paths": [
+     "script-intent-fidelity"
+    ],
+    "normalisation": "ratio_0_1"
+   },
+   "unit": "percent",
+   "default_threshold": ">= 0.8",
+   "threshold_configurable": true,
+   "gating_by_default": true,
+   "availability": "AVAILABLE",
+   "availability_detail": "Judged by the Worker Runtime's Quality Engineering verifier. A run whose judge cannot be chosen, or that scores too few scripts, reports this as not measured, and the gate fails."
+  }
+ ]
+}

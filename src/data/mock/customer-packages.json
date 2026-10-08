@@ -1,0 +1,349 @@
+{
+ "schema_version": "customer-package-directory-v1",
+ "generated_at": "2026-10-06T08:45:30.446083Z",
+ "packages": [
+  {
+   "delivery_id": "7deacd4a-48bb-4e3e-9732-6ecbc74da9dc",
+   "composition_id": "063dc05d-bc2a-48c0-a3b7-e0d26ccccf7e",
+   "worker_name": "Integration modernisation · Payments",
+   "revision": 12,
+   "version": "r12",
+   "digest": "sha256:a85b81c6efe0aed3a948a6a5d97cea92527f249fc720910c53ec995adb686f4b",
+   "state": "SHARED",
+   "destination_label": "Bank X",
+   "expires_at": "2026-09-17T06:41:23.467229Z",
+   "last_evidence_at": "2026-09-16T06:41:23.467354Z",
+   "requirements": {
+    "architecture": "Linux ARM64",
+    "cpu": "1 vCPU minimum",
+    "memory": "2 GB minimum",
+    "storage": "20 GB working storage",
+    "container_runtime": "OCI-compatible container runtime"
+   },
+   "contents": [
+    {
+     "key": "identity",
+     "label": "Worker identity and intent",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "governance",
+     "label": "Definition of Done and Sentinel",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "runtime",
+     "label": "Runtime and maintenance",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "intelligence",
+     "label": "Skills, Memory and Learning",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "integrity",
+     "label": "Checksums and provenance",
+     "integrity": "VERIFIED"
+    }
+   ],
+   "callback": {
+    "configured": "DISABLED",
+    "observed": "NOT_OBSERVED"
+   },
+   "source": {
+    "state": "PUBLISHED",
+    "repository": "http://gitlab.internal.example/ai_worker/modernization_worker/-/tree/main/workers/integration_modernisation_payments/r12-a85b81c6efe0",
+    "tag": "integration_modernisation_payments-r12-a85b81c6efe0"
+   },
+   "size_bytes": 101917,
+   "images": null
+  },
+  {
+   "delivery_id": "4c57c33e-50c1-496c-a7ac-11b45dff90a3",
+   "composition_id": "2a56255a-c88d-4175-9756-c4e613bcc3df",
+   "worker_name": "Integration modernisation · Payments",
+   "revision": 11,
+   "version": "r11",
+   "digest": "sha256:c3aeab2d09aa8668f4fd1b5c726d5c8230f5cb0de5ce2cbe9723473c1b193e03",
+   "state": "PREPARED",
+   "destination_label": "TCS",
+   "expires_at": null,
+   "last_evidence_at": "2026-09-16T06:09:43.978974Z",
+   "requirements": {
+    "architecture": "Linux ARM64",
+    "cpu": "1 vCPU minimum",
+    "memory": "2 GB minimum",
+    "storage": "20 GB working storage",
+    "container_runtime": "OCI-compatible container runtime"
+   },
+   "contents": [
+    {
+     "key": "identity",
+     "label": "Worker identity and intent",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "governance",
+     "label": "Definition of Done and Sentinel",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "runtime",
+     "label": "Runtime and maintenance",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "intelligence",
+     "label": "Skills, Memory and Learning",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "integrity",
+     "label": "Checksums and provenance",
+     "integrity": "VERIFIED"
+    }
+   ],
+   "callback": {
+    "configured": "DISABLED",
+    "observed": "NOT_OBSERVED"
+   },
+   "source": {
+    "state": "NOT_PUBLISHED",
+    "repository": null,
+    "tag": null
+   },
+   "size_bytes": 77000,
+   "images": null
+  },
+  {
+   "delivery_id": "8c4a3682-075e-4046-8d0c-a8baa4a47920",
+   "composition_id": "86124f81-4a4a-492f-ab32-b399f01d6671",
+   "worker_name": "Integration modernisation · Payments",
+   "revision": 11,
+   "version": "r11",
+   "digest": "sha256:dccf3352a03848d87ff914f49d571323ff2c96715399ef9ebda529be53d3e1f7",
+   "state": "PREPARED",
+   "destination_label": "US Financial Services",
+   "expires_at": null,
+   "last_evidence_at": "2026-09-16T05:32:35.979397Z",
+   "requirements": {
+    "architecture": "Linux ARM64",
+    "cpu": "1 vCPU minimum",
+    "memory": "2 GB minimum",
+    "storage": "20 GB working storage",
+    "container_runtime": "OCI-compatible container runtime"
+   },
+   "contents": [
+    {
+     "key": "identity",
+     "label": "Worker identity and intent",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "governance",
+     "label": "Definition of Done and Sentinel",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "runtime",
+     "label": "Runtime and maintenance",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "intelligence",
+     "label": "Skills, Memory and Learning",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "integrity",
+     "label": "Checksums and provenance",
+     "integrity": "VERIFIED"
+    }
+   ],
+   "callback": {
+    "configured": "DISABLED",
+    "observed": "NOT_OBSERVED"
+   },
+   "source": {
+    "state": "NOT_PUBLISHED",
+    "repository": null,
+    "tag": null
+   },
+   "size_bytes": 69358,
+   "images": null
+  },
+  {
+   "delivery_id": "f19f5192-81e7-492e-80d8-cda1f4f8901f",
+   "composition_id": "3f092b32-efa7-4654-8873-e71302b37acf",
+   "worker_name": "Integration modernisation · Commercial lending",
+   "revision": 11,
+   "version": "r11",
+   "digest": "sha256:549c4ed492aaadc57689f0e08101b931be3c75f8da90bea17b5d61ba3efa05eb",
+   "state": "PREPARED",
+   "destination_label": "North American Bank",
+   "expires_at": null,
+   "last_evidence_at": "2026-09-16T05:32:32.556373Z",
+   "requirements": {
+    "architecture": "Linux ARM64",
+    "cpu": "1 vCPU minimum",
+    "memory": "2 GB minimum",
+    "storage": "20 GB working storage",
+    "container_runtime": "OCI-compatible container runtime"
+   },
+   "contents": [
+    {
+     "key": "identity",
+     "label": "Worker identity and intent",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "governance",
+     "label": "Definition of Done and Sentinel",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "runtime",
+     "label": "Runtime and maintenance",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "intelligence",
+     "label": "Skills, Memory and Learning",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "integrity",
+     "label": "Checksums and provenance",
+     "integrity": "VERIFIED"
+    }
+   ],
+   "callback": {
+    "configured": "DISABLED",
+    "observed": "NOT_OBSERVED"
+   },
+   "source": {
+    "state": "NOT_PUBLISHED",
+    "repository": null,
+    "tag": null
+   },
+   "size_bytes": 73173,
+   "images": null
+  },
+  {
+   "delivery_id": "4ed4ae30-1054-4547-9072-7f4a633adc76",
+   "composition_id": "e49f9fc5-5674-4206-9f00-46c55f301739",
+   "worker_name": "Integration modernisation · Insurance claims",
+   "revision": 11,
+   "version": "r11",
+   "digest": "sha256:4fd78c9b7883a6bd737131817ed77924959bcd5e8c8d5cc40cdf85c256582904",
+   "state": "PREPARED",
+   "destination_label": "US Commercial Insurer",
+   "expires_at": null,
+   "last_evidence_at": "2026-09-16T05:32:29.138421Z",
+   "requirements": {
+    "architecture": "Linux ARM64",
+    "cpu": "1 vCPU minimum",
+    "memory": "2 GB minimum",
+    "storage": "20 GB working storage",
+    "container_runtime": "OCI-compatible container runtime"
+   },
+   "contents": [
+    {
+     "key": "identity",
+     "label": "Worker identity and intent",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "governance",
+     "label": "Definition of Done and Sentinel",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "runtime",
+     "label": "Runtime and maintenance",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "intelligence",
+     "label": "Skills, Memory and Learning",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "integrity",
+     "label": "Checksums and provenance",
+     "integrity": "VERIFIED"
+    }
+   ],
+   "callback": {
+    "configured": "DISABLED",
+    "observed": "NOT_OBSERVED"
+   },
+   "source": {
+    "state": "NOT_PUBLISHED",
+    "repository": null,
+    "tag": null
+   },
+   "size_bytes": 72184,
+   "images": null
+  },
+  {
+   "delivery_id": "2f720a6b-a0e1-464f-9c8e-2f4b1d4a7a51",
+   "composition_id": "ebebd2fd-767d-4b67-93ec-44073023a3ff",
+   "worker_name": "Test Script Generation · Insurance",
+   "revision": 11,
+   "version": "r11",
+   "digest": "sha256:2d6c54384e57bf1545b05ee1a872c12e4240425b06c79865f204ef8e5b217fdf",
+   "state": "PREPARED",
+   "destination_label": "US Commercial Insurer",
+   "expires_at": null,
+   "last_evidence_at": "2026-09-16T05:32:25.896271Z",
+   "requirements": {
+    "architecture": "Linux ARM64",
+    "cpu": "1 vCPU minimum",
+    "memory": "2 GB minimum",
+    "storage": "20 GB working storage",
+    "container_runtime": "OCI-compatible container runtime"
+   },
+   "contents": [
+    {
+     "key": "identity",
+     "label": "Worker identity and intent",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "governance",
+     "label": "Definition of Done and Sentinel",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "runtime",
+     "label": "Runtime and maintenance",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "intelligence",
+     "label": "Skills, Memory and Learning",
+     "integrity": "VERIFIED"
+    },
+    {
+     "key": "integrity",
+     "label": "Checksums and provenance",
+     "integrity": "VERIFIED"
+    }
+   ],
+   "callback": {
+    "configured": "DISABLED",
+    "observed": "NOT_OBSERVED"
+   },
+   "source": {
+    "state": "NOT_PUBLISHED",
+    "repository": null,
+    "tag": null
+   },
+   "size_bytes": 92168,
+   "images": null
+  }
+ ],
+ "next_cursor": null
+}

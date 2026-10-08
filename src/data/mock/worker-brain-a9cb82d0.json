@@ -1,0 +1,115 @@
+{
+ "schema_version": "worker-brain-v1",
+ "state": "not_packaged",
+ "detail": "This Worker was composed without a memory engine, so it does not learn from its own runs. Nothing is wrong.",
+ "observed_at": "2026-10-06T08:45:21+00:00",
+ "engine": null,
+ "durability": {
+  "survives_restart": false,
+  "mechanism": "ephemeral",
+  "detail": "Memory is on task-local storage and is destroyed every time the task is replaced.",
+  "last_snapshot_at": null
+ },
+ "holds": null,
+ "recall": null,
+ "housekeeping": null,
+ "verbs": null,
+ "unavailable": [
+  {
+   "section": "holds",
+   "reason": "No memory engine is packaged with this Worker."
+  },
+  {
+   "section": "recall",
+   "reason": "No memory engine is packaged with this Worker."
+  },
+  {
+   "section": "housekeeping",
+   "reason": "No memory engine is packaged with this Worker."
+  },
+  {
+   "section": "verbs",
+   "reason": "No memory engine is packaged with this Worker."
+  }
+ ],
+ "compounding": {
+  "schema_version": "worker-compounding-state-v1",
+  "configured": true,
+  "compoundable": [
+   "conversion_pathway",
+   "target_convention",
+   "failure_pattern"
+  ],
+  "never_compound": [
+   "contested_claim",
+   "credential",
+   "customer_identifier",
+   "customer_source",
+   "one_off_workaround",
+   "unverified_claim"
+  ],
+  "minimum_observations": 3,
+  "requires_dod_met": true,
+  "tiers": {
+   "cold_retrieval": "on_request",
+   "cool_after_idle_days": 30,
+   "hot_days": 14,
+   "hot_maximum_items": 500,
+   "promote_on_recall": true
+  },
+  "skill_authoring": {
+   "maximum_new_skills_per_cycle": 0,
+   "may_extend": [
+    "examples",
+    "pitfalls",
+    "checks"
+   ],
+   "mode": "update_local_copy",
+   "never_changes": [
+    "intent",
+    "scope",
+    "definition_of_done",
+    "licence",
+    "provenance"
+   ],
+   "new_skill_requires": "approval",
+   "report_to_platform": true,
+   "states_method": true,
+   "writes_registry_copy": false
+  },
+  "last_pass": null,
+  "skill_changes": [],
+  "held_back": [
+   {
+    "skill": "qe-page-object-standards",
+    "kind": "discovered-path",
+    "key": "524434fe5a65fd17",
+    "reason": "1 of 3 runs so far."
+   },
+   {
+    "skill": "qe-page-object-standards",
+    "kind": "discovered-path",
+    "key": "1bc84441dee72694",
+    "reason": "1 of 3 runs so far."
+   },
+   {
+    "skill": "qe-page-object-standards",
+    "kind": "discovered-path",
+    "key": "ca257c81c708f436",
+    "reason": "1 of 3 runs so far."
+   },
+   {
+    "skill": "qe-page-object-standards",
+    "kind": "discovered-path",
+    "key": "ec8ea65a8b34cbff",
+    "reason": "1 of 3 runs so far."
+   },
+   {
+    "skill": "qe-page-object-standards",
+    "kind": "application-behaviour",
+    "key": "ab03124521136723",
+    "reason": "1 of 3 runs so far."
+   }
+  ]
+ }
+}

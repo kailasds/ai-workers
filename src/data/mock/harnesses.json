@@ -1,0 +1,428 @@
+{
+ "schema_version": "harness-catalogue-v1",
+ "generated_at": "2026-09-03T00:00:00+00:00",
+ "common_trade_offs": [
+  "The Worker operates the harness and stays accountable for the result."
+ ],
+ "harnesses": [
+  {
+   "key": "codeplus-integration-modernization",
+   "display_name": "Integration Modernisation Harness",
+   "vendor": "Tata Consultancy Services",
+   "summary": "Converts integration estates — TIBCO BusinessWorks and comparable middleware — into Spring Boot services, with a generation pass and an independent validation pass over every generated file.",
+   "availability": "available",
+   "availability_detail": "Ready to use in this environment.",
+   "image_pin": {
+    "state": "digest",
+    "digest": "sha256:7df126aebe73820ace18cf1df3394d3b9713c8c708f13ec445f0a1d45cc8099d"
+   },
+   "manifest_source": "reviewed_copy",
+   "manifest_digest": "sha256:b49201eaa93e3ad524416bdc7db5f4140317bdd914d3d7753453e9e0b86bd0a8",
+   "manifest": {
+    "id": "modernization-harness",
+    "name": "Integration Modernization Harness",
+    "version": "2.2.0",
+    "vendor": "TCS",
+    "description": "Converts TIBCO BusinessWorks and MuleSoft integrations to Spring Boot services: analysis, specification, generation, unit tests and offline integration tests, with evidence per metric.",
+    "worker_types": [
+     "integration-modernization"
+    ],
+    "ladder": "integration-modernization",
+    "contract": {
+     "major": 1,
+     "minors": [
+      0,
+      1,
+      3
+     ]
+    },
+    "serve": {
+     "bind": "127.0.0.1",
+     "port": 8100,
+     "base_path": "/hwc/v1"
+    },
+    "image_digest": null,
+    "stages": [
+     {
+      "key": "conversion",
+      "title": "Conversion",
+      "adds": "Analysis, specification and Spring Boot generation",
+      "pipeline": "Spec Driven Engineering",
+      "produces": [
+       "functional-equivalence",
+       "specs-coverage",
+       "evals-pass-rate"
+      ],
+      "requires_sidecars": [],
+      "after": null
+     },
+     {
+      "key": "unit-testing",
+      "title": "Unit testing",
+      "adds": "Build and unit tests, remediated when they fail",
+      "pipeline": "Spec Driven Engineering",
+      "produces": [
+       "functional-equivalence",
+       "specs-coverage",
+       "evals-pass-rate",
+       "build",
+       "unit-test-pass-rate"
+      ],
+      "requires_sidecars": [
+       "build-runner"
+      ],
+      "after": "conversion"
+     },
+     {
+      "key": "system-testing",
+      "title": "System testing",
+      "adds": "Integration tests against the whole running service, offline",
+      "pipeline": "Spec Driven Engineering",
+      "produces": [
+       "functional-equivalence",
+       "specs-coverage",
+       "evals-pass-rate",
+       "build",
+       "unit-test-pass-rate",
+       "integration-test-pass-rate"
+      ],
+      "requires_sidecars": [
+       "build-runner"
+      ],
+      "after": "unit-testing"
+     }
+    ],
+    "evidence_metrics": [
+     {
+      "id": "functional-equivalence",
+      "title": "Functional equivalence",
+      "type": "percentage",
+      "higher_is_better": true,
+      "description": "The pipeline's EVALUATOR score for equivalent behaviour between source and generated code."
+     },
+     {
+      "id": "specs-coverage",
+      "title": "Specification coverage",
+      "type": "percentage",
+      "higher_is_better": true,
+      "description": "The pipeline's EVALUATOR score for how much of the source behaviour the specifications capture."
+     },
+     {
+      "id": "evals-pass-rate",
+      "title": "EVALs pass rate",
+      "type": "percentage",
+      "higher_is_better": true,
+      "description": "The pipeline's EVALUATOR estimate against its evaluation metrics; the counted golden score is the Runtime's."
+     },
+     {
+      "id": "build",
+      "title": "Build",
+      "type": "boolean",
+      "higher_is_better": true,
+      "description": "The generated project compiled in the Runtime's build runner during the run."
+     },
+     {
+      "id": "unit-test-pass-rate",
+      "title": "Unit tests passed",
+      "type": "percentage",
+      "higher_is_better": true,
+      "description": "Share of the generated unit tests that passed in the Runtime's build runner."
+     },
+     {
+      "id": "integration-test-pass-rate",
+      "title": "Integration tests passed",
+      "type": "percentage",
+      "higher_is_better": true,
+      "description": "Share of the generated @SpringBootTest integration tests that passed in the Runtime's build runner."
+     }
+    ],
+    "events": {
+     "core": [
+      "run.started",
+      "run.completed",
+      "run.failed",
+      "analysis.started",
+      "analysis.completed",
+      "pattern.detected",
+      "decision.made",
+      "decision.revised",
+      "skill.loaded",
+      "knowledge.loaded",
+      "tool.called",
+      "tool.completed",
+      "tool.failed",
+      "transformation.started",
+      "transformation.completed",
+      "transformation.failed",
+      "artifact.generated",
+      "build.started",
+      "build.completed",
+      "build.failed",
+      "test.started",
+      "test.completed",
+      "test.failed",
+      "eval.completed",
+      "recovery.started",
+      "recovery.completed",
+      "recovery.failed",
+      "artifact.digest",
+      "dod.evidence"
+     ],
+     "core_count": 29,
+     "extensions": [
+      {
+       "type": "modernization.subagent.started",
+       "description": "A pipeline step without a core event of its own started",
+       "learning_signal": false
+      },
+      {
+       "type": "modernization.subagent.completed",
+       "description": "A pipeline step without a core event of its own finished",
+       "learning_signal": false
+      },
+      {
+       "type": "modernization.subagent.failed",
+       "description": "A pipeline step without a core event of its own failed",
+       "learning_signal": false
+      }
+     ]
+    },
+    "consumes": {
+     "skills": "agent-skills-v1",
+     "knowledge": "okf-0.2",
+     "mcp": true,
+     "mid_run_recall": false,
+     "human_input": false
+    },
+    "actions": [],
+    "sidecars": [
+     "build-runner",
+     "desktop"
+    ],
+    "surfaces": [
+     {
+      "path": "/",
+      "title": "Modernization workspace",
+      "purpose": "The harness's own job view"
+     },
+     {
+      "path": "/runs",
+      "title": "Run console",
+      "purpose": "This Worker's runs and their evidence"
+     }
+    ],
+    "resources": {
+     "cpu": 2048,
+     "memory_mib": 8192,
+     "ephemeral_storage_gib": 40,
+     "sidecars": {
+      "build-runner": {
+       "cpu": 1024,
+       "memory_mib": 4096
+      }
+     }
+    },
+    "egress": {
+     "model_gateway": true,
+     "package_mirrors": [
+      "maven"
+     ],
+     "other": []
+    },
+    "licence": "TCS proprietary"
+   },
+   "conformance": {
+    "state": "admitted",
+    "report_id": "conf-20261005035857-e684ec",
+    "admitted_at": "2026-10-05T04:48:16+00:00",
+    "admitted_by": "user:ubuntu",
+    "checked_at": "2026-10-05T03:58:57.442912+00:00"
+   },
+   "used_by": 19
+  },
+  {
+   "key": "aiworker-quality-engineering",
+   "display_name": "Quality Engineering Harness",
+   "vendor": "Tata Consultancy Services",
+   "summary": "Turns written test cases into executable Playwright suites, runs them against the application under test, and reports traceability, Gherkin conformance, test-data binding and a report as release gates.",
+   "availability": "available",
+   "availability_detail": "Ready to use in this environment.",
+   "image_pin": {
+    "state": "digest",
+    "digest": "sha256:650b8c19cb4f7a814aa987efb527ef6a241b84e7f6e24dbb682661e1e62217eb"
+   },
+   "manifest_source": "reviewed_copy",
+   "manifest_digest": "sha256:2981da8e845e0713462897932546dba6956cd5cf0624dee0715a6cda9ba0ee0f",
+   "manifest": {
+    "id": "qe-harness",
+    "name": "Quality Engineering Harness",
+    "version": "2.2.0",
+    "vendor": "TCS",
+    "description": "Turns manual test cases into executed Playwright and behave suites with traceable Allure reports.",
+    "worker_types": [
+     "qe-test-script-generation"
+    ],
+    "ladder": "qe-test-script-generation",
+    "contract": {
+     "major": 1,
+     "minors": [
+      0,
+      1,
+      3
+     ]
+    },
+    "serve": {
+     "bind": "127.0.0.1",
+     "port": 8100,
+     "base_path": "/hwc/v1"
+    },
+    "image_digest": null,
+    "stages": [
+     {
+      "key": "scripts-executed",
+      "title": "Executed scripts",
+      "adds": "Survey, discover, generate, validate, bind data, execute, report",
+      "pipeline": "qe-discover-and-learn",
+      "produces": [
+       "test-script-traceability",
+       "gherkin-conformance",
+       "test-data-mapped",
+       "report-generation"
+      ],
+      "requires_sidecars": [
+       "target-app",
+       "target-db"
+      ],
+      "after": null
+     }
+    ],
+    "evidence_metrics": [
+     {
+      "id": "test-script-traceability",
+      "title": "Test script to test case traceability",
+      "type": "percentage",
+      "higher_is_better": true
+     },
+     {
+      "id": "gherkin-conformance",
+      "title": "Gherkin conformance",
+      "type": "percentage",
+      "higher_is_better": true
+     },
+     {
+      "id": "test-data-mapped",
+      "title": "Test data mapped",
+      "type": "percentage",
+      "higher_is_better": true
+     },
+     {
+      "id": "report-generation",
+      "title": "Report generated",
+      "type": "percentage",
+      "higher_is_better": true
+     }
+    ],
+    "events": {
+     "core": [
+      "run.started",
+      "run.completed",
+      "run.failed",
+      "analysis.started",
+      "analysis.completed",
+      "pattern.detected",
+      "decision.made",
+      "skill.loaded",
+      "knowledge.loaded",
+      "tool.called",
+      "tool.completed",
+      "tool.failed",
+      "artifact.digest",
+      "artifact.generated",
+      "test.started",
+      "test.completed",
+      "test.failed",
+      "dod.evidence"
+     ],
+     "core_count": 18,
+     "extensions": [
+      {
+       "type": "qe.path.discovered",
+       "description": "A click path reveals a control the survey could not see",
+       "learning_signal": true
+      },
+      {
+       "type": "qe.path.confirmed",
+       "description": "A scenario using a learned path passed",
+       "learning_signal": true
+      },
+      {
+       "type": "qe.script.regenerated",
+       "description": "A defective script was regenerated",
+       "learning_signal": true
+      }
+     ]
+    },
+    "consumes": {
+     "skills": "agent-skills-v1",
+     "knowledge": "okf-0.2",
+     "mcp": true,
+     "mid_run_recall": false,
+     "human_input": false
+    },
+    "actions": [],
+    "sidecars": [
+     "target-app",
+     "target-db",
+     "desktop"
+    ],
+    "surfaces": [
+     {
+      "path": "/",
+      "title": "Run console"
+     },
+     {
+      "path": "/runs",
+      "title": "Runs"
+     },
+     {
+      "path": "/history",
+      "title": "History"
+     },
+     {
+      "path": "/maintenance",
+      "title": "Maintenance"
+     }
+    ],
+    "resources": {
+     "cpu": 2048,
+     "memory_mib": 6144,
+     "ephemeral_storage_gib": 40,
+     "sidecars": {
+      "target-app": {
+       "cpu": 512,
+       "memory_mib": 1024
+      },
+      "target-db": {
+       "cpu": 256,
+       "memory_mib": 1024
+      }
+     }
+    },
+    "egress": {
+     "model_gateway": true,
+     "package_mirrors": [],
+     "other": []
+    },
+    "licence": "TCS proprietary"
+   },
+   "conformance": {
+    "state": "admitted",
+    "report_id": "conf-20261005035941-e8901d",
+    "admitted_at": "2026-10-05T04:49:11+00:00",
+    "admitted_by": "user:ubuntu",
+    "checked_at": "2026-10-05T03:59:41.108745+00:00"
+   },
+   "used_by": 29
+  }
+ ]
+}

@@ -1,0 +1,164 @@
+{
+ "schema_version": "platform-sentinel-overview-v1",
+ "generated_at": "2026-10-06T08:45:39Z",
+ "window_days": 7,
+ "viewer": {
+  "admin": true
+ },
+ "mode": {
+  "set": null,
+  "acting": false,
+  "why": "The Platform Sentinel records its decisions; it applies none until its gates are ratified."
+ },
+ "coverage": {
+  "running": 1,
+  "reporting": 0,
+  "no_sentinel": 0,
+  "unavailable": 1,
+  "not_running": 34,
+  "complete": true
+ },
+ "chain": {
+  "verified": null,
+  "entries": 0,
+  "broken_at": null,
+  "checked": 0,
+  "retained_from": null,
+  "retained_to": null
+ },
+ "dimensions": [
+  {
+   "key": "monitor",
+   "mode": {
+    "set": null,
+    "acting": false,
+    "why": "The Platform Sentinel records its decisions; it applies none until its gates are ratified."
+   },
+   "built": true,
+   "built_by": null,
+   "open": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "grant": 0
+   },
+   "last": null,
+   "counts_7d": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "grant": 0
+   }
+  },
+  {
+   "key": "enforce",
+   "mode": {
+    "set": null,
+    "acting": false,
+    "why": "The Platform Sentinel records its decisions; it applies none until its gates are ratified."
+   },
+   "built": true,
+   "built_by": null,
+   "open": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "grant": 0
+   },
+   "last": null,
+   "counts_7d": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "grant": 0
+   }
+  },
+  {
+   "key": "align",
+   "mode": {
+    "set": null,
+    "acting": false,
+    "why": "The Platform Sentinel records its decisions; it applies none until its gates are ratified."
+   },
+   "built": true,
+   "built_by": null,
+   "open": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "grant": 0
+   },
+   "last": null,
+   "counts_7d": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "grant": 0
+   }
+  },
+  {
+   "key": "control",
+   "mode": {
+    "set": null,
+    "acting": false,
+    "why": "The Platform Sentinel records its decisions; it applies none until its gates are ratified."
+   },
+   "built": true,
+   "built_by": null,
+   "open": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "grant": 0
+   },
+   "last": null,
+   "counts_7d": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "grant": 0
+   }
+  },
+  {
+   "key": "unlearn",
+   "mode": {
+    "set": null,
+    "acting": false,
+    "why": "The Platform Sentinel records its decisions; it applies none until its gates are ratified."
+   },
+   "built": true,
+   "built_by": null,
+   "open": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "grant": 0
+   },
+   "last": null,
+   "counts_7d": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "grant": 0
+   }
+  }
+ ],
+ "in_force": [],
+ "stream": [],
+ "needs_review": 0,
+ "sample": {
+  "truncated": false,
+  "limit": 5000,
+  "from": "2026-09-29T08:45:39Z"
+ }
+}

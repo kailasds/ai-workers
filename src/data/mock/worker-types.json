@@ -1,0 +1,29 @@
+{
+ "schema_version": "worker-type-catalog-v1",
+ "types": [
+  {
+   "key": "modernization",
+   "display_name": "Modernisation Worker",
+   "summary": "Rebuilds a legacy application in a modern language and proves the behaviour still matches.",
+   "availability": "available",
+   "availability_detail": "",
+   "bounded_context_count": 3
+  },
+  {
+   "key": "quality-engineering",
+   "display_name": "Quality Engineering Worker",
+   "summary": "Turns written test cases into automation against a running application and reports each verdict.",
+   "availability": "available",
+   "availability_detail": "",
+   "bounded_context_count": 2
+  },
+  {
+   "key": "software-engineering",
+   "display_name": "Full Stack Software Engineering Worker",
+   "summary": "Builds new software and changes existing systems, with tests that fail without the change.",
+   "availability": "in_build",
+   "availability_detail": "No harness has been admitted for this type yet.",
+   "bounded_context_count": 0
+  }
+ ]
+}

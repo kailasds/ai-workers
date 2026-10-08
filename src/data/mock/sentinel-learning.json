@@ -1,0 +1,24 @@
+{
+ "schema_version": "sentinel-learning-fleet-v1",
+ "generated_at": "2026-10-06T08:45:21.125927+00:00",
+ "workers": [
+  {
+   "worker_id": "804ced56-4056-4c39-a0e7-c9143a9e6c03",
+   "name": "Test Script Generation and Execution · Insurance",
+   "composition_id": "a9cb82d0-4508-4a8b-bd56-fbdbb856018b",
+   "target": "ECS",
+   "state": "RUNNING",
+   "status": "not_answering",
+   "detail": "Refused the console's request.",
+   "learning": null
+  }
+ ],
+ "truncated": false,
+ "cut_off": false,
+ "counts": {
+  "workers": 1,
+  "answered": 0,
+  "not_answering": 1,
+  "no_runtime": 0
+ }
+}

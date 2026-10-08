@@ -1,0 +1,3242 @@
+{
+ "schema_version": "packageable-compositions-v1",
+ "generated_at": "2026-10-06T08:45:31.214345+00:00",
+ "compositions": [
+  {
+   "composition_id": "6a6cf0fe-c55a-4415-b151-a8f987572659",
+   "name": "QE worker 0610",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/qe-worker-0610-0c2a6718",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/qe-worker-0610-0c2a6718",
+    "status": "PROVISIONED",
+    "credential_state": "UNISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": false,
+    "revoked_at": null,
+    "bounded_scope": "Test automation from written test cases",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-10-06T05:30:09.803494+00:00",
+   "updated_at": "2026-10-06T05:30:46.686877+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 10,
+    "dod_criteria": 5,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": null,
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "22f029ab-f080-46c4-ad59-8c884a016b44",
+   "name": "Integration modernisation · Payments",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-payments-353e1adf",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-353e1adf",
+    "status": "PROVISIONED",
+    "credential_state": "UNISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": false,
+    "revoked_at": null,
+    "bounded_scope": "Service orchestration modernisation",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Unit testing of the generated services",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services",
+   "created_at": "2026-10-06T05:09:01.962250+00:00",
+   "updated_at": "2026-10-06T05:09:45.630763+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Converts Integration Service to Target Code",
+    "business_domain_key": "payments",
+    "skills": 9,
+    "languages": 4,
+    "evaluations": 9,
+    "dod_criteria": 6,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": null,
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "a9cb82d0-4508-4a8b-bd56-fbdbb856018b",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-55311e89",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-55311e89",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-10-05T10:13:57.819947+00:00",
+   "updated_at": "2026-10-05T10:14:28.628666+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 10,
+    "dod_criteria": 5,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "0d90912c-a7d4-4df7-8f24-29c8083f63b2",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-10-05T10:42:04.792660+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "0d6ab218-2350-4479-aaba-01a3d796008c",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-e46f9ef5",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-e46f9ef5",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-30T11:57:02.041315+00:00",
+   "updated_at": "2026-09-30T11:57:15.309736+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 6,
+    "dod_criteria": 5,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "69eaccbe-2125-45e3-9824-41385f0f594a",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-30T11:57:17.944811+00:00"
+   },
+   "maturity": {
+    "runs": 1,
+    "runs_met": 1,
+    "last_run_at": "2026-09-30T12:01:14.881172+00:00",
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 1,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 1,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "eeb05fe4-2caf-4b3a-b3e0-05c846226ade",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-8e2a52b4",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-8e2a52b4",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-30T11:46:15.218343+00:00",
+   "updated_at": "2026-09-30T11:46:30.424592+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 6,
+    "dod_criteria": 5,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "82108d50-7ba0-4438-9824-55e5d26572e9",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-30T11:46:32.691502+00:00"
+   },
+   "maturity": {
+    "runs": 2,
+    "runs_met": 0,
+    "last_run_at": "2026-09-30T11:51:29.469736+00:00",
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 2,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 2,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "b23c427c-0b41-47ee-a130-abaf2502f20b",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-2753d86d",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-2753d86d",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-30T11:28:21.814765+00:00",
+   "updated_at": "2026-09-30T11:28:36.289457+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 6,
+    "dod_criteria": 5,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "50cd2637-2175-4dff-892c-cd1c9f134894",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-30T11:28:38.863324+00:00"
+   },
+   "maturity": {
+    "runs": 1,
+    "runs_met": 0,
+    "last_run_at": "2026-09-30T11:32:19.677296+00:00",
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 1,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 1,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "110edc5b-cec6-45c6-a053-8e31cf7b704f",
+   "name": "Integration modernisation · Payments",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-payments-50832c69",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services-tests/integration-modernisation-payments-50832c69",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Converts Integration Service to Unit Tested Target Code",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Integration tests against live endpoints",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services-tests",
+   "created_at": "2026-09-30T10:09:41.224983+00:00",
+   "updated_at": "2026-09-30T10:10:12.072099+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Converts Integration Service to Unit Tested Target Code",
+    "business_domain_key": "payments",
+    "skills": 8,
+    "languages": 4,
+    "evaluations": 4,
+    "dod_criteria": 7,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": {
+    "id": "7df8687f-adc8-4d57-b2d1-fc2b8eac025e",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-30T10:10:13.120652+00:00"
+   },
+   "maturity": {
+    "runs": 1,
+    "runs_met": 0,
+    "last_run_at": "2026-09-30T10:42:42.671942+00:00",
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 1,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 1,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "2ee9527a-af13-47d1-91c9-c91df621c4d5",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-ee0cabd9",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-ee0cabd9",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-30T10:02:15.424961+00:00",
+   "updated_at": "2026-09-30T10:02:32.212776+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 6,
+    "dod_criteria": 5,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "08f34455-5b43-42a9-8623-97c306a9af24",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-30T10:02:36.535377+00:00"
+   },
+   "maturity": {
+    "runs": 3,
+    "runs_met": 3,
+    "last_run_at": "2026-09-30T10:09:07.724383+00:00",
+    "skill_changes": 5,
+    "claims": 0,
+    "memories": 3,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 3,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "9f4ae70f-ca73-4370-b23e-20a8f18699bb",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-e95a181c",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-e95a181c",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-30T07:08:04.075995+00:00",
+   "updated_at": "2026-09-30T07:08:30.370341+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 10,
+    "dod_criteria": 4,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "f5fea595-1c93-4077-99a2-d1e6dfdde455",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-30T07:08:46.736941+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "823a7b65-da84-4a45-9422-cbae71d64913",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-2b52f8cc",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-2b52f8cc",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-30T06:46:01.448609+00:00",
+   "updated_at": "2026-09-30T06:46:10.085998+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 6,
+    "dod_criteria": 4,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "7d579727-026a-49a9-9384-6e39c58550d8",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-30T06:46:12.929514+00:00"
+   },
+   "maturity": {
+    "runs": 4,
+    "runs_met": 4,
+    "last_run_at": "2026-09-30T06:54:08.746305+00:00",
+    "skill_changes": 5,
+    "claims": 0,
+    "memories": 4,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 4,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "6a6a6863-bb31-4cbd-b53f-e5d41d2f08ca",
+   "name": "Integration modernisation · Payments",
+   "revision": 4,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-payments-a9be2909",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-a9be2909",
+    "status": "PROVISIONED",
+    "credential_state": "UNISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": false,
+    "revoked_at": null,
+    "bounded_scope": "Service orchestration modernisation",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Unit testing of the generated services",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services",
+   "created_at": "2026-09-30T06:44:36.207511+00:00",
+   "updated_at": "2026-09-30T06:44:42.258063+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 8,
+   "issues": [
+    {
+     "code": "DRAFT_PRIMARY_AGENT_KEY",
+     "message": "Complete primary Agent before preparing.",
+     "section": "capabilities"
+    },
+    {
+     "code": "DRAFT_SKILL_NAMES",
+     "message": "Complete Skills before preparing.",
+     "section": "capabilities"
+    },
+    {
+     "code": "DRAFT_OPERATING_MODE",
+     "message": "Complete operating mode before preparing.",
+     "section": "governance"
+    },
+    {
+     "code": "DRAFT_ALLOWED_ENVIRONMENT",
+     "message": "Complete allowed environment before preparing.",
+     "section": "governance"
+    },
+    {
+     "code": "DRAFT_DEFINITION_OF_DONE",
+     "message": "Complete Definition of Done before preparing.",
+     "section": "definition_of_done"
+    },
+    {
+     "code": "DRAFT_EVALUATION_IDS",
+     "message": "Complete evaluation set before preparing.",
+     "section": "definition_of_done"
+    }
+   ],
+   "contents": {
+    "context_label": "Converts Integration Service to Target Code",
+    "business_domain_key": "payments",
+    "skills": 0,
+    "languages": 0,
+    "evaluations": 0,
+    "dod_criteria": 1,
+    "operating_mode": "",
+    "harness": ""
+   },
+   "package": null,
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "530d02a6-bd59-413a-af56-aa433e018e10",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-67256e4d",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-67256e4d",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-30T06:36:10.041736+00:00",
+   "updated_at": "2026-09-30T06:36:25.371436+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 6,
+    "dod_criteria": 4,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "e7bbffdc-5414-481f-a733-b4645c781d92",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-30T06:36:28.398488+00:00"
+   },
+   "maturity": {
+    "runs": 1,
+    "runs_met": 0,
+    "last_run_at": "2026-09-30T06:40:46.389396+00:00",
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 1,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 1,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "131ebf4a-e657-4e3e-9a49-189ed6860392",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-ec7ce7fb",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-ec7ce7fb",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-30T05:32:55.932349+00:00",
+   "updated_at": "2026-09-30T05:33:05.209075+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 6,
+    "dod_criteria": 4,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "bc6b0e92-8eab-46af-929d-b47e2c3d0699",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-30T05:33:07.564231+00:00"
+   },
+   "maturity": {
+    "runs": 7,
+    "runs_met": 7,
+    "last_run_at": "2026-09-30T05:46:04.389049+00:00",
+    "skill_changes": 5,
+    "claims": 0,
+    "memories": 7,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 7,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "451f647c-4cd1-4e6f-9cdb-a47da367f11f",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-970cf520",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-970cf520",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-30T05:24:28.891395+00:00",
+   "updated_at": "2026-09-30T05:24:45.868943+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 6,
+    "dod_criteria": 4,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "e5e53e44-5edf-47af-ad53-aabc3e7d2b8e",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-30T05:24:48.789357+00:00"
+   },
+   "maturity": {
+    "runs": 2,
+    "runs_met": 0,
+    "last_run_at": "2026-09-30T05:30:08.825904+00:00",
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 2,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 2,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "fdd4279a-4ef8-4247-99ef-4251912003b9",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-b58b2973",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-b58b2973",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-29T07:00:12.732493+00:00",
+   "updated_at": "2026-09-29T07:00:27.417908+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 6,
+    "dod_criteria": 4,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "84108b8a-ee94-46e7-aa8f-b7cd32a7fb42",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-29T07:00:29.602034+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "f66289bb-4566-488d-921e-466591b37f1b",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-0e60f66d",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-0e60f66d",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-29T06:27:18.677611+00:00",
+   "updated_at": "2026-09-29T06:27:48.527422+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 10,
+    "dod_criteria": 4,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "f5876df2-b7ac-4284-afb9-a25679ae38bf",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-29T06:43:36.625689+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "a9cc55d7-b7de-4d97-9942-de82d0dae112",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-36342a9e",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-36342a9e",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-28T06:08:59.533749+00:00",
+   "updated_at": "2026-09-28T06:09:24.268978+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 10,
+    "dod_criteria": 4,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "30b41848-825f-48de-8cee-cd8d30002b67",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-28T06:40:00.578071+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "c63cb158-830f-4953-b0e5-e07c5abdf476",
+   "name": "Integration modernisation · Payments",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-payments-30dee241",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-30dee241",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Converts Integration Service to Target Code",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Unit testing of the generated services",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services",
+   "created_at": "2026-09-28T05:59:28.011493+00:00",
+   "updated_at": "2026-09-28T06:00:13.726744+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Converts Integration Service to Target Code",
+    "business_domain_key": "payments",
+    "skills": 9,
+    "languages": 4,
+    "evaluations": 9,
+    "dod_criteria": 3,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": {
+    "id": "32f84dec-5502-4ce4-8500-175079b2f56b",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-28T06:00:47.115848+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "cf746b60-63e3-428e-bc27-84da531bb603",
+   "name": "Integration modernisation · Payments",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-payments-9be654b2",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services-tests/integration-modernisation-payments-9be654b2",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Converts Integration Service to Unit Tested Target Code",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Integration tests against live endpoints",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services-tests",
+   "created_at": "2026-09-28T05:51:26.720025+00:00",
+   "updated_at": "2026-09-28T05:52:08.771977+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Converts Integration Service to Unit Tested Target Code",
+    "business_domain_key": "payments",
+    "skills": 7,
+    "languages": 4,
+    "evaluations": 4,
+    "dod_criteria": 4,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": {
+    "id": "2ba6aa6f-fe77-4d80-90ba-2e686d06bdc7",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-28T05:52:10.540865+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "572d03a8-7e3c-4ab4-8ceb-074b5ac33635",
+   "name": "Integration modernisation · Payments",
+   "revision": 10,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-payments-030245d2",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-030245d2",
+    "status": "PROVISIONED",
+    "credential_state": "UNISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": false,
+    "revoked_at": null,
+    "bounded_scope": "Service orchestration modernisation",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Unit testing of the generated services",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services",
+   "created_at": "2026-09-28T05:41:17.145481+00:00",
+   "updated_at": "2026-09-28T05:41:55.053814+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 3,
+   "issues": [
+    {
+     "code": "DRAFT_OPERATING_MODE",
+     "message": "Complete operating mode before preparing.",
+     "section": "governance"
+    },
+    {
+     "code": "DRAFT_ALLOWED_ENVIRONMENT",
+     "message": "Complete allowed environment before preparing.",
+     "section": "governance"
+    },
+    {
+     "code": "DRAFT_SENTINEL",
+     "message": "Complete the Sentinel before preparing.",
+     "section": "governance"
+    }
+   ],
+   "contents": {
+    "context_label": "Converts Integration Service to Target Code",
+    "business_domain_key": "payments",
+    "skills": 8,
+    "languages": 4,
+    "evaluations": 4,
+    "dod_criteria": 3,
+    "operating_mode": "",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": null,
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "6f26c1f0-0647-4e2c-95ff-363ff36ac9fc",
+   "name": "Integration modernisation · Insurance claims",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-insurance-claims-4f769c74",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/insurance-claims/tibco-bw-to-spring-boot-services/integration-modernisation-insurance-claims-4f769c74",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Converts Integration Service to Target Code",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Unit testing of the generated services",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services",
+   "created_at": "2026-09-25T15:21:20.207445+00:00",
+   "updated_at": "2026-09-25T15:21:40.099315+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Converts Integration Service to Target Code",
+    "business_domain_key": "insurance-claims",
+    "skills": 9,
+    "languages": 1,
+    "evaluations": 5,
+    "dod_criteria": 3,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": {
+    "id": "6d53e755-5191-419e-8a86-e409997bcb60",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-25T15:21:42.242645+00:00"
+   },
+   "maturity": {
+    "runs": 1,
+    "runs_met": 1,
+    "last_run_at": "2026-09-25T16:01:57.412541+00:00",
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 1,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 1,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "0a3bf7d3-76c4-413a-9fd0-6fa9072bcf11",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-7a62d7e0",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-7a62d7e0",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-25T15:21:19.839338+00:00",
+   "updated_at": "2026-09-25T15:21:39.441274+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 6,
+    "dod_criteria": 4,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "3c928d0a-ffe2-4d8b-9df5-01bc8214c799",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-25T15:21:41.530004+00:00"
+   },
+   "maturity": {
+    "runs": 1,
+    "runs_met": 0,
+    "last_run_at": "2026-09-25T15:27:34.141011+00:00",
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 1,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 1,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "443269eb-6a55-4c2a-b630-ec99e42f6f04",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-a4eda59f",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-a4eda59f",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-25T14:11:40.946303+00:00",
+   "updated_at": "2026-09-25T14:12:09.540625+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 10,
+    "dod_criteria": 4,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "a472207b-a01e-48ed-8604-c6bb3c74b8ff",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-25T14:50:53.631794+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "a33315d7-9113-4a75-919b-f4a61ce40cdd",
+   "name": "Integration modernisation · Insurance claims",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-insurance-claims-aef91dfb",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/insurance-claims/tibco-bw-to-spring-boot-services/integration-modernisation-insurance-claims-aef91dfb",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Converts Integration Service to Target Code",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Unit testing of the generated services",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services",
+   "created_at": "2026-09-25T13:57:35.884926+00:00",
+   "updated_at": "2026-09-25T13:58:06.571486+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Converts Integration Service to Target Code",
+    "business_domain_key": "insurance-claims",
+    "skills": 8,
+    "languages": 1,
+    "evaluations": 5,
+    "dod_criteria": 3,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": {
+    "id": "e653b396-a08d-4f1f-ab1b-74a2d32bb015",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-25T13:58:07.581493+00:00"
+   },
+   "maturity": {
+    "runs": 1,
+    "runs_met": 1,
+    "last_run_at": "2026-09-25T14:33:17.724310+00:00",
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 1,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 1,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "3c1917eb-11cb-495b-87bc-ac729a9bb165",
+   "name": "Integration modernisation · Insurance claims",
+   "revision": 4,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-insurance-claims-7f331f67",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/insurance-claims/tibco-bw-to-spring-boot-services/integration-modernisation-insurance-claims-7f331f67",
+    "status": "PROVISIONED",
+    "credential_state": "UNISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": false,
+    "revoked_at": null,
+    "bounded_scope": "Service orchestration modernisation",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Unit testing of the generated services",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services",
+   "created_at": "2026-09-25T13:43:49.671734+00:00",
+   "updated_at": "2026-09-25T13:43:51.502104+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 8,
+   "issues": [
+    {
+     "code": "DRAFT_PRIMARY_AGENT_KEY",
+     "message": "Complete primary Agent before preparing.",
+     "section": "capabilities"
+    },
+    {
+     "code": "DRAFT_SKILL_NAMES",
+     "message": "Complete Skills before preparing.",
+     "section": "capabilities"
+    },
+    {
+     "code": "DRAFT_OPERATING_MODE",
+     "message": "Complete operating mode before preparing.",
+     "section": "governance"
+    },
+    {
+     "code": "DRAFT_ALLOWED_ENVIRONMENT",
+     "message": "Complete allowed environment before preparing.",
+     "section": "governance"
+    },
+    {
+     "code": "DRAFT_DEFINITION_OF_DONE",
+     "message": "Complete Definition of Done before preparing.",
+     "section": "definition_of_done"
+    },
+    {
+     "code": "DRAFT_EVALUATION_IDS",
+     "message": "Complete evaluation set before preparing.",
+     "section": "definition_of_done"
+    }
+   ],
+   "contents": {
+    "context_label": "Converts Integration Service to Target Code",
+    "business_domain_key": "insurance-claims",
+    "skills": 0,
+    "languages": 0,
+    "evaluations": 0,
+    "dod_criteria": 1,
+    "operating_mode": "",
+    "harness": ""
+   },
+   "package": null,
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "7bca59bf-3f7c-4d43-97ff-89cb343dc888",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-0c08e667",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-0c08e667",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-25T13:35:34.934484+00:00",
+   "updated_at": "2026-09-25T13:35:44.567645+00:00",
+   "readiness": "READY_FOR_UNSIGNED_DRAFT",
+   "blocking_issues": 0,
+   "issues": [],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 6,
+    "dod_criteria": 4,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "1813e92a-442b-42e6-b4c5-93a3154fdf8c",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-25T13:35:45.890698+00:00"
+   },
+   "maturity": {
+    "runs": 1,
+    "runs_met": 0,
+    "last_run_at": "2026-09-25T13:41:43.786694+00:00",
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 1,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 1,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "0155f471-f4c8-439e-946d-32b7ddefb7fd",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-1025c280",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-1025c280",
+    "status": "PROVISIONED",
+    "credential_state": "UNISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": false,
+    "revoked_at": null,
+    "bounded_scope": "Test automation from written test cases",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-25T13:33:07.210222+00:00",
+   "updated_at": "2026-09-25T13:33:22.177697+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 2,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-qe-automation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    },
+    {
+     "code": "VALIDATION_2",
+     "message": "Definition of Done Skill dod-qe-automation criteria do not match its catalog source.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 6,
+    "dod_criteria": 4,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": null,
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "0082459f-4e7f-4aba-aeec-8d43af080969",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 7,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-da22d7c4",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-da22d7c4",
+    "status": "PROVISIONED",
+    "credential_state": "UNISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": false,
+    "revoked_at": null,
+    "bounded_scope": "Test automation from written test cases",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-25T12:54:58.588938+00:00",
+   "updated_at": "2026-09-25T12:55:20.318307+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 5,
+   "issues": [
+    {
+     "code": "DRAFT_OPERATING_MODE",
+     "message": "Complete operating mode before preparing.",
+     "section": "governance"
+    },
+    {
+     "code": "DRAFT_ALLOWED_ENVIRONMENT",
+     "message": "Complete allowed environment before preparing.",
+     "section": "governance"
+    },
+    {
+     "code": "DRAFT_DEFINITION_OF_DONE",
+     "message": "Complete Definition of Done before preparing.",
+     "section": "definition_of_done"
+    },
+    {
+     "code": "DRAFT_EVALUATION_IDS",
+     "message": "Complete evaluation set before preparing.",
+     "section": "definition_of_done"
+    },
+    {
+     "code": "DRAFT_SENTINEL",
+     "message": "Complete the Sentinel before preparing.",
+     "section": "governance"
+    }
+   ],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 0,
+    "dod_criteria": 1,
+    "operating_mode": "",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": null,
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "ec4a86bb-829d-4b43-8206-bbcb2bc75cac",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 7,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-9ed7b07b",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-9ed7b07b",
+    "status": "PROVISIONED",
+    "credential_state": "UNISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": false,
+    "revoked_at": null,
+    "bounded_scope": "Test automation from written test cases",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-25T12:14:59.371503+00:00",
+   "updated_at": "2026-09-25T12:15:21.765745+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 5,
+   "issues": [
+    {
+     "code": "DRAFT_OPERATING_MODE",
+     "message": "Complete operating mode before preparing.",
+     "section": "governance"
+    },
+    {
+     "code": "DRAFT_ALLOWED_ENVIRONMENT",
+     "message": "Complete allowed environment before preparing.",
+     "section": "governance"
+    },
+    {
+     "code": "DRAFT_DEFINITION_OF_DONE",
+     "message": "Complete Definition of Done before preparing.",
+     "section": "definition_of_done"
+    },
+    {
+     "code": "DRAFT_EVALUATION_IDS",
+     "message": "Complete evaluation set before preparing.",
+     "section": "definition_of_done"
+    },
+    {
+     "code": "DRAFT_SENTINEL",
+     "message": "Complete the Sentinel before preparing.",
+     "section": "governance"
+    }
+   ],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 0,
+    "dod_criteria": 1,
+    "operating_mode": "",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": null,
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "92084452-b811-49ea-bbc6-d6b8d9054f45",
+   "name": "Test Script Generation and Execution · Insurance",
+   "revision": 7,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-and-execution-insurance-a455c3a0",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-and-execution-insurance-a455c3a0",
+    "status": "PROVISIONED",
+    "credential_state": "UNISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": false,
+    "revoked_at": null,
+    "bounded_scope": "Test automation from written test cases",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-25T11:46:27.449659+00:00",
+   "updated_at": "2026-09-25T11:46:49.073888+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 5,
+   "issues": [
+    {
+     "code": "DRAFT_OPERATING_MODE",
+     "message": "Complete operating mode before preparing.",
+     "section": "governance"
+    },
+    {
+     "code": "DRAFT_ALLOWED_ENVIRONMENT",
+     "message": "Complete allowed environment before preparing.",
+     "section": "governance"
+    },
+    {
+     "code": "DRAFT_DEFINITION_OF_DONE",
+     "message": "Complete Definition of Done before preparing.",
+     "section": "definition_of_done"
+    },
+    {
+     "code": "DRAFT_EVALUATION_IDS",
+     "message": "Complete evaluation set before preparing.",
+     "section": "definition_of_done"
+    },
+    {
+     "code": "DRAFT_SENTINEL",
+     "message": "Complete the Sentinel before preparing.",
+     "section": "governance"
+    }
+   ],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 0,
+    "dod_criteria": 1,
+    "operating_mode": "",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": null,
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "48a8b0e4-88aa-43de-9fb1-8d5ca34d7005",
+   "name": "Test Script Generation · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-insurance-75dc7ea2",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-insurance-75dc7ea2",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Generate Test Scripts + Execution",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-17T10:22:34.511164+00:00",
+   "updated_at": "2026-09-17T10:23:03.832707+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 2,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-qe-automation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    },
+    {
+     "code": "VALIDATION_2",
+     "message": "Definition of Done Skill dod-qe-automation criteria do not match its catalog source.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 11,
+    "dod_criteria": 2,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "3bf99581-1488-406c-b54b-bdeae7f3d06a",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-17T12:42:00.793052+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "5ab8d7c2-990b-438b-bce7-aaa74128da82",
+   "name": "Test Script Generation · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-insurance-2d7c8c96",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-insurance-2d7c8c96",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Generate Test Scripts + Execution",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-17T09:15:27.775157+00:00",
+   "updated_at": "2026-09-17T09:15:56.417796+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 2,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-qe-automation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    },
+    {
+     "code": "VALIDATION_2",
+     "message": "Definition of Done Skill dod-qe-automation criteria do not match its catalog source.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 11,
+    "dod_criteria": 2,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "3c01d42f-3d5f-41af-acfe-e8e4e5678b4c",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-17T09:24:51.799329+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "d676aea3-c31f-4964-ad58-1ef4557df250",
+   "name": "Test Script Generation · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-insurance-d1fd3c68",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-insurance-d1fd3c68",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Generate Test Scripts + Execution",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-17T08:49:17.454515+00:00",
+   "updated_at": "2026-09-17T08:49:37.637221+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 2,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-qe-automation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    },
+    {
+     "code": "VALIDATION_2",
+     "message": "Definition of Done Skill dod-qe-automation criteria do not match its catalog source.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 11,
+    "dod_criteria": 2,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "ecfb7d5c-78ef-4c0f-9f75-eb6a664ee8db",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-17T09:27:16.313749+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "eece40f5-6aaf-40cc-9492-b8b87ed56025",
+   "name": "Test Script Generation · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-insurance-43e4a182",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-insurance-43e4a182",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Generate Test Scripts + Execution",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-17T08:40:09.045508+00:00",
+   "updated_at": "2026-09-17T08:40:40.566080+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 2,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-qe-automation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    },
+    {
+     "code": "VALIDATION_2",
+     "message": "Definition of Done Skill dod-qe-automation criteria do not match its catalog source.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 11,
+    "dod_criteria": 2,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "d50370ff-db8b-4074-a392-5f861c83a8ae",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-25T10:50:32.875976+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "cb1cf761-f3ad-4915-bb39-3d21ada069aa",
+   "name": "Integration modernisation · Payments",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-payments-a066160e",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-a066160e",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Converts Integration Service to Target Code",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Unit testing of the generated services",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services",
+   "created_at": "2026-09-17T07:46:56.988182+00:00",
+   "updated_at": "2026-09-17T07:47:44.487633+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 1,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-tibco-springboot-modernisation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Converts Integration Service to Target Code",
+    "business_domain_key": "payments",
+    "skills": 7,
+    "languages": 4,
+    "evaluations": 10,
+    "dod_criteria": 3,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": {
+    "id": "ae914c31-a9c9-4905-b55a-cdc79f27b7cd",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-17T07:56:56.369703+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "e92efccf-9c21-4553-bfb1-066ecd0bf16b",
+   "name": "Integration modernisation · Payments",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-payments-c5a767ff",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-c5a767ff",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Converts Integration Service to Target Code",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Unit testing of the generated services",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services",
+   "created_at": "2026-09-17T06:48:26.994636+00:00",
+   "updated_at": "2026-09-17T06:49:04.853469+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 1,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-tibco-springboot-modernisation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Converts Integration Service to Target Code",
+    "business_domain_key": "payments",
+    "skills": 8,
+    "languages": 4,
+    "evaluations": 5,
+    "dod_criteria": 3,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": {
+    "id": "808bf734-664a-4f87-bf43-6eca6c976a08",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-17T06:49:43.177837+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "d4a36412-1048-4bc5-9ccb-c8bead17fbfe",
+   "name": "Integration modernisation · Payments",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-payments-b5bd5b09",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-b5bd5b09",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Converts Integration Service to Target Code",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Unit testing of the generated services",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services",
+   "created_at": "2026-09-17T06:33:08.698888+00:00",
+   "updated_at": "2026-09-17T06:34:03.958381+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 1,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-tibco-springboot-modernisation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Converts Integration Service to Target Code",
+    "business_domain_key": "payments",
+    "skills": 5,
+    "languages": 4,
+    "evaluations": 10,
+    "dod_criteria": 3,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": {
+    "id": "dedfc06d-0714-40a5-a97e-d761a4a86954",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-17T06:36:09.816546+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "185dfb2e-2958-4810-8adb-eabe840af05c",
+   "name": "Integration modernisation · Payments",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-payments-dfdadf30",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services-tests/integration-modernisation-payments-dfdadf30",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Converts Integration Service to Unit Tested Target Code",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Integration tests against live endpoints",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services-tests",
+   "created_at": "2026-09-16T10:52:53.393400+00:00",
+   "updated_at": "2026-09-16T10:53:56.278756+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 1,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-tibco-springboot-modernisation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Converts Integration Service to Unit Tested Target Code",
+    "business_domain_key": "payments",
+    "skills": 8,
+    "languages": 4,
+    "evaluations": 10,
+    "dod_criteria": 4,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": {
+    "id": "f4236b42-d5b3-4b0f-84a0-4ee6ab9b240f",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-17T07:17:16.401412+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "58198fb2-04a8-470f-8908-7efea24ba8f8",
+   "name": "Test Script Generation · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-insurance-cad626bf",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-insurance-cad626bf",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Generate Test Scripts + Execution",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-16T09:16:32.890921+00:00",
+   "updated_at": "2026-09-16T09:17:00.224589+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 2,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-qe-automation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    },
+    {
+     "code": "VALIDATION_2",
+     "message": "Definition of Done Skill dod-qe-automation criteria do not match its catalog source.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 15,
+    "dod_criteria": 2,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "0af4c221-a3ad-47b8-a10e-3114d6cce547",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-25T11:45:08.465034+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "ec1e1206-0ff7-4a90-9bfa-7540ad9f8664",
+   "name": "Integration modernisation · Payments",
+   "revision": 12,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-payments-8bdea61c",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-8bdea61c",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Converts Integration Service to Target Code",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Unit testing of the generated services",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services",
+   "created_at": "2026-09-16T06:45:06.713775+00:00",
+   "updated_at": "2026-09-16T06:47:02.575226+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 1,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-tibco-springboot-modernisation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Converts Integration Service to Target Code",
+    "business_domain_key": "payments",
+    "skills": 7,
+    "languages": 4,
+    "evaluations": 15,
+    "dod_criteria": 3,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": {
+    "id": "147be8f9-cd3e-4061-8b49-95cd74470b19",
+    "status": "DRAFT_READY",
+    "composition_revision": 12,
+    "created_at": "2026-09-16T06:47:12.486311+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "ba82ac6f-3f45-4d27-a83b-d80ce4163845",
+   "name": "Test Script Generation · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-insurance-b751da94",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-insurance-b751da94",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Generate Test Scripts + Execution",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-16T06:27:37.234297+00:00",
+   "updated_at": "2026-09-16T06:28:02.751626+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 2,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-qe-automation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    },
+    {
+     "code": "VALIDATION_2",
+     "message": "Definition of Done Skill dod-qe-automation criteria do not match its catalog source.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 15,
+    "dod_criteria": 2,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "6497e91e-b613-45b6-84fc-d511252dc491",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-16T06:31:14.452136+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "063dc05d-bc2a-48c0-a3b7-e0d26ccccf7e",
+   "name": "Integration modernisation · Payments",
+   "revision": 12,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-payments-4ed89987",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-4ed89987",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Converts Integration Service to Target Code",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Unit testing of the generated services",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services",
+   "created_at": "2026-09-16T06:08:23.636745+00:00",
+   "updated_at": "2026-09-16T06:15:51.588501+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 1,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-tibco-springboot-modernisation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Converts Integration Service to Target Code",
+    "business_domain_key": "payments",
+    "skills": 8,
+    "languages": 4,
+    "evaluations": 15,
+    "dod_criteria": 3,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": {
+    "id": "67d82be0-6779-43ec-971f-7baef4e4728d",
+    "status": "DRAFT_READY",
+    "composition_revision": 12,
+    "created_at": "2026-09-16T06:15:57.609354+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "2a56255a-c88d-4175-9756-c4e613bcc3df",
+   "name": "Integration modernisation · Payments",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-payments-e7b26a8f",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-e7b26a8f",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Converts Integration Service to Target Code",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Unit testing of the generated services",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services",
+   "created_at": "2026-09-16T05:59:27.031956+00:00",
+   "updated_at": "2026-09-16T06:00:09.106387+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 1,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-tibco-springboot-modernisation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Converts Integration Service to Target Code",
+    "business_domain_key": "payments",
+    "skills": 8,
+    "languages": 4,
+    "evaluations": 15,
+    "dod_criteria": 3,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": {
+    "id": "90d52d43-1ae7-4e87-a122-dcddcad1826f",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-16T06:02:46.061757+00:00"
+   },
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "0887d74e-d9ce-4873-9cce-65d4954de4c1",
+   "name": "Test Script Generation",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-e1e34a39",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/test-script-generation-e1e34a39",
+    "status": "PROVISIONED",
+    "credential_state": "UNISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": false,
+    "revoked_at": null,
+    "bounded_scope": "Test automation from written test cases",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-16T05:10:18.672307+00:00",
+   "updated_at": "2026-09-16T05:10:41.542888+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 2,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-qe-automation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    },
+    {
+     "code": "VALIDATION_2",
+     "message": "Definition of Done Skill dod-qe-automation criteria do not match its catalog source.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "",
+    "skills": 5,
+    "languages": 0,
+    "evaluations": 7,
+    "dod_criteria": 2,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": null,
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "c90d4faa-7ccd-493f-b277-c312faa77fc8",
+   "name": "Integration modernisation",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-05dff744",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/integration-modernisation-05dff744",
+    "status": "PROVISIONED",
+    "credential_state": "UNISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": false,
+    "revoked_at": null,
+    "bounded_scope": "Service orchestration modernisation",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Unit testing of the generated services",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services",
+   "created_at": "2026-09-16T05:03:27.784040+00:00",
+   "updated_at": "2026-09-16T05:04:00.319543+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 1,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-tibco-springboot-modernisation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Converts Integration Service to Target Code",
+    "business_domain_key": "",
+    "skills": 7,
+    "languages": 0,
+    "evaluations": 7,
+    "dod_criteria": 3,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": null,
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "212463b9-fb65-4713-8e05-b006928e1f56",
+   "name": "Integration modernisation · Payments",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-payments-d8df8a4d",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services/integration-modernisation-payments-d8df8a4d",
+    "status": "PROVISIONED",
+    "credential_state": "UNISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": false,
+    "revoked_at": null,
+    "bounded_scope": "Service orchestration modernisation",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Unit testing of the generated services",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services",
+   "created_at": "2026-09-16T03:43:36.259825+00:00",
+   "updated_at": "2026-09-16T05:40:15.149769+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 1,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-tibco-springboot-modernisation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Converts Integration Service to Target Code",
+    "business_domain_key": "payments",
+    "skills": 5,
+    "languages": 4,
+    "evaluations": 7,
+    "dod_criteria": 3,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": null,
+   "maturity": {
+    "runs": 0,
+    "runs_met": 0,
+    "last_run_at": null,
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 0,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 0,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "ebebd2fd-767d-4b67-93ec-44073023a3ff",
+   "name": "Test Script Generation · Insurance",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/test-script-generation-insurance-fa7b485e",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/quality-engineering/qe-test-script-generation/insurance/qe-testcases-to-executed-scripts/test-script-generation-insurance-fa7b485e",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Generate Test Scripts + Execution",
+    "scope_excludes": [
+     "Test Case Design and verification",
+     "Test Data Discovery or Reference Data creation",
+     "Issue Troubleshooting",
+     "Defect Management"
+    ]
+   },
+   "bounded_context_key": "qe-testcases-to-executed-scripts",
+   "created_at": "2026-09-16T01:18:22.143959+00:00",
+   "updated_at": "2026-09-16T01:18:35.085591+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 2,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-qe-automation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    },
+    {
+     "code": "VALIDATION_2",
+     "message": "Definition of Done Skill dod-qe-automation criteria do not match its catalog source.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "business_domain_key": "insurance",
+    "skills": 5,
+    "languages": 1,
+    "evaluations": 5,
+    "dod_criteria": 2,
+    "operating_mode": "bounded",
+    "harness": "Quality Engineering Harness"
+   },
+   "package": {
+    "id": "5fec590a-3d37-4705-bfc1-ca9d78ed679b",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-16T01:18:38.938960+00:00"
+   },
+   "maturity": {
+    "runs": 2,
+    "runs_met": 2,
+    "last_run_at": "2026-09-16T06:07:38.208199+00:00",
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 2,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 2,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  },
+  {
+   "composition_id": "e49f9fc5-5674-4206-9f00-46c55f301739",
+   "name": "Integration modernisation · Insurance claims",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-insurance-claims-4980aaeb",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/insurance-claims/tibco-bw-to-spring-boot-services/integration-modernisation-insurance-claims-4980aaeb",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Converts Integration Service to Target Code",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Unit testing of the generated services",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services",
+   "created_at": "2026-09-16T01:16:03.548433+00:00",
+   "updated_at": "2026-09-16T01:16:19.826206+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 1,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-tibco-springboot-modernisation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Converts Integration Service to Target Code",
+    "business_domain_key": "insurance-claims",
+    "skills": 8,
+    "languages": 0,
+    "evaluations": 5,
+    "dod_criteria": 3,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": {
+    "id": "bcb91461-ab21-4803-9905-82bbde26b0af",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-16T01:16:23.305929+00:00"
+   },
+   "maturity": {
+    "runs": 2,
+    "runs_met": 1,
+    "last_run_at": "2026-09-16T01:51:17.123374+00:00",
+    "skill_changes": 1,
+    "claims": 1,
+    "memories": 2,
+    "learned_at": "2026-09-16T02:41:35+00:00",
+    "memory_kinds": {
+     "episodic": 2,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": [
+     {
+      "key": "tibco-to-java-spring-boot",
+      "kind": "conversion_pathway",
+      "sentence": "Check functional equivalence before finishing: on TIBCO to Java Spring Boot it is the tightest gate, clearing its bar of 85% on 86–91% across 6 runs that met their Definition of Done. What the scoring found: “Target Spring Boot service reproduces the TIBCO NotifyLoss process logic with high fidelity: context setup, lifecycle logging, simulated-error trigger, exception handling, ClaimScore…",
+      "runs": 6
+     }
+    ]
+   }
+  },
+  {
+   "composition_id": "3f092b32-efa7-4654-8873-e71302b37acf",
+   "name": "Integration modernisation · Commercial lending",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-commercial-lending-6f456ab9",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/commercial-lending/tibco-bw-to-spring-boot-services-tests-traceability/integration-modernisation-commercial-lending-6f456ab9",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Converts Integration Service to Traced Target Code",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Integration tests against live endpoints",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services-tests-traceability",
+   "created_at": "2026-09-16T01:13:21.484320+00:00",
+   "updated_at": "2026-09-16T01:13:40.985848+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 1,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-tibco-springboot-modernisation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Converts Integration Service to Traced Target Code",
+    "business_domain_key": "commercial-lending",
+    "skills": 8,
+    "languages": 0,
+    "evaluations": 5,
+    "dod_criteria": 5,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": {
+    "id": "c7f1e18f-a123-45c7-b936-cf5f8c555381",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-16T01:13:44.280862+00:00"
+   },
+   "maturity": {
+    "runs": 15,
+    "runs_met": 0,
+    "last_run_at": "2026-09-16T06:36:33.877126+00:00",
+    "skill_changes": 2,
+    "claims": 2,
+    "memories": 15,
+    "learned_at": "2026-09-16T06:37:45+00:00",
+    "memory_kinds": {
+     "episodic": 15,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": [
+     {
+      "key": "functional-equivalence",
+      "kind": "failure_pattern",
+      "sentence": "Converting TIBCO to Java Spring Boot, functional equivalence is what falls short: 80–84% against a bar of 85% in 7 runs. What the scoring found: “Core business logic (transaction/service context setup, 'Tester' bypass fork, stubbed CovenantScore rule, catch-all reply-shape anomaly) is faithfully reproduced, but the transport contract (SOAP 1.1 over JMS) is replaced entirely with a REST/HTTP…",
+      "runs": 7
+     },
+     {
+      "key": "unit-test-cases-passed",
+      "kind": "failure_pattern",
+      "sentence": "Converting TIBCO to Java Spring Boot, the generated unit tests is what falls short: 66.6667–77.7778% against a bar of 85% in 3 runs.",
+      "runs": 3
+     }
+    ]
+   }
+  },
+  {
+   "composition_id": "86124f81-4a4a-492f-ab32-b399f01d6671",
+   "name": "Integration modernisation · Payments",
+   "revision": 11,
+   "identity": {
+    "worker_id": "aw:tenant/tcs-development/worker/integration-modernisation-payments-83110d68",
+    "spiffe_id": "spiffe://tcs.aiworker/worker/modernization/integration-modernization/payments/tibco-bw-to-spring-boot-services-tests/integration-modernisation-payments-83110d68",
+    "status": "ACTIVE",
+    "credential_state": "ISSUED",
+    "token_ttl_seconds": 600,
+    "can_present_credential": true,
+    "revoked_at": null,
+    "bounded_scope": "Converts Integration Service to Unit Tested Target Code",
+    "scope_excludes": [
+     "Controllers, repositories, exception classes and utilities",
+     "Integration tests against live endpoints",
+     "Oracle SOA Suite, which has a conversion Skill but no parser or detection rules",
+     "Performance tuning of the generated services",
+     "Infrastructure or deployment migration",
+     "Changes to the source integration estate"
+    ]
+   },
+   "bounded_context_key": "tibco-bw-to-spring-boot-services-tests",
+   "created_at": "2026-09-16T01:11:30.518666+00:00",
+   "updated_at": "2026-09-16T01:12:00.609773+00:00",
+   "readiness": "BLOCKED",
+   "blocking_issues": 1,
+   "issues": [
+    {
+     "code": "VALIDATION_1",
+     "message": "Definition of Done Skill dod-tibco-springboot-modernisation changed in the catalog. Review it again.",
+     "section": "capabilities"
+    }
+   ],
+   "contents": {
+    "context_label": "Converts Integration Service to Unit Tested Target Code",
+    "business_domain_key": "payments",
+    "skills": 7,
+    "languages": 4,
+    "evaluations": 5,
+    "dod_criteria": 4,
+    "operating_mode": "bounded",
+    "harness": "Integration Modernisation Harness"
+   },
+   "package": {
+    "id": "35fbb27d-8e3b-4487-8f2e-48a673b0e591",
+    "status": "DRAFT_READY",
+    "composition_revision": 11,
+    "created_at": "2026-09-16T01:12:02.697788+00:00"
+   },
+   "maturity": {
+    "runs": 1,
+    "runs_met": 0,
+    "last_run_at": "2026-09-16T01:44:37.660965+00:00",
+    "skill_changes": 0,
+    "claims": 0,
+    "memories": 1,
+    "learned_at": null,
+    "memory_kinds": {
+     "episodic": 1,
+     "semantic": 0,
+     "procedural": 0
+    },
+    "claims_agreed": []
+   }
+  }
+ ],
+ "limit": 100,
+ "totals": {
+  "active": 50,
+  "to_package": 12,
+  "packaged": 3,
+  "deployed": 35
+ }
+}

@@ -1,0 +1,39 @@
+{
+ "schema_version": "learning-workers-v1",
+ "generated_at": "2026-10-06T08:45:36.649985Z",
+ "period": "all",
+ "totals": {
+  "experiences": {
+   "sum": null,
+   "reporting": 0,
+   "eligible": 0,
+   "stopped": 0
+  },
+  "okf_approved": {
+   "sum": null,
+   "reporting": 0,
+   "eligible": 0,
+   "stopped": 0,
+   "shadow": 0,
+   "applied": 0,
+   "mode": null
+  },
+  "skills_adopted": {
+   "sum": null,
+   "reporting": 0,
+   "eligible": 0,
+   "stopped": 0
+  },
+  "tokens_per_met_run": {
+   "change": null,
+   "comparable_workers": 0,
+   "method": null
+  }
+ },
+ "workers": [],
+ "effect": {
+  "comparable": [],
+  "not_comparable": []
+ },
+ "truncated": false
+}

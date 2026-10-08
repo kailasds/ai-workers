@@ -1,0 +1,202 @@
+{
+ "models": [
+  {
+   "id": "anthropic/claude-3-5-sonnet",
+   "name": "anthropic/claude-3-5-sonnet",
+   "provider": "anthropic",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "anthropic/claude-haiku-4-5-20251001",
+   "name": "anthropic/claude-haiku-4-5-20251001",
+   "provider": "anthropic",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "anthropic/claude-sonnet-4-6",
+   "name": "anthropic/claude-sonnet-4-6",
+   "provider": "anthropic",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "claude-opus-4-6-cto-oth",
+   "name": "claude-opus-4-6-cto-oth",
+   "provider": "gateway",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "claude-sonnet-4-6-cto-oth",
+   "name": "claude-sonnet-4-6-cto-oth",
+   "provider": "gateway",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "claude-sonnet-5",
+   "name": "claude-sonnet-5",
+   "provider": "gateway",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "gemini-2.5-flash-cto-lab",
+   "name": "gemini-2.5-flash-cto-lab",
+   "provider": "gateway",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "gemini-2.5-flash-cto-oth",
+   "name": "gemini-2.5-flash-cto-oth",
+   "provider": "gateway",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "gemini-2.5-pro-cto-oth",
+   "name": "gemini-2.5-pro-cto-oth",
+   "provider": "gateway",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "gemini-3.1-flash-cto-lab",
+   "name": "gemini-3.1-flash-cto-lab",
+   "provider": "gateway",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "gemini-flash",
+   "name": "gemini-flash",
+   "provider": "gateway",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "gpt-5-mini",
+   "name": "gpt-5-mini",
+   "provider": "gateway",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "gpt-5.6-sol",
+   "name": "gpt-5.6-sol",
+   "provider": "gateway",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "microsoft/copilot-studio",
+   "name": "microsoft/copilot-studio",
+   "provider": "microsoft",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "ollama/llama3:8b",
+   "name": "Llama 3 8B (Local)",
+   "provider": "ollama",
+   "description": "Meta's Llama 3 8B running locally via Ollama",
+   "is_local": true,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "ollama/mistral:7b",
+   "name": "Mistral 7B (Local)",
+   "provider": "ollama",
+   "description": "Mistral AI's 7B model via Ollama",
+   "is_local": true,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "ollama/phi3:mini",
+   "name": "Phi-3 Mini (Local)",
+   "provider": "ollama",
+   "description": "Microsoft's Phi-3 Mini for lightweight tasks",
+   "is_local": true,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "openai.gpt-oss-120b-external",
+   "name": "openai.gpt-oss-120b-external",
+   "provider": "gateway",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "openai/gpt-4o",
+   "name": "openai/gpt-4o",
+   "provider": "openai",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "unspecified",
+   "name": "unspecified",
+   "provider": "gateway",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "vertex_ai/gemini-2.5-flash",
+   "name": "vertex_ai/gemini-2.5-flash",
+   "provider": "vertex_ai",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  },
+  {
+   "id": "vertex_ai/gemini-2.5-pro",
+   "name": "vertex_ai/gemini-2.5-pro",
+   "provider": "vertex_ai",
+   "description": null,
+   "is_local": false,
+   "is_fine_tuned": false,
+   "availability": "registered"
+  }
+ ]
+}

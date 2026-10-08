@@ -1,0 +1,37 @@
+{
+ "schema_version": "compose-geographies-v1",
+ "geographies": [
+  {
+   "key": "european-union",
+   "display_name": "European Union",
+   "summary": "The AI Act and DORA bind work placed here.",
+   "eval_count": 8,
+   "review_note": null
+  },
+  {
+   "key": "india",
+   "display_name": "India",
+   "summary": "The DPDP Act and the Reserve Bank's directions bind work placed here.",
+   "eval_count": 5,
+   "review_note": null
+  },
+  {
+   "key": "united-kingdom",
+   "display_name": "United Kingdom",
+   "summary": "The FCA's Consumer Duty and operational resilience rules, the PRA's model risk principles and UK GDPR's rules on automated decisions bind work placed here.",
+   "eval_count": 0,
+   "review_note": "Regulatory text not yet reviewed"
+  },
+  {
+   "key": "north-america",
+   "display_name": "North America",
+   "summary": "United States federal and state financial-services rules bind work placed here. No Canadian or Mexican instrument is published yet.",
+   "eval_count": 8,
+   "review_note": null
+  }
+ ],
+ "everywhere": [
+  "bfsi.compliance.claims_handling",
+  "bfsi.compliance.underwriting_fairness"
+ ]
+}

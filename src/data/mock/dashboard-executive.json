@@ -1,0 +1,2090 @@
+{
+ "schema_version": "dashboard-executive-v4",
+ "generated_at": "2026-10-06T08:45:18.125197Z",
+ "window": {
+  "key": "30d",
+  "start_at": "2026-09-06T08:45:18.125197Z",
+  "end_at": "2026-10-06T08:45:18.125197Z",
+  "previous_start_at": "2026-08-07T08:45:18.125197Z",
+  "previous_end_at": "2026-09-06T08:45:18.125197Z",
+  "bucket": "day",
+  "tz": "UTC",
+  "tz_fallback": false
+ },
+ "freshness": {
+  "state": "STALE",
+  "observed_at": "2026-09-30T12:01:14.881172Z",
+  "sources": [
+   {
+    "key": "runs",
+    "label": "Worker outcomes",
+    "state": "STALE",
+    "observed_at": "2026-09-30T12:01:14.881172Z"
+   },
+   {
+    "key": "runtime",
+    "label": "Serving runtime",
+    "state": "CURRENT",
+    "observed_at": "2026-10-06T08:45:09.241139Z"
+   }
+  ]
+ },
+ "headlines": {
+  "registered_workers": {
+   "state": "OBSERVED",
+   "value": 50,
+   "previous_value": null,
+   "comparison": {
+    "state": "NO_PRIOR_WINDOW",
+    "absolute": null,
+    "percent": null
+   }
+  },
+  "packaged_workers": {
+   "state": "OBSERVED",
+   "value": 38,
+   "previous_value": null,
+   "comparison": {
+    "state": "NO_PRIOR_WINDOW",
+    "absolute": null,
+    "percent": null
+   }
+  },
+  "completed_runs": {
+   "state": "OBSERVED",
+   "value": 46,
+   "previous_value": 0,
+   "comparison": {
+    "state": "OBSERVED",
+    "absolute": 46,
+    "percent": null
+   }
+  },
+  "dod_met": {
+   "state": "OBSERVED",
+   "value": 20,
+   "previous_value": 0,
+   "comparison": {
+    "state": "OBSERVED",
+    "absolute": 20,
+    "percent": null
+   }
+  },
+  "active_workers": {
+   "state": "OBSERVED",
+   "value": 1,
+   "previous_value": null,
+   "comparison": {
+    "state": "NO_PRIOR_WINDOW",
+    "absolute": null,
+    "percent": null
+   }
+  },
+  "average_run_duration": {
+   "state": "OBSERVED",
+   "value": 918.5673791304348,
+   "unit": "seconds",
+   "samples": 46,
+   "comparison": {
+    "state": "UNAVAILABLE",
+    "absolute": null,
+    "percent": null
+   }
+  }
+ },
+ "outcome_series": [
+  {
+   "key": "2026-09-06T00:00:00+00:00",
+   "label": "06 Sep",
+   "start_at": "2026-09-06T00:00:00Z",
+   "end_at": "2026-09-07T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-07T00:00:00+00:00",
+   "label": "07 Sep",
+   "start_at": "2026-09-07T00:00:00Z",
+   "end_at": "2026-09-08T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-08T00:00:00+00:00",
+   "label": "08 Sep",
+   "start_at": "2026-09-08T00:00:00Z",
+   "end_at": "2026-09-09T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-09T00:00:00+00:00",
+   "label": "09 Sep",
+   "start_at": "2026-09-09T00:00:00Z",
+   "end_at": "2026-09-10T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-10T00:00:00+00:00",
+   "label": "10 Sep",
+   "start_at": "2026-09-10T00:00:00Z",
+   "end_at": "2026-09-11T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-11T00:00:00+00:00",
+   "label": "11 Sep",
+   "start_at": "2026-09-11T00:00:00Z",
+   "end_at": "2026-09-12T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-12T00:00:00+00:00",
+   "label": "12 Sep",
+   "start_at": "2026-09-12T00:00:00Z",
+   "end_at": "2026-09-13T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-13T00:00:00+00:00",
+   "label": "13 Sep",
+   "start_at": "2026-09-13T00:00:00Z",
+   "end_at": "2026-09-14T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-14T00:00:00+00:00",
+   "label": "14 Sep",
+   "start_at": "2026-09-14T00:00:00Z",
+   "end_at": "2026-09-15T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-15T00:00:00+00:00",
+   "label": "15 Sep",
+   "start_at": "2026-09-15T00:00:00Z",
+   "end_at": "2026-09-16T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-16T00:00:00+00:00",
+   "label": "16 Sep",
+   "start_at": "2026-09-16T00:00:00Z",
+   "end_at": "2026-09-17T00:00:00Z",
+   "met": 3,
+   "not_met": 10,
+   "not_adjudicable": 7
+  },
+  {
+   "key": "2026-09-17T00:00:00+00:00",
+   "label": "17 Sep",
+   "start_at": "2026-09-17T00:00:00Z",
+   "end_at": "2026-09-18T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-18T00:00:00+00:00",
+   "label": "18 Sep",
+   "start_at": "2026-09-18T00:00:00Z",
+   "end_at": "2026-09-19T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-19T00:00:00+00:00",
+   "label": "19 Sep",
+   "start_at": "2026-09-19T00:00:00Z",
+   "end_at": "2026-09-20T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-20T00:00:00+00:00",
+   "label": "20 Sep",
+   "start_at": "2026-09-20T00:00:00Z",
+   "end_at": "2026-09-21T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-21T00:00:00+00:00",
+   "label": "21 Sep",
+   "start_at": "2026-09-21T00:00:00Z",
+   "end_at": "2026-09-22T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-22T00:00:00+00:00",
+   "label": "22 Sep",
+   "start_at": "2026-09-22T00:00:00Z",
+   "end_at": "2026-09-23T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-23T00:00:00+00:00",
+   "label": "23 Sep",
+   "start_at": "2026-09-23T00:00:00Z",
+   "end_at": "2026-09-24T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-24T00:00:00+00:00",
+   "label": "24 Sep",
+   "start_at": "2026-09-24T00:00:00Z",
+   "end_at": "2026-09-25T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-25T00:00:00+00:00",
+   "label": "25 Sep",
+   "start_at": "2026-09-25T00:00:00Z",
+   "end_at": "2026-09-26T00:00:00Z",
+   "met": 2,
+   "not_met": 2,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-26T00:00:00+00:00",
+   "label": "26 Sep",
+   "start_at": "2026-09-26T00:00:00Z",
+   "end_at": "2026-09-27T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-27T00:00:00+00:00",
+   "label": "27 Sep",
+   "start_at": "2026-09-27T00:00:00Z",
+   "end_at": "2026-09-28T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-28T00:00:00+00:00",
+   "label": "28 Sep",
+   "start_at": "2026-09-28T00:00:00Z",
+   "end_at": "2026-09-29T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-29T00:00:00+00:00",
+   "label": "29 Sep",
+   "start_at": "2026-09-29T00:00:00Z",
+   "end_at": "2026-09-30T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-09-30T00:00:00+00:00",
+   "label": "30 Sep",
+   "start_at": "2026-09-30T00:00:00Z",
+   "end_at": "2026-10-01T00:00:00Z",
+   "met": 15,
+   "not_met": 6,
+   "not_adjudicable": 1
+  },
+  {
+   "key": "2026-10-01T00:00:00+00:00",
+   "label": "01 Oct",
+   "start_at": "2026-10-01T00:00:00Z",
+   "end_at": "2026-10-02T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-10-02T00:00:00+00:00",
+   "label": "02 Oct",
+   "start_at": "2026-10-02T00:00:00Z",
+   "end_at": "2026-10-03T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-10-03T00:00:00+00:00",
+   "label": "03 Oct",
+   "start_at": "2026-10-03T00:00:00Z",
+   "end_at": "2026-10-04T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-10-04T00:00:00+00:00",
+   "label": "04 Oct",
+   "start_at": "2026-10-04T00:00:00Z",
+   "end_at": "2026-10-05T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-10-05T00:00:00+00:00",
+   "label": "05 Oct",
+   "start_at": "2026-10-05T00:00:00Z",
+   "end_at": "2026-10-06T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  },
+  {
+   "key": "2026-10-06T00:00:00+00:00",
+   "label": "06 Oct",
+   "start_at": "2026-10-06T00:00:00Z",
+   "end_at": "2026-10-07T00:00:00Z",
+   "met": 0,
+   "not_met": 0,
+   "not_adjudicable": 0
+  }
+ ],
+ "bounded_contexts": [
+  {
+   "key": "qe-testcases-to-executed-scripts",
+   "label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+   "registered": 29,
+   "packaged": 23,
+   "verified_outcomes": 17,
+   "completed_runs": 25,
+   "dod_rate": {
+    "state": "OBSERVED",
+    "value": 0.68,
+    "numerator": 17,
+    "denominator": 25
+   },
+   "model_cost_per_run": {
+    "state": "OBSERVED",
+    "value": 0.13899927272727272,
+    "unit": "USD/run",
+    "samples": 22,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "tokens_per_run": {
+    "state": "OBSERVED",
+    "value": 53030.181818181816,
+    "unit": "tokens/run",
+    "samples": 22,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "total_cost": {
+    "state": "OBSERVED",
+    "value": 3.057984,
+    "unit": "USD",
+    "samples": 22,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "total_tokens": {
+    "state": "OBSERVED",
+    "value": 1166664,
+    "unit": "tokens",
+    "samples": 22,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "cost_coverage": {
+    "measured_runs": 22,
+    "completed_runs": 25,
+    "complete": false,
+    "ratio": 0.88
+   },
+   "token_coverage": {
+    "measured_runs": 22,
+    "completed_runs": 25,
+    "complete": false,
+    "ratio": 0.88
+   }
+  },
+  {
+   "key": "tibco-bw-to-spring-boot-services-tests-traceability",
+   "label": "Converts Integration Service to Traced Target Code",
+   "registered": 1,
+   "packaged": 1,
+   "verified_outcomes": 0,
+   "completed_runs": 15,
+   "dod_rate": {
+    "state": "OBSERVED",
+    "value": 0,
+    "numerator": 0,
+    "denominator": 15
+   },
+   "model_cost_per_run": {
+    "state": "OBSERVED",
+    "value": 16.308253333333333,
+    "unit": "USD/run",
+    "samples": 15,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "tokens_per_run": {
+    "state": "OBSERVED",
+    "value": 7389547.6,
+    "unit": "tokens/run",
+    "samples": 15,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "total_cost": {
+    "state": "OBSERVED",
+    "value": 244.6238,
+    "unit": "USD",
+    "samples": 15,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "total_tokens": {
+    "state": "OBSERVED",
+    "value": 110843214,
+    "unit": "tokens",
+    "samples": 15,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "cost_coverage": {
+    "measured_runs": 15,
+    "completed_runs": 15,
+    "complete": true,
+    "ratio": 1
+   },
+   "token_coverage": {
+    "measured_runs": 15,
+    "completed_runs": 15,
+    "complete": true,
+    "ratio": 1
+   }
+  },
+  {
+   "key": "tibco-bw-to-spring-boot-services",
+   "label": "Converts Integration Service to Target Code",
+   "registered": 16,
+   "packaged": 10,
+   "verified_outcomes": 3,
+   "completed_runs": 4,
+   "dod_rate": {
+    "state": "OBSERVED",
+    "value": 0.75,
+    "numerator": 3,
+    "denominator": 4
+   },
+   "model_cost_per_run": {
+    "state": "OBSERVED",
+    "value": 19.61145,
+    "unit": "USD/run",
+    "samples": 4,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "tokens_per_run": {
+    "state": "OBSERVED",
+    "value": 9005620.25,
+    "unit": "tokens/run",
+    "samples": 4,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "total_cost": {
+    "state": "OBSERVED",
+    "value": 78.4458,
+    "unit": "USD",
+    "samples": 4,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "total_tokens": {
+    "state": "OBSERVED",
+    "value": 36022481,
+    "unit": "tokens",
+    "samples": 4,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "cost_coverage": {
+    "measured_runs": 4,
+    "completed_runs": 4,
+    "complete": true,
+    "ratio": 1
+   },
+   "token_coverage": {
+    "measured_runs": 4,
+    "completed_runs": 4,
+    "complete": true,
+    "ratio": 1
+   }
+  },
+  {
+   "key": "tibco-bw-to-spring-boot-services-tests",
+   "label": "Converts Integration Service to Unit Tested Target Code",
+   "registered": 4,
+   "packaged": 4,
+   "verified_outcomes": 0,
+   "completed_runs": 2,
+   "dod_rate": {
+    "state": "OBSERVED",
+    "value": 0,
+    "numerator": 0,
+    "denominator": 2
+   },
+   "model_cost_per_run": {
+    "state": "OBSERVED",
+    "value": 21.01565,
+    "unit": "USD/run",
+    "samples": 2,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "tokens_per_run": {
+    "state": "OBSERVED",
+    "value": 9719394,
+    "unit": "tokens/run",
+    "samples": 2,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "total_cost": {
+    "state": "OBSERVED",
+    "value": 42.0313,
+    "unit": "USD",
+    "samples": 2,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "total_tokens": {
+    "state": "OBSERVED",
+    "value": 19438788,
+    "unit": "tokens",
+    "samples": 2,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "cost_coverage": {
+    "measured_runs": 2,
+    "completed_runs": 2,
+    "complete": true,
+    "ratio": 1
+   },
+   "token_coverage": {
+    "measured_runs": 2,
+    "completed_runs": 2,
+    "complete": true,
+    "ratio": 1
+   }
+  }
+ ],
+ "identities": [
+  {
+   "key": "qe-test-script-generation",
+   "label": "Test Script Generation and Execution",
+   "registered": 29,
+   "packaged": 23,
+   "completed_runs": 25,
+   "verified_outcomes": 17,
+   "dod_rate": {
+    "state": "OBSERVED",
+    "value": 0.68,
+    "numerator": 17,
+    "denominator": 25
+   },
+   "model_cost_per_run": {
+    "state": "OBSERVED",
+    "value": 0.13899927272727272,
+    "unit": "USD/run",
+    "samples": 22,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "tokens_per_run": {
+    "state": "OBSERVED",
+    "value": 53030.181818181816,
+    "unit": "tokens/run",
+    "samples": 22,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "total_cost": {
+    "state": "OBSERVED",
+    "value": 3.057984,
+    "unit": "USD",
+    "samples": 22,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "total_tokens": {
+    "state": "OBSERVED",
+    "value": 1166664,
+    "unit": "tokens",
+    "samples": 22,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "cost_coverage": {
+    "measured_runs": 22,
+    "completed_runs": 25,
+    "complete": false,
+    "ratio": 0.88
+   },
+   "token_coverage": {
+    "measured_runs": 22,
+    "completed_runs": 25,
+    "complete": false,
+    "ratio": 0.88
+   }
+  },
+  {
+   "key": "integration-modernization",
+   "label": "Integration modernisation",
+   "registered": 21,
+   "packaged": 15,
+   "completed_runs": 21,
+   "verified_outcomes": 3,
+   "dod_rate": {
+    "state": "OBSERVED",
+    "value": 0.14285714285714285,
+    "numerator": 3,
+    "denominator": 21
+   },
+   "model_cost_per_run": {
+    "state": "OBSERVED",
+    "value": 17.38575714285714,
+    "unit": "USD/run",
+    "samples": 21,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "tokens_per_run": {
+    "state": "OBSERVED",
+    "value": 7919261.095238095,
+    "unit": "tokens/run",
+    "samples": 21,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "total_cost": {
+    "state": "OBSERVED",
+    "value": 365.1009,
+    "unit": "USD",
+    "samples": 21,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "total_tokens": {
+    "state": "OBSERVED",
+    "value": 166304483,
+    "unit": "tokens",
+    "samples": 21,
+    "comparison": {
+     "state": "UNAVAILABLE",
+     "absolute": null,
+     "percent": null
+    }
+   },
+   "cost_coverage": {
+    "measured_runs": 21,
+    "completed_runs": 21,
+    "complete": true,
+    "ratio": 1
+   },
+   "token_coverage": {
+    "measured_runs": 21,
+    "completed_runs": 21,
+    "complete": true,
+    "ratio": 1
+   }
+  }
+ ],
+ "model_routing": {
+  "state": "SELECTIONS_ONLY",
+  "models": [
+   {
+    "model": "Claude-5.0-Sonnet",
+    "selections": 99,
+    "stages": [
+     "ANALYZER",
+     "CODE_REMEDIATOR",
+     "EVALUATOR",
+     "MODERNIZER",
+     "SPEC_GENERATOR"
+    ],
+    "token_samples": 0
+   }
+  ]
+ },
+ "definition_of_done": {
+  "met": 20,
+  "not_met": 18,
+  "not_adjudicable": 8,
+  "rate": {
+   "state": "OBSERVED",
+   "value": 0.43478260869565216,
+   "numerator": 20,
+   "denominator": 46
+  },
+  "criteria": [
+   {
+    "key": "Automation Script Coverage",
+    "label": "Automation Script Coverage",
+    "gating": true,
+    "measured_runs": 2,
+    "passed_runs": 2,
+    "pass_rate": {
+     "state": "OBSERVED",
+     "value": 1,
+     "numerator": 2,
+     "denominator": 2
+    },
+    "threshold": 100,
+    "unit": "%"
+   },
+   {
+    "key": "EVALs Pass Rate",
+    "label": "EVALs Pass Rate",
+    "gating": true,
+    "measured_runs": 21,
+    "passed_runs": 20,
+    "pass_rate": {
+     "state": "OBSERVED",
+     "value": 0.9523809523809523,
+     "numerator": 20,
+     "denominator": 21
+    },
+    "threshold": 80,
+    "unit": "%"
+   },
+   {
+    "key": "Every source process maps to a generated service",
+    "label": "Every source process maps to a generated service",
+    "gating": true,
+    "measured_runs": 0,
+    "passed_runs": 0,
+    "pass_rate": {
+     "state": "UNAVAILABLE",
+     "value": null,
+     "numerator": null,
+     "denominator": null
+    },
+    "threshold": 100,
+    "unit": "%"
+   },
+   {
+    "key": "Functional Equivalence",
+    "label": "Functional Equivalence",
+    "gating": true,
+    "measured_runs": 21,
+    "passed_runs": 13,
+    "pass_rate": {
+     "state": "OBSERVED",
+     "value": 0.6190476190476191,
+     "numerator": 13,
+     "denominator": 21
+    },
+    "threshold": 85,
+    "unit": "%"
+   },
+   {
+    "key": "Gherkin Conformance to Standards",
+    "label": "Gherkin Conformance to Standards",
+    "gating": true,
+    "measured_runs": 23,
+    "passed_runs": 17,
+    "pass_rate": {
+     "state": "OBSERVED",
+     "value": 0.7391304347826086,
+     "numerator": 17,
+     "denominator": 23
+    },
+    "threshold": 100,
+    "unit": "%"
+   },
+   {
+    "key": "Held-out golden cases pass an independent judge",
+    "label": "Held-out golden cases pass an independent judge",
+    "gating": true,
+    "measured_runs": 0,
+    "passed_runs": 0,
+    "pass_rate": {
+     "state": "UNAVAILABLE",
+     "value": null,
+     "numerator": null,
+     "denominator": null
+    },
+    "threshold": 80,
+    "unit": "%"
+   },
+   {
+    "key": "Report Generation",
+    "label": "Report Generation",
+    "gating": true,
+    "measured_runs": 25,
+    "passed_runs": 23,
+    "pass_rate": {
+     "state": "OBSERVED",
+     "value": 0.92,
+     "numerator": 23,
+     "denominator": 25
+    },
+    "threshold": 100,
+    "unit": "%"
+   },
+   {
+    "key": "Scripts do what their test cases say",
+    "label": "Scripts do what their test cases say",
+    "gating": true,
+    "measured_runs": 4,
+    "passed_runs": 4,
+    "pass_rate": {
+     "state": "OBSERVED",
+     "value": 1,
+     "numerator": 4,
+     "denominator": 4
+    },
+    "threshold": 80,
+    "unit": "%"
+   },
+   {
+    "key": "Source-to-target traceability report",
+    "label": "Source-to-target traceability report",
+    "gating": true,
+    "measured_runs": 15,
+    "passed_runs": 15,
+    "pass_rate": {
+     "state": "OBSERVED",
+     "value": 1,
+     "numerator": 15,
+     "denominator": 15
+    },
+    "threshold": null,
+    "unit": null
+   },
+   {
+    "key": "Specs Coverage",
+    "label": "Specs Coverage",
+    "gating": true,
+    "measured_runs": 21,
+    "passed_runs": 21,
+    "pass_rate": {
+     "state": "OBSERVED",
+     "value": 1,
+     "numerator": 21,
+     "denominator": 21
+    },
+    "threshold": 85,
+    "unit": "%"
+   },
+   {
+    "key": "Test Data Mapped to Test Scripts",
+    "label": "Test Data Mapped to Test Scripts",
+    "gating": true,
+    "measured_runs": 23,
+    "passed_runs": 19,
+    "pass_rate": {
+     "state": "OBSERVED",
+     "value": 0.8260869565217391,
+     "numerator": 19,
+     "denominator": 23
+    },
+    "threshold": 100,
+    "unit": "%"
+   },
+   {
+    "key": "Test Script to Test Case Traceability",
+    "label": "Test Script to Test Case Traceability",
+    "gating": true,
+    "measured_runs": 23,
+    "passed_runs": 19,
+    "pass_rate": {
+     "state": "OBSERVED",
+     "value": 0.8260869565217391,
+     "numerator": 19,
+     "denominator": 23
+    },
+    "threshold": 100,
+    "unit": "%"
+   },
+   {
+    "key": "The generated services compile",
+    "label": "The generated services compile",
+    "gating": true,
+    "measured_runs": 0,
+    "passed_runs": 0,
+    "pass_rate": {
+     "state": "UNAVAILABLE",
+     "value": null,
+     "numerator": null,
+     "denominator": null
+    },
+    "threshold": null,
+    "unit": null
+   },
+   {
+    "key": "Unit test Cases passed",
+    "label": "Unit test Cases passed",
+    "gating": true,
+    "measured_runs": 7,
+    "passed_runs": 4,
+    "pass_rate": {
+     "state": "OBSERVED",
+     "value": 0.5714285714285714,
+     "numerator": 4,
+     "denominator": 7
+    },
+    "threshold": 85,
+    "unit": "%"
+   }
+  ]
+ },
+ "run_economics": {
+  "completed_runs": 46,
+  "cost_coverage": {
+   "measured_runs": 43,
+   "completed_runs": 46,
+   "complete": false,
+   "ratio": 0.9348
+  },
+  "token_coverage": {
+   "measured_runs": 43,
+   "completed_runs": 46,
+   "complete": false,
+   "ratio": 0.9348
+  },
+  "model_cost_per_run": {
+   "state": "OBSERVED",
+   "value": 8.561834511627907,
+   "unit": "USD/run",
+   "samples": 43,
+   "comparison": {
+    "state": "UNAVAILABLE",
+    "absolute": null,
+    "percent": null
+   }
+  },
+  "tokens_per_run": {
+   "state": "OBSERVED",
+   "value": 3894677.8372093025,
+   "unit": "tokens/run",
+   "samples": 43,
+   "comparison": {
+    "state": "UNAVAILABLE",
+    "absolute": null,
+    "percent": null
+   }
+  },
+  "total_tokens": {
+   "state": "OBSERVED",
+   "value": 167471147,
+   "unit": "tokens",
+   "samples": 43,
+   "comparison": {
+    "state": "UNAVAILABLE",
+    "absolute": null,
+    "percent": null
+   }
+  },
+  "total_cost": {
+   "state": "OBSERVED",
+   "value": 368.158884,
+   "unit": "USD",
+   "samples": 43,
+   "comparison": {
+    "state": "UNAVAILABLE",
+    "absolute": null,
+    "percent": null
+   }
+  },
+  "average_duration_seconds": {
+   "state": "OBSERVED",
+   "value": 918.5673791304348,
+   "unit": "seconds",
+   "samples": 46,
+   "comparison": {
+    "state": "UNAVAILABLE",
+    "absolute": null,
+    "percent": null
+   }
+  }
+ },
+ "run_ledger": {
+  "rows": [
+   {
+    "run_ref": "r-20260930t115950-23cc74d6",
+    "worker_id": "599c050d-27d3-4f8e-8429-a1d48c8c7600",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "",
+    "target_technology": "",
+    "completed_at": "2026-09-30T12:01:14.881172Z",
+    "duration_seconds": 84.240723,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 106273
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.261650"
+    }
+   },
+   {
+    "run_ref": "r-20260930t115048-9b668222",
+    "worker_id": "23e973ce-c7fa-4c73-84b3-3554342dced3",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "NOT_MET",
+    "source_technology": "",
+    "target_technology": "",
+    "completed_at": "2026-09-30T11:51:29.469736Z",
+    "duration_seconds": 41.265062,
+    "total_tokens": {
+     "state": "NOT_MEASURED",
+     "value": null
+    },
+    "model_cost_usd": {
+     "state": "NOT_MEASURED",
+     "value": null
+    }
+   },
+   {
+    "run_ref": "r-20260930t114905-f8907cfc",
+    "worker_id": "23e973ce-c7fa-4c73-84b3-3554342dced3",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "NOT_MET",
+    "source_technology": "",
+    "target_technology": "",
+    "completed_at": "2026-09-30T11:50:38.398111Z",
+    "duration_seconds": 92.701479,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 157402
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.372452"
+    }
+   },
+   {
+    "run_ref": "r-20260930t113102-4fb7865e",
+    "worker_id": "ae524149-ab6d-45e2-9749-fff2b7bdc5a1",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "NOT_MET",
+    "source_technology": "",
+    "target_technology": "",
+    "completed_at": "2026-09-30T11:32:19.677296Z",
+    "duration_seconds": 77.032543,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 105209
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.251170"
+    }
+   },
+   {
+    "run_ref": "1b968757-1e01-47ec-a586-e5ed107301b7",
+    "worker_id": "5d78f578-db6c-40c4-affc-9e7c1505de11",
+    "worker_name": "Integration modernisation · Payments",
+    "context_key": "tibco-bw-to-spring-boot-services-tests",
+    "context_label": "Converts Integration Service to Unit Tested Target Code",
+    "verdict": "NOT_ADJUDICABLE",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-30T10:42:42.671942Z",
+    "duration_seconds": 1789.760231,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 9673872
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "20.981400"
+    }
+   },
+   {
+    "run_ref": "cb3614146600",
+    "worker_id": "d1b4a54b-4f39-4664-b6f1-50aa55cf22c5",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T10:09:07.724383Z",
+    "duration_seconds": 41.219196,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 0
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.000000"
+    }
+   },
+   {
+    "run_ref": "0a3c7297a99c",
+    "worker_id": "d1b4a54b-4f39-4664-b6f1-50aa55cf22c5",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T10:08:16.331151Z",
+    "duration_seconds": 41.197349,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 0
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.000000"
+    }
+   },
+   {
+    "run_ref": "08384ff7d71b",
+    "worker_id": "d1b4a54b-4f39-4664-b6f1-50aa55cf22c5",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T10:06:43.617690Z",
+    "duration_seconds": 82.669596,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 108840
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.287512"
+    }
+   },
+   {
+    "run_ref": "4a432b7d5948",
+    "worker_id": "9cac07d7-a7f0-410a-8585-792cfc4bcffa",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T06:54:08.746305Z",
+    "duration_seconds": 41.138911,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 0
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.000000"
+    }
+   },
+   {
+    "run_ref": "e5dd27c30a49",
+    "worker_id": "9cac07d7-a7f0-410a-8585-792cfc4bcffa",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T06:53:17.450986Z",
+    "duration_seconds": 40.814054,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 0
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.000000"
+    }
+   },
+   {
+    "run_ref": "48ec4ab1dcd8",
+    "worker_id": "9cac07d7-a7f0-410a-8585-792cfc4bcffa",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T06:51:14.072416Z",
+    "duration_seconds": 40.358228,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 0
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.000000"
+    }
+   },
+   {
+    "run_ref": "1e6ad34f7584",
+    "worker_id": "9cac07d7-a7f0-410a-8585-792cfc4bcffa",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T06:50:09.951040Z",
+    "duration_seconds": 75.507609,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 156978
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.368372"
+    }
+   },
+   {
+    "run_ref": "d23df6ccff32",
+    "worker_id": "5125a7be-69f8-4aee-9f4f-e592329b4a55",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "NOT_MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T06:40:46.389396Z",
+    "duration_seconds": 92.817486,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 109334
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.292372"
+    }
+   },
+   {
+    "run_ref": "3cd1eda532d1",
+    "worker_id": "40ad675d-2348-436a-97e3-42bdf5d805d2",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T05:46:04.389049Z",
+    "duration_seconds": 39.399022,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 0
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.000000"
+    }
+   },
+   {
+    "run_ref": "e34a849e52ce",
+    "worker_id": "40ad675d-2348-436a-97e3-42bdf5d805d2",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T05:45:23.017973Z",
+    "duration_seconds": 39.175179,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 0
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.000000"
+    }
+   },
+   {
+    "run_ref": "00bac291fdf5",
+    "worker_id": "40ad675d-2348-436a-97e3-42bdf5d805d2",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T05:43:27.473577Z",
+    "duration_seconds": 39.734817,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 0
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.000000"
+    }
+   },
+   {
+    "run_ref": "e9f05db3763f",
+    "worker_id": "40ad675d-2348-436a-97e3-42bdf5d805d2",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T05:42:45.851792Z",
+    "duration_seconds": 39.182409,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 0
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.000000"
+    }
+   },
+   {
+    "run_ref": "2c5919a771d9",
+    "worker_id": "40ad675d-2348-436a-97e3-42bdf5d805d2",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T05:40:52.020028Z",
+    "duration_seconds": 39.25195,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 0
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.000000"
+    }
+   },
+   {
+    "run_ref": "29e565ea5b1e",
+    "worker_id": "40ad675d-2348-436a-97e3-42bdf5d805d2",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T05:38:13.745087Z",
+    "duration_seconds": 39.075358,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 0
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.000000"
+    }
+   },
+   {
+    "run_ref": "5d0e0a4654ed",
+    "worker_id": "40ad675d-2348-436a-97e3-42bdf5d805d2",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T05:37:13.926975Z",
+    "duration_seconds": 65.644281,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 105020
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.249296"
+    }
+   },
+   {
+    "run_ref": "23e5d05bc216",
+    "worker_id": "149c71e2-f540-4660-956c-18fb55f7640d",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "NOT_MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T05:30:08.825904Z",
+    "duration_seconds": 19.809111,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 0
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.000000"
+    }
+   },
+   {
+    "run_ref": "c62a9420a861",
+    "worker_id": "149c71e2-f540-4660-956c-18fb55f7640d",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "NOT_MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-30T05:29:08.022617Z",
+    "duration_seconds": 93.145466,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 80658
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.256812"
+    }
+   },
+   {
+    "run_ref": "2f7bc284-47fb-4a33-9d4e-8e1ccc056b7a",
+    "worker_id": "d085cb8f-98cb-4cf9-ab94-a3c472d59418",
+    "worker_name": "Integration modernisation · Insurance claims",
+    "context_key": "tibco-bw-to-spring-boot-services",
+    "context_label": "Converts Integration Service to Target Code",
+    "verdict": "MET",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-25T16:01:57.412541Z",
+    "duration_seconds": 2250.498359,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 10271385
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "22.399300"
+    }
+   },
+   {
+    "run_ref": "c5c91a04c8b8",
+    "worker_id": "3cee465d-60f5-4a36-9f91-aaa2864f75a7",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "NOT_MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-25T15:27:34.141011Z",
+    "duration_seconds": 176.984544,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 120072
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.375112"
+    }
+   },
+   {
+    "run_ref": "3b82809f-1762-4819-9460-ace17847aa60",
+    "worker_id": "2e59396b-9bbc-4d16-a20b-623df9e63361",
+    "worker_name": "Integration modernisation · Insurance claims",
+    "context_key": "tibco-bw-to-spring-boot-services",
+    "context_label": "Converts Integration Service to Target Code",
+    "verdict": "MET",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-25T14:33:17.724310Z",
+    "duration_seconds": 1940.592287,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 10462869
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "22.523300"
+    }
+   },
+   {
+    "run_ref": "05d757491e76",
+    "worker_id": "2c65d1b7-c9bd-4245-a3a5-71cbb40a1205",
+    "worker_name": "Test Script Generation and Execution · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "NOT_MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-25T13:41:43.786694Z",
+    "duration_seconds": 148.123606,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 116878
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "0.343236"
+    }
+   },
+   {
+    "run_ref": "b8c96661-55fb-42c2-b447-5a3cb5dbb43a",
+    "worker_id": "0e73e420-4a28-40a4-9353-a1e48af2d2bd",
+    "worker_name": "Integration modernisation · Commercial lending",
+    "context_key": "tibco-bw-to-spring-boot-services-tests-traceability",
+    "context_label": "Converts Integration Service to Traced Target Code",
+    "verdict": "NOT_MET",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T06:36:33.877126Z",
+    "duration_seconds": 1967.918799,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 6584072
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "14.686500"
+    }
+   },
+   {
+    "run_ref": "ad114fc5-a5b5-480f-8350-2a75c1d68c72",
+    "worker_id": "0e73e420-4a28-40a4-9353-a1e48af2d2bd",
+    "worker_name": "Integration modernisation · Commercial lending",
+    "context_key": "tibco-bw-to-spring-boot-services-tests-traceability",
+    "context_label": "Converts Integration Service to Traced Target Code",
+    "verdict": "NOT_MET",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T06:08:53.844902Z",
+    "duration_seconds": 1609.005363,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 6704273
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "14.720300"
+    }
+   },
+   {
+    "run_ref": "13c91aa1bafb",
+    "worker_id": "645685bf-8b5b-41cc-8b0f-c7c15adf8198",
+    "worker_name": "Test Script Generation · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-16T06:07:38.208199Z",
+    "duration_seconds": 84.757285,
+    "total_tokens": {
+     "state": "NOT_MEASURED",
+     "value": null
+    },
+    "model_cost_usd": {
+     "state": "NOT_MEASURED",
+     "value": null
+    }
+   },
+   {
+    "run_ref": "7545a75e-a909-4d59-9732-e27061513d31",
+    "worker_id": "0e73e420-4a28-40a4-9353-a1e48af2d2bd",
+    "worker_name": "Integration modernisation · Commercial lending",
+    "context_key": "tibco-bw-to-spring-boot-services-tests-traceability",
+    "context_label": "Converts Integration Service to Traced Target Code",
+    "verdict": "NOT_ADJUDICABLE",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T06:01:15.266764Z",
+    "duration_seconds": 1666.385092,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 5498116
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "12.335000"
+    }
+   },
+   {
+    "run_ref": "d510e3221384",
+    "worker_id": "645685bf-8b5b-41cc-8b0f-c7c15adf8198",
+    "worker_name": "Test Script Generation · Insurance",
+    "context_key": "qe-testcases-to-executed-scripts",
+    "context_label": "Test Automation Script Generation + Test Suite Execution + Reporting",
+    "verdict": "MET",
+    "source_technology": "Written test cases",
+    "target_technology": "Playwright (Python)",
+    "completed_at": "2026-09-16T05:46:53.835592Z",
+    "duration_seconds": 124.333111,
+    "total_tokens": {
+     "state": "NOT_MEASURED",
+     "value": null
+    },
+    "model_cost_usd": {
+     "state": "NOT_MEASURED",
+     "value": null
+    }
+   },
+   {
+    "run_ref": "6b327dc5-0349-48f3-8568-e4354f324e63",
+    "worker_id": "0e73e420-4a28-40a4-9353-a1e48af2d2bd",
+    "worker_name": "Integration modernisation · Commercial lending",
+    "context_key": "tibco-bw-to-spring-boot-services-tests-traceability",
+    "context_label": "Converts Integration Service to Traced Target Code",
+    "verdict": "NOT_ADJUDICABLE",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T05:41:13.527391Z",
+    "duration_seconds": 2123.039977,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 6683261
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "14.974800"
+    }
+   },
+   {
+    "run_ref": "dfc6f7d4-0845-4ad8-b98a-d7bb538dffcd",
+    "worker_id": "0e73e420-4a28-40a4-9353-a1e48af2d2bd",
+    "worker_name": "Integration modernisation · Commercial lending",
+    "context_key": "tibco-bw-to-spring-boot-services-tests-traceability",
+    "context_label": "Converts Integration Service to Traced Target Code",
+    "verdict": "NOT_ADJUDICABLE",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T05:37:54.430897Z",
+    "duration_seconds": 1613.296691,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 7062202
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "15.423000"
+    }
+   },
+   {
+    "run_ref": "9f8fa15b-1dda-4184-9405-f56ca6362292",
+    "worker_id": "0e73e420-4a28-40a4-9353-a1e48af2d2bd",
+    "worker_name": "Integration modernisation · Commercial lending",
+    "context_key": "tibco-bw-to-spring-boot-services-tests-traceability",
+    "context_label": "Converts Integration Service to Traced Target Code",
+    "verdict": "NOT_MET",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T05:29:31.694998Z",
+    "duration_seconds": 1951.071846,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 6609869
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "14.798200"
+    }
+   },
+   {
+    "run_ref": "8ee5f45e-1fec-44e8-b387-d3be7b33fd4d",
+    "worker_id": "0e73e420-4a28-40a4-9353-a1e48af2d2bd",
+    "worker_name": "Integration modernisation · Commercial lending",
+    "context_key": "tibco-bw-to-spring-boot-services-tests-traceability",
+    "context_label": "Converts Integration Service to Traced Target Code",
+    "verdict": "NOT_ADJUDICABLE",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T03:50:56.771690Z",
+    "duration_seconds": 2312.587495,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 12413887
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "26.619500"
+    }
+   },
+   {
+    "run_ref": "2a95e99a-577f-4658-9e62-ee27008a1355",
+    "worker_id": "0e73e420-4a28-40a4-9353-a1e48af2d2bd",
+    "worker_name": "Integration modernisation · Commercial lending",
+    "context_key": "tibco-bw-to-spring-boot-services-tests-traceability",
+    "context_label": "Converts Integration Service to Traced Target Code",
+    "verdict": "NOT_ADJUDICABLE",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T03:40:26.795397Z",
+    "duration_seconds": 1263.690308,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 5720454
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "12.708400"
+    }
+   },
+   {
+    "run_ref": "feaa9079-3d27-4182-8398-9afa32d1437c",
+    "worker_id": "0e73e420-4a28-40a4-9353-a1e48af2d2bd",
+    "worker_name": "Integration modernisation · Commercial lending",
+    "context_key": "tibco-bw-to-spring-boot-services-tests-traceability",
+    "context_label": "Converts Integration Service to Traced Target Code",
+    "verdict": "NOT_MET",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T02:48:10.348458Z",
+    "duration_seconds": 3117.908386,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 6359903
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "14.357200"
+    }
+   },
+   {
+    "run_ref": "6451a4d6-3715-4115-842e-fb165d67df7a",
+    "worker_id": "0e73e420-4a28-40a4-9353-a1e48af2d2bd",
+    "worker_name": "Integration modernisation · Commercial lending",
+    "context_key": "tibco-bw-to-spring-boot-services-tests-traceability",
+    "context_label": "Converts Integration Service to Traced Target Code",
+    "verdict": "NOT_MET",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T02:44:57.883123Z",
+    "duration_seconds": 2072.669072,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 10789884
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "23.149500"
+    }
+   },
+   {
+    "run_ref": "9c42ee63-ca3b-413a-b28c-3fb90175d7c1",
+    "worker_id": "0e73e420-4a28-40a4-9353-a1e48af2d2bd",
+    "worker_name": "Integration modernisation · Commercial lending",
+    "context_key": "tibco-bw-to-spring-boot-services-tests-traceability",
+    "context_label": "Converts Integration Service to Traced Target Code",
+    "verdict": "NOT_ADJUDICABLE",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T02:24:09.352841Z",
+    "duration_seconds": 1778.736684,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 8005379
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "17.429700"
+    }
+   },
+   {
+    "run_ref": "4fe70ab1-63d4-4b67-8e10-dccf8b2d53b6",
+    "worker_id": "0e73e420-4a28-40a4-9353-a1e48af2d2bd",
+    "worker_name": "Integration modernisation · Commercial lending",
+    "context_key": "tibco-bw-to-spring-boot-services-tests-traceability",
+    "context_label": "Converts Integration Service to Traced Target Code",
+    "verdict": "NOT_MET",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T02:12:06.534864Z",
+    "duration_seconds": 1596.782512,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 5951196
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "13.184500"
+    }
+   },
+   {
+    "run_ref": "776fa3b6-8080-4dd3-94d5-91b836a4cc06",
+    "worker_id": "0e73e420-4a28-40a4-9353-a1e48af2d2bd",
+    "worker_name": "Integration modernisation · Commercial lending",
+    "context_key": "tibco-bw-to-spring-boot-services-tests-traceability",
+    "context_label": "Converts Integration Service to Traced Target Code",
+    "verdict": "NOT_MET",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T02:10:44.474426Z",
+    "duration_seconds": 2371.508253,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 7355548
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "16.555400"
+    }
+   },
+   {
+    "run_ref": "80ee1aed-0074-412e-bbc2-c24f4c08c549",
+    "worker_id": "0e73e420-4a28-40a4-9353-a1e48af2d2bd",
+    "worker_name": "Integration modernisation · Commercial lending",
+    "context_key": "tibco-bw-to-spring-boot-services-tests-traceability",
+    "context_label": "Converts Integration Service to Traced Target Code",
+    "verdict": "NOT_MET",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T01:59:17.521410Z",
+    "duration_seconds": 1880.629455,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 5268899
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "12.440300"
+    }
+   },
+   {
+    "run_ref": "96c54589-0287-4862-9f5c-d336395a2ef8",
+    "worker_id": "3dafb2d3-58db-49a9-942b-1a9f71375d4b",
+    "worker_name": "Integration modernisation · Insurance claims",
+    "context_key": "tibco-bw-to-spring-boot-services",
+    "context_label": "Converts Integration Service to Target Code",
+    "verdict": "MET",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T01:51:17.123374Z",
+    "duration_seconds": 1979.287018,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 7163344
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "15.935400"
+    }
+   },
+   {
+    "run_ref": "c0a30f54-54df-4a78-a2dd-a3a0b894a300",
+    "worker_id": "3dafb2d3-58db-49a9-942b-1a9f71375d4b",
+    "worker_name": "Integration modernisation · Insurance claims",
+    "context_key": "tibco-bw-to-spring-boot-services",
+    "context_label": "Converts Integration Service to Target Code",
+    "verdict": "NOT_MET",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T01:50:53.125892Z",
+    "duration_seconds": 1374.45693,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 8124883
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "17.587800"
+    }
+   },
+   {
+    "run_ref": "288e2f6c-81c9-4881-9067-96a33987442e",
+    "worker_id": "0e73e420-4a28-40a4-9353-a1e48af2d2bd",
+    "worker_name": "Integration modernisation · Commercial lending",
+    "context_key": "tibco-bw-to-spring-boot-services-tests-traceability",
+    "context_label": "Converts Integration Service to Traced Target Code",
+    "verdict": "NOT_ADJUDICABLE",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T01:49:32.883276Z",
+    "duration_seconds": 2014.348046,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 9836271
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "21.241500"
+    }
+   },
+   {
+    "run_ref": "ba871dfa-a48c-4c57-b61e-cc871b0a3787",
+    "worker_id": "dd81f39e-d662-4dee-b4b9-846c11e094eb",
+    "worker_name": "Integration modernisation · Payments",
+    "context_key": "tibco-bw-to-spring-boot-services-tests",
+    "context_label": "Converts Integration Service to Unit Tested Target Code",
+    "verdict": "NOT_MET",
+    "source_technology": "Tibco",
+    "target_technology": "Java Spring Boot",
+    "completed_at": "2026-09-16T01:44:37.660965Z",
+    "duration_seconds": 1880.348261,
+    "total_tokens": {
+     "state": "OBSERVED",
+     "value": 9764916
+    },
+    "model_cost_usd": {
+     "state": "OBSERVED",
+     "value": "21.049900"
+    }
+   }
+  ],
+  "returned": 46,
+  "completed_runs": 46,
+  "truncated": false
+ },
+ "autonomy": [
+  {
+   "level": 1,
+   "label": "Level 1",
+   "completed_runs": 0,
+   "dod_met": 0
+  },
+  {
+   "level": 2,
+   "label": "Level 2",
+   "completed_runs": 0,
+   "dod_met": 0
+  },
+  {
+   "level": 3,
+   "label": "Level 3",
+   "completed_runs": 46,
+   "dod_met": 20
+  },
+  {
+   "level": 4,
+   "label": "Level 4",
+   "completed_runs": 0,
+   "dod_met": 0
+  }
+ ],
+ "governance": {
+  "active_workers": {
+   "state": "OBSERVED",
+   "value": 1,
+   "unit": "workers",
+   "samples": 1,
+   "comparison": {
+    "state": "UNAVAILABLE",
+    "absolute": null,
+    "percent": null
+   }
+  },
+  "data_quality": [
+   {
+    "key": "runs-missing-completion",
+    "label": "Terminal runs missing completion time",
+    "affected_records": 0,
+    "state": "CLEAR"
+   },
+   {
+    "key": "runs-missing-usage",
+    "label": "Runs without complete usage evidence",
+    "affected_records": 3,
+    "state": "ATTENTION"
+   }
+  ]
+ }
+}
