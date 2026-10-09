@@ -33,7 +33,7 @@ function bucketSpend(data: ExecutiveDashboard, measure: Measure): SpendBucket[] 
   })
 }
 
-const chartConfig = { value: { label: 'Reported spend', color: 'var(--chart-teal)' } } satisfies ChartConfig
+const chartConfig = { value: { label: 'Reported spend', color: 'var(--chart-1)' } } satisfies ChartConfig
 
 export function CostPanel({ data, measure, onMeasure }: { data: ExecutiveDashboard; measure: Measure; onMeasure: (m: Measure) => void }) {
   const [tableOpen, setTableOpen] = useState(false)

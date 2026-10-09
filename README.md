@@ -36,7 +36,7 @@ Add `?mock=` to a page URL that reads data:
 | Dashboard | `/dashboard` | Brief first; criteria, cost, contexts and runs open as deep-linkable sheets (`?detail=`) |
 | Registry | `/workers` | Grouped list plus a preview panel; customer packages tab |
 | Worker | `/workers/:id` | Overview, runs, runtimes, memory and learning, Sentinel, delivery; identity pause, resume and revoke |
-| Compose | `/compose`, `/compose/guided/:id`, `/compose/drafts` | Declaration, then live assembly through eight checkpoints, then Build Package |
+| Compose | `/compose`, `/compose/guided/:id`, `/compose/drafts` | Six-step stepper on top; the Worker being composed is shown live in the navy panel on the right; eight checkpoints, then Build Package |
 | Packaging | `/packaging` | Queues; builds run as background operations |
 | Customer delivery | `/customer-delivery`, `/customer-delivery/prepare/:packageId` | To prepare / prepared records; four-step wizard with a re-attachable operation |
 | Knowledge | `/knowledge/:tab`, `/knowledge/capture`, `/knowledge/coverage` | Library tabs, Write a Skill, governance |
@@ -69,7 +69,7 @@ src/
 └── data/mock/            the offline capture (JSON)
 ```
 
-Design tokens, the type scale (`text-page`, `text-section`, `text-item`, `text-body`, `text-meta`, `text-overline`) and the deliberate deviations from the extracted design are documented in `.claude/skills/frontend-kit/references/design.md` §10.
+Design tokens, the type scale (`text-page`, `text-section`, `text-item`, `text-body`, `text-meta`, `text-overline`) and the deliberate deviations from the extracted design are documented in `.claude/skills/frontend-kit/references/design.md` (extracted from the v2 Compose screenshots: Roboto, action blue, navy Worker panel).
 
 ## Scripts
 

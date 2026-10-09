@@ -151,6 +151,18 @@ export const CHECKPOINTS: { key: CheckpointKey; station: StationKey; title: stri
   { key: 'autonomy', station: 'autonomy', title: 'Autonomy and Sentinel', decides: 'How far it may act, and what the Sentinel does.', button: 'Confirm autonomy', stage: 'governance' },
 ]
 
+/** The six steps of the stepper: one per station. Declaration is the first half of step 1. */
+export const STEPS: { key: StationKey; label: string; sub: string }[] = [
+  { key: 'role_identity', label: 'Bounded context', sub: 'Identity · scope' },
+  { key: 'worker_intent', label: 'Worker intent', sub: 'Outcome · harness' },
+  { key: 'brain', label: 'Worker Brain', sub: 'Skills · DSL · EVALs' },
+  { key: 'definition_of_done', label: 'Definition of Done', sub: 'Release gates' },
+  { key: 'autonomy', label: 'Autonomy', sub: 'How far it acts' },
+  { key: 'package_deploy', label: 'Package', sub: 'Build and deploy' },
+]
+
+export const checkpointsOf = (station: StationKey) => CHECKPOINTS.filter((c) => c.station === station)
+
 /** Readiness sections → the checkpoint that owns them (for drafts the platform reports as BLOCKED). */
 export const SECTION_CHECKPOINT: Record<string, CheckpointKey> = {
   purpose: 'worker_intent',

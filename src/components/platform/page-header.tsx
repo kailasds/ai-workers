@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export interface Crumb {
@@ -11,6 +11,7 @@ export interface Crumb {
 // at most one scope sentence; utilities (freshness, refresh, period) before the task actions.
 export function PageHeader({
   title,
+  icon: Icon,
   description,
   meta,
   crumbs,
@@ -19,6 +20,8 @@ export function PageHeader({
   className,
 }: {
   title: string
+  /** A 48px tinted tile beside the title (design.md §8), for task pages such as Compose. */
+  icon?: LucideIcon
   description?: React.ReactNode
   /** A quiet line under the description, e.g. when the data was last read. */
   meta?: React.ReactNode
@@ -29,7 +32,13 @@ export function PageHeader({
 }) {
   return (
     <header className={cn('flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between', className)}>
-      <div className="min-w-0">
+      <div className={cn('min-w-0', Icon && 'flex items-start gap-4')}>
+        {Icon && (
+          <span aria-hidden="true" className="grid size-12 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary">
+            <Icon className="size-[22px]" />
+          </span>
+        )}
+        <div className="min-w-0">
         {crumbs && crumbs.length > 0 && (
           <nav aria-label="Breadcrumb" className="mb-2">
             <ol className="flex flex-wrap items-center gap-1 text-meta text-muted-foreground">
@@ -51,6 +60,7 @@ export function PageHeader({
         <h1 className="text-page">{title}</h1>
         {description && <p className="mt-1 max-w-2xl text-body text-muted-foreground">{description}</p>}
         {meta && <div className="mt-2">{meta}</div>}
+        </div>
       </div>
       {(utilities || actions) && (
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 lg:justify-end">
