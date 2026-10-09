@@ -170,6 +170,10 @@ coloured by part hue.
   - **Disabled primary:** the same blue at 40% opacity.
   - **Secondary:** a white outline with a hairline border ("Back", "Start over").
   - **Footer layout:** Back is on the left and the primary action on the right.
+- **Navigation rail:**
+  - It collapses to a 64px icon rail with tooltips (the "Collapse" control or ⌘B); on phones it is an off-canvas sheet.
+  - **Active item:** a `primary-soft` fill, `primary-strong` semibold label and blue icon, plus a 3px primary bar on the rail edge. When collapsed, the fill and blue icon remain.
+- **Worker panel detail level:** one line per part. Show only the counts that define it ("5 Skills · 4 DSLs · 9 EVALs", "5 criteria, all gating", "Level 3 · Bounded"); everything else stays in the step itself.
 - **Icon set:** lucide-react, 1.75 stroke, rounded caps.
 
   | Reference icon | lucide-react |

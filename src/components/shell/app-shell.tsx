@@ -17,7 +17,7 @@ export function AppShell() {
 
   return (
     <TooltipProvider delayDuration={400}>
-      <SidebarProvider>
+      <SidebarProvider style={{ '--sidebar-width': '16.5rem', '--sidebar-width-icon': '4rem' } as React.CSSProperties}>
         <a
           href="#main"
           className="sr-only z-50 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground focus:not-sr-only focus:fixed focus:top-3 focus:left-3"

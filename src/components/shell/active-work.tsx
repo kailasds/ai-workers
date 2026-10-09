@@ -12,7 +12,7 @@ export function ActiveWork() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <SidebarMenuButton className="h-9" tooltip="Active work">
+        <SidebarMenuButton className="h-9 text-sidebar-foreground/80 group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:p-3! [&_svg]:size-[18px]!" tooltip="Active work">
           <Activity aria-hidden="true" />
           <span>Active work</span>
         </SidebarMenuButton>

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { ArrowLeft, FileCode2, FlaskConical, FolderOpen, Workflow, Wrench } from 'lucide-react'
+import { ArrowLeft, FolderOpen, Wrench } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -23,21 +23,23 @@ import { ComposeStepper, type StepState } from './compose-stepper'
 import { DeclarationPanel } from './worker-panel'
 
 const NONE = '__none'
-const CONTEXT_ICONS = [FileCode2, FlaskConical, Workflow]
 
-function Question({ id, title, hint, children }: { id: string; title: string; hint?: string; children: React.ReactNode }) {
+// The earlier form: three numbered decisions, all visible; later ones wait (dimmed) until the
+// one before is made, so the whole shape of the declaration is readable up front.
+function Step({ n, title, hint, active, children }: { n: number; title: string; hint?: string; active: boolean; children: React.ReactNode }) {
   return (
-    <section aria-labelledby={id} className="flex flex-col gap-4">
-      <div>
-        <h3 id={id} className="text-item font-semibold">{title}</h3>
-        {hint && <p className="mt-1 max-w-3xl text-body text-muted-foreground">{hint}</p>}
+    <section aria-labelledby={`step-${n}`} className={cn('flex flex-col gap-4', !active && 'opacity-50')}>
+      <div className="flex items-baseline gap-3">
+        <span className="grid size-6 shrink-0 place-items-center rounded-full bg-primary text-meta font-semibold text-primary-foreground tabular-nums" aria-hidden="true">{n}</span>
+        <div>
+          <h3 id={`step-${n}`} className="text-item font-semibold">{title}</h3>
+          {hint && <p className="text-meta text-muted-foreground">{hint}</p>}
+        </div>
       </div>
-      {children}
+      <div className="sm:pl-9">{children}</div>
     </section>
   )
 }
-
-const fieldLabel = 'text-overline text-muted-foreground uppercase'
 
 export function DeclarationPage() {
   const navigate = useNavigate()
@@ -103,7 +105,7 @@ export function DeclarationPage() {
       <PageHeader
         icon={Wrench}
         title="Compose an AI Worker"
-        description="Declare what it does and where its work stops. The platform assembles the rest, and nothing enters the Worker until you confirm it."
+        description="Choose the work. Confirm its scope. The platform assembles the rest."
         actions={
           <Button asChild variant="outline">
             <Link to="/compose/drafts"><FolderOpen aria-hidden="true" />Saved drafts</Link>
@@ -118,15 +120,16 @@ export function DeclarationPage() {
           <div className="rounded-xl border bg-card p-5 sm:p-8">
             <p className="text-overline font-semibold text-primary-strong uppercase">Step 1 of {STEPS.length}</p>
             <h2 className="mt-2 text-section">Define the Worker: what it does, and where its work stops</h2>
+            <p className="mt-1 text-body text-muted-foreground">Nothing enters the Worker until you confirm it.</p>
 
             <div className="mt-8 flex flex-col gap-10">
-              <Question id="q-type" title="What kind of work does it perform?" hint="The kind of work decides which identities exist.">
+              <Step n={1} title="What kind of work?" hint="Decides which identities exist." active>
                 {types.error ? (
                   <ErrorState title="Could not load Worker types." message={types.error.message} onRetry={types.refresh} />
                 ) : !types.data ? (
                   <LoadingRegion label="Reading Worker types…" className="flex flex-col gap-2"><Skeleton className="h-16" /><Skeleton className="h-16" /></LoadingRegion>
                 ) : (
-                  <RadioGroup value={type ?? ''} onValueChange={chooseType} aria-labelledby="q-type" className="gap-3">
+                  <RadioGroup value={type ?? ''} onValueChange={chooseType} aria-label="Worker type" className="gap-2">
                     {types.data.types.map((t) => (
                       <ChoiceCard
                         key={t.key}
@@ -141,66 +144,64 @@ export function DeclarationPage() {
                     ))}
                   </RadioGroup>
                 )}
-              </Question>
+              </Step>
 
-              {type && (
-                <Question id="q-identity" title="What is it?" hint="The identity decides which scopes this Worker may be bound to. A business domain decides which Skills, Domain Specific Languages and EVALs come with it, and can be left out.">
-                  <div className="grid gap-5 sm:grid-cols-2">
-                    <div className="flex flex-col gap-2 sm:col-span-2">
-                      <Label htmlFor="identity" className={fieldLabel}>Identity</Label>
-                      <Select value={identity ?? ''} onValueChange={chooseIdentity}>
-                        <SelectTrigger id="identity" className="h-auto min-h-12 w-full py-2.5"><SelectValue placeholder="Choose an identity" /></SelectTrigger>
-                        <SelectContent>
-                          {identities.map((i) => (
-                            <SelectItem key={i.key} value={i.key}>{i.label} <span className="text-muted-foreground">· {CONTEXTS.filter((c) => c.identity === i.key).length} scopes</span></SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {identity && <p className="text-meta text-muted-foreground">{identityOf(identity)?.summary}</p>}
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <Label htmlFor="domain" className={fieldLabel}>Business domain · optional</Label>
-                      <Select value={domain ?? NONE} onValueChange={(v) => setDomain(v === NONE ? null : v)}>
-                        <SelectTrigger id="domain" className="h-12 w-full"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value={NONE}>No business domain</SelectItem>
-                          {BUSINESS_DOMAINS.map((d) => <SelectItem key={d.key} value={d.key}>{d.label}</SelectItem>)}
-                        </SelectContent>
-                      </Select>
-                      <p className="text-meta text-muted-foreground">Without one, no domain language binds.</p>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <Label htmlFor="geography" className={fieldLabel}>Geography · optional</Label>
-                      <Select value={geography ?? NONE} onValueChange={(v) => setGeography(v === NONE ? null : v)} disabled={!geos.data}>
-                        <SelectTrigger id="geography" className="h-12 w-full"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value={NONE}>Not stated</SelectItem>
-                          {geos.data?.geographies.map((g) => (
-                            <SelectItem key={g.key} value={g.key}>{g.display_name} <span className="text-muted-foreground">· {g.eval_count} compliance checks</span></SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <p className="text-meta text-muted-foreground">{geo ? (geo.review_note ?? geo.summary) : 'Changes only which compliance checks bind. Not a deployment region.'}</p>
-                    </div>
+              <Step n={2} title="What is it?" hint="Its identity, and optionally the business and law it answers to." active={Boolean(type)}>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="flex flex-col gap-1.5 sm:col-span-2">
+                    <Label htmlFor="identity">Identity</Label>
+                    <Select value={identity ?? ''} onValueChange={chooseIdentity} disabled={!type}>
+                      <SelectTrigger id="identity" className="w-full"><SelectValue placeholder={type ? 'Choose an identity' : 'Choose a Worker type first'} /></SelectTrigger>
+                      <SelectContent>
+                        {identities.map((i) => (
+                          <SelectItem key={i.key} value={i.key}>{i.label} <span className="text-muted-foreground">· {CONTEXTS.filter((c) => c.identity === i.key).length} scopes</span></SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                </Question>
-              )}
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="domain">Business domain <span className="font-normal text-muted-foreground">· optional</span></Label>
+                    <Select value={domain ?? NONE} onValueChange={(v) => setDomain(v === NONE ? null : v)} disabled={!type}>
+                      <SelectTrigger id="domain" className="w-full"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={NONE}>No business domain</SelectItem>
+                        {BUSINESS_DOMAINS.map((d) => <SelectItem key={d.key} value={d.key}>{d.label}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-meta text-muted-foreground">Decides which Skills, languages and EVALs come with it.</p>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="geography">Geography <span className="font-normal text-muted-foreground">· optional</span></Label>
+                    <Select value={geography ?? NONE} onValueChange={(v) => setGeography(v === NONE ? null : v)} disabled={!type || !geos.data}>
+                      <SelectTrigger id="geography" className="w-full"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={NONE}>Not stated</SelectItem>
+                        {geos.data?.geographies.map((g) => (
+                          <SelectItem key={g.key} value={g.key}>{g.display_name} <span className="text-muted-foreground">· {g.eval_count} compliance checks</span></SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-meta text-muted-foreground">{geo ? (geo.review_note ?? geo.summary) : 'Changes only which compliance checks bind. Not a deployment region.'}</p>
+                  </div>
+                </div>
+              </Step>
 
-              {identity && (
-                <Question id="q-context" title="What does this Worker do, and where does its work stop?" hint="This is its bounded context: the work it takes on, and the work it leaves alone.">
-                  {contexts.length === 0 ? (
-                    <p className="text-body text-muted-foreground">{identityOf(identity)?.label} entitles no bounded context yet.</p>
-                  ) : (
-                    <RadioGroup value={context ?? ''} onValueChange={(v) => { setContext(v); setCeiling(null); setGrowth('keep') }} aria-labelledby="q-context" className="gap-3">
+              <Step n={3} title="Where does it work?" hint="The one business boundary: what it produces, and what it refuses." active={Boolean(identity)}>
+                {!identity ? (
+                  <p className="text-body text-muted-foreground">Available once an identity is assigned.</p>
+                ) : contexts.length === 0 ? (
+                  <p className="text-body text-muted-foreground">{identityOf(identity)?.label} entitles no bounded context yet.</p>
+                ) : (
+                  <div className="flex flex-col gap-6">
+                    <RadioGroup value={context ?? ''} onValueChange={(v) => { setContext(v); setCeiling(null); setGrowth('keep') }} aria-label="Bounded context" className="gap-2">
                       {contexts.map((c) => (
                         <ChoiceCard
                           key={c.key}
                           id={`ctx-${c.key}`}
                           value={c.key}
-                          icon={CONTEXT_ICONS[(c.step - 1) % CONTEXT_ICONS.length]}
                           selected={context === c.key}
                           title={c.label}
-                          detail={c.adds ? `Adds ${c.adds.charAt(0).toLowerCase()}${c.adds.slice(1)}` : c.includes}
+                          detail={c.adds ? `+ ${c.adds}` : c.includes}
                           meta={`${c.excludes.length} excluded`}
                           disabledReason={c.availability !== 'available' ? 'In build · Available later' : null}
                         >
@@ -213,51 +214,50 @@ export function DeclarationPage() {
                         </ChoiceCard>
                       ))}
                     </RadioGroup>
-                  )}
-                </Question>
-              )}
 
-              {ctx && (
-                <Question id="q-growth" title="May it grow into a wider context?" hint="Growth happens only on evidence, and only up to the ceiling you set here.">
-                  <RadioGroup value={growth} onValueChange={(v) => setGrowth(v as 'keep' | 'allow')} aria-labelledby="q-growth" className="gap-3">
-                    <ChoiceCard id="growth-keep" value="keep" selected={growth === 'keep'} title="Keep this bounded context" />
-                    <ChoiceCard
-                      id="growth-allow"
-                      value="allow"
-                      selected={growth === 'allow'}
-                      title="Allow growth on evidence"
-                      detail="The Sentinel records when the Worker qualifies for the next bounded context, up to the ceiling. Nothing moves yet."
-                      disabledReason={wider.length === 0 ? 'This is the widest bounded context for this identity.' : null}
-                    >
-                      {growth === 'allow' && wider.length > 0 && (
-                        <Select value={ceiling ?? ''} onValueChange={setCeiling}>
-                          <SelectTrigger className="mt-3 w-full bg-card" aria-label="Growth ceiling"><SelectValue placeholder="Growth ceiling" /></SelectTrigger>
-                          <SelectContent>{wider.map((w) => <SelectItem key={w.key} value={w.key}>{w.label}</SelectItem>)}</SelectContent>
-                        </Select>
-                      )}
-                    </ChoiceCard>
-                  </RadioGroup>
-                </Question>
-              )}
+                    {ctx && (
+                      <div className="flex flex-col gap-3">
+                        <p className="text-item font-semibold">May it grow into a wider context?</p>
+                        <RadioGroup value={growth} onValueChange={(v) => setGrowth(v as 'keep' | 'allow')} className="gap-2">
+                          <ChoiceCard id="growth-keep" value="keep" selected={growth === 'keep'} title="Keep this bounded context" />
+                          <ChoiceCard
+                            id="growth-allow"
+                            value="allow"
+                            selected={growth === 'allow'}
+                            title="Allow growth on evidence"
+                            detail="The Sentinel records when the Worker qualifies for the next bounded context, up to the ceiling. Nothing moves yet."
+                            disabledReason={wider.length === 0 ? 'This is the widest bounded context for this identity.' : null}
+                          >
+                            {growth === 'allow' && wider.length > 0 && (
+                              <Select value={ceiling ?? ''} onValueChange={setCeiling}>
+                                <SelectTrigger className="mt-3 w-full" aria-label="Growth ceiling"><SelectValue placeholder="Growth ceiling" /></SelectTrigger>
+                                <SelectContent>{wider.map((w) => <SelectItem key={w.key} value={w.key}>{w.label}</SelectItem>)}</SelectContent>
+                              </Select>
+                            )}
+                          </ChoiceCard>
+                        </RadioGroup>
+                      </div>
+                    )}
 
-              {ctx && (
-                <Question id="q-name" title="Name it, and choose how it assembles">
-                  <div className="grid gap-5 sm:grid-cols-2">
-                    <div className="flex flex-col gap-2">
-                      <Label htmlFor="name" className={fieldLabel}>Worker name · optional</Label>
-                      <Input id="name" value={name} maxLength={120} onChange={(e) => setName(e.target.value)} placeholder="Named after its work and business domain" aria-invalid={nameInvalid} aria-describedby="name-hint" className="h-12" />
-                      <p id="name-hint" className={cn('text-meta', nameInvalid ? 'text-destructive' : 'text-muted-foreground')}>{nameInvalid ? 'A name has at least 2 characters.' : 'How the Worker is listed everywhere.'}</p>
-                    </div>
-                    <label htmlFor="auto" className={cn('flex gap-3 self-start rounded-xl border p-4', auto && 'border-primary bg-primary-soft')}>
-                      <Checkbox id="auto" checked={auto} onCheckedChange={(v) => setAuto(v === true)} className="mt-0.5" />
-                      <span>
-                        <span className="block text-item font-semibold">Assemble automatically</span>
-                        <span className="block text-meta text-muted-foreground">{auto ? 'Pauses only for questions, errors and deployment.' : 'Pauses at each of the eight checkpoints for you to review.'}</span>
-                      </span>
-                    </label>
+                    {ctx && (
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="flex flex-col gap-1.5">
+                          <Label htmlFor="name">Worker name <span className="font-normal text-muted-foreground">· optional</span></Label>
+                          <Input id="name" value={name} maxLength={120} onChange={(e) => setName(e.target.value)} placeholder="Named after its work and business domain" aria-invalid={nameInvalid} aria-describedby="name-hint" />
+                          <p id="name-hint" className={cn('text-meta', nameInvalid ? 'text-destructive' : 'text-muted-foreground')}>{nameInvalid ? 'A name has at least 2 characters.' : 'How the Worker is listed everywhere.'}</p>
+                        </div>
+                        <label htmlFor="auto" className={cn('flex gap-3 self-start rounded-xl border p-4', auto && 'border-primary bg-primary-soft')}>
+                          <Checkbox id="auto" checked={auto} onCheckedChange={(v) => setAuto(v === true)} className="mt-0.5" />
+                          <span>
+                            <span className="block text-item font-semibold">Assemble automatically</span>
+                            <span className="block text-meta text-muted-foreground">{auto ? 'Pauses only for questions, errors and deployment.' : 'Pauses at each of the eight checkpoints for you to review.'}</span>
+                          </span>
+                        </label>
+                      </div>
+                    )}
                   </div>
-                </Question>
-              )}
+                )}
+              </Step>
             </div>
           </div>
 
@@ -283,7 +283,6 @@ export function DeclarationPage() {
             typeLabel={typeLabel}
             identity={identity}
             domain={domain}
-            geography={geo?.display_name ?? null}
             context={context}
             identifier={identifier}
           />

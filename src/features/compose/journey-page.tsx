@@ -159,10 +159,8 @@ export function JourneyPage() {
     <PageContainer className="gap-8">
       <PageHeader
         icon={Wrench}
-        crumbs={[{ label: 'Compose', to: '/compose' }, { label: 'Saved drafts', to: '/compose/drafts' }, { label: draft.name }]}
         title="Compose an AI Worker"
-        description={draft.name}
-        meta={<p className="text-meta text-muted-foreground">Revision {draft.revision} · Saved · {progressLabel}</p>}
+        description="Choose the work. Confirm its scope. The platform assembles the rest."
         actions={
           <Button asChild variant="outline">
             <Link to="/compose/drafts"><FolderOpen aria-hidden="true" />Save and close</Link>
@@ -331,7 +329,7 @@ export function JourneyPage() {
         </div>
 
         <div className="min-w-0 lg:sticky lg:top-6">
-          <ComposingPanel draft={draft} proposal={proposal} current={current} settled={settled} buildOp={buildOp} onGo={go} />
+          <ComposingPanel draft={draft} proposal={proposal} current={current} settled={settled} onGo={go} />
         </div>
       </div>
     </PageContainer>
