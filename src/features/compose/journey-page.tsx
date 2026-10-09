@@ -195,7 +195,7 @@ export function JourneyPage() {
                     <div className="flex flex-col gap-2" aria-live="polite">
                       <p className="text-item">Building Package · {buildOp.phase}</p>
                       <Progress value={buildOp.progress} aria-label={`Building Package ${buildOp.progress}%`} className="h-1.5" />
-                      <p className="text-meta text-muted-foreground">You can close this page. The build continues and Active work shows it.</p>
+                      <p className="text-meta text-muted-foreground">You can close this page. The build continues, and a notice appears when it finishes.</p>
                     </div>
                   ) : (
                     <p className="text-meta text-muted-foreground">Building seals a versioned, checksummed Package. Deploying it is a separate decision in Packaging.</p>

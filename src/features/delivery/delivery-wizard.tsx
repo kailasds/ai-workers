@@ -127,7 +127,7 @@ export function DeliveryWizard() {
             <>
               <p className="text-item">{op.phase}</p>
               <Progress value={op.progress} aria-label={`Preparing ${op.progress}%`} className="h-1.5 [&_[data-slot=progress-indicator]]:bg-brand" />
-              <p className="text-meta text-muted-foreground">You can close this page. Preparation continues and Active work shows it.</p>
+              <p className="text-meta text-muted-foreground">You can close this page. Preparation continues, and a notice appears when it finishes.</p>
             </>
           )}
         </Card>

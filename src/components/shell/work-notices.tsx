@@ -1,46 +1,8 @@
 import { Link } from 'react-router'
-import { Activity, CircleCheck, CircleX, X } from 'lucide-react'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Progress } from '@/components/ui/progress'
-import { SidebarMenuBadge, SidebarMenuButton } from '@/components/ui/sidebar'
+import { CircleCheck, CircleX, X } from 'lucide-react'
 import { dismissOperation, useOperations } from '@/lib/operations'
 
-// P-22: background work is visible from anywhere, with a way back to it.
-export function ActiveWork() {
-  const ops = useOperations()
-  const active = ops.filter((o) => o.state === 'RUNNING' || o.state === 'QUEUED')
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <SidebarMenuButton className="h-9 text-sidebar-foreground/80 group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:p-3! [&_svg]:size-[18px]!" tooltip="Active work">
-          <Activity aria-hidden="true" />
-          <span>Active work</span>
-        </SidebarMenuButton>
-      </PopoverTrigger>
-      {active.length > 0 && <SidebarMenuBadge className="bg-sidebar-primary text-sidebar-primary-foreground">{active.length}</SidebarMenuBadge>}
-      <PopoverContent side="right" align="end" className="w-80">
-        <p className="text-item">Work in progress</p>
-        {active.length === 0 ? (
-          <p className="mt-1 text-body text-muted-foreground">No background work is running.</p>
-        ) : (
-          <ul className="mt-3 flex flex-col gap-3">
-            {active.map((o) => (
-              <li key={o.id}>
-                <Link to={o.href} className="block rounded-lg outline-none hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring">
-                  <span className="block text-item">{o.label}</span>
-                  <span className="block truncate text-meta text-muted-foreground">{o.subject} · {o.phase}</span>
-                  <Progress value={o.progress} aria-label={`${o.label}: ${o.progress}%`} className="mt-2 h-1.5 [&_[data-slot=progress-indicator]]:bg-brand" />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-        <p className="mt-3 text-meta text-muted-foreground">Work keeps going if you close the page.</p>
-      </PopoverContent>
-    </Popover>
-  )
-}
-
+// P-22: background work keeps running when you leave its page; how it ended is always shown.
 const ENDED: Record<string, { word: string; detail: string }> = {
   SUCCEEDED: { word: 'finished', detail: 'It finished while you were elsewhere.' },
   FAILED: { word: 'failed', detail: 'It stopped before it finished.' },

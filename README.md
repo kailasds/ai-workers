@@ -31,7 +31,7 @@ Add `?mock=` to a page URL that reads data:
 
 | Area | Routes | Notes |
 | --- | --- | --- |
-| Shell | all | Grouped rail, ⌘K jump menu, Active work tracker, persistent completion notices, skip link |
+| Shell | all | Grouped, collapsible rail (⌘B), ⌘K jump menu, persistent completion notices, skip link |
 | Sign-in and launcher | `/login`, `/auth/*`, `/home` | Mock: any username with a password; `locked` shows a named failure |
 | Dashboard | `/dashboard` | Brief first; criteria, cost, contexts and runs open as deep-linkable sheets (`?detail=`) |
 | Registry | `/workers` | Grouped list plus a preview panel; customer packages tab |
@@ -43,7 +43,7 @@ Add `?mock=` to a page URL that reads data:
 | Learning | `/learning`, `/learning/shared`, `/learning/workers/:id` | Estate record and per-Worker learning |
 | Sentinel | `/sentinel`, `/sentinel/workers`, `/sentinel/decisions`, `/sentinel/policy`, `/sentinel/:dimension` | Posture, dimensions, Stop Worker (typed name + reason) |
 | Harnesses | `/harnesses`, `/harnesses/:key`, `/harnesses/certify`, `/harnesses/conformance`, `/harnesses/sdk/:page` | Catalogue and manifests |
-| People | `/admin/people`, `/admin/groups` | Uses the console's test fixtures because the capture held no people |
+| User management | `/admin/people`, `/admin/groups` | Uses the console's test fixtures because the capture held no people |
 
 Legacy links (`/operate`, `/fleet/*`, `/govern/*`, `/compose/expert`, `/workers/:id/okf`, a runtime id in `/workers/:id`) redirect.
 

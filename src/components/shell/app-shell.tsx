@@ -5,8 +5,7 @@ import { LoadingRegion } from '@/components/platform/states'
 import { Skeleton } from '@/components/ui/skeleton'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import { Bot } from 'lucide-react'
-import { WorkNotices } from './active-work'
+import { WorkNotices } from './work-notices'
 import { AppSidebar } from './app-sidebar'
 import { PageErrorBoundary } from './error-boundary'
 import { CommandMenu, useCommandShortcut } from './command-menu'
@@ -24,15 +23,15 @@ export function AppShell() {
         >
           Skip to content
         </a>
-        <AppSidebar onOpenCommand={() => setCommandOpen(true)} />
+        <AppSidebar />
         <SidebarInset className="min-w-0">
           {/* Phones: the rail becomes a named Menu button in a slim top bar. */}
           <div className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-background/95 px-4 backdrop-blur md:hidden">
             <SidebarTrigger className="size-9" aria-label="Menu" />
-            <span className="grid size-7 place-items-center rounded-lg bg-primary text-primary-foreground">
-              <Bot className="size-4" aria-hidden="true" />
+            <span className="leading-none">
+              <span className="block text-base font-extrabold tracking-tight text-primary">AI WORKER</span>
+              <span className="mt-0.5 block text-[0.5625rem] font-bold tracking-[0.55em] text-foreground">PLATFORM</span>
             </span>
-            <span className="text-sm font-semibold">AI Worker Platform</span>
           </div>
           <main id="main" tabIndex={-1} className="flex-1 outline-none">
             <PageErrorBoundary>
