@@ -171,9 +171,11 @@ coloured by part hue.
   - **Secondary:** a white outline with a hairline border ("Back", "Start over").
   - **Footer layout:** Back is on the left and the primary action on the right.
 - **Navigation rail:**
-  - A white rail with the "AI WORKER / PLATFORM" wordmark and a collapse button at the top, four labelled sections, and only User management at the bottom. There is no search box and no activity tracker.
-  - It collapses to a 64px icon rail (button or ⌘B); on phones it is an off-canvas sheet.
-  - **Active item:** a solid primary fill with a white semibold label and icon, 12px radius. **Hover:** the grey accent fill.
+  - A white rail with the "AI WORKER / PLATFORM" wordmark and a collapse button at the top, one flat list without section labels, and only User management at the bottom. There is no search box and no activity tracker.
+  - **Order:** Dashboard, Compose, Packaging, Customer delivery, Registry, Knowledge, Learning, Sentinel, Harnesses.
+  - **Each item:** a 20px icon, then a 15px semibold label over a 13px muted question ("What Worker do I want to create?").
+  - **Active item:** a grey `sidebar-accent` fill, a 3px primary bar on the left edge and a blue icon. **Hover:** a lighter grey fill.
+  - **Collapsed:** a 64px icon rail with tooltips (the button or ⌘B); on phones it is an off-canvas sheet.
   - **Icons:** Dashboard `Gauge`, Registry `Users`, Compose `Hammer`, Packaging `Package`, Customer delivery `Send`, Knowledge `Brain`, Learning `BrainCircuit`, Sentinel `ShieldCheck`, Harnesses `Boxes`, User management `KeyRound`.
 - **Worker panel detail level:** one line per part. Show only the counts that define it ("5 Skills · 4 DSLs · 9 EVALs", "5 criteria, all gating", "Level 3 · Bounded"); everything else stays in the step itself.
 - **Icon set:** lucide-react, 1.75 stroke, rounded caps.

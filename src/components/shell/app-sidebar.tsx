@@ -6,7 +6,6 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -15,20 +14,28 @@ import {
 } from '@/components/ui/sidebar'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { MOCK_SESSION } from '@/lib/session'
-import { ADMIN_ITEM, isActivePath, NAV_GROUPS, type NavItem } from './nav'
+import { cn } from '@/lib/utils'
+import { ADMIN_ITEM, isActivePath, RAIL_ITEMS, type NavItem } from './nav'
 
-// Active = the one solid blue object in the rail; hover = a quiet grey fill.
-const itemClass =
-  'h-11 gap-3 rounded-xl px-3 text-[0.9375rem] font-medium text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-11! group-data-[collapsible=icon]:p-3.5! data-active:bg-primary data-active:font-semibold data-active:text-primary-foreground data-active:hover:bg-primary data-active:hover:text-primary-foreground [&_svg]:size-[18px]!'
-
+// Each item is its label plus the question it answers. Active = a grey fill, a blue bar on the
+// rail edge and a blue icon; collapsed, only the icon (with a tooltip) remains.
 function NavLink({ item, active }: { item: NavItem; active: boolean }) {
   const { isMobile, setOpenMobile } = useSidebar()
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton asChild isActive={active} tooltip={item.label} className={itemClass}>
+      <SidebarMenuButton
+        asChild
+        isActive={active}
+        tooltip={item.label}
+        className="relative h-auto items-start gap-3 rounded-xl px-3 py-2.5 hover:bg-sidebar-accent/70 group-data-[collapsible=icon]:size-11! group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:p-3.5! data-active:bg-sidebar-accent data-active:font-normal data-active:hover:bg-sidebar-accent [&_svg]:size-5!"
+      >
         <Link to={item.to} aria-current={active ? 'page' : undefined} onClick={() => isMobile && setOpenMobile(false)}>
-          <item.icon aria-hidden="true" />
-          <span>{item.label}</span>
+          {active && <span aria-hidden="true" className="absolute top-3 bottom-3 left-0 w-[3px] rounded-full bg-primary group-data-[collapsible=icon]:hidden" />}
+          <item.icon aria-hidden="true" className={cn('mt-0.5 group-data-[collapsible=icon]:mt-0', active ? 'text-primary' : 'text-sidebar-muted')} />
+          <span className="min-w-0 group-data-[collapsible=icon]:hidden">
+            <span className="block truncate text-[0.9375rem] leading-5 font-semibold text-sidebar-accent-foreground">{item.label}</span>
+            <span className="mt-0.5 block text-meta text-sidebar-muted">{item.question}</span>
+          </span>
         </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>
@@ -79,20 +86,17 @@ export function AppSidebar() {
         <CollapseToggle />
       </SidebarHeader>
 
-      <SidebarContent className="px-2 group-data-[collapsible=icon]:px-0">
+      <SidebarContent className="px-1.5 group-data-[collapsible=icon]:px-0">
         <nav aria-label="Main">
-          {NAV_GROUPS.map((group) => (
-            <SidebarGroup key={group.label}>
-              <SidebarGroupLabel className="text-meta font-semibold text-sidebar-muted">{group.label}</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu className="gap-1">
-                  {group.items.map((item) => (
-                    <NavLink key={item.to} item={item} active={isActivePath(pathname, item.to)} />
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          ))}
+          <SidebarGroup className="pt-2">
+            <SidebarGroupContent>
+              <SidebarMenu className="gap-1">
+                {RAIL_ITEMS.map((item) => (
+                  <NavLink key={item.to} item={item} active={isActivePath(pathname, item.to)} />
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
         </nav>
       </SidebarContent>
 
