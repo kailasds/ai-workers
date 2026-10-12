@@ -88,9 +88,9 @@ weight. Colour is never used for heading levels: every heading is near-black, an
 overline is blue.
 
 ## 5. Typography
-- **Sans:** Roboto (variable, `@fontsource-variable/roboto`); the screenshots match Roboto's glyphs.
-  Weights in use: 400 body, 500 labels and nav, 600 headings and buttons.
-- **Mono:** Roboto Mono (`@fontsource-variable/roboto-mono`), reserved for identifiers (SPIFFE IDs,
+- **Sans:** Poppins (`@fontsource/poppins`, 400/500/600/700/800), chosen by the product owner over the
+  extracted Roboto. Weights in use: 400 body, 500 labels, 600 headings and buttons, 800 the wordmark.
+- **Mono:** JetBrains Mono (`@fontsource-variable/jetbrains-mono`), reserved for identifiers (SPIFFE IDs,
   digests, run refs) and event streams. Never for numbers in prose.
 - **Scale** (tokens in `index.css`, all ~approx):
 

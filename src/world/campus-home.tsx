@@ -4,6 +4,9 @@ import { useResource } from '@/hooks/use-resource'
 import { getExecutiveDashboard } from '@/lib/api/dashboard'
 import { formatRelative, formatRunName } from '@/lib/format'
 import type { WorldData } from './world-data'
+import { DIRECTORY } from './sections'
+
+const HOTBAR: Record<string, string> = { outcomes: '/dashboard', registry: '/workers', build: '/campus/places/build', dock: '/campus/places/dock', brain: '/campus/places/brain', sentinel: '/campus/places/sentinel', workshop: '/campus/places/workshop' }
 
 /** What the campus says on arrival: the month's result, the latest outcome, and how to read the flows. */
 export function CampusHome({ world, lens }: { world: WorldData; lens: 'campus' | 'orbit' }) {
@@ -51,8 +54,11 @@ export function CampusHome({ world, lens }: { world: WorldData; lens: 'campus' |
         </aside>
       )}
 
-      <section aria-label="How to read the campus" className="fixed bottom-4 left-4 z-20 hidden w-[360px] rounded-2xl border border-white/10 bg-[#0b0f24]/85 p-4 text-meta text-white/70 backdrop-blur-xl md:block">
-        <p className="mb-2.5 font-mono text-[10px] tracking-[0.16em] text-white/45">HOW KNOWLEDGE MOVES</p>
+      <details open className="group fixed bottom-4 left-4 z-20 hidden w-[330px] rounded-2xl border border-white/10 bg-[#0b0f24]/85 p-4 text-meta text-white/70 backdrop-blur-xl md:block">
+        <summary className="flex cursor-pointer list-none items-center justify-between font-mono text-[10px] tracking-[0.16em] text-white/45 outline-none focus-visible:text-white [&::-webkit-details-marker]:hidden">
+          HOW KNOWLEDGE MOVES<span className="text-white/40 group-open:rotate-180" aria-hidden="true">▾</span>
+        </summary>
+        <div className="mt-2.5">
         <ul className="flex flex-col gap-2">
           <li className="flex gap-2.5"><span className="mt-1.5 size-2 shrink-0 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]" aria-hidden="true" /><span><b className="font-medium text-white">Learning out.</b> {world.memories} memories recorded by {world.learningWorkers} Workers travel to the Sentinel.</span></li>
           <li className="flex gap-2.5"><span className="mt-1.5 size-2 shrink-0 rounded-full border border-dashed border-amber-400" aria-hidden="true" /><span><b className="font-medium text-white">Held at the ring.</b> {world.sentinel.acting ? 'The Sentinel promotes what it approves.' : 'The Sentinel is in shadow: it records, and nothing is promoted to the platform yet.'}</span></li>
@@ -61,7 +67,24 @@ export function CampusHome({ world, lens }: { world: WorldData; lens: 'campus' |
         {lens === 'campus' && (
           <p className="mt-3 border-t border-white/10 pt-2.5 text-white/50">Figures are Workers: solid = packaged, dashed = not packaged yet, green = serving, amber halo = needs attention. Drag to look around; click anything to open it.</p>
         )}
-      </section>
+        </div>
+      </details>
+      {/* Hotbar: every place, one click away, on the main view itself. */}
+      <nav aria-label="Places" className="fixed bottom-4 left-1/2 z-20 hidden -translate-x-1/2 items-stretch gap-1 rounded-2xl border border-white/10 bg-[#0b0f24]/85 p-1.5 backdrop-blur-xl min-[1180px]:flex">
+        {DIRECTORY.filter((d) => HOTBAR[d.key]).map((d) => (
+          <Link
+            key={d.key}
+            to={HOTBAR[d.key]}
+            className="group flex w-[76px] flex-col items-center gap-1 rounded-xl px-1 py-2 text-center outline-none transition-colors hover:bg-white/[0.07] focus-visible:ring-2 focus-visible:ring-ring"
+            title={d.blurb}
+          >
+            <span className="grid size-8 place-items-center rounded-lg transition-transform group-hover:-translate-y-0.5" style={{ background: `color-mix(in srgb, ${d.color} 22%, transparent)`, color: d.color }} aria-hidden="true">
+              <d.icon className="size-4" />
+            </span>
+            <span className="text-[11px] leading-tight text-white/75 group-hover:text-white">{d.name}</span>
+          </Link>
+        ))}
+      </nav>
     </>
   )
 }

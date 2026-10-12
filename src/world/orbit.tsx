@@ -38,14 +38,14 @@ function OrbitScene({ world, focus, onNavigate }: { world: WorldData; focus: { p
 
       {/* Sentinel ring */}
       <circle r={R.sentinel} fill="none" stroke="#fbbf24" strokeOpacity=".6" strokeWidth={2.5} style={{ filter: 'drop-shadow(0 0 8px #fbbf24)' }} />
-      <g role="button" tabIndex={0} className="cursor-pointer outline-none" onClick={() => onNavigate('/sentinel')} onKeyDown={(e) => e.key === 'Enter' && onNavigate('/sentinel')} aria-label="Sentinel">
+      <g role="button" tabIndex={0} className="cursor-pointer outline-none" onClick={() => onNavigate('/campus/places/sentinel')} onKeyDown={(e) => e.key === 'Enter' && onNavigate('/campus/places/sentinel')} aria-label="Sentinel">
         <rect x={-86} y={R.sentinel - 12} width={172} height={24} rx={12} fill="#0b0f24" stroke="#fbbf2466" />
         <text y={R.sentinel + 4} textAnchor="middle" className="fill-amber-200 font-mono text-[10px]">SENTINEL · {world.sentinel.acting ? 'acting' : 'holding all learning'}</text>
       </g>
 
       {/* brain */}
       <circle r={R.sentinel - 10} fill="url(#orb-glow)" />
-      <g role="button" tabIndex={0} className="cursor-pointer outline-none" onClick={() => onNavigate('/knowledge/skills')} onKeyDown={(e) => e.key === 'Enter' && onNavigate('/knowledge/skills')} aria-label="Platform brain: open Knowledge">
+      <g role="button" tabIndex={0} className="cursor-pointer outline-none" onClick={() => onNavigate('/campus/places/brain')} onKeyDown={(e) => e.key === 'Enter' && onNavigate('/campus/places/brain')} aria-label="Platform brain: open its sections">
         <circle r={R.brain} fill="url(#orb-core)" style={{ filter: 'drop-shadow(0 0 30px #38bdf8)' }} />
         <text y={-6} textAnchor="middle" className="fill-[#04263f] text-[11px] font-bold tracking-[0.14em]">PLATFORM BRAIN</text>
         <text y={12} textAnchor="middle" className="fill-[#04263f] font-mono text-[10px]">{world.brain.skills} Skills · {world.brain.evals} EVALs</text>

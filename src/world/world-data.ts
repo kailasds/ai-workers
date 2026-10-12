@@ -86,12 +86,12 @@ export function buildWorld(input: {
   const inBuild = input.drafts.filter((d) => !d.package && d.status === 'ACTIVE').length
   const packaged = input.drafts.filter((d) => d.package).length
   const facilities = [
-    { key: 'build', kind: 'build' as const, name: 'Build bay', title: 'Compose', caption: `${inBuild} in build`, color: '#38bdf8', size: 250, href: '/compose', workers: [] },
-    { key: 'dock', kind: 'dock' as const, name: 'Loading dock', title: 'Packaging and delivery', caption: `${packaged} packaged · ${input.deliveries} delivered`, color: '#f472b6', size: 250, href: '/packaging', workers: [] },
-    { key: 'workshop', kind: 'workshop' as const, name: 'Workshop', title: 'Harnesses', caption: `${input.harnesses} harnesses`, color: '#94a3b8', size: 230, href: '/harnesses', workers: [] },
+    { key: 'build', kind: 'build' as const, name: 'Build bay', title: 'Compose', caption: `${inBuild} in build`, color: '#38bdf8', size: 250, href: '/campus/places/build', workers: [] },
+    { key: 'dock', kind: 'dock' as const, name: 'Loading dock', title: 'Packaging and delivery', caption: `${packaged} packaged · ${input.deliveries} delivered`, color: '#f472b6', size: 250, href: '/campus/places/dock', workers: [] },
+    { key: 'workshop', kind: 'workshop' as const, name: 'Workshop', title: 'Harnesses', caption: `${input.harnesses} harnesses`, color: '#94a3b8', size: 230, href: '/campus/places/workshop', workers: [] },
   ]
-  // Order around the ring: build bay → rooms → dock → workshop, so work flows clockwise.
-  const ordered = [facilities[0], ...rooms, facilities[1], facilities[2]]
+  // Order around the ring: workshop → rooms → dock → build bay.
+  const ordered = [facilities[2], ...rooms, facilities[1], facilities[0]]
   const places: Place[] = ordered.map((p, i) => ({ ...p, ...layout(ordered.length, i) }))
   const memories = input.workers.reduce((s, w) => s + w.learning.memories, 0)
   return {
@@ -147,6 +147,7 @@ export function focusFor(pathname: string, world: WorldData | null): { place: st
   const seg = pathname.split('/').filter(Boolean)
   const [a, b, c] = seg
   if (a === 'campus' && b === 'rooms' && c) return { place: c, worker: null }
+  if (a === 'campus' && b === 'places' && c) return { place: c, worker: null }
   if (a === 'workers' && b) {
     const w = world?.workers.find((x) => x.composition_id === b || x.runtime.reachable_worker_id === b)
     return { place: w?.bounded_context.key ?? null, worker: w?.composition_id ?? null }

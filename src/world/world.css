@@ -345,3 +345,122 @@
     animation: none;
   }
 }
+
+/* ── furniture and polish ───────────────── */
+.place {
+  cursor: pointer;
+}
+.place:hover .floor {
+  box-shadow:
+    0 0 0 10px color-mix(in srgb, var(--c) 66%, #000),
+    0 0 0 13px #ffffff55,
+    0 0 70px 6px color-mix(in srgb, var(--c) 45%, transparent);
+}
+.fig {
+  /* a soft shadow on the floor under each figure */
+  background: radial-gradient(closest-side, #00000066, transparent) !important;
+}
+.plant {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.plant i {
+  position: absolute;
+  left: -14px;
+  bottom: 0;
+  width: 28px;
+  height: 48px;
+}
+.plant i::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  bottom: 0;
+  width: 20px;
+  height: 16px;
+  border-radius: 3px 3px 6px 6px;
+  background: #f1f5f9;
+}
+.plant i::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 12px;
+  width: 28px;
+  height: 30px;
+  border-radius: 50% 50% 45% 45%;
+  background: radial-gradient(circle at 35% 30%, #4ade80, #15803d 70%);
+  box-shadow: 0 0 0 1px #14532d55;
+}
+.lamp {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.lamp i {
+  position: absolute;
+  left: -2px;
+  bottom: 0;
+  width: 4px;
+  height: 70px;
+  background: #1f2937;
+  border-radius: 2px;
+}
+.lamp i::after {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: -6px;
+  width: 28px;
+  height: 18px;
+  border-radius: 14px 14px 4px 4px;
+  background: #fff7e0;
+  box-shadow: 0 0 24px 8px #fde68a88;
+}
+.books {
+  position: absolute;
+  right: 18px;
+  bottom: 30px;
+  display: flex;
+  gap: 2px;
+  transform: scaleY(-1);
+}
+.books i {
+  width: 7px;
+  height: 18px;
+  border-radius: 1px;
+}
+.brain-beam {
+  position: absolute;
+  left: -10px;
+  bottom: 120px;
+  width: 20px;
+  height: 260px;
+  background: linear-gradient(to top, #bae6fdcc, #bae6fd00);
+  filter: blur(2px);
+  pointer-events: none;
+}
+.stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 12% 22%, #ffffff77 50%, transparent 51%),
+    radial-gradient(1px 1px at 72% 18%, #ffffff55 50%, transparent 51%),
+    radial-gradient(1px 1px at 40% 72%, #ffffff44 50%, transparent 51%),
+    radial-gradient(1px 1px at 85% 64%, #ffffff66 50%, transparent 51%),
+    radial-gradient(1px 1px at 22% 86%, #ffffff33 50%, transparent 51%),
+    radial-gradient(1px 1px at 58% 42%, #ffffff33 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 92% 30%, #ffffff66 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 6% 52%, #ffffff55 50%, transparent 51%);
+  background-size: 640px 520px;
+}
+
+/* Phones: labels shrink to their badge; the name is in the Directory and the panels. */
+.campus-compact .tag > span:not(:first-child) {
+  display: none;
+}
+.campus-compact .tag {
+  padding: 6px;
+}

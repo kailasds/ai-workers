@@ -12,7 +12,8 @@ This branch replaces the sidebar console with one world you move through:
 - **Knowledge flows are drawn from real reads.** Amber motes are memories Workers recorded, travelling to the Sentinel; they are *held* at the ring because the Sentinel is in shadow mode and promotes nothing. Blue motes are platform knowledge flowing out to the teams and the build bay.
 - **Every page opens in a panel beside its place.** The camera flies to the room, dock or brain the page belongs to; Esc or ✕ returns to the campus. Rooms open a team panel (`/campus/rooms/:key`); Workers open the full Worker workspace.
 - **Orbit** is a second lens on the same world: Workers placed by how far along they are (serving, packaged, composed) around the brain.
-- Places menu and ⌘K reach every area without the map. Built in CSS 3D; a WebGL version is the next step if this direction holds.
+- **Every section of the earlier console is on the campus**: click the brain, the Sentinel or a facility to open its lobby (`/campus/places/:key`) listing all its sections; the hotbar and the Directory menu list them too; ⌘K jumps anywhere.
+- Type: Poppins, with JetBrains Mono for identifiers. Built in CSS 3D; a WebGL version is the next step if this direction holds.
 
 ## Run it
 

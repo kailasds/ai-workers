@@ -52,6 +52,19 @@ function Tag({ color, icon: Icon, initial, title, caption, stat, statTone, onOpe
   )
 }
 
+const BOOKS = ['#ef4444', '#3b82f6', '#f59e0b', '#a855f7', '#10b981']
+
+/** Decoration only: a lamp in the back corner, a plant at the front, books on the side wall. */
+function Furniture({ size, books = true }: { size: number; books?: boolean }) {
+  return (
+    <>
+      <span className="lamp" style={{ left: 26, top: 26 }} aria-hidden="true"><i className="bb" /></span>
+      <span className="plant" style={{ left: size - 26, top: size - 26 }} aria-hidden="true"><i className="bb" /></span>
+      {books && <span className="books" aria-hidden="true">{BOOKS.map((c) => <i key={c} style={{ background: c }} />)}</span>}
+    </>
+  )
+}
+
 function Room({ p, packagedIds, focusedWorker, onOpen, onWorker }: { p: Place; packagedIds: Set<string>; focusedWorker: string | null; onOpen: () => void; onWorker: (id: string) => void }) {
   const ran = p.workers.filter((w) => w.last_outcome.runs > 0)
   const met = ran.filter((w) => w.last_outcome.verdict === 'MET').length
@@ -61,7 +74,8 @@ function Room({ p, packagedIds, focusedWorker, onOpen, onWorker }: { p: Place; p
       <div className="wall back">
         <div className="screen grid place-items-center font-mono text-[11px] text-white/80">{ran.length ? `${met}/${ran.length} last runs met` : 'no runs yet'}</div>
       </div>
-      <div className="wall side" />
+      <div className="wall side"><span className="books" aria-hidden="true">{BOOKS.map((c) => <i key={c} style={{ background: c }} />)}</span></div>
+      <Furniture size={p.size} books={false} />
       <div className="people">
         {p.workers.map((w) => {
           const serving = w.runtime.serving > 0
@@ -91,6 +105,7 @@ function Facility({ p, world, onOpen }: { p: Place; world: WorldData; onOpen: ()
     <>
       <div className="wall back"><div className="screen grid place-items-center font-mono text-[11px] text-white/80">{p.caption}</div></div>
       <div className="wall side" />
+      {p.kind !== 'dock' && <Furniture size={p.size} books={false} />}
       {p.kind === 'build' && (
         <>
           <div className="scaffold" />
@@ -181,8 +196,8 @@ function CampusScene({ world, camera, focus, panelOpen, onNavigate }: {
   panelOpen: boolean
   onNavigate: (href: string) => void
 }) {
-  // Between the traced-code room and the loading dock, where the ring is clear of labels.
-  const towerA = (96 * Math.PI) / 180
+  // On the ring to the brain's right on screen, between two roads and clear of the brain's label.
+  const towerA = (45 * Math.PI) / 180
   return (
     <div
       className="world"
@@ -198,7 +213,8 @@ function CampusScene({ world, camera, focus, panelOpen, onNavigate }: {
         </div>
         <div className="tagpos" style={{ left: 0, top: 0 }}>
           <div className="bb">
-            <button type="button" className="brain-orb outline-none focus-visible:ring-2 focus-visible:ring-white rounded-full" onClick={() => onNavigate('/knowledge/skills')} aria-label="Platform brain: open Knowledge">
+            <span className="brain-beam" aria-hidden="true" />
+            <button type="button" className="brain-orb outline-none focus-visible:ring-2 focus-visible:ring-white rounded-full" onClick={() => onNavigate('/campus/places/brain')} aria-label="Platform brain: open its sections">
               <span className="wire" /><span className="wire" /><span className="wire" />
               <span className="core" />
             </button>
@@ -208,7 +224,7 @@ function CampusScene({ world, camera, focus, panelOpen, onNavigate }: {
           <div className="bb">
             <button
               type="button"
-              onClick={() => onNavigate('/knowledge/skills')}
+              onClick={() => onNavigate('/campus/places/brain')}
               className="tag rounded-xl border border-sky-300/30 bg-[#0b0f24]/90 px-4 py-2 text-center text-white shadow-[0_10px_30px_#0009] outline-none hover:border-sky-300/70 focus-visible:ring-2 focus-visible:ring-white"
               style={{ bottom: 200 }}
             >
@@ -226,8 +242,9 @@ function CampusScene({ world, camera, focus, panelOpen, onNavigate }: {
           <span className="beam" />
           <button
             type="button"
-            onClick={() => onNavigate('/sentinel')}
-            className="tag absolute bottom-[60px] left-0 flex items-center gap-2 whitespace-nowrap rounded-xl border border-amber-300/30 bg-[#0b0f24]/90 px-3 py-2 text-left text-white shadow-[0_10px_30px_#0009] outline-none hover:border-amber-300/70 focus-visible:ring-2 focus-visible:ring-white"
+            onClick={() => onNavigate('/campus/places/sentinel')}
+            style={{ translate: '14px 0', transformOrigin: '0 100%' }}
+            className="tag absolute bottom-[40px] left-0 flex items-center gap-2 whitespace-nowrap rounded-xl border border-amber-300/30 bg-[#0b0f24]/90 px-3 py-2 text-left text-white shadow-[0_10px_30px_#0009] outline-none hover:border-amber-300/70 focus-visible:ring-2 focus-visible:ring-white"
           >
             <span className="grid size-7 place-items-center rounded-lg bg-amber-400 text-[#0b0f24]"><ShieldCheck className="size-4" aria-hidden="true" /></span>
             <span>
@@ -244,7 +261,7 @@ function CampusScene({ world, camera, focus, panelOpen, onNavigate }: {
           className={cn('place', focus.place === p.key && 'focused', panelOpen && focus.place && focus.place !== p.key && 'dim')}
           style={{ left: p.x - p.size / 2, top: p.y - p.size / 2, width: p.size, height: p.size, '--c': p.color, '--s': `${p.size}px` } as React.CSSProperties}
         >
-          <div className="floor" />
+          <div className="floor" onClick={() => onNavigate(p.href)} />
           {p.kind === 'room' ? (
             <Room p={p} packagedIds={world.packagedIds} focusedWorker={focus.worker} onOpen={() => onNavigate(p.href)} onWorker={(id) => onNavigate(`/workers/${id}`)} />
           ) : (

@@ -5,7 +5,7 @@ import { PageContainer } from '@/components/platform/page-container'
 import { LoadingRegion } from '@/components/platform/states'
 import { Skeleton } from '@/components/ui/skeleton'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { PageErrorBoundary } from '@/components/shell/error-boundary'
 import { CommandMenu, useCommandShortcut } from '@/components/shell/command-menu'
 import { WorkNotices } from '@/components/shell/work-notices'
@@ -15,19 +15,19 @@ import { Campus, type Camera } from './campus'
 import { Orbit } from './orbit'
 import { CampusHome } from './campus-home'
 import { focusFor, RING, useWorldData, type WorldData } from './world-data'
+import { DIRECTORY, directoryOf } from './sections'
 
 type Lens = 'campus' | 'orbit'
 
 // Where the camera stands for each kind of focus, and what the breadcrumb calls it.
 function placeLabel(world: WorldData | null, key: string | null) {
-  if (key === 'brain') return 'Platform brain'
-  if (key === 'sentinel') return 'Sentinel'
-  return world?.places.find((p) => p.key === key)?.name ?? null
+  return world?.places.find((p) => p.key === key)?.name ?? directoryOf(key)?.name ?? null
 }
 
 const PAGE_NAMES: [RegExp, string][] = [
   [/^\/dashboard/, 'Outcomes'],
   [/^\/campus\/rooms\//, 'Team'],
+  [/^\/campus\/places\//, 'Sections'],
   [/^\/workers\/[^/]+/, 'Worker'],
   [/^\/workers/, 'All Workers'],
   [/^\/compose\/drafts/, 'Saved drafts'],
@@ -39,18 +39,6 @@ const PAGE_NAMES: [RegExp, string][] = [
   [/^\/sentinel/, 'Oversight'],
   [/^\/harnesses/, 'Harnesses'],
   [/^\/admin/, 'User management'],
-]
-
-const PLACES_MENU: { label: string; to: string; hint: string }[] = [
-  { label: 'Outcomes', to: '/dashboard', hint: 'Did the Workers do the job?' },
-  { label: 'All Workers', to: '/workers', hint: 'Every Worker, as a list' },
-  { label: 'Build bay', to: '/compose', hint: 'Compose a Worker' },
-  { label: 'Loading dock', to: '/packaging', hint: 'Package and deliver' },
-  { label: 'Customer delivery', to: '/customer-delivery', hint: 'What has gone to customers' },
-  { label: 'Platform brain', to: '/knowledge/skills', hint: 'Shared knowledge' },
-  { label: 'Learning', to: '/learning', hint: 'What Workers are learning' },
-  { label: 'Sentinel', to: '/sentinel', hint: 'Review and control' },
-  { label: 'Workshop', to: '/harnesses', hint: 'Harnesses' },
 ]
 
 function useViewport() {
@@ -77,7 +65,7 @@ export function WorldShell() {
   const [zoomBias, setZoomBias] = useState(1)
 
   const atHome = location.pathname === '/campus' || location.pathname === '/campus/'
-  const roomPanel = location.pathname.startsWith('/campus/rooms/')
+  const roomPanel = location.pathname.startsWith('/campus/rooms/') || location.pathname.startsWith('/campus/places/')
   const panelOpen = !atHome
   const focus = useMemo(() => focusFor(location.pathname, world), [location.pathname, world])
 
@@ -146,7 +134,7 @@ export function WorldShell() {
 
         {/* ── the world ── */}
         <div
-          className={cn('campus-stage touch-none', panelOpen && !desktop && 'pointer-events-none opacity-40')}
+          className={cn('campus-stage touch-none', vw < 768 && 'campus-compact', panelOpen && !desktop && 'pointer-events-none opacity-40')}
           style={{ left: desktop ? panelWidth : 0, top: 64 }}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
@@ -154,6 +142,7 @@ export function WorldShell() {
           aria-label="Campus"
         >
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(1200px_700px_at_50%_55%,#1a2150_0%,transparent_70%)]" />
+          <div aria-hidden="true" className="stars" />
           {world && lens === 'campus' && (
             <div className="anchor">
               <Campus world={world} camera={camera} focus={focus} panelOpen={panelOpen} onNavigate={go} />
@@ -215,18 +204,35 @@ export function WorldShell() {
           <div className="ml-auto flex items-center gap-2 sm:ml-0">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button type="button" className="rounded-lg bg-white/5 px-3 py-2 text-meta font-medium text-white/80 outline-none hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-ring">Places</button>
+                <button type="button" className="rounded-lg bg-white/5 px-3 py-2 text-meta font-medium text-white/80 outline-none hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-ring">Directory</button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-64">
-                <DropdownMenuLabel>Go to</DropdownMenuLabel>
-                {PLACES_MENU.map((p) => (
-                  <DropdownMenuItem key={p.to} asChild>
-                    <Link to={p.to} className="flex flex-col items-start gap-0">
-                      <span>{p.label}</span>
-                      <span className="text-meta text-muted-foreground">{p.hint}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
+                <DropdownMenuLabel>Every place and section</DropdownMenuLabel>
+                {DIRECTORY.map((d) => {
+                  const sections = d.groups.flatMap((g) => g.sections)
+                  return sections.length === 1 ? (
+                    <DropdownMenuItem key={d.key} asChild>
+                      <Link to={sections[0].to}><d.icon style={{ color: d.color }} aria-hidden="true" />{d.name}</Link>
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuSub key={d.key}>
+                      <DropdownMenuSubTrigger><d.icon className="size-4" style={{ color: d.color }} aria-hidden="true" />{d.name}</DropdownMenuSubTrigger>
+                      <DropdownMenuSubContent className="max-h-[70vh] w-60 overflow-y-auto">
+                        {d.groups.map((g, gi) => (
+                          <div key={g.label ?? gi}>
+                            {gi > 0 && <DropdownMenuSeparator />}
+                            {g.label && <DropdownMenuLabel className="text-meta text-muted-foreground">{g.label}</DropdownMenuLabel>}
+                            {g.sections.map((sec) => (
+                              <DropdownMenuItem key={sec.to} asChild>
+                                <Link to={sec.to}><sec.icon aria-hidden="true" />{sec.label}</Link>
+                              </DropdownMenuItem>
+                            ))}
+                          </div>
+                        ))}
+                      </DropdownMenuSubContent>
+                    </DropdownMenuSub>
+                  )
+                })}
                 {world && (
                   <>
                     <DropdownMenuSeparator />

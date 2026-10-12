@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router'
-import { ArrowRight, Brain, CircleDot } from 'lucide-react'
+import { Brain, CircleDot } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { EmptyState, ErrorState, LoadingRegion } from '@/components/platform/states'
 import { formatRelative } from '@/lib/format'
@@ -62,7 +62,6 @@ export function RoomPanel() {
       <section aria-labelledby="room-workers">
         <div className="flex items-baseline justify-between">
           <h2 id="room-workers" className="text-item font-semibold">Workers</h2>
-          <Link to={`/workers?context=${room.key}`} className="flex items-center gap-1 text-meta text-[#9cc0ff] hover:text-foreground">As a list <ArrowRight className="size-3.5" aria-hidden="true" /></Link>
         </div>
         <ul className="mt-2 flex flex-col divide-y divide-white/5 rounded-xl border bg-card">
           {ws.map((w) => {
@@ -90,6 +89,17 @@ export function RoomPanel() {
             )
           })}
         </ul>
+      </section>
+
+      <section aria-label="More in the Registry" className="grid gap-2 sm:grid-cols-2">
+        <Link to={`/workers?context=${room.key}`} className="rounded-xl border bg-card px-3.5 py-3 outline-none hover:border-white/25 focus-visible:ring-2 focus-visible:ring-ring">
+          <span className="block text-item font-semibold">This team as a list</span>
+          <span className="block text-meta text-muted-foreground">Filter, sort and triage in the Registry</span>
+        </Link>
+        <Link to="/workers?view=customer" className="rounded-xl border bg-card px-3.5 py-3 outline-none hover:border-white/25 focus-visible:ring-2 focus-visible:ring-ring">
+          <span className="block text-item font-semibold">Customer packages</span>
+          <span className="block text-meta text-muted-foreground">What has been prepared for customers</span>
+        </Link>
       </section>
     </div>
   )

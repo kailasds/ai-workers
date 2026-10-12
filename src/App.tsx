@@ -43,6 +43,7 @@ const InvitePage = lazy(() => import('@/features/auth/auth-pages').then((m) => (
 const ResetPage = lazy(() => import('@/features/auth/auth-pages').then((m) => ({ default: () => <m.SetPasswordPage mode="reset" /> })))
 const ConfigurationPage = named(() => import('@/features/worker/configuration-page'), 'ConfigurationPage')
 const RoomPanel = named(() => import('@/world/room-panel'), 'RoomPanel')
+const PlaceLobby = named(() => import('@/world/place-lobby'), 'PlaceLobby')
 const NotFoundPage = named(() => import('@/pages/not-found-page'), 'NotFoundPage')
 
 /** Old links keep working: redirect while keeping the query string. */
@@ -74,6 +75,7 @@ function App() {
           <Route element={<WorldShell />}>
             <Route path="campus" element={null} />
             <Route path="campus/rooms/:key" element={<RoomPanel />} />
+            <Route path="campus/places/:key" element={<PlaceLobby />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="govern/*" element={<Navigate to="/dashboard" replace />} />
 
