@@ -61,10 +61,6 @@ export const ADMIN_ITEM: NavItem = {
   feature: 'users.manage',
 }
 
-/** The rail's flat order (no section labels): build-and-ship flow first, then the library and oversight. */
-const RAIL_ORDER = ['/dashboard', '/compose', '/packaging', '/customer-delivery', '/workers', '/knowledge', '/learning', '/sentinel', '/harnesses']
-export const RAIL_ITEMS: NavItem[] = RAIL_ORDER.map((to) => NAV_GROUPS.flatMap((g) => g.items).find((i) => i.to === to)!)
-
 export const ALL_NAV_ITEMS: NavItem[] = [...NAV_GROUPS.flatMap((g) => g.items), ADMIN_ITEM]
 
 export function isActivePath(pathname: string, to: string) {

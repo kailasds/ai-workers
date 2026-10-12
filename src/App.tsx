@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useParams, useLocation } from 'react-router'
-import { AppShell } from '@/components/shell/app-shell'
+import { WorldShell } from '@/world/world-shell'
 
 // Every content route is lazy-loaded, so the first screen does not pay for the whole console.
 const named = <T,>(loader: () => Promise<T>, name: keyof T) =>
@@ -42,6 +42,7 @@ const LauncherPage = named(() => import('@/features/auth/auth-pages'), 'Launcher
 const InvitePage = lazy(() => import('@/features/auth/auth-pages').then((m) => ({ default: () => <m.SetPasswordPage mode="invite" /> })))
 const ResetPage = lazy(() => import('@/features/auth/auth-pages').then((m) => ({ default: () => <m.SetPasswordPage mode="reset" /> })))
 const ConfigurationPage = named(() => import('@/features/worker/configuration-page'), 'ConfigurationPage')
+const RoomPanel = named(() => import('@/world/room-panel'), 'RoomPanel')
 const NotFoundPage = named(() => import('@/pages/not-found-page'), 'NotFoundPage')
 
 /** Old links keep working: redirect while keeping the query string. */
@@ -68,8 +69,11 @@ function App() {
           <Route path="auth/set-password" element={<Suspense fallback={null}><InvitePage /></Suspense>} />
           <Route path="auth/reset" element={<Suspense fallback={null}><ResetPage /></Suspense>} />
           <Route path="home" element={<Suspense fallback={null}><LauncherPage /></Suspense>} />
-          <Route index element={<Navigate to="/home" replace />} />
-          <Route element={<AppShell />}>
+          <Route index element={<Navigate to="/campus" replace />} />
+          {/* One world: the campus is always behind, and every page opens in a panel beside its place. */}
+          <Route element={<WorldShell />}>
+            <Route path="campus" element={null} />
+            <Route path="campus/rooms/:key" element={<RoomPanel />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="govern/*" element={<Navigate to="/dashboard" replace />} />
 

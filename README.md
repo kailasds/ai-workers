@@ -4,6 +4,16 @@ A new frontend for the TCS AI Worker Platform: compose, package, deliver, operat
 
 The product truth (concepts, data, workflows, rules, states) comes from the reverse-engineered product context. The visual language and engineering conventions come from `.claude/skills/frontend-kit`. The legacy UI was used as a product reference only, never as a design reference.
 
+## The campus (branch `world/campus`)
+
+This branch replaces the sidebar console with one world you move through:
+
+- **The campus** (`/campus`) is home. The **platform brain** (shared Skills, languages, EVALs and DoD rubrics) sits at the centre, ringed by the **Sentinel**. Around it: one **room per bounded context** (each figure is a registered Worker), the **build bay** (Compose), the **loading dock** (Packaging and delivery) and the **workshop** (Harnesses).
+- **Knowledge flows are drawn from real reads.** Amber motes are memories Workers recorded, travelling to the Sentinel; they are *held* at the ring because the Sentinel is in shadow mode and promotes nothing. Blue motes are platform knowledge flowing out to the teams and the build bay.
+- **Every page opens in a panel beside its place.** The camera flies to the room, dock or brain the page belongs to; Esc or ✕ returns to the campus. Rooms open a team panel (`/campus/rooms/:key`); Workers open the full Worker workspace.
+- **Orbit** is a second lens on the same world: Workers placed by how far along they are (serving, packaged, composed) around the brain.
+- Places menu and ⌘K reach every area without the map. Built in CSS 3D; a WebGL version is the next step if this direction holds.
+
 ## Run it
 
 ```bash
