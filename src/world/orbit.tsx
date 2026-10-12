@@ -32,15 +32,15 @@ function OrbitScene({ world, focus, onNavigate }: { world: WorldData; focus: { p
       {[R.serving, R.packaged, R.composed].map((r, i) => (
         <circle key={r} r={r} fill="none" stroke="#fff" strokeOpacity={0.08} strokeDasharray={i === 2 ? '2 7' : undefined} />
       ))}
-      <text x={0} y={-R.serving + 14} textAnchor="middle" className="fill-white/35 font-mono text-[9px] tracking-[0.2em]">SERVING</text>
-      <text x={0} y={-R.packaged + 14} textAnchor="middle" className="fill-white/35 font-mono text-[9px] tracking-[0.2em]">PACKAGED</text>
-      <text x={0} y={-R.composed + 14} textAnchor="middle" className="fill-white/35 font-mono text-[9px] tracking-[0.2em]">COMPOSED</text>
+      <text x={0} y={-R.serving + 14} textAnchor="middle" className="fill-white/35 font-medium text-[9px] tracking-[0.2em]">SERVING</text>
+      <text x={0} y={-R.packaged + 14} textAnchor="middle" className="fill-white/35 font-medium text-[9px] tracking-[0.2em]">PACKAGED</text>
+      <text x={0} y={-R.composed + 14} textAnchor="middle" className="fill-white/35 font-medium text-[9px] tracking-[0.2em]">COMPOSED</text>
 
       {/* Sentinel ring */}
       <circle r={R.sentinel} fill="none" stroke="#fbbf24" strokeOpacity=".6" strokeWidth={2.5} style={{ filter: 'drop-shadow(0 0 8px #fbbf24)' }} />
       <g role="button" tabIndex={0} className="cursor-pointer outline-none" onClick={() => onNavigate('/campus/places/sentinel')} onKeyDown={(e) => e.key === 'Enter' && onNavigate('/campus/places/sentinel')} aria-label="Sentinel">
         <rect x={-86} y={R.sentinel - 12} width={172} height={24} rx={12} fill="#0b0f24" stroke="#fbbf2466" />
-        <text y={R.sentinel + 4} textAnchor="middle" className="fill-amber-200 font-mono text-[10px]">SENTINEL · {world.sentinel.acting ? 'acting' : 'holding all learning'}</text>
+        <text y={R.sentinel + 4} textAnchor="middle" className="fill-amber-200 font-medium text-[10px]">SENTINEL · {world.sentinel.acting ? 'acting' : 'holding all learning'}</text>
       </g>
 
       {/* brain */}
@@ -48,7 +48,7 @@ function OrbitScene({ world, focus, onNavigate }: { world: WorldData; focus: { p
       <g role="button" tabIndex={0} className="cursor-pointer outline-none" onClick={() => onNavigate('/campus/places/brain')} onKeyDown={(e) => e.key === 'Enter' && onNavigate('/campus/places/brain')} aria-label="Platform brain: open its sections">
         <circle r={R.brain} fill="url(#orb-core)" style={{ filter: 'drop-shadow(0 0 30px #38bdf8)' }} />
         <text y={-6} textAnchor="middle" className="fill-[#04263f] text-[11px] font-bold tracking-[0.14em]">PLATFORM BRAIN</text>
-        <text y={12} textAnchor="middle" className="fill-[#04263f] font-mono text-[10px]">{world.brain.skills} Skills · {world.brain.evals} EVALs</text>
+        <text y={12} textAnchor="middle" className="fill-[#04263f] font-medium text-[10px]">{world.brain.skills} Skills · {world.brain.evals} EVALs</text>
       </g>
 
       {sectors.map(({ room, a0, a1 }) => {
@@ -67,7 +67,7 @@ function OrbitScene({ world, focus, onNavigate }: { world: WorldData; focus: { p
             <path d={arc(R.composed + 26, a0, a1)} stroke={room.color} strokeWidth={focused ? 4 : 2} strokeOpacity={0.7} fill="none" />
             <g role="button" tabIndex={0} className="cursor-pointer outline-none" onClick={() => onNavigate(room.href)} onKeyDown={(e) => e.key === 'Enter' && onNavigate(room.href)} aria-label={`${room.title}: ${n} Workers`}>
               <text x={Math.cos(mid) * R.label} y={Math.sin(mid) * R.label} textAnchor="middle" fill={room.color} className="text-[14px] font-semibold">{room.name}</text>
-              <text x={Math.cos(mid) * R.label} y={Math.sin(mid) * R.label + 16} textAnchor="middle" className="fill-white/50 font-mono text-[10px]">{n} Worker{n === 1 ? '' : 's'}</text>
+              <text x={Math.cos(mid) * R.label} y={Math.sin(mid) * R.label + 16} textAnchor="middle" className="fill-white/50 font-medium text-[10px]">{n} Worker{n === 1 ? '' : 's'}</text>
             </g>
             {room.workers.map((w, i) => {
               const a = a0 + ((i + 0.5) / n) * (a1 - a0)

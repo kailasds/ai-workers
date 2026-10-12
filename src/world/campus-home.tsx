@@ -20,7 +20,7 @@ export function CampusHome({ world, lens }: { world: WorldData; lens: 'campus' |
   return (
     <>
       <section aria-label="This month" className="fixed top-20 left-4 z-20 w-[min(340px,calc(100vw-2rem))] rounded-2xl border border-white/10 bg-[#0b0f24]/85 p-5 text-white backdrop-blur-xl">
-        <p className="font-mono text-[11px] tracking-[0.16em] text-white/50">LAST 30 DAYS</p>
+        <p className="text-[11px] font-semibold tracking-[0.16em] text-white/50">LAST 30 DAYS</p>
         {d ? (
           <>
             <p className="mt-2 text-[2.5rem] leading-none font-bold tracking-tight">
@@ -55,7 +55,7 @@ export function CampusHome({ world, lens }: { world: WorldData; lens: 'campus' |
       )}
 
       <details open className="group fixed bottom-4 left-4 z-20 hidden w-[330px] rounded-2xl border border-white/10 bg-[#0b0f24]/85 p-4 text-meta text-white/70 backdrop-blur-xl md:block">
-        <summary className="flex cursor-pointer list-none items-center justify-between font-mono text-[10px] tracking-[0.16em] text-white/45 outline-none focus-visible:text-white [&::-webkit-details-marker]:hidden">
+        <summary className="flex cursor-pointer list-none items-center justify-between text-[10px] font-semibold tracking-[0.16em] text-white/45 outline-none focus-visible:text-white [&::-webkit-details-marker]:hidden">
           HOW KNOWLEDGE MOVES<span className="text-white/40 group-open:rotate-180" aria-hidden="true">▾</span>
         </summary>
         <div className="mt-2.5">
@@ -65,7 +65,7 @@ export function CampusHome({ world, lens }: { world: WorldData; lens: 'campus' |
           <li className="flex gap-2.5"><span className="mt-1.5 size-2 shrink-0 rounded-full bg-sky-300 shadow-[0_0_8px_#7dd3fc]" aria-hidden="true" /><span><b className="font-medium text-white">Knowledge in.</b> The platform brain's Skills, languages and EVALs flow to every team and into the build bay.</span></li>
         </ul>
         {lens === 'campus' && (
-          <p className="mt-3 border-t border-white/10 pt-2.5 text-white/50">Figures are Workers: solid = packaged, dashed = not packaged yet, green = serving, amber halo = needs attention. Drag to look around; click anything to open it.</p>
+          <p className="mt-3 border-t border-white/10 pt-2.5 text-white/50">Figures are Workers: solid = packaged, dashed = not packaged yet, green = serving, amber halo = needs attention. Drag to move, right-drag to turn, scroll to zoom toward the pointer. Come close to a room to see every Worker's name; click a Worker to look inside it.</p>
         )}
         </div>
       </details>

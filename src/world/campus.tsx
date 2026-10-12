@@ -43,7 +43,7 @@ function Tag({ color, icon: Icon, initial, title, caption, stat, statTone, onOpe
           </span>
           <span>
             <span className="block text-[13px] font-semibold leading-4">{title}</span>
-            <span className="block font-mono text-[11px] leading-4 text-white/60">{caption}</span>
+            <span className="block font-medium text-[11px] leading-4 text-white/60">{caption}</span>
           </span>
           {stat && <span className={cn('ml-1 text-lg font-bold', statTone === 'good' ? 'text-emerald-300' : statTone === 'bad' ? 'text-rose-300' : 'text-white/50')}>{stat}</span>}
         </button>
@@ -72,7 +72,7 @@ function Room({ p, packagedIds, focusedWorker, onOpen, onWorker }: { p: Place; p
   return (
     <>
       <div className="wall back">
-        <div className="screen grid place-items-center font-mono text-[11px] text-white/80">{ran.length ? `${met}/${ran.length} last runs met` : 'no runs yet'}</div>
+        <div className="screen grid place-items-center font-medium text-[11px] text-white/80">{ran.length ? `${met}/${ran.length} last runs met` : 'no runs yet'}</div>
       </div>
       <div className="wall side"><span className="books" aria-hidden="true">{BOOKS.map((c) => <i key={c} style={{ background: c }} />)}</span></div>
       <Furniture size={p.size} books={false} />
@@ -103,7 +103,7 @@ function Room({ p, packagedIds, focusedWorker, onOpen, onWorker }: { p: Place; p
 function Facility({ p, world, onOpen }: { p: Place; world: WorldData; onOpen: () => void }) {
   return (
     <>
-      <div className="wall back"><div className="screen grid place-items-center font-mono text-[11px] text-white/80">{p.caption}</div></div>
+      <div className="wall back"><div className="screen grid place-items-center font-medium text-[11px] text-white/80">{p.caption}</div></div>
       <div className="wall side" />
       {p.kind !== 'dock' && <Furniture size={p.size} books={false} />}
       {p.kind === 'build' && (
@@ -228,9 +228,9 @@ function CampusScene({ world, camera, focus, panelOpen, onNavigate }: {
               className="tag rounded-xl border border-sky-300/30 bg-[#0b0f24]/90 px-4 py-2 text-center text-white shadow-[0_10px_30px_#0009] outline-none hover:border-sky-300/70 focus-visible:ring-2 focus-visible:ring-white"
               style={{ bottom: 200 }}
             >
-              <span className="block font-mono text-[11px] tracking-[0.18em] text-sky-300">PLATFORM BRAIN</span>
+              <span className="block font-medium text-[11px] tracking-[0.18em] text-sky-300">PLATFORM BRAIN</span>
               <span className="block text-[13px] font-semibold">{world.brain.skills} Skills · {world.brain.languages} languages · {world.brain.evals} EVALs</span>
-              <span className="block font-mono text-[11px] text-white/60">shared by every Worker · {world.brain.dod} DoD rubrics</span>
+              <span className="block font-medium text-[11px] text-white/60">shared by every Worker · {world.brain.dod} DoD rubrics</span>
             </button>
           </div>
         </div>
@@ -249,7 +249,7 @@ function CampusScene({ world, camera, focus, panelOpen, onNavigate }: {
             <span className="grid size-7 place-items-center rounded-lg bg-amber-400 text-[#0b0f24]"><ShieldCheck className="size-4" aria-hidden="true" /></span>
             <span>
               <span className="block text-[13px] font-semibold leading-4">Sentinel</span>
-              <span className="block font-mono text-[11px] leading-4 text-white/60">{world.sentinel.acting ? 'acting' : 'shadow · records, applies none'}</span>
+              <span className="block font-medium text-[11px] leading-4 text-white/60">{world.sentinel.acting ? 'acting' : 'shadow · records, applies none'}</span>
             </span>
           </button>
         </div>

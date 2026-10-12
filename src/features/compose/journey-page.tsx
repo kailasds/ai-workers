@@ -130,7 +130,7 @@ export function JourneyPage() {
       subject: draft.name,
       phases: PACKAGE_PHASES,
       href: `/packaging?queue=packaged`,
-      onSucceed: () => markPackaged(draft.composition_id),
+      onSucceed: () => void markPackaged(draft.composition_id),
     })
 
   const stationOfCurrent: StationKey = cp ? cp.station : 'package_deploy'

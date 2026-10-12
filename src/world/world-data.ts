@@ -38,6 +38,8 @@ export interface WorldData {
   drafts: { inBuild: number; packaged: number }
   /** Compositions that have a Package (from the packageable read). */
   packagedIds: Set<string>
+  /** What each composition is made of, for the inside-the-Worker view. */
+  contentsById: Map<string, NonNullable<Draft['contents']>>
   deliveries: number
   harnesses: number
   totals: { workers: number; serving: number; attention: number; packaged: number }
@@ -103,6 +105,7 @@ export function buildWorld(input: {
     sentinel: input.sentinel,
     drafts: { inBuild, packaged },
     packagedIds: new Set(input.drafts.filter((d) => d.package).map((d) => d.composition_id)),
+    contentsById: new Map(input.drafts.flatMap((d) => (d.contents ? [[d.composition_id, d.contents] as const] : []))),
     deliveries: input.deliveries,
     harnesses: input.harnesses,
     totals: {
@@ -142,11 +145,34 @@ export function useWorldData() {
   })
 }
 
-/** Which place a route belongs to, so the camera can fly there. */
-export function focusFor(pathname: string, world: WorldData | null): { place: string | null; worker: string | null } {
+// ── 3D layout: world px → scene units, and a desk for every Worker ────────────
+export const UNIT = 40
+export const to3 = (v: number) => v / UNIT
+
+/** A Worker's desk inside its room, in scene units relative to the room's centre. */
+export function seatOf(roomSize: number, index: number) {
+  const s = to3(roomSize)
+  const cols = 6
+  const col = index % cols
+  const row = Math.floor(index / cols)
+  const pitchX = (s - 2.2) / (cols - 1)
+  return { x: -s / 2 + 1.5 + col * pitchX, z: -s / 2 + 1.9 + row * 1.15 }
+}
+
+/** Where a Worker sits on the campus, in scene units. */
+export function workerPosition(world: WorldData, compositionId: string) {
+  const room = world.places.find((p) => p.workers.some((w) => w.composition_id === compositionId))
+  if (!room) return null
+  const seat = seatOf(room.size, room.workers.findIndex((w) => w.composition_id === compositionId))
+  return { room, x: to3(room.x) + seat.x, z: to3(room.y) + seat.z }
+}
+
+/** Which place a route belongs to, so the camera can fly there. A `?worker=` zooms to that desk. */
+export function focusFor(pathname: string, world: WorldData | null, search = ''): { place: string | null; worker: string | null } {
   const seg = pathname.split('/').filter(Boolean)
   const [a, b, c] = seg
-  if (a === 'campus' && b === 'rooms' && c) return { place: c, worker: null }
+  const worker = new URLSearchParams(search).get('worker')
+  if (a === 'campus' && b === 'rooms' && c) return { place: c, worker }
   if (a === 'campus' && b === 'places' && c) return { place: c, worker: null }
   if (a === 'workers' && b) {
     const w = world?.workers.find((x) => x.composition_id === b || x.runtime.reachable_worker_id === b)

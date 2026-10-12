@@ -346,6 +346,11 @@
   }
 }
 
+/* The 3D canvas resizes with the stage; animating its edge would re-render every frame. */
+.campus-stage.campus-3d {
+  transition: none;
+}
+
 /* ── furniture and polish ───────────────── */
 .place {
   cursor: pointer;

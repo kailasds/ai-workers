@@ -1,5 +1,6 @@
 import { apiGet, ApiError, USE_MOCK } from './client'
-import { mockAcknowledge, mockAddDelivery, mockCustomerPackages, mockIdentityChange, mockPortfolio, mockRuntimeRecords, mockWorkspace } from './mock/workers'
+// The capture loads only when the mock layer is first used, so it stays out of the main bundle.
+const mock = () => import('./mock/workers')
 import type { ExecutiveDashboard } from '@/lib/types/dashboard'
 import type {
   CustomerPackage,
@@ -18,12 +19,12 @@ interface Options {
 }
 
 export async function getWorkerPortfolio({ signal, scenario }: Options = {}): Promise<WorkerPortfolio> {
-  if (USE_MOCK) return mockPortfolio(scenario ?? null, signal)
+  if (USE_MOCK) return (await mock()).mockPortfolio(scenario ?? null, signal)
   return apiGet<WorkerPortfolio>('/worker-portfolio?limit=200', signal)
 }
 
 export async function getCustomerPackages({ signal, scenario }: Options = {}): Promise<CustomerPackage[]> {
-  if (USE_MOCK) return mockCustomerPackages(scenario ?? null, signal)
+  if (USE_MOCK) return (await mock()).mockCustomerPackages(scenario ?? null, signal)
   const directory = await apiGet<{ packages: CustomerPackage[] }>('/customer-packages', signal)
   return directory.packages
 }
@@ -33,7 +34,7 @@ export async function getCustomerPackages({ signal, scenario }: Options = {}): P
  * `{ redirect }` naming its composition, so links from the run ledger land on the Worker.
  */
 export async function getWorkerWorkspace(id: string, { signal, scenario }: Options = {}): Promise<WorkerWorkspace | { redirect: string }> {
-  if (USE_MOCK) return mockWorkspace(id, scenario ?? null, signal)
+  if (USE_MOCK) return (await mock()).mockWorkspace(id, scenario ?? null, signal)
 
   const [portfolio, records, packageable, directory, dashboard] = await Promise.all([
     apiGet<WorkerPortfolio>('/worker-portfolio?limit=200', signal),
@@ -65,7 +66,7 @@ export async function getWorkerWorkspace(id: string, { signal, scenario }: Optio
 }
 
 export async function changeIdentity(id: string, action: 'pause' | 'resume' | 'revoke'): Promise<IdentityState> {
-  if (USE_MOCK) return mockIdentityChange(id, action)
+  if (USE_MOCK) return (await mock()).mockIdentityChange(id, action)
   const response = await fetch(`/api/compositions/${id}/identity/${action}`, { method: 'POST', credentials: 'same-origin' })
   if (!response.ok) throw new ApiError(response.status, 'The change could not be applied.')
   const body = (await response.json()) as { status: IdentityState }
@@ -73,15 +74,17 @@ export async function changeIdentity(id: string, action: 'pause' | 'resume' | 'r
 }
 
 export async function getRuntimeRecords({ signal }: Options = {}): Promise<RuntimeRecord[]> {
-  if (USE_MOCK) return mockRuntimeRecords(signal)
+  if (USE_MOCK) return (await mock()).mockRuntimeRecords(signal)
   return apiGet<RuntimeRecord[]>('/workers', signal)
 }
 
 export async function acknowledgeDelivery(deliveryId: string): Promise<CustomerPackage> {
-  if (USE_MOCK) return mockAcknowledge(deliveryId)
+  if (USE_MOCK) return (await mock()).mockAcknowledge(deliveryId)
   const response = await fetch(`/api/customer-packages/${deliveryId}/acknowledge`, { method: 'POST', credentials: 'same-origin' })
   if (!response.ok) throw new ApiError(response.status, 'Acknowledgement could not be recorded.')
   return (await response.json()) as CustomerPackage
 }
 
-export { mockAddDelivery as recordPreparedDelivery }
+export async function recordPreparedDelivery(pkg: CustomerPackage) {
+  ;(await mock()).mockAddDelivery(pkg)
+}

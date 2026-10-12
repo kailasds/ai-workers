@@ -3,18 +3,6 @@
 
 import { apiGet, USE_MOCK } from './client'
 import { mockRead } from './mock/read'
-import skills from '@/data/mock/knowledge-skills.json'
-import dsl from '@/data/mock/dsl-domains.json'
-import rubrics from '@/data/mock/dod-rubrics.json'
-import evals from '@/data/mock/compose-evaluations.json'
-import models from '@/data/mock/compose-models.json'
-import workerTypes from '@/data/mock/worker-types.json'
-import geographies from '@/data/mock/geographies.json'
-import harnesses from '@/data/mock/harnesses.json'
-import sentinelOverview from '@/data/mock/platform-sentinel-overview.json'
-import sentinelLearning from '@/data/mock/sentinel-learning.json'
-import learningWorkers from '@/data/mock/learning-workers.json'
-import sourcePublication from '@/data/mock/source-publication.json'
 import type {
   DodRubric,
   DslDomain,
@@ -35,19 +23,24 @@ interface Options {
   scenario?: string | null
 }
 
-function read<T>(path: string, mock: () => T) {
-  return ({ signal, scenario }: Options = {}): Promise<T> => (USE_MOCK ? mockRead(scenario, mock, signal) : apiGet<T>(path, signal))
+// Each capture is loaded on first use, so the mock data stays out of the main bundle.
+function read<T>(path: string, load: () => Promise<{ default: unknown }>) {
+  return async ({ signal, scenario }: Options = {}): Promise<T> => {
+    if (!USE_MOCK) return apiGet<T>(path, signal)
+    const data = (await load()).default as T
+    return mockRead(scenario, () => data, signal)
+  }
 }
 
-export const getSkillLibrary = read<SkillLibrary>('/knowledge-base/skills', () => skills as unknown as SkillLibrary)
-export const getDslDomains = read<{ domains: DslDomain[] }>('/compose/dsl/domains', () => dsl as unknown as { domains: DslDomain[] })
-export const getDodRubrics = read<{ rubrics: DodRubric[] }>('/compose/dod-rubrics', () => rubrics as unknown as { rubrics: DodRubric[] })
-export const getEvaluations = read<{ evaluations: Evaluation[] }>('/compose/catalog?only=evaluations', () => evals as unknown as { evaluations: Evaluation[] })
-export const getModels = read<{ models: ModelEntry[] }>('/compose/catalog?only=models', () => models as unknown as { models: ModelEntry[] })
-export const getWorkerTypes = read<{ types: WorkerType[] }>('/compose/worker-types', () => workerTypes as unknown as { types: WorkerType[] })
-export const getGeographies = read<{ geographies: Geography[]; everywhere: string[] }>('/compose/geographies', () => geographies as unknown as { geographies: Geography[]; everywhere: string[] })
-export const getHarnesses = read<{ harnesses: Harness[]; common_trade_offs: string[] }>('/harnesses', () => harnesses as unknown as { harnesses: Harness[]; common_trade_offs: string[] })
-export const getSentinelOverview = read<PlatformSentinelOverview>('/platform/sentinel/overview', () => sentinelOverview as unknown as PlatformSentinelOverview)
-export const getSentinelLearning = read<SentinelLearningFleet>('/sentinel/learning', () => sentinelLearning as unknown as SentinelLearningFleet)
-export const getLearningWorkers = read<LearningWorkers>('/learning/workers?period=all', () => learningWorkers as unknown as LearningWorkers)
-export const getSourcePublication = read<SourcePublication>('/source-publication', () => sourcePublication as unknown as SourcePublication)
+export const getSkillLibrary = read<SkillLibrary>('/knowledge-base/skills', () => import('@/data/mock/knowledge-skills.json'))
+export const getDslDomains = read<{ domains: DslDomain[] }>('/compose/dsl/domains', () => import('@/data/mock/dsl-domains.json'))
+export const getDodRubrics = read<{ rubrics: DodRubric[] }>('/compose/dod-rubrics', () => import('@/data/mock/dod-rubrics.json'))
+export const getEvaluations = read<{ evaluations: Evaluation[] }>('/compose/catalog?only=evaluations', () => import('@/data/mock/compose-evaluations.json'))
+export const getModels = read<{ models: ModelEntry[] }>('/compose/catalog?only=models', () => import('@/data/mock/compose-models.json'))
+export const getWorkerTypes = read<{ types: WorkerType[] }>('/compose/worker-types', () => import('@/data/mock/worker-types.json'))
+export const getGeographies = read<{ geographies: Geography[]; everywhere: string[] }>('/compose/geographies', () => import('@/data/mock/geographies.json'))
+export const getHarnesses = read<{ harnesses: Harness[]; common_trade_offs: string[] }>('/harnesses', () => import('@/data/mock/harnesses.json'))
+export const getSentinelOverview = read<PlatformSentinelOverview>('/platform/sentinel/overview', () => import('@/data/mock/platform-sentinel-overview.json'))
+export const getSentinelLearning = read<SentinelLearningFleet>('/sentinel/learning', () => import('@/data/mock/sentinel-learning.json'))
+export const getLearningWorkers = read<LearningWorkers>('/learning/workers?period=all', () => import('@/data/mock/learning-workers.json'))
+export const getSourcePublication = read<SourcePublication>('/source-publication', () => import('@/data/mock/source-publication.json'))

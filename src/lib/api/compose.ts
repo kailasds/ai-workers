@@ -3,8 +3,6 @@
 // behave end to end in the browser. A reload restores the capture. Live mode would use
 // `POST /compositions`, `/compositions/{id}/stage-runs`, `/compose/stage-runs/{id}/accept`.
 
-import packageableCapture from '@/data/mock/packageable.json'
-import portfolioCapture from '@/data/mock/worker-portfolio.json'
 import { ApiError } from './client'
 import { mockRead } from './mock/read'
 import { CHECKPOINTS, contextOf, SECTION_CHECKPOINT, type CheckpointKey } from '@/features/compose/compose-model'
@@ -35,10 +33,8 @@ export interface Draft {
   maturity: PackageableComposition['maturity'] | null
 }
 
-const packageable = (packageableCapture as unknown as { compositions: PackageableComposition[] }).compositions
-const portfolio = (portfolioCapture as unknown as { workers: PortfolioWorker[] }).workers
 
-function fromCapture(p: PackageableComposition): Draft {
+function fromCapture(p: PackageableComposition, portfolio: PortfolioWorker[]): Draft {
   const w = portfolio.find((x) => x.composition_id === p.composition_id)
   const order = CHECKPOINTS.map((c) => c.key)
   const attention = [...new Set(p.issues.map((i) => SECTION_CHECKPOINT[i.section]).filter(Boolean))] as CheckpointKey[]
@@ -69,13 +65,27 @@ function fromCapture(p: PackageableComposition): Draft {
   }
 }
 
-const drafts = new Map<string, Draft>(packageable.map((p) => [p.composition_id, fromCapture(p)]))
+// The draft store is built from the capture on first use, so the capture stays out of the main bundle.
+let store: Map<string, Draft> | null = null
+let loading: Promise<Map<string, Draft>> | null = null
+function draftStore() {
+  if (store) return Promise.resolve(store)
+  loading ??= Promise.all([import('@/data/mock/packageable.json'), import('@/data/mock/worker-portfolio.json')]).then(([pk, pf]) => {
+    const packageable = (pk.default as unknown as { compositions: PackageableComposition[] }).compositions
+    const portfolio = (pf.default as unknown as { workers: PortfolioWorker[] }).workers
+    store = new Map(packageable.map((p) => [p.composition_id, fromCapture(p, portfolio)]))
+    return store
+  })
+  return loading
+}
 
 export async function listDrafts(opts: { signal?: AbortSignal; scenario?: string | null } = {}) {
+  const drafts = await draftStore()
   return mockRead(opts.scenario, () => [...drafts.values()].sort((a, b) => b.updated_at.localeCompare(a.updated_at)), opts.signal)
 }
 
 export async function getDraft(id: string, opts: { signal?: AbortSignal; scenario?: string | null } = {}) {
+  const drafts = await draftStore()
   return mockRead(
     opts.scenario,
     () => {
@@ -100,6 +110,7 @@ export interface Declaration {
 
 /** Confirm identity: creates the draft and reserves its identity. Never creates twice for one call. */
 export async function createDraft(decl: Declaration): Promise<Draft> {
+  const drafts = await draftStore()
   await new Promise((r) => setTimeout(r, 700))
   const ctx = contextOf(decl.context_key)
   const id = crypto.randomUUID()
@@ -128,6 +139,7 @@ export async function createDraft(decl: Declaration): Promise<Draft> {
 
 /** Writes a checkpoint's acceptance. Optimistic concurrency: a stale record version is refused. */
 export async function acceptCheckpoint(id: string, key: CheckpointKey, recordVersion: number): Promise<Draft> {
+  const drafts = await draftStore()
   await new Promise((r) => setTimeout(r, 500))
   const d = drafts.get(id)
   if (!d) throw new ApiError(404, 'This draft was not found.')
@@ -142,6 +154,7 @@ export async function acceptCheckpoint(id: string, key: CheckpointKey, recordVer
 
 /** Editing a decision restarts that stage and every later one. */
 export async function reopenCheckpoint(id: string, key: CheckpointKey): Promise<Draft> {
+  const drafts = await draftStore()
   await new Promise((r) => setTimeout(r, 300))
   const d = drafts.get(id)
   if (!d) throw new ApiError(404, 'This draft was not found.')
@@ -153,6 +166,7 @@ export async function reopenCheckpoint(id: string, key: CheckpointKey): Promise<
 }
 
 export async function archiveDraft(id: string, recordVersion: number): Promise<void> {
+  const drafts = await draftStore()
   await new Promise((r) => setTimeout(r, 500))
   const d = drafts.get(id)
   if (!d) throw new ApiError(404, 'This draft was not found.')
@@ -162,7 +176,8 @@ export async function archiveDraft(id: string, recordVersion: number): Promise<v
 }
 
 /** MOCK: records the sealed Package once a simulated build finishes. */
-export function markPackaged(id: string) {
+export async function markPackaged(id: string) {
+  const drafts = await draftStore()
   const d = drafts.get(id)
   if (!d) return
   d.package = { id: crypto.randomUUID(), status: 'DRAFT_READY', composition_revision: d.revision, created_at: new Date().toISOString() }

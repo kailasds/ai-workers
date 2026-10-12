@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router'
 import { ChevronRight, KeyRound, Maximize2, Minimize2, Minus, Orbit as OrbitIcon, Plus, Search, Scan, Map as MapIcon, X } from 'lucide-react'
 import { PageContainer } from '@/components/platform/page-container'
@@ -13,6 +13,18 @@ import { MOCK_SESSION } from '@/lib/session'
 import { cn } from '@/lib/utils'
 import { Campus, type Camera } from './campus'
 import { Orbit } from './orbit'
+import { cameraBus, type ZoomLevel } from './camera-bus'
+
+// Real 3D is loaded on demand; without WebGL the CSS campus is the campus.
+const Campus3D = lazy(() => import('./three/campus-3d'))
+const supportsWebGL = (() => {
+  try {
+    const c = document.createElement('canvas')
+    return Boolean(c.getContext('webgl2') || c.getContext('webgl'))
+  } catch {
+    return false
+  }
+})()
 import { CampusHome } from './campus-home'
 import { focusFor, RING, useWorldData, type WorldData } from './world-data'
 import { DIRECTORY, directoryOf } from './sections'
@@ -63,11 +75,14 @@ export function WorldShell() {
   const [expanded, setExpanded] = useState(false)
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const [zoomBias, setZoomBias] = useState(1)
+  const [level, setLevel] = useState<ZoomLevel>(cameraBus.getLevel())
+  useEffect(() => cameraBus.onLevel(setLevel), [])
+  const use3d = supportsWebGL
 
   const atHome = location.pathname === '/campus' || location.pathname === '/campus/'
   const roomPanel = location.pathname.startsWith('/campus/rooms/') || location.pathname.startsWith('/campus/places/')
   const panelOpen = !atHome
-  const focus = useMemo(() => focusFor(location.pathname, world), [location.pathname, world])
+  const focus = useMemo(() => focusFor(location.pathname, world, location.search), [location.pathname, location.search, world])
 
   // Each new destination re-centres the camera; manual pan and zoom are a temporary detour.
   useEffect(() => {
@@ -134,19 +149,32 @@ export function WorldShell() {
 
         {/* ── the world ── */}
         <div
-          className={cn('campus-stage touch-none', vw < 768 && 'campus-compact', panelOpen && !desktop && 'pointer-events-none opacity-40')}
+          className={cn('campus-stage touch-none', use3d && 'campus-3d', vw < 768 && 'campus-compact', panelOpen && !desktop && 'pointer-events-none opacity-40')}
           style={{ left: desktop ? panelWidth : 0, top: 64 }}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
+          onPointerDown={use3d ? undefined : onPointerDown}
+          onPointerMove={use3d ? undefined : onPointerMove}
+          onPointerUp={use3d ? undefined : onPointerUp}
           aria-label="Campus"
         >
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(1200px_700px_at_50%_55%,#1a2150_0%,transparent_70%)]" />
           <div aria-hidden="true" className="stars" />
-          {world && lens === 'campus' && (
+          {world && lens === 'campus' && !use3d && (
             <div className="anchor">
               <Campus world={world} camera={camera} focus={focus} panelOpen={panelOpen} onNavigate={go} />
             </div>
+          )}
+          {world && lens === 'campus' && use3d && (
+            <Suspense
+              fallback={
+                <div className="anchor">
+                  <Campus world={world} camera={camera} focus={focus} panelOpen={panelOpen} onNavigate={go} />
+                </div>
+              }
+            >
+              <div className="absolute inset-0">
+                <Campus3D world={world} focus={focus} panelOpen={panelOpen} inWorkspace={location.pathname.startsWith('/workers/')} onNavigate={go} />
+              </div>
+            </Suspense>
           )}
           {world && lens === 'orbit' && (
             <div className="absolute inset-0 grid place-items-center p-6">
@@ -267,7 +295,7 @@ export function WorldShell() {
         {/* ── map controls ── */}
         {lens === 'campus' && desktop && (
           <div className="fixed right-4 bottom-4 z-20 w-48 rounded-2xl border border-white/10 bg-[#0b0f24]/85 p-3 backdrop-blur-xl">
-            <div className="flex justify-between font-mono text-[10px] tracking-[0.14em] text-white/50"><span>MAP</span><span>{Math.round(camera.zoom * 100)}%</span></div>
+            <div className="flex justify-between text-[10px] font-semibold tracking-[0.14em] text-white/50"><span>MAP</span><span>{use3d ? level.toUpperCase() : `${Math.round(camera.zoom * 100)}%`}</span></div>
             <svg viewBox="-900 -900 1800 1800" className="my-2 h-24 w-full rounded-lg border border-white/10" aria-hidden="true">
               <circle r={RING.sentinel} fill="none" stroke="#fbbf24" strokeOpacity=".6" strokeWidth="20" />
               <circle r="90" fill="#38bdf8" />
@@ -276,9 +304,9 @@ export function WorldShell() {
               ))}
             </svg>
             <div className="grid grid-cols-3 gap-1.5">
-              <button type="button" className="rounded-lg bg-white/10 py-1 text-white/80 hover:bg-white/20" aria-label="Zoom out" onClick={() => setZoomBias((z) => Math.max(0.5, z / 1.2))}><Minus className="mx-auto size-3.5" /></button>
-              <button type="button" className="rounded-lg bg-white/10 py-1 text-white/80 hover:bg-white/20" aria-label="Zoom in" onClick={() => setZoomBias((z) => Math.min(2.5, z * 1.2))}><Plus className="mx-auto size-3.5" /></button>
-              <button type="button" className="rounded-lg bg-white/10 py-1 text-white/80 hover:bg-white/20" aria-label="Recentre" onClick={() => { setPan({ x: 0, y: 0 }); setZoomBias(1) }}><Scan className="mx-auto size-3.5" /></button>
+              <button type="button" className="rounded-lg bg-white/10 py-1 text-white/80 hover:bg-white/20" aria-label="Zoom out" onClick={() => (use3d ? cameraBus.send('out') : setZoomBias((z) => Math.max(0.5, z / 1.2)))}><Minus className="mx-auto size-3.5" /></button>
+              <button type="button" className="rounded-lg bg-white/10 py-1 text-white/80 hover:bg-white/20" aria-label="Zoom in" onClick={() => (use3d ? cameraBus.send('in') : setZoomBias((z) => Math.min(2.5, z * 1.2)))}><Plus className="mx-auto size-3.5" /></button>
+              <button type="button" className="rounded-lg bg-white/10 py-1 text-white/80 hover:bg-white/20" aria-label="Recentre" onClick={() => { if (use3d) cameraBus.send('reset'); setPan({ x: 0, y: 0 }); setZoomBias(1) }}><Scan className="mx-auto size-3.5" /></button>
             </div>
           </div>
         )}
@@ -287,7 +315,7 @@ export function WorldShell() {
         {panelOpen && (
           <section
             aria-label={pageName}
-            className="world-panel fixed top-16 bottom-0 left-0 z-20 flex flex-col border-r border-white/10 bg-background/95 shadow-[20px_0_60px_#0008] backdrop-blur-xl motion-safe:animate-in motion-safe:slide-in-from-left-8 motion-safe:fade-in-0"
+            className="world-panel fixed top-16 bottom-0 left-0 z-20 flex flex-col border-r border-white/10 bg-background shadow-[20px_0_60px_#0008] motion-safe:animate-in motion-safe:slide-in-from-left-8 motion-safe:fade-in-0"
             style={{ width: panelWidth }}
           >
             <div className="flex h-11 shrink-0 items-center gap-2 border-b border-white/10 px-3">

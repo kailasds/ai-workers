@@ -1,5 +1,4 @@
 import { apiGet, ApiError, USE_MOCK } from './client'
-import { buildMockDashboard } from './mock/dashboard'
 import type { ExecutiveDashboard, Period } from '@/lib/types/dashboard'
 
 export const PERIODS: { value: Period; label: string; long: string }[] = [
@@ -20,7 +19,7 @@ export interface DashboardRequest {
 
 /** The server answers 422 TZ_INVALID when it cannot use the reader's zone; retry without it. */
 export async function getExecutiveDashboard({ period, signal, scenario }: DashboardRequest): Promise<ExecutiveDashboard> {
-  if (USE_MOCK) return buildMockDashboard(period, scenario ?? null, signal)
+  if (USE_MOCK) return (await import('./mock/dashboard')).buildMockDashboard(period, scenario ?? null, signal)
 
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
   const base = `/dashboard/executive?window=${period}`

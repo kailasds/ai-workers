@@ -76,7 +76,7 @@ export function PackagingPage() {
   const blocked = queue === 'work' ? rows.filter((d) => d.issues.length > 0) : []
 
   const build = (d: Draft) =>
-    startOperation({ key: `build:${d.composition_id}`, label: 'Building Package', subject: d.name, phases: PACKAGE_PHASES, href: '/packaging?queue=packaged', onSucceed: () => { markPackaged(d.composition_id); drafts.refresh() } })
+    startOperation({ key: `build:${d.composition_id}`, label: 'Building Package', subject: d.name, phases: PACKAGE_PHASES, href: '/packaging?queue=packaged', onSucceed: () => { void markPackaged(d.composition_id).then(drafts.refresh) } })
 
   return (
     <PageContainer>
