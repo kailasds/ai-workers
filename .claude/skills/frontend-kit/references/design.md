@@ -72,6 +72,19 @@ mood is calm and orderly; density is medium-airy.
   --sidebar-border: #E9EDF0; --sidebar-ring: #284A77;
 }
 ```
+**Category hues (project extension, 2026-10-13).** The reference has one blue family. The product owner
+asked for more colour in tags and icons, so six category hues were added. Each is AA-checked twice: its
+text on its soft fill (5.1–7.5:1) and white on its solid (5.9–9.0:1).
+
+```css
+  --hue-blue: #284A77;   --hue-blue-soft: #E2ECF6;
+  --hue-cyan: #0A6A9E;   --hue-cyan-soft: #DDF2FD;
+  --hue-violet: #5B3FA8; --hue-violet-soft: #ECE7FB;
+  --hue-teal: #0E6B60;   --hue-teal-soft: #DCF3EE;
+  --hue-amber: #85560F;  --hue-amber-soft: #FCEBD3;
+  --hue-rose: #A2335E;   --hue-rose-soft: #FBE4EE;
+```
+
 Part hues, used only to tell the kinds of knowledge apart:
 - `--part-skill: #284A77`
 - `--part-language: #0A74B8`
@@ -92,6 +105,7 @@ Part hues, used only to tell the kinds of knowledge apart:
 | `#E9ECF6` | **Icon discs** beside contact rows. |
 | green / amber / red tints | **Status only:** Active or Ongoing, Draft, Archived. Also the delta pill (green). |
 | `#E4891A` | **Rating stars only.** |
+| category hues (blue, cyan, violet, teal, amber, rose) | **Which kind of thing.** A bounded context, a Worker type or a pipeline stage. The same thing always gets the same hue (`components/platform/hue.tsx`): context → hue, type → icon and hue, stage → icon and hue. A hue never means a state; status keeps green, amber and red. |
 | `#111315` / `#5E6266` / `#6E7276` | **Text:** values and headings, labels, IDs and captions. |
 
 The logic: **navy means brand and act, cyan means data, pale blue means soft or chosen.** Colour never marks
@@ -177,6 +191,31 @@ Hierarchy comes from **one navy mass, then white cards on the pale panel, then s
      - a cyan progress bar on a `track` with a white-ringed end dot and a % at the right;
      - a score ("89 /100") and a status (dot and word).
 
+4. **Context group header band** (grouped lists).
+   - A full-width band in the context's soft hue, holding:
+     - a 28px solid hue tile with `Workflow`;
+     - a "Bounded context" overline in the hue;
+     - the context name in `text-item`;
+     - a solid-hue count pill.
+   - Groups must read apart at a glance; a faint tint is not enough.
+5. **Pipeline stage tabs.**
+   - Each stage has a 40px icon tile in its own hue: Workers `Bot` blue, Packaging `Package` amber,
+     Customer delivery `Send` teal.
+   - **Selected:** a white tile with a navy 30% outline, the solid hue tile, a navy label, a navy count
+     pill and a 3px navy bar along the bottom.
+   - **Others:** transparent, with the soft hue tile.
+   - The KPI cards above reuse the same icon and hue in a 32px soft disc.
+6. **Worker preview card** (Registry right column).
+   - **Header band:** the Worker's context soft hue, holding:
+     - a 48px solid hue tile with the Worker-type icon (Quality Engineering `FlaskConical` violet,
+       Modernisation `RefreshCcwDot` blue, Software Engineering `Code` teal);
+     - a white status pill;
+     - the name, and the context name in the hue;
+     - tags on white.
+   - **Body:** three stat blocks (canvas tint) with coloured icon discs (Last outcome `ClipboardCheck`
+     teal, Runs `Activity` cyan, Memory `BrainCircuit` violet), an owner row with an initials avatar in the
+     hue, then the actions.
+
 ## 8. Recurring micro-patterns
 - **Status indicator:** a **tinted pill** (the status soft colour) with a **leading dot or `CircleCheck`**
   and the word in the status colour ("• Active", "• Draft", "• Archived"). In dense rows the dot and word may
@@ -188,11 +227,15 @@ Hierarchy comes from **one navy mass, then white cards on the pale panel, then s
   - **Light-blue pill:** a secondary type ("Part-Time").
   - **Cyan-strong pill:** a tertiary type ("Contract").
   - **Grey-blue pill:** the domain ("Design").
-  - **Category tags:** pale-blue, 6px radius.
+  - **Category tags** (`Tag`): 6px radius, the hue's soft fill and its strong text, with an optional
+    14px icon. On a tinted band they sit on white.
 - **Count chip:** a small pill, navy with white figures for the lead row, grey-blue otherwise ("90",
   "58").
-- **Segmented control:** a canvas-tint track. The selected item is pale blue with navy text; the others
-  are muted text. 10px radius.
+- **Segmented control** (a tab's own sections): a white track with a hairline ring. The selected item is
+  **filled navy with white text**; the others are muted text with a canvas-tint hover. 10px radius. (On the
+  canvas, the reference's pale-on-pale selection was too faint.)
+- **Line tabs:** the selected tab has navy text and a 3px navy rounded bar; the others are muted text.
+  Hover is instant.
 - **Buttons:**
   - **Primary:** navy, white 500 label, 10px radius, 40px tall (32px small).
   - **Soft:** pale blue with a navy label ("Filter", header icon buttons).

@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router'
-import { ArrowUpRight, Plus } from 'lucide-react'
+import { ArrowUpRight, Bot, ClipboardCheck, Package, Plus, Send, type LucideIcon } from 'lucide-react'
+import { HUE, type Hue } from '@/components/platform/hue'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PageContainer } from '@/components/platform/page-container'
@@ -36,14 +37,15 @@ function usePipeline() {
 type Pipeline = ReturnType<typeof usePipeline>
 
 /** A figure on a white inset card: label, one stat, one caption. Unknown is never 0. */
-function Kpi({ label, value, unit, caption, to, children, loading, failed }: { label: string; value: number | null | undefined; unit?: string; caption: React.ReactNode; to?: string; children?: React.ReactNode; loading: boolean; failed: boolean }) {
+function Kpi({ label, icon: Icon, hue, value, unit, caption, to, children, loading, failed }: { label: string; icon: LucideIcon; hue: Hue; value: number | null | undefined; unit?: string; caption: React.ReactNode; to?: string; children?: React.ReactNode; loading: boolean; failed: boolean }) {
   const body = (
     <>
-      <p className="flex items-center justify-between gap-2 text-overline text-muted-foreground">
-        {label}
+      <p className="flex items-center gap-2.5 text-meta font-medium text-muted-foreground">
+        <span aria-hidden="true" className={cn('grid size-8 shrink-0 place-items-center rounded-full [&>svg]:size-4', HUE[hue].soft, HUE[hue].text)}><Icon /></span>
+        <span className="min-w-0 flex-1">{label}</span>
         {to && <ArrowUpRight className="size-4 text-subtle-foreground group-hover:text-primary group-focus-visible:text-primary" aria-hidden="true" />}
       </p>
-      <div className="mt-2 flex items-baseline gap-1.5">
+      <div className="mt-3 flex items-baseline gap-1.5">
         {loading ? (
           <Skeleton className="h-9 w-16 bg-track" />
         ) : failed || value === null || value === undefined ? (
@@ -84,7 +86,7 @@ function KpiBand({ p }: { p: Pipeline }) {
         <p className="text-meta text-identity-foreground/80">Outcomes over the last 30 days</p>
       </div>
       <div className="grid grid-cols-2 gap-2 xl:grid-cols-4">
-        <Kpi label="Workers" value={totals?.workers} loading={!p.portfolio.data && !p.portfolio.error} failed={Boolean(p.portfolio.error && !p.portfolio.data)} to="/workers" caption={totals ? <><span className="text-foreground">{formatCount(totals.serving)} serving</span> · {formatCount(totals.attention)} need attention</> : 'Every Worker on the platform'}>
+        <Kpi label="Workers" icon={Bot} hue="blue" value={totals?.workers} loading={!p.portfolio.data && !p.portfolio.error} failed={Boolean(p.portfolio.error && !p.portfolio.data)} to="/workers" caption={totals ? <><span className="text-foreground">{formatCount(totals.serving)} serving</span> · {formatCount(totals.attention)} need attention</> : 'Every Worker on the platform'}>
           {totals && totals.workers > 0 && (
             <div role="img" aria-label={`${totals.serving} of ${totals.workers} serving`} className="flex h-1.5 gap-px overflow-hidden rounded-full bg-track">
               <span className="bg-brand" style={{ flexGrow: totals.serving, flexBasis: 0 }} />
@@ -93,21 +95,22 @@ function KpiBand({ p }: { p: Pipeline }) {
             </div>
           )}
         </Kpi>
-        <Kpi label="Met Definition of Done" value={dod?.met} unit={completed !== null ? `of ${formatCount(completed)} runs` : undefined} loading={!o && !p.outcomes.error} failed={Boolean(p.outcomes.error && !o)} to="/dashboard" caption={<>Last 30 days · <span className="text-primary underline-offset-4 group-hover:underline">Outcomes report</span></>}>
+        <Kpi label="Met Definition of Done" icon={ClipboardCheck} hue="violet" value={dod?.met} unit={completed !== null ? `of ${formatCount(completed)} runs` : undefined} loading={!o && !p.outcomes.error} failed={Boolean(p.outcomes.error && !o)} to="/dashboard" caption={<>Last 30 days · <span className="text-primary underline-offset-4 group-hover:underline">Outcomes report</span></>}>
           {dod && completed ? <VerdictBar counts={{ MET: dod.met, NOT_MET: dod.not_met, NOT_ADJUDICABLE: dod.not_adjudicable }} className="h-1.5 bg-track" /> : null}
         </Kpi>
-        <Kpi label="Ready to package" value={p.toPackage} loading={p.toPackage === null && !p.drafts.error && !p.records.error} failed={Boolean(p.drafts.error || p.records.error)} to="/packaging" caption={packaged !== undefined ? `${formatCount(packaged)} sealed Packages so far` : 'Composed, nothing blocking'} />
-        <Kpi label="With customers" value={p.packages.data?.length} loading={!p.packages.data && !p.packages.error} failed={Boolean(p.packages.error && !p.packages.data)} to="/customer-delivery?view=delivered" caption={acked !== null ? `${formatCount(acked)} acknowledged · ${p.toPrepare ?? '—'} waiting to prepare` : 'Prepared customer Packages'} />
+        <Kpi label="Ready to package" icon={Package} hue="amber" value={p.toPackage} loading={p.toPackage === null && !p.drafts.error && !p.records.error} failed={Boolean(p.drafts.error || p.records.error)} to="/packaging" caption={packaged !== undefined ? `${formatCount(packaged)} sealed Packages so far` : 'Composed, nothing blocking'} />
+        <Kpi label="With customers" icon={Send} hue="teal" value={p.packages.data?.length} loading={!p.packages.data && !p.packages.error} failed={Boolean(p.packages.error && !p.packages.data)} to="/customer-delivery?view=delivered" caption={acked !== null ? `${formatCount(acked)} acknowledged · ${p.toPrepare ?? '—'} waiting to prepare` : 'Prepared customer Packages'} />
       </div>
     </section>
   )
 }
 
-const STAGES = [
-  { n: '01', to: '/workers', label: 'Workers', hint: 'Every Worker on the platform' },
-  { n: '02', to: '/packaging', label: 'Packaging', hint: 'Seal into versioned Packages' },
-  { n: '03', to: '/customer-delivery', label: 'Customer delivery', hint: 'Prepare and track handover' },
-] as const
+// Each stage keeps one hue and icon everywhere it appears (KPI card and tab).
+const STAGES: { to: string; label: string; hint: string; icon: LucideIcon; hue: Hue }[] = [
+  { to: '/workers', label: 'Workers', hint: 'Every Worker on the platform', icon: Bot, hue: 'blue' },
+  { to: '/packaging', label: 'Packaging', hint: 'Seal into versioned Packages', icon: Package, hue: 'amber' },
+  { to: '/customer-delivery', label: 'Customer delivery', hint: 'Prepare and track handover', icon: Send, hue: 'teal' },
+]
 
 /** design.md §7.3: the pipeline as tabs, three stages joined by a hairline; the current one is a lifted white sheet. */
 function StageTabs({ p }: { p: Pipeline }) {
@@ -126,15 +129,18 @@ function StageTabs({ p }: { p: Pipeline }) {
               className={({ isActive }) =>
                 cn(
                   'group relative flex min-w-[13rem] flex-1 items-center gap-3 rounded-block border px-4 py-3 outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
-                  isActive ? 'border-transparent bg-card' : 'border-transparent hover:bg-card/70',
+                  isActive ? 'border-primary/30 bg-card' : 'border-transparent hover:bg-card/70',
                 )
               }
             >
               {({ isActive }) => (
                 <>
-                  <span className={cn('grid size-8 shrink-0 place-items-center rounded-lg text-meta font-medium tabular-nums', isActive ? 'bg-primary-soft text-primary-strong' : 'bg-card text-subtle-foreground')}>{s.n}</span>
+                  {isActive && <span aria-hidden="true" className="absolute inset-x-4 -bottom-px h-[3px] rounded-t-full bg-primary" />}
+                  <span aria-hidden="true" className={cn('grid size-10 shrink-0 place-items-center rounded-block [&>svg]:size-5', isActive ? HUE[s.hue].solid : cn(HUE[s.hue].soft, HUE[s.hue].text))}>
+                    <s.icon />
+                  </span>
                   <span className="min-w-0 flex-1">
-                    <span className={cn('block text-item', isActive ? 'text-foreground' : 'text-muted-foreground group-hover:text-foreground')}>{s.label}</span>
+                    <span className={cn('block text-item', isActive ? 'text-primary-strong' : 'text-foreground')}>{s.label}</span>
                     <span className="block truncate text-meta text-muted-foreground">{s.hint}</span>
                   </span>
                   {counts[s.to] !== null && counts[s.to] !== undefined && (

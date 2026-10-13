@@ -204,7 +204,7 @@ export function RegistryPage() {
                   </Card>
 
                   {wide && (
-                    <Card className="sticky top-6 gap-0 p-6" role="region" aria-label="Worker preview">
+                    <Card className="sticky top-6 gap-0 overflow-hidden p-0" role="region" aria-label="Worker preview">
                       {selected ? (
                         <WorkerPreview worker={selected} from={from} />
                       ) : (
@@ -225,7 +225,7 @@ export function RegistryPage() {
               <SheetDescription>Worker preview</SheetDescription>
             </SheetHeader>
             <ScrollArea className="min-h-0">
-              <div className="p-6">{selected && <WorkerPreview worker={selected} from={from} headingLevel="h3" />}</div>
+              <div>{selected && <WorkerPreview worker={selected} from={from} headingLevel="h3" />}</div>
             </ScrollArea>
           </SheetContent>
         </Sheet>

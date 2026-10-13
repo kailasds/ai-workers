@@ -59,6 +59,18 @@
     --color-track: var(--track);
     --color-chip-neutral: var(--chip-neutral);
     --color-icon-circle: var(--icon-circle);
+    --color-hue-blue: var(--hue-blue);
+    --color-hue-blue-soft: var(--hue-blue-soft);
+    --color-hue-cyan: var(--hue-cyan);
+    --color-hue-cyan-soft: var(--hue-cyan-soft);
+    --color-hue-violet: var(--hue-violet);
+    --color-hue-violet-soft: var(--hue-violet-soft);
+    --color-hue-teal: var(--hue-teal);
+    --color-hue-teal-soft: var(--hue-teal-soft);
+    --color-hue-amber: var(--hue-amber);
+    --color-hue-amber-soft: var(--hue-amber-soft);
+    --color-hue-rose: var(--hue-rose);
+    --color-hue-rose-soft: var(--hue-rose-soft);
     --font-heading: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
     --font-sans: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
     --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -153,6 +165,20 @@
     --track: #E0ECF8;
     --chip-neutral: #D4D8E4;
     --icon-circle: #E9ECF6;
+
+    /* Category hues (design.md §3): one per bounded context / kind of thing; solid for icon tiles, soft for tags. */
+    --hue-blue: #284A77;
+    --hue-blue-soft: #E2ECF6;
+    --hue-cyan: #0A6A9E;
+    --hue-cyan-soft: #DDF2FD;
+    --hue-violet: #5B3FA8;
+    --hue-violet-soft: #ECE7FB;
+    --hue-teal: #0E6B60;
+    --hue-teal-soft: #DCF3EE;
+    --hue-amber: #85560F;
+    --hue-amber-soft: #FCEBD3;
+    --hue-rose: #A2335E;
+    --hue-rose-soft: #FBE4EE;
 
     --part-skill: #284A77;
     --part-language: #0A74B8;

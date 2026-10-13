@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronRight, CircleCheck, CircleDashed, CircleX, type LucideIcon } from 'lucide-react'
+import { ChevronDown, ChevronRight, CircleCheck, CircleDashed, CircleX, Workflow, type LucideIcon } from 'lucide-react'
+import { contextHue, HUE, HueTile } from '@/components/platform/hue'
 import { Button } from '@/components/ui/button'
 import { RuntimeStatusDot, runtimeStatus } from '@/components/platform/runtime-status'
 import { verdictLabel } from '@/components/platform/status-badge'
@@ -44,7 +45,7 @@ function Row({ worker, selected, isNew, showId, onSelect }: { worker: PortfolioW
         <span className="min-w-0">
           <span className="flex min-w-0 items-center gap-2">
             <span className="truncate text-item">{worker.name}</span>
-            {isNew && <span className="shrink-0 rounded-full border px-1.5 text-overline text-muted-foreground uppercase">New</span>}
+            {isNew && <span className="shrink-0 rounded-full bg-brand-strong px-2 text-overline text-brand-foreground">New</span>}
             {showId && <span className="hidden shrink-0 font-mono text-meta text-muted-foreground sm:inline">{worker.composition_id.slice(0, 8)}</span>}
           </span>
           <span className="mt-0.5 flex min-w-0 items-center gap-2 text-meta text-muted-foreground">
@@ -97,13 +98,22 @@ export function WorkerList({
         const selectedHidden = !expanded && selectedId !== null && g.workers.slice(COLLAPSED).some((w) => w.composition_id === selectedId)
         const list = selectedHidden ? [...shown, g.workers.find((w) => w.composition_id === selectedId)!] : shown
         const headingId = `group-${g.key}`
+        const hue = contextHue(g.key)
         return (
           <section key={g.key} aria-labelledby={headingId}>
-            <div className="flex items-baseline justify-between gap-4 bg-muted/40 px-5 py-2.5">
-              <h3 id={headingId} className="min-w-0 truncate text-meta font-medium text-foreground" title={g.label}>
-                {g.label}
-              </h3>
-              <span className="shrink-0 text-meta text-muted-foreground tabular-nums">{g.workers.length}</span>
+            {/* design.md §8: a group header is a band in the context's hue, so groups read apart at a glance. */}
+            <div className={cn('flex items-center gap-3 px-4 py-3', HUE[hue].soft)}>
+              <HueTile hue={hue} icon={Workflow} size="sm" />
+              <span className="min-w-0 flex-1">
+                <span className={cn('block text-overline', HUE[hue].text)}>Bounded context</span>
+                <h3 id={headingId} className="truncate text-item text-foreground" title={g.label}>
+                  {g.label}
+                </h3>
+              </span>
+              <span className={cn('shrink-0 rounded-full px-2.5 py-0.5 text-meta font-medium tabular-nums', HUE[hue].solid)}>
+                {g.workers.length}
+                <span className="sr-only"> Workers</span>
+              </span>
             </div>
             <ul className="divide-y">
               {list.map((w) => (
