@@ -31,9 +31,9 @@ export function SectionNav({ items, value, onChange, label = 'Section', variant 
         </Select>
       </div>
       <Tabs value={value} onValueChange={onChange} className="hidden md:flex">
-        <TabsList variant={variant === 'pills' ? 'default' : 'line'} className={cn(variant === 'pills' ? 'h-10 rounded-full bg-lavender p-1' : 'w-full justify-start border-b')} aria-label={label}>
+        <TabsList variant={variant === 'pills' ? 'default' : 'line'} className={cn(variant === 'pills' ? 'h-10 rounded-lg bg-card p-1' : 'w-full justify-start border-b')} aria-label={label}>
           {items.map((i) => (
-            <TabsTrigger key={i.value} value={i.value} className={cn('flex-none px-3', variant === 'pills' && 'rounded-full px-4 data-active:bg-card data-active:shadow-soft')}>
+            <TabsTrigger key={i.value} value={i.value} className={cn('flex-none px-3', variant === 'pills' && 'rounded-md px-4 text-muted-foreground data-active:bg-primary-soft data-active:text-primary-strong data-active:shadow-none')}>
               {i.label}
               {i.count !== undefined && i.count !== null && <span className="text-muted-foreground tabular-nums">{i.count}</span>}
             </TabsTrigger>

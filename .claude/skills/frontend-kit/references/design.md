@@ -1,222 +1,283 @@
-# design.md — AI Worker Platform, after the Mercury design language
+# design.md — "eduva" learning-admin dashboard (Peterdraw), three pasted screenshots
 
-Source: the Mercury DESIGN.md in VoltAgent/awesome-design-md (MIT, `design-md/mercury/DESIGN.md`). It is
-a reverse-engineered analysis of mercury.com's homepage, pricing page and product page. Colours, the type
-scale, the radius scale and the spacing come from that spec. Values marked `~derived` are this project's
-extensions for an operations console (status colours, hairlines, tints), and are checked for AA.
+Extracted from three pasted screenshots: Student Details (desktop, compact rail, phone), Courses (list,
+grid, detail drawer) and Instructors (card grid, instructor detail). Colours were sampled from pixels with
+Pillow (the median, darkest and most-saturated pixel per region). The screenshots are mockups shown at
+mixed zoom, so **every size and radius here is converted to real CSS px and marked `~approx`; colours are
+measured.**
 
-Light theme: day pages bracketed by night. Content sits on a near-white canvas, the navigation rail is
-Mercury's ink-violet night, and one night band per screen carries the headline figures. The mood is calm,
-precise and private-bank: light type weights, one saturated button, everything else quiet. Density is
-medium, since this is a console rather than a marketing page.
+Light theme, **framed**: a white app frame holds the rail, and the content sits in a pale blue-grey panel
+inset from it. White cards sit on that panel with no border and no shadow. One **navy** mass per screen
+(the profile panel, the active rail item, the primary button) carries the brand; cyan carries data. The
+mood is calm and orderly; density is medium-airy.
 
 ## 1. Corrections to the source
-- **Font substitute.** The spec suggests Inter for the proprietary arcadia. This kit bans Inter as a
-  default, so the substitute is **Hanken Grotesk** (variable 100–900), an open grotesk with the same open
-  fit. Its digits are tabular by default; this was verified in the font file (one advance width across
-  0–9). It has no `tnum` feature, so stable figures come from the font itself, not from `tabular-nums`.
-- **Weight 360 body.** This is too faint for a dense console at 15px, so body is 400. UI labels are 440:
-  Mercury's 420, nudged for Hanken's lighter colour. Headings are 480. Nothing is heavier than 500.
-- **Slate `#70707D` on lavender is 4.18:1.** It fails AA for text there. On lavender, use `ink-secondary`.
-- **"No status colours in chrome."** Mercury keeps green and orange out of its interface. This product has
-  to show met / not met / stale, so status colours exist but appear **only inside data** (badges, verdict
-  bars, run results), never on navigation, buttons or surfaces.
+- **Bright cyan `#009FF4` with white text is 2.89:1.** The reference sets "Contract" chips this way, and it
+  fails AA. As a fill holding text, cyan becomes `--brand-strong #0A74B8` (white 5.0:1). Pure cyan stays for
+  data only: progress fills, chart series and the logo, which carry no text.
+- **Status text is a hair short of AA on its own tint.** Fixes:
+  - **Green:** `#2F884A` measured, 4.0:1 on `#E6F8EB`. The token is `#25713D` (5.4:1).
+  - **Red:** sampled `#AB565C`/`#E48D93` (antialiased). The token is `#A2333C` (5.6:1 on `#F8E4E5`).
+  - **Amber:** the "Draft" text was sampled at `#A98047`. The token is `#8A5A12` (5.1:1 on `#FCEBD3`).
+- **Muted text is neutral, not blue.** Labels sample at `#575757`–`#616365` and IDs at `#747474`. The tokens
+  are `#5E6266` (5.8:1 on the canvas) and `#6E7276` (4.5:1 on the canvas). All are measured hues.
+- No swatch sheet was supplied, so there was nothing else to verify.
 
 ## 2. shadcn/ui theme variables
 ```css
 :root {
-  --background: #FBFCFD;  --foreground: #28253B;            /* canvas · ink */
-  --card: #FFFFFF;  --card-foreground: #28253B;
-  --popover: #FFFFFF; --popover-foreground: #28253B;
+  --background: #F4F8FB;            /* content panel, measured on all three screens */
+  --foreground: #111315;            /* headings and values, darkest antialias sample #0F1112 */
+  --card: #FFFFFF;  --card-foreground: #111315;
+  --popover: #FFFFFF; --popover-foreground: #111315;
 
-  --primary: #5266EB;  --primary-foreground: #FFFFFF;       /* Mercury Indigo, 4.7:1 */
-  --primary-hover: #4458DD;                                  /* ~derived */
-  --primary-soft: #EEF0FD;                                   /* indigo 10% on white, ~derived */
-  --primary-strong: #3D4FD1;                                 /* indigo text on the tint, 5.7:1, ~derived */
+  --primary: #284A77;               /* navy, measured: active rail item, primary button, profile panel, pager */
+  --primary-hover: #213F67;         /* ~derived */
+  --primary-foreground: #FFFFFF;    /* 9.0:1 */
+  --primary-soft: #E2ECF6;          /* pale blue, measured: icon buttons, segmented active, Filter, pager idle */
+  --primary-strong: #284A77;        /* navy text on the pale tint, 7.5:1 */
 
-  --lavender: #EDECFB;                                       /* Mercury lavender */
-  --secondary: #EDECFB;  --secondary-foreground: #28253B;
-  --muted: #F3F3F8;      --muted-foreground: #554E7B;        /* ink-secondary, 7.4:1 */
-  --subtle-foreground: #70707D;                              /* slate */
-  --accent: #EDECFB;     --accent-foreground: #28253B;
+  --brand: #009FF4;                 /* cyan, measured: logo, progress fill, 2nd data series. Never under text */
+  --brand-strong: #0A74B8;          /* cyan when it must hold white text, 5.0:1 (§1) */
+  --brand-foreground: #FFFFFF;
 
-  --control: rgb(112 115 147 / 0.10);  --control-border: rgb(112 115 147 / 0.22);   /* outline pill */
+  --secondary: #E2ECF6;  --secondary-foreground: #284A77;
+  --muted: #F4F8FB;      --muted-foreground: #5E6266;       /* nested rows and info blocks inside cards */
+  --subtle-foreground: #6E7276;                              /* IDs, captions, axis labels */
+  --accent: #E2ECF6;     --accent-foreground: #284A77;       /* menu and row hover */
 
-  --night: #171721;  --night-raised: #1E1E2A;  --on-dark: #EDEDF3;  --fog: #C3C3CC;  --periwinkle: #9CB4E8;
-  --identity: #1E1E2A;  --identity-foreground: #EDEDF3;
-  --brand: #5266EB;  --brand-foreground: #FFFFFF;
+  --identity: #284A77;  --identity-foreground: #FFFFFF;     /* the navy profile panel */
 
-  --success: #1E7F55;  --warning: #A15C07;  --info: #3D4FD1;  --destructive: #C2364A;   /* ~derived, white fg */
+  --success: #25713D;  --success-soft: #E6F8EB;              /* measured tint; text AA-adjusted */
+  --warning: #8A5A12;  --warning-soft: #FCEBD3;
+  --destructive: #A2333C; --destructive-soft: #F8E4E5;
+  --info: #284A77;
+  --rating: #E4891A;                                         /* star only, measured */
 
-  --border: #E6E6EE;  --input: #DCDCE6;  --ring: #5266EB;    /* fog lifted toward white, ~derived */
+  --track: #E0ECF8;                                          /* progress and gauge remainder, measured */
+  --chip-neutral: #D4D8E4;                                   /* neutral chip and 5th series, measured */
+  --icon-circle: #E9ECF6;                                    /* contact-row icon discs, measured */
 
-  --chart-1: #5266EB; --chart-2: #9CB4E8; --chart-3: #554E7B; --chart-4: #70707D; --chart-5: #C3C3CC;
+  --border: #E9EDF0;                /* in-card dividers, measured */
+  --input: #E3E8EE;                 /* field and white-button edge, ~approx */
+  --ring: #284A77;
 
-  --radius: 0.5rem;   /* control tier 8px; cards --radius-xl 12px; panels --radius-panel 16px */
+  --chart-1: #284A77; --chart-2: #009FF4; --chart-3: #BCD8F1; --chart-4: #E0ECF8; --chart-5: #D4D8E4;
 
-  --sidebar: #171721; --sidebar-foreground: #EDEDF3; --sidebar-muted: #A3A3B2;
-  --sidebar-primary: #5266EB; --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: rgb(175 178 206 / 0.14); --sidebar-accent-foreground: #FFFFFF;   /* glass pill */
-  --sidebar-border: #262635; --sidebar-ring: #9CB4E8;
+  --radius: 0.625rem;   /* control tier 10px ~approx */
+
+  --sidebar: #FFFFFF; --sidebar-foreground: #5B5E61; --sidebar-muted: #6E7276;
+  --sidebar-primary: #284A77; --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F4F8FB; --sidebar-accent-foreground: #111315;
+  --sidebar-border: #E9EDF0; --sidebar-ring: #284A77;
 }
 ```
 Part hues, used only to tell the kinds of knowledge apart:
-- `--part-skill: #3D4FD1`
-- `--part-language: #6B4FB8` (tint `#EFEAFB`)
-- `--part-eval: #A15C07`
+- `--part-skill: #284A77`
+- `--part-language: #0A74B8`
+- `--part-eval: #8A5A12`
 
 ## 3. Color roles
 | Colour | Job (one each) |
 | --- | --- |
-| `#5266EB` indigo | **The single most important action on a view.** One solid indigo button per group. Also checked boxes, toggles, progress fills and focus rings. |
-| `#EEF0FD` indigo 10% | **Secondary action fill** (Mercury `button-tint-light`). Also "this one is chosen": the current stage, a selected option, an active count chip. |
-| `#3D4FD1` primary-strong | **Indigo text on the tint**, and the info tone. |
-| `#EDECFB` lavender | **Quiet filled surfaces.** A segmented control's track, hover on rows, summary blocks. |
-| grey-violet 10% + 22% border | **Outline buttons.** Mercury `button-outline-light`. Never a hard outline on white. |
-| `#171721` night | **Frame.** The rail and the phone top bar. |
-| `#1E1E2A` night-raised | **The one dark punctuation in the content per screen.** The Registry's KPI band, the Worker panel in Compose. |
-| `#EDEDF3` / `#C3C3CC` | **Text on night:** primary and secondary. |
-| `#9CB4E8` periwinkle | **The active mark on night.** The active rail icon and the indicator bar. |
-| `#28253B` / `#554E7B` / `#70707D` | **Text on day:** ink (headings and body), ink-secondary (descriptions), slate (meta and placeholders). |
-| `#E6E6EE` | **Every hairline on day.** |
-| `#1E7F55` / `#A15C07` / `#C2364A` | **Status inside data only:** met or confirmed, stale or attention, not met or failed. |
+| `#284A77` navy | **The brand and the one action.** The active rail item (filled), the primary button ("Add Instructor"), the active pager page, filled count chips, the profile/identity panel, the first data series and the gauge. Navy text on pale blue. |
+| `#009FF4` cyan | **Data in motion.** Progress-bar fills, the second chart series, the logo. Never behind text. |
+| `#0A74B8` cyan-strong | **A cyan chip that holds text** (the corrected "Contract"). |
+| `#E2ECF6` pale blue | **Soft controls and "chosen".** Header icon buttons (bell, settings), the selected segment, the Filter button, idle pager pages, the "Above Average" pill, category tags. |
+| `#BCD8F1` light blue | **Third data series**, and a secondary chip ("Part-Time"). |
+| `#E0ECF8` track | **The unfilled part** of progress bars and gauges. |
+| `#D4D8E4` grey-blue | **A neutral chip** ("Design", "Marketing" type) and the last chart series. |
+| `#F4F8FB` canvas | **Surfaces.** The content panel, and nested rows and info blocks inside white cards. |
+| `#FFFFFF` | **The app frame** (rail and header strip), cards, white icon buttons. |
+| `#E9ECF6` | **Icon discs** beside contact rows. |
+| green / amber / red tints | **Status only:** Active or Ongoing, Draft, Archived. Also the delta pill (green). |
+| `#E4891A` | **Rating stars only.** |
+| `#111315` / `#5E6266` / `#6E7276` | **Text:** values and headings, labels, IDs and captions. |
 
-The logic: **indigo means act, night means frame or headline, lavender means quiet surface.** Colour never
-marks heading levels, and status never colours the chrome.
+The logic: **navy means brand and act, cyan means data, pale blue means soft or chosen.** Colour never marks
+heading levels.
 
 ## 4. Hierarchy mechanism
-Hierarchy comes from **tone first, then size**, never weight.
-- **Tone.** A screen has at most one night-raised object in the content (the Registry's KPI band, or
-  the Compose Worker panel), and when present it is the first thing the eye lands on. Other screens lead
-  with their H1 and first white sheet. Then there is one solid indigo button. Everything
-  else is white or lavender.
-- **Size.** Headings step down by size only, at weight 480. The page H1 is 32px.
-- **Inside a group,** the chosen item takes the indigo tint. It never gets a heavier weight.
+Hierarchy comes from **one navy mass, then white cards on the pale panel, then size.**
+- Each screen has at most one large navy object in the content: the profile panel, which holds white inset
+  cards. When it is present, it is the first read.
+- Otherwise the first read is the page title plus the single navy button.
+- Cards never use borders or shadows; they separate from the canvas by being white.
+- Inside a card, nested rows use the canvas tint. A chosen item takes the pale-blue fill with navy text.
+- Weight barely changes (400/500). Size does the stepping.
 
 ## 5. Typography
-- **Sans: Hanken Grotesk** (`@fontsource-variable/hanken-grotesk`), substituting Mercury's arcadia /
-  arcadiaDisplay.
-  - Weights: 400 body, 440 UI (buttons, nav, labels), 480 headings and stats, 500 eyebrows.
-  - Tailwind weight tokens are remapped so that `font-medium` = 440, `font-semibold` = 500, and `bold` and
-    above are capped at 500.
-- **Mono: JetBrains Mono**, reserved for identifiers only: SPIFFE IDs, digests, run refs and the pipeline
-  stage numbers. Never for figures in prose.
-- **Scale:**
+- **Sans: Instrument Sans** (`@fontsource-variable/instrument-sans`, 400–700). It is the closest free match
+  to the reference's slightly condensed neo-grotesk: double-storey `a`, flat-topped `t`, medium headings,
+  no bold. It has a real `tnum` feature, so `tabular-nums` works (verified in the font file).
+  - Weights in use: 400 body, 500 titles, labels, buttons and figures. 600 is used only for the one stat
+    numeral per card. Never 700.
+- **Mono:** the reference has none; IDs such as "STD-2030-004" are set in the sans with tabular figures.
+  The product keeps **JetBrains Mono** for long machine identifiers only (SPIFFE IDs, digests). See §9.
+- **Scale (~approx real px):**
 
-| Token | Size / line | Weight | Tracking | Used for |
-| --- | --- | --- | --- | --- |
-| `text-stat` | 40 / 1.1 | 480 | 0 | KPI numerals (Mercury `stat`, scaled for a console) |
-| `text-page` | 32 / 38 | 480 | +0.01em | The one H1 |
-| `text-section` | 20 / 26 | 480 | +0.01em | Card titles |
-| `text-item` | 15 / 22 | 440 | 0 | List titles, nav labels, question headings |
-| `text-body` | 15 / 22.4 | 400 | 0 | Prose |
-| `text-meta` | 13 / 19 | 400 | 0 | Captions, row summaries, nav questions |
-| `text-overline` | 12 / 16, uppercase | 500 | +0.06em | Eyebrows ("WORKER MARKETPLACE", "STEP 1 OF 6") |
-
-Headings get a hair of positive tracking, never negative. Uppercase is for eyebrows only.
+| Token | Size / line | Weight | Used for |
+| --- | --- | --- | --- |
+| `text-stat` | 30 / 36 | 500 | One figure per card ("321", "35h", "88") |
+| `text-page` | 28 / 34, −0.01em | 500 | The page title ("Courses", "Instructors") |
+| `text-section` | 17 / 24 | 500 | Card titles ("Enrolled Courses", "Performance") |
+| `text-item` | 15 / 22 | 500 | List and row titles, names, nav labels |
+| `text-body` | 14 / 22 | 400 | Prose, values |
+| `text-meta` | 13 / 18 | 400 | Field labels ("Email"), captions, breadcrumbs, row meta |
+| `text-overline` | 12 / 16 | 500 | Small labels ("Total Hours", "Sub Content"). Sentence case, never uppercase. |
 
 ## 6. Radius & spacing
-- **Shell:** edge-to-edge. There is no outer frame.
-  - A fixed night rail, 312px wide (64px when collapsed), with no border: its tone separates it.
-  - The page runs on the canvas.
-  - On phones, a 56px night top bar holds the menu button.
-- **Radius tiers (Mercury `rounded.*`):**
-  - **Full (pill):** every button, status badges, count chips, segmented-control items.
-  - **16px** (`--radius-panel`): the Worker panel, sheets, the KPI band.
-  - **12px** (`--radius-xl`): cards, list cards, option cards, the stepper frame, dialogs, stage tabs.
-  - **8px** (`--radius`): inputs, selects, textareas, menus, popovers, rail items.
-  - **4px:** checkboxes and small tags.
-  - **Nested:** inner radius = outer radius − inset (polish.md §1).
-- **Spacing scale (Mercury, 8px base):**
-  - 4: label to sub-label.
-  - 8: icon to label, chip gaps.
-  - 12: row vertical padding, gaps between controls.
-  - 16: card internal gaps, the phone page gutter.
-  - 20: button side padding, row horizontal padding.
-  - 24: card padding, gaps between stacked blocks.
-  - 32: page gutter (desktop) and gaps between major sections.
-  - 40: empty-state padding.
-- **Elevation:** tonal.
-  - Sheets are white on the canvas with a 1px `border` hairline and `shadow-soft`, Mercury's hair-thin
-    "soft stack".
-  - There are no other shadows. Popovers and dialogs use the same soft stack.
-- **Density:** medium. Mercury's marketing air is reduced to console rhythm.
+- **Shell: framed.**
+  - The app frame (rail and top strip) is white.
+  - Content sits in a `#F4F8FB` panel inset from it, with a ~24px corner radius.
+  - The rail is 232px wide with icons and labels; collapsed it is a 72px icon rail.
+  - The page header sits inside the panel, at the top.
+- **Radius tiers (~approx):**
+  - **24px:** the content panel and the navy profile panel.
+  - **16px** (`--radius-xl`): cards.
+  - **12px:** nested blocks inside cards (course rows, info blocks, white cards inside the navy panel), header
+    icon buttons, avatars.
+  - **10px** (`--radius`): buttons, inputs, selects, segmented controls and their items, the Filter button,
+    rail items, pager buttons.
+  - **6px:** category tags ("Marketing", "Beginner").
+  - **Full:** status pills, chips ("Full-Time"), count chips, the delta pill, progress bars, dots.
+  - **Nested:** inner radius = outer radius − inset (polish.md §1). For example, a 16px card with a 12px
+    inset takes 4–6px inner rows, rounded up to the 12px block tier only when the inset is small.
+- **Spacing scale (~approx real px):**
+  - 4: label to value.
+  - 8: icon to label, chip to chip.
+  - 12: nested-row padding, gaps between nested rows.
+  - 16: inner card gaps.
+  - 20: card padding, gaps between cards.
+  - 24: page gutter inside the panel, gaps between major blocks.
+  - 32: the panel's top padding.
+- **Density:** medium-airy. Every card has 20px of air, and rows breathe at 12px.
 
 ## 7. Signature components
-1. **Night stat band (Registry KPI row).**
-   - One night-raised sheet (16px radius, 24px padding).
-   - Four cells, each with:
-     - a `fog` eyebrow;
-     - an `on-dark` 40px/480 numeral with an optional `fog` unit;
-     - an optional 4px bar;
-     - a `fog` caption.
-   - Cells are divided by 1px `white/8%` rules, and each cell is a link: hover lifts it to `white/4%`
-     instantly. The cells sit 4-up from `xl` and 2-up below.
-   - This is Mercury's `stat-block` row, the screen's dark punctuation.
-2. **The Worker panel (Compose, right column, sticky).** It sits on night-raised with `on-dark` text.
-   - **Icon tile:** the round icon tile is white at 10%.
-   - **Pills:** the state pill is a glass pill (white 12% fill, 1px white 20% border).
-   - **Body:** once composing, the body turns white, keeping the rows as before.
-3. **Pipeline stage tabs.** Three route links joined by 1px `border` rules ("01 Workers → 02 Packaging →
-   03 Customer delivery"). Each tab has a mono number, a label, a hint and a count chip.
-   - **Current tab:** a white 12px sheet with `shadow-soft`, an indigo number and an indigo-tint count chip.
-   - **Others:** transparent, turning lavender on hover.
-   - A tab's own sections sit below it as a lavender segmented control (`SectionNav variant="pills"`).
+1. **Navy identity panel.**
+   - A `#284A77` panel (24px radius) holding:
+     - a top-left "Active" status pill (green tint, `CircleCheck`);
+     - a 64px avatar on a cyan tile (12px radius);
+     - a white 500 name;
+     - a white-at-80% line: ID • date.
+   - Beneath sit **white inset cards** (12px radius, 8px gutter from the navy edge) for contact rows and
+     links. The navy shows as a frame around them.
+   - In this product, this is the Worker panel in Compose and the Registry's KPI band.
+2. **Segmented gauge.**
+   - A 180° arc of ~24 rounded navy ticks; the unfilled ticks are `track`.
+   - The number inside is `text-stat`, with "/100" in muted text below and a pale-blue verdict pill
+     ("Above Average").
+   - Companion **dot meters:** 10 small navy capsules per row, track-coloured for the remainder, with the
+     percentage right-aligned.
+3. **Progress row.**
+   - A nested `#F4F8FB` row (12px radius) holding:
+     - a thumbnail;
+     - a title in `text-item`;
+     - meta tags (a category tag, a level with a signal icon, a duration with a clock, lessons);
+     - a cyan progress bar on a `track` with a white-ringed end dot and a % at the right;
+     - a score ("89 /100") and a status (dot and word).
 
 ## 8. Recurring micro-patterns
-- **Buttons (Mercury pills):**
-  - **Primary:** solid indigo, white 440 label. Height 40px with 20px side padding, or 32px small with 16px
-    padding. At most one solid indigo per group.
-  - **Secondary:** indigo 10% fill with an ink label.
-  - **Outline:** grey-violet 10% fill, a 1px 22% border and an ink label.
-  - **Ghost:** transparent, with the grey-violet 10% fill on hover.
-  - **Destructive:** raspberry 10% fill with a raspberry label.
-  - **States:** hover is instant (no transition); disabled is 50% opacity.
-- **Status indicator:** a filled tint pill (10% of the tone) with a leading 12px icon and a word
-  (`StatusBadge`). Never a bare dot.
-- **Delta / trend:** coloured text with a 12px arrow (`Delta`), shown only when a comparison was observed.
-- **Count chip:** a pill, `primary-soft` / `primary-strong` when active, `muted` / `muted-foreground`
-  otherwise.
+- **Status indicator:** a **tinted pill** (the status soft colour) with a **leading dot or `CircleCheck`**
+  and the word in the status colour ("• Active", "• Draft", "• Archived"). In dense rows the dot and word may
+  drop the pill ("• Ongoing"), but they always keep the colour and the word. One shared `StatusBadge`.
+- **Delta / trend:** a **green-tint pill** with `ArrowUp` and the value ("↑ +9.3%"); red with `ArrowDown`
+  when negative. Always a pill, never bare text.
+- **Chips (classification):**
+  - **Filled navy pill:** the primary type ("Full-Time").
+  - **Light-blue pill:** a secondary type ("Part-Time").
+  - **Cyan-strong pill:** a tertiary type ("Contract").
+  - **Grey-blue pill:** the domain ("Design").
+  - **Category tags:** pale-blue, 6px radius.
+- **Count chip:** a small pill, navy with white figures for the lead row, grey-blue otherwise ("90",
+  "58").
+- **Segmented control:** a canvas-tint track. The selected item is pale blue with navy text; the others
+  are muted text. 10px radius.
+- **Buttons:**
+  - **Primary:** navy, white 500 label, 10px radius, 40px tall (32px small).
+  - **Soft:** pale blue with a navy label ("Filter", header icon buttons).
+  - **Outline:** white with a 1px `input` edge (the back button, search icon button).
+  - **Ghost:** transparent, with a canvas-tint hover.
+  - **States:** hover is instant; disabled is 50%.
 - **Icon containers:**
-  - Page header: a 48px lavender rounded-square (12px) with an indigo 22px icon.
-  - List rows: a 40px `muted` 8px square.
-  - On night: a white-10% circle.
-- **List termination:** "Show n more" inside grouped lists, a numbered pager for long tables.
-- **Navigation rail (night):**
-  - **Header:** the wordmark (a 32px indigo rounded-square holding a white `Hexagon`, then "AI Worker"
-    480 and "Platform" in fog), plus the collapse button.
-  - **List:** one flat list, then only User management at the bottom.
-  - **Order:** Registry, Knowledge, Learning, Sentinel, Harnesses. Registry owns `/workers`,
-    `/packaging`, `/customer-delivery`, `/compose` and `/dashboard`.
-  - **Item:** an 18px icon, then a 15px/440 label over a 13px `sidebar-muted` question that may wrap.
-  - **Active item:** a glass pill fill, a 3px periwinkle bar on the left edge, and a periwinkle icon.
-  - **Hover:** half the glass fill, instant.
-- **Icon set:** lucide-react, stroke 2 app-wide.
-  - Rail: Registry `Store`, Knowledge `Brain`, Learning `BrainCircuit`, Sentinel `ShieldCheck`,
-    Harnesses `Boxes`, User management `KeyRound`, Outcomes `Gauge` (in the command menu).
-  - Wordmark `Hexagon`; Compose `Plus` / `Wrench`; collapse `PanelLeftClose` / `PanelLeftOpen`.
-  - Identity `Fingerprint`, search `Search`, filters `SlidersHorizontal`, refresh `RefreshCw`, drill-in
-    `ArrowUpRight`.
-  - Status: `CircleCheck`, `CircleX`, `TriangleAlert`, `Info`, `CircleDashed`.
+  - **Header:** 40px square icon buttons (12px radius), pale blue (bell with a navy dot) or white.
+  - **Contact rows:** 40px `icon-circle` discs.
+  - **Page header icon:** a pale-blue 48px tile (12px radius) with a navy 22px icon.
+  - **Avatars:** 12px-radius squares on cyan.
+- **List termination:**
+  - **Long lists:** "Show [8 ▾] of 320 results" on the left, and a numbered pager on the right. The pager
+    has 32px buttons at 8px radius: navy active, pale idle, `ChevronLeft`/`ChevronRight` and an ellipsis.
+  - **Grouped lists:** "Show n more".
+- **Rail:**
+  - **Frame:** white, with the logo at the top and one flat list. "Sign out" sits at the bottom, under an
+    illustrated upgrade card. This product has no upgrade card; User management sits at the bottom instead.
+  - **Item:** an 18px icon and a 14–15px label in `sidebar-foreground`.
+  - **Active item:** a **filled navy** row with a white icon and label, plus a 3px navy bar on the rail edge.
+  - **Collapsed:** a navy 48px rounded-square tile marks the active item.
+- **Icon set (lucide-react, stroke 1.75, rounded caps):**
+
+  | Reference icon | lucide-react |
+  | --- | --- |
+  | Dashboard | `LayoutGrid` |
+  | Calendar | `CalendarDays` |
+  | Enrollments | `SquareUserRound` |
+  | Courses | `BookOpen` |
+  | Instructors | `Presentation` |
+  | Students | `GraduationCap` |
+  | Financials | `CircleDollarSign` |
+  | Sign out | `LogOut` |
+  | Back | `ChevronLeft` |
+  | Breadcrumb separator | `ChevronRight` |
+  | Search | `Search` |
+  | Notifications | `Bell` |
+  | Settings | `Settings` |
+  | More | `Ellipsis` |
+  | Menu (phone) | `Menu` |
+  | Close drawer | `X` |
+  | Email | `Mail` |
+  | Phone | `Phone` |
+  | Address | `MapPin` |
+  | Social | `Linkedin`, `Twitter`, `Instagram`, `Facebook` |
+  | Participation | `ListChecks` |
+  | Quiz | `ClipboardList` |
+  | Exam | `FileText` |
+  | Level | `ChartNoAxesColumnIncreasing` |
+  | Duration | `Clock` |
+  | Rating | `Star` |
+  | Filter | `Funnel` |
+  | Add | `Plus` |
+  | Dropdown | `ChevronDown` |
+  | Active status | `CircleCheck` |
+  | Delta | `ArrowUp` / `ArrowDown` |
+  | Share | `Share2` |
+  | Play | `Play` |
+
+  The product's own concepts keep their lucide icons (Registry `Store`, Knowledge `Brain`, Learning
+  `BrainCircuit`, Sentinel `ShieldCheck`, Harnesses `Boxes`, User management `KeyRound`), at the stroke
+  width above.
 
 ## 9. What the reference doesn't cover
-- **States.** Mercury shows no empty, error or loading states. The product keeps `EmptyState` (40px
-  padding on white), `ErrorState` with a retry, and skeletons in `muted`.
-- **Data density.** Mercury is a marketing site. Tables, filters and 50-row lists follow this file's
-  console spacing, not its 80px section rhythm.
-- **Status colours** are this project's extension (§1), checked at 5.0–5.4:1 on white.
-- **Dark mode** is not built. Night appears only as frame and punctuation.
+- **States.** The reference shows no empty, error or loading states. The product keeps `EmptyState` (white
+  card, 40px padding, a pale-blue icon tile), `ErrorState` with a retry, and skeletons in `track`.
+- **Long machine identifiers** (SPIFFE IDs, digests) never appear in the reference. They use JetBrains
+  Mono, at `text-meta`.
+- **Scale.** Grids show 8 cards per page. Longer lists use the pager as specified.
+- **Dark mode** is not shown and not built.
 - **Accessibility:**
-  - every text pair is checked for AA (§1);
-  - status is never colour alone (icon and word);
-  - the focus ring is a 3px indigo halo at 50%.
-- **Product honesty rules still apply:** unknown is never zero, every average sits beside its coverage,
-  and mock writes say that nothing was sent.
+  - corrections are in §1;
+  - status is never colour alone (a dot or icon plus a word);
+  - focus rings are a 3px navy halo at 40%;
+  - the cyan logo and chart fills carry no text.
+- **Charts:** the reference's stacked bars use navy, cyan, light and pale. Where a series has to be told
+  apart without colour, add a legend with words, which is what the reference does.
+- **Product honesty rules** (unknown is never zero; coverage sits beside averages; mock writes say that
+  nothing was sent) are the product's, and still apply.
 
 ## Composition Fidelity
-The current screens' arrangement is approved and kept:
-- **Registry:** header, then the night stat band, then the stage tabs, then the tab body.
-- **Compose:** header, then the full-width stepper, then a two-column body (task card about 2/3 width
-  beside the sticky Worker panel at about 360px, with a 20px gap).
+The product's approved arrangement is kept:
+- **Registry:** header, then the navy KPI band, then the stage tabs, then the tab body.
+- **Compose:** header, then the stepper, then the task card beside the sticky Worker panel.
 
-Restyling changes surfaces, type and controls, never positions or groupings.
+From the reference, adopt the **framed shell**: a white rail and frame, with content in the inset pale panel.
+Headers sit inside that panel. The page title is on the left; utilities and the single navy action are on
+the right.

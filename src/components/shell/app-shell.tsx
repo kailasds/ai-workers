@@ -24,11 +24,11 @@ export function AppShell() {
           Skip to content
         </a>
         <AppSidebar />
-        <SidebarInset className="min-w-0">
+        <SidebarInset className="min-w-0 md:peer-data-[variant=inset]:m-3 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-panel md:peer-data-[variant=inset]:shadow-none md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-3">
           {/* Phones: the rail becomes a named Menu button in a slim top bar. */}
-          <div className="sticky top-0 z-20 flex h-14 items-center gap-3 bg-night px-4 text-on-dark md:hidden">
-            <SidebarTrigger className="size-9 hover:bg-sidebar-accent hover:text-on-dark" aria-label="Menu" />
-            <span className="text-[1.0625rem] font-[480] tracking-[0.01em]">AI Worker</span>
+          <div className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-card px-4 md:hidden">
+            <SidebarTrigger className="size-10 rounded-block bg-primary-soft text-primary-strong hover:bg-track" aria-label="Menu" />
+            <span className="text-[1.0625rem] font-medium">AI Worker</span>
           </div>
           <main id="main" tabIndex={-1} className="flex-1 outline-none">
             <PageErrorBoundary>

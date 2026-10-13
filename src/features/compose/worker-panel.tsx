@@ -7,23 +7,23 @@ import { cn } from '@/lib/utils'
 import { CHECKPOINTS, checkpointsOf, contextOf, domainOf, identityOf, type CheckpointKey, type StationKey } from './compose-model'
 import type { Proposal } from './proposal'
 
-// design.md §7.2: the Worker being composed. A night head (the one dark punctuation on the page),
+// design.md §7.1: the Worker being composed. A navy identity head (the one navy mass on the page),
 // then — once a draft exists — a white body listing every part and where it stands.
 
 function PanelHead({ pill, ready, title, subtitle }: { pill: string; ready?: boolean; title: string; subtitle?: string | null }) {
   return (
     <div className="bg-identity p-6 text-identity-foreground">
       <div className="flex items-start justify-between gap-3">
-        <span aria-hidden="true" className="grid size-12 place-items-center rounded-full bg-white/10 text-periwinkle">
+        <span aria-hidden="true" className="grid size-12 place-items-center rounded-block bg-brand text-brand-foreground">
           <Fingerprint className="size-6" />
         </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/12 px-3 py-1 text-meta font-medium">
-          {ready !== undefined && <span aria-hidden="true" className={cn('size-1.5 rounded-full', ready ? 'bg-periwinkle' : 'bg-white/50')} />}
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-card px-3 py-1 text-meta font-medium text-primary-strong">
+          {ready !== undefined && <span aria-hidden="true" className={cn('size-1.5 rounded-full', ready ? 'bg-success' : 'bg-subtle-foreground')} />}
           {pill}
         </span>
       </div>
-      <h2 id="worker-panel-title" className="mt-5 text-[1.375rem] leading-7 font-[480] tracking-[0.01em]"><span className="sr-only">Worker identity: </span>{title}</h2>
-      {subtitle && <p className="mt-1 text-body text-fog">{subtitle}</p>}
+      <h2 id="worker-panel-title" className="mt-5 text-[1.375rem] leading-7 font-medium"><span className="sr-only">Worker identity: </span>{title}</h2>
+      {subtitle && <p className="mt-1 text-body text-identity-foreground/80">{subtitle}</p>}
     </div>
   )
 }
@@ -46,7 +46,7 @@ export function DeclarationPanel({ typeLabel, identity, domain, context, identif
     { label: 'Bounded context', icon: ScanSearch, value: ctx?.label ?? null },
   ]
   return (
-    <section aria-labelledby="worker-panel-title" className="overflow-hidden rounded-panel border bg-card shadow-soft">
+    <section aria-labelledby="worker-panel-title" className="overflow-hidden rounded-panel bg-card">
       <div className="-m-px">
         <PanelHead pill={pill} ready={Boolean(ctx)} title={id?.label ?? 'Not yet assigned'} subtitle={ctx?.label ?? 'Its identity forms as you decide.'} />
       </div>
@@ -162,7 +162,7 @@ export function ComposingPanel({ draft, proposal, current, settled, onGo }: {
   const confirmed = rows.filter((r) => r.state === 'done').length
 
   return (
-    <section aria-labelledby="worker-panel-title" className="overflow-hidden rounded-panel border bg-card shadow-soft">
+    <section aria-labelledby="worker-panel-title" className="overflow-hidden rounded-panel bg-card">
       <div className="-m-px">
         <PanelHead pill={`Revision ${draft.revision}`} title={identityOf(draft.identity_key)?.label ?? draft.name} subtitle={ctx?.label} />
       </div>

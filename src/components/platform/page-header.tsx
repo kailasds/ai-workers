@@ -20,7 +20,7 @@ export function PageHeader({
   className,
 }: {
   title: string
-  /** A 48px lavender tile beside the title (design.md §8), for task pages such as Compose. */
+  /** A 48px pale-blue tile beside the title (design.md §8), for task pages such as Compose. */
   icon?: LucideIcon
   description?: React.ReactNode
   /** A quiet line under the description, e.g. when the data was last read. */
@@ -34,7 +34,7 @@ export function PageHeader({
     <header className={cn('flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between', className)}>
       <div className={cn('min-w-0', Icon && 'flex items-start gap-4')}>
         {Icon && (
-          <span aria-hidden="true" className="grid size-12 shrink-0 place-items-center rounded-xl bg-lavender text-primary">
+          <span aria-hidden="true" className="grid size-12 shrink-0 place-items-center rounded-block bg-primary-soft text-primary">
             <Icon className="size-[22px]" />
           </span>
         )}

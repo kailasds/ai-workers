@@ -35,33 +35,33 @@ function usePipeline() {
 
 type Pipeline = ReturnType<typeof usePipeline>
 
-/** A figure on the night band: fog eyebrow, an on-dark numeral, one caption. Unknown is never 0. */
+/** A figure on a white inset card: label, one stat, one caption. Unknown is never 0. */
 function Kpi({ label, value, unit, caption, to, children, loading, failed }: { label: string; value: number | null | undefined; unit?: string; caption: React.ReactNode; to?: string; children?: React.ReactNode; loading: boolean; failed: boolean }) {
   const body = (
     <>
-      <p className="flex items-center justify-between gap-2 text-overline text-fog uppercase">
+      <p className="flex items-center justify-between gap-2 text-overline text-muted-foreground">
         {label}
-        {to && <ArrowUpRight className="size-3.5 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100" aria-hidden="true" />}
+        {to && <ArrowUpRight className="size-4 text-subtle-foreground group-hover:text-primary group-focus-visible:text-primary" aria-hidden="true" />}
       </p>
-      <div className="mt-3 flex items-baseline gap-2">
+      <div className="mt-2 flex items-baseline gap-1.5">
         {loading ? (
-          <Skeleton className="h-10 w-16 bg-white/10" />
+          <Skeleton className="h-9 w-16 bg-track" />
         ) : failed || value === null || value === undefined ? (
-          <span className="text-body text-fog">Not available</span>
+          <span className="text-body text-muted-foreground">Not available</span>
         ) : (
           <>
-            <span className="text-[2rem] leading-[1.1] font-[480] text-on-dark tabular-nums sm:text-stat">{formatCount(value)}</span>
-            {unit && <span className="text-meta text-fog">{unit}</span>}
+            <span className="text-stat tabular-nums">{formatCount(value)}</span>
+            {unit && <span className="text-meta text-muted-foreground">{unit}</span>}
           </>
         )}
       </div>
-      {children && <div className="mt-4">{children}</div>}
-      <p className="mt-2 text-meta text-fog">{caption}</p>
+      {children && <div className="mt-3">{children}</div>}
+      <p className="mt-2 text-meta text-muted-foreground">{caption}</p>
     </>
   )
-  const cell = 'group relative block min-w-0 p-4 sm:p-6'
+  const cell = 'group relative block min-w-0 rounded-block bg-card p-4 text-card-foreground sm:p-5'
   return to ? (
-    <Link to={to} className={cn(cell, 'outline-none hover:bg-white/[0.04] focus-visible:ring-2 focus-visible:ring-periwinkle focus-visible:ring-inset')}>
+    <Link to={to} className={cn(cell, 'outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-primary-foreground/60')}>
       {body}
     </Link>
   ) : (
@@ -69,7 +69,7 @@ function Kpi({ label, value, unit, caption, to, children, loading, failed }: { l
   )
 }
 
-/** design.md §7.1: Mercury's stat-block row, the screen's one dark punctuation. */
+/** design.md §7.1: the navy identity panel, framing white inset cards. The screen's one navy mass. */
 function KpiBand({ p }: { p: Pipeline }) {
   const totals = p.portfolio.data?.totals
   const o = p.outcomes.data
@@ -78,21 +78,27 @@ function KpiBand({ p }: { p: Pipeline }) {
   const packaged = p.drafts.data?.filter((d) => d.status === 'ACTIVE' && d.package).length
   const acked = p.packages.data ? acknowledged(p.packages.data).length : null
   return (
-    <section aria-label="Registry at a glance" className="grid grid-cols-2 overflow-hidden rounded-panel bg-night-raised xl:grid-cols-4 [&>*]:border-white/8 max-xl:[&>*:nth-child(-n+2)]:border-b max-xl:[&>*:nth-child(odd)]:border-r xl:[&>*:not(:last-child)]:border-r">
-      <Kpi label="Workers" value={totals?.workers} loading={!p.portfolio.data && !p.portfolio.error} failed={Boolean(p.portfolio.error && !p.portfolio.data)} to="/workers" caption={totals ? <><span className="text-on-dark">{formatCount(totals.serving)} serving</span> · {formatCount(totals.attention)} need attention</> : 'Every Worker on the platform'}>
-        {totals && totals.workers > 0 && (
-          <div role="img" aria-label={`${totals.serving} of ${totals.workers} serving`} className="flex h-1 gap-px overflow-hidden rounded-full bg-white/10">
-            <span className="bg-periwinkle" style={{ flexGrow: totals.serving, flexBasis: 0 }} />
-            <span className="bg-fog/60" style={{ flexGrow: totals.attention, flexBasis: 0 }} />
-            <span style={{ flexGrow: Math.max(0, totals.workers - totals.serving - totals.attention), flexBasis: 0 }} />
-          </div>
-        )}
-      </Kpi>
-      <Kpi label="Met Definition of Done" value={dod?.met} unit={completed !== null ? `of ${formatCount(completed)} runs` : undefined} loading={!o && !p.outcomes.error} failed={Boolean(p.outcomes.error && !o)} to="/dashboard" caption={<>Last 30 days · <span className="text-on-dark underline-offset-4 group-hover:underline">Outcomes report</span></>}>
-        {dod && completed ? <VerdictBar counts={{ MET: dod.met, NOT_MET: dod.not_met, NOT_ADJUDICABLE: dod.not_adjudicable }} className="h-1 bg-white/10" /> : null}
-      </Kpi>
-      <Kpi label="Ready to package" value={p.toPackage} loading={p.toPackage === null && !p.drafts.error && !p.records.error} failed={Boolean(p.drafts.error || p.records.error)} to="/packaging" caption={packaged !== undefined ? `${formatCount(packaged)} sealed Packages so far` : 'Composed, nothing blocking'} />
-      <Kpi label="With customers" value={p.packages.data?.length} loading={!p.packages.data && !p.packages.error} failed={Boolean(p.packages.error && !p.packages.data)} to="/customer-delivery?view=delivered" caption={acked !== null ? `${formatCount(acked)} acknowledged · ${p.toPrepare ?? '—'} waiting to prepare` : 'Prepared customer Packages'} />
+    <section aria-labelledby="glance-title" className="rounded-panel bg-identity p-2 text-identity-foreground">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-3 pt-2 pb-3">
+        <h2 id="glance-title" className="text-section">The pipeline at a glance</h2>
+        <p className="text-meta text-identity-foreground/80">Outcomes over the last 30 days</p>
+      </div>
+      <div className="grid grid-cols-2 gap-2 xl:grid-cols-4">
+        <Kpi label="Workers" value={totals?.workers} loading={!p.portfolio.data && !p.portfolio.error} failed={Boolean(p.portfolio.error && !p.portfolio.data)} to="/workers" caption={totals ? <><span className="text-foreground">{formatCount(totals.serving)} serving</span> · {formatCount(totals.attention)} need attention</> : 'Every Worker on the platform'}>
+          {totals && totals.workers > 0 && (
+            <div role="img" aria-label={`${totals.serving} of ${totals.workers} serving`} className="flex h-1.5 gap-px overflow-hidden rounded-full bg-track">
+              <span className="bg-brand" style={{ flexGrow: totals.serving, flexBasis: 0 }} />
+              <span className="bg-warning/70" style={{ flexGrow: totals.attention, flexBasis: 0 }} />
+              <span style={{ flexGrow: Math.max(0, totals.workers - totals.serving - totals.attention), flexBasis: 0 }} />
+            </div>
+          )}
+        </Kpi>
+        <Kpi label="Met Definition of Done" value={dod?.met} unit={completed !== null ? `of ${formatCount(completed)} runs` : undefined} loading={!o && !p.outcomes.error} failed={Boolean(p.outcomes.error && !o)} to="/dashboard" caption={<>Last 30 days · <span className="text-primary underline-offset-4 group-hover:underline">Outcomes report</span></>}>
+          {dod && completed ? <VerdictBar counts={{ MET: dod.met, NOT_MET: dod.not_met, NOT_ADJUDICABLE: dod.not_adjudicable }} className="h-1.5 bg-track" /> : null}
+        </Kpi>
+        <Kpi label="Ready to package" value={p.toPackage} loading={p.toPackage === null && !p.drafts.error && !p.records.error} failed={Boolean(p.drafts.error || p.records.error)} to="/packaging" caption={packaged !== undefined ? `${formatCount(packaged)} sealed Packages so far` : 'Composed, nothing blocking'} />
+        <Kpi label="With customers" value={p.packages.data?.length} loading={!p.packages.data && !p.packages.error} failed={Boolean(p.packages.error && !p.packages.data)} to="/customer-delivery?view=delivered" caption={acked !== null ? `${formatCount(acked)} acknowledged · ${p.toPrepare ?? '—'} waiting to prepare` : 'Prepared customer Packages'} />
+      </div>
     </section>
   )
 }
@@ -119,20 +125,20 @@ function StageTabs({ p }: { p: Pipeline }) {
               to={s.to}
               className={({ isActive }) =>
                 cn(
-                  'group relative flex min-w-[13rem] flex-1 items-center gap-3 rounded-xl border px-4 py-3 outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
-                  isActive ? 'border-border bg-card shadow-soft' : 'border-transparent hover:bg-lavender',
+                  'group relative flex min-w-[13rem] flex-1 items-center gap-3 rounded-block border px-4 py-3 outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
+                  isActive ? 'border-transparent bg-card' : 'border-transparent hover:bg-card/70',
                 )
               }
             >
               {({ isActive }) => (
                 <>
-                  <span className={cn('font-mono text-meta tabular-nums', isActive ? 'text-primary' : 'text-subtle-foreground')}>{s.n}</span>
+                  <span className={cn('grid size-8 shrink-0 place-items-center rounded-lg text-meta font-medium tabular-nums', isActive ? 'bg-primary-soft text-primary-strong' : 'bg-card text-subtle-foreground')}>{s.n}</span>
                   <span className="min-w-0 flex-1">
                     <span className={cn('block text-item', isActive ? 'text-foreground' : 'text-muted-foreground group-hover:text-foreground')}>{s.label}</span>
                     <span className="block truncate text-meta text-muted-foreground">{s.hint}</span>
                   </span>
                   {counts[s.to] !== null && counts[s.to] !== undefined && (
-                    <span className={cn('rounded-full px-2 py-0.5 text-meta font-medium tabular-nums', isActive ? 'bg-primary-soft text-primary-strong' : 'bg-muted text-muted-foreground')}>{formatCount(counts[s.to]!)}</span>
+                    <span className={cn('rounded-full px-2 py-0.5 text-meta font-medium tabular-nums', isActive ? 'bg-primary text-primary-foreground' : 'bg-chip-neutral text-foreground')}>{formatCount(counts[s.to]!)}</span>
                   )}
                 </>
               )}
@@ -150,14 +156,13 @@ function StageTabs({ p }: { p: Pipeline }) {
 export function RegistryLayout() {
   const p = usePipeline()
   return (
-    <PageContainer className="gap-8">
+    <PageContainer>
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <p className="text-overline text-muted-foreground uppercase">Worker marketplace</p>
-          <h1 className="mt-2 text-page">Registry</h1>
+          <h1 className="text-page">Registry</h1>
           <p className="mt-1 max-w-2xl text-body text-muted-foreground">Every Worker on the platform, what is being sealed into a Package, and what has gone to customers.</p>
         </div>
-        <Button asChild size="lg" className="shrink-0 self-start sm:self-auto">
+        <Button asChild className="shrink-0 self-start sm:self-auto">
           <Link to="/compose"><Plus aria-hidden="true" />Compose a Worker</Link>
         </Button>
       </header>
