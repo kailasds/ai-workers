@@ -78,7 +78,7 @@ export function RegistryPage() {
   const select = (id: string) => p.update({ open: id }, { resetPage: false, push: !wide })
 
   const meta = (
-    <div className="flex flex-wrap items-center gap-2 text-meta text-muted-foreground" aria-live="polite">
+    <div className="flex items-center gap-2 text-meta whitespace-nowrap text-muted-foreground max-lg:hidden" aria-live="polite">
       {portfolio.pending && data ? <span>Updating…</span> : data ? <span>Updated <Timestamp iso={portfolio.updatedAt?.toISOString() ?? data.generated_at} /></span> : null}
       {data && data.freshness.state !== 'CURRENT' && <FreshnessBadge state={data.freshness.state} />}
     </div>
@@ -114,7 +114,7 @@ export function RegistryPage() {
                 </InputGroup>
                 <div className="flex items-center gap-2">
                   <div className="no-scrollbar -mx-4 min-w-0 flex-1 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-                    <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={facet ?? ALL} onValueChange={(v) => v && p.update({ runtime: v === ALL ? null : v })} aria-label="Runtime" className="w-max">
+                    <ToggleGroup type="single" variant="outline" spacing={0} value={facet ?? ALL} onValueChange={(v) => v && p.update({ runtime: v === ALL ? null : v })} aria-label="Runtime" className="w-max">
                       <ToggleGroupItem value={ALL}>All</ToggleGroupItem>
                       {RUNTIME_FACETS.map((f) => {
                         const n = facetBase.filter((w) => matchesFacet(w, f.value as RuntimeFacet)).length
@@ -128,7 +128,7 @@ export function RegistryPage() {
                   </div>
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button variant="outline" size="sm" className="shrink-0">
+                      <Button variant="outline" className="shrink-0">
                         <SlidersHorizontal aria-hidden="true" />
                         <span className="max-sm:sr-only">Filters</span>
                         {secondaryActive > 0 && <Badge className="h-4 min-w-4 rounded-full px-1 tabular-nums">{secondaryActive}</Badge>}
@@ -189,7 +189,7 @@ export function RegistryPage() {
                     </p>
                   )}
                   {meta}
-                  <Button variant="ghost" size="icon-sm" aria-label="Refresh" onClick={portfolio.refresh}>
+                  <Button variant="ghost" size="icon" aria-label="Refresh" onClick={portfolio.refresh}>
                     <RefreshCw className={portfolio.pending && data ? 'animate-spin' : undefined} aria-hidden="true" />
                   </Button>
                 </div>

@@ -1,37 +1,45 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
-@import "@fontsource-variable/geist-mono";
-@import "@fontsource-variable/fraunces";
+@import "@fontsource-variable/hanken-grotesk";
+@import "@fontsource-variable/jetbrains-mono";
 
 @custom-variant dark (&:is(.dark *));
 
-/* Type scale (design.md §5): each level a clear step from the next.
-   page → section → item → body → meta. Display sizes are for single hero numerals only. */
+/* Type scale (design.md §5), after Mercury: light weights, presence from size, a hair of positive
+   tracking on headings. Nothing on screen is heavier than 500. */
 @theme {
-    --text-page: 2rem;
-    --text-page--line-height: 2.5rem;
-    --text-page--letter-spacing: -0.02em;
-    --text-page--font-weight: 500;
-    --text-section: 1.25rem;
-    --text-section--line-height: 1.75rem;
-    --text-section--letter-spacing: -0.01em;
-    --text-section--font-weight: 600;
+    --font-weight-normal: 400;
+    --font-weight-medium: 440;    /* Mercury "ui" 420, nudged for Hanken's lighter colour */
+    --font-weight-semibold: 500;  /* the ceiling */
+    --font-weight-bold: 500;
+    --font-weight-extrabold: 500;
+
+    --text-stat: 2.5rem;              /* KPI numerals */
+    --text-stat--line-height: 1.1;
+    --text-stat--font-weight: 480;
+    --text-page: 2rem;                /* the one H1 */
+    --text-page--line-height: 2.375rem;
+    --text-page--letter-spacing: 0.01em;
+    --text-page--font-weight: 480;
+    --text-section: 1.25rem;          /* card titles */
+    --text-section--line-height: 1.625rem;
+    --text-section--letter-spacing: 0.01em;
+    --text-section--font-weight: 480;
     --text-item: 0.9375rem;
     --text-item--line-height: 1.375rem;
-    --text-item--font-weight: 500;
+    --text-item--font-weight: 440;
     --text-body: 0.9375rem;
-    --text-body--line-height: 1.5rem;
+    --text-body--line-height: 1.4rem;
     --text-meta: 0.8125rem;
-    --text-meta--line-height: 1.25rem;
-    --text-overline: 0.75rem;
+    --text-meta--line-height: 1.2rem;
+    --text-overline: 0.75rem;         /* Mercury eyebrow */
     --text-overline--line-height: 1rem;
-    --text-overline--letter-spacing: 0.08em;
+    --text-overline--letter-spacing: 0.06em;
     --text-overline--font-weight: 500;
-    /* Elevation (design.md §6): a lifted sheet, and the top-edge highlight on the ink rail's active slab. */
-    --shadow-raised: 0 1px 2px rgb(26 28 31 / 0.06), 0 4px 16px -8px rgb(26 28 31 / 0.14);
-    --shadow-lift: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 1px 2px rgb(0 0 0 / 0.3);
+
+    /* Elevation (design.md §6): Mercury is tonal; the only shadow is a hair-thin soft stack. */
+    --shadow-soft: 0 1px 2px rgb(40 37 59 / 0.04), 0 4px 12px -2px rgb(40 37 59 / 0.06);
 }
 
 @theme inline {
@@ -54,13 +62,18 @@
     --color-part-language-soft: var(--part-language-soft);
     --color-part-eval: var(--part-eval);
     --color-sidebar-muted: var(--sidebar-muted);
-    --color-ember: var(--ember);
-    --color-ember-soft: var(--ember-soft);
-    --color-canvas-line: var(--canvas-line);
-    --font-heading: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
-    --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
-    --font-mono: 'Geist Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --color-primary-hover: var(--primary-hover);
+    --color-control: var(--control);
+    --color-control-border: var(--control-border);
+    --color-lavender: var(--lavender);
+    --color-night: var(--night);
+    --color-night-raised: var(--night-raised);
+    --color-on-dark: var(--on-dark);
+    --color-fog: var(--fog);
+    --color-periwinkle: var(--periwinkle);
+    --font-heading: 'Hanken Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'Hanken Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -95,83 +108,92 @@
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
-    --radius-xl: 0.75rem; /* card tier, 12px, design.md §6 */
+    --radius-xl: 0.75rem; /* card tier, Mercury rounded.md 12px */
+    --radius-panel: 1rem; /* panels, sheets, the Worker panel: rounded.lg 16px */
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Values from .claude/skills/frontend-kit/references/design.md §2 ("Ink & Ember"). Light theme only. */
+/* Values from .claude/skills/frontend-kit/references/design.md §2 (Mercury). Light theme only. */
 :root {
-    /* Warm stone paper, white sheets, ink text. */
-    --background: #F5F3EE;
-    --foreground: #1A1C1F;
+    /* Day world: near-white canvas, white sheets, plum-ink text. */
+    --background: #FBFCFD;
+    --foreground: #28253B;
     --card: #FFFFFF;
-    --card-foreground: #1A1C1F;
+    --card-foreground: #28253B;
     --popover: #FFFFFF;
-    --popover-foreground: #1A1C1F;
+    --popover-foreground: #28253B;
 
-    /* Viridian: the one action colour. White labels 6.9:1. */
-    --primary: #0E6B5E;
+    /* Mercury Indigo: the single saturated action. White labels 4.7:1. */
+    --primary: #5266EB;
+    --primary-hover: #4458DD;
     --primary-foreground: #FFFFFF;
-    --primary-soft: #E2F0EB;
-    --primary-strong: #0A4F45;
-    --secondary: #EFECE5;
-    --secondary-foreground: #1A1C1F;
+    --primary-soft: #EEF0FD;          /* indigo 10% on white: chosen / you-are-here */
+    --primary-strong: #3D4FD1;        /* indigo text on the tint, 5.7:1 */
 
-    --muted: #EFECE5;
-    --muted-foreground: #5C5F63;
-    --subtle-foreground: #75787C;
-    --accent: #EFECE5;
-    --accent-foreground: #1A1C1F;
+    /* Lavender: quiet filled surfaces (Mercury's light feature cards). */
+    --lavender: #EDECFB;
+    --secondary: #EDECFB;
+    --secondary-foreground: #28253B;
+    --muted: #F3F3F8;
+    --muted-foreground: #554E7B;      /* ink-secondary, 7.4:1 */
+    --subtle-foreground: #70707D;     /* slate, 4.9:1 on white; not for text on lavender */
+    --accent: #EDECFB;
+    --accent-foreground: #28253B;
 
-    /* Ember: "you are here" marks only (active rail tick, current pipeline stage, live dot). Never text on white. */
-    --ember: #E4572E;
-    --ember-soft: #FCE9E2;
+    /* Translucent controls: Mercury's grey-violet outline pill. */
+    --control: rgb(112 115 147 / 0.10);
+    --control-border: rgb(112 115 147 / 0.22);
 
-    /* The Worker being composed: one deep viridian panel per screen. */
-    --identity: #123B35;
-    --identity-foreground: #FFFFFF;
-    --brand: #0E6B5E;
+    /* Night world: the rail, the phone bar, the KPI band and the Worker panel. */
+    --night: #171721;
+    --night-raised: #1E1E2A;
+    --on-dark: #EDEDF3;
+    --fog: #C3C3CC;
+    --periwinkle: #9CB4E8;
+
+    --identity: #1E1E2A;
+    --identity-foreground: #EDEDF3;
+    --brand: #5266EB;
     --brand-foreground: #FFFFFF;
 
-    --success: #1D7A45;
+    /* Status lives in the data, never the chrome (Mercury's rule). Cool, muted, AA on white. */
+    --success: #1E7F55;
     --success-foreground: #FFFFFF;
-    --warning: #9A5B0C;
+    --warning: #A15C07;
     --warning-foreground: #FFFFFF;
-    --info: #2F5D8A;
+    --info: #3D4FD1;
     --info-foreground: #FFFFFF;
-    --destructive: #B42318;
+    --destructive: #C2364A;
     --destructive-foreground: #FFFFFF;
 
-    --part-skill: #2F5D8A;
-    --part-language: #6E559F;
-    --part-language-soft: #EEEAF7;
-    --part-eval: #9A5B0C;
+    --part-skill: #3D4FD1;
+    --part-language: #6B4FB8;
+    --part-language-soft: #EFEAFB;
+    --part-eval: #A15C07;
 
-    --border: #E3DFD6;
-    --input: #DCD8CE;
-    --ring: #0E6B5E;
-    --canvas-line: #E7E3DA;
+    --border: #E6E6EE;                /* fog lifted toward white: hairlines between sheets and rows */
+    --input: #DCDCE6;
+    --ring: #5266EB;
 
-    --chart-1: #0E6B5E;
-    --chart-2: #E4572E;
-    --chart-3: #6E559F;
-    --chart-4: #8C8A84;
-    --chart-5: #CFCBC1;
+    --chart-1: #5266EB;
+    --chart-2: #9CB4E8;
+    --chart-3: #554E7B;
+    --chart-4: #70707D;
+    --chart-5: #C3C3CC;
 
-    --radius: 0.5rem; /* control tier, 8px */
+    --radius: 0.5rem; /* control tier: inputs, selects, menus (rounded.sm 8px) */
 
-    /* The rail is ink: the one dark mass that frames every page. */
-    --sidebar: #16191D;
-    --sidebar-foreground: #ECE9E2;
-    --sidebar-muted: #9A9EA5;
-    --sidebar-primary: #0E6B5E;
+    --sidebar: #171721;
+    --sidebar-foreground: #EDEDF3;
+    --sidebar-muted: #A3A3B2;         /* 7.5:1 on night */
+    --sidebar-primary: #5266EB;
     --sidebar-primary-foreground: #FFFFFF;
-    --sidebar-accent: #24282E;
-    --sidebar-accent-foreground: #F6F4EF;
-    --sidebar-border: #262A30;
-    --sidebar-ring: #5FB7A6;
+    --sidebar-accent: rgb(175 178 206 / 0.14);   /* Mercury glass pill */
+    --sidebar-accent-foreground: #FFFFFF;
+    --sidebar-border: #262635;
+    --sidebar-ring: #9CB4E8;
 }
 
 @layer base {
@@ -183,12 +205,6 @@
     }
   html {
     @apply bg-background font-sans antialiased;
-    font-feature-settings: "ss01", "cv11";
-    }
-  h1, .font-display {
-    font-family: var(--font-display);
-    font-optical-sizing: auto;
-    font-variation-settings: "SOFT" 50, "WONK" 0;
     }
   @media (prefers-reduced-motion: reduce) {
     *, ::before, ::after {

@@ -143,9 +143,9 @@ export function DeliveryPage() {
                       {!m || m.runs === 0 ? 'No runs' : <><span className="text-foreground tabular-nums">{m.runs} runs · {m.runs_met} met</span><br />{m.memories} memory records</>}
                     </span>
                     {eligibilityKnown ? (
-                      <Button asChild size="sm"><Link to={`/customer-delivery/prepare/${d.package!.id}`}>Prepare delivery</Link></Button>
+                      <Button asChild size="sm" variant="secondary"><Link to={`/customer-delivery/prepare/${d.package!.id}`}>Prepare delivery</Link></Button>
                     ) : (
-                      <Button size="sm" disabled title="Reading delivery records…">Prepare delivery</Button>
+                      <Button size="sm" variant="secondary" disabled title="Reading delivery records…">Prepare delivery</Button>
                     )}
                   </li>
                 )

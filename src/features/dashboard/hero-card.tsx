@@ -84,7 +84,7 @@ export function HeroCard({ data, onChoosePeriod, detailLink }: { data: Executive
           <div className="min-w-0">
             <p className="text-overline text-muted-foreground uppercase">{period.long}</p>
             <h2 id="hero-title" className="mt-3 text-balance">
-              <span className="font-display text-6xl leading-none font-normal tracking-tight tabular-nums">{formatCount(dod.met)}</span>
+              <span className="text-6xl leading-none font-[480] tabular-nums">{formatCount(dod.met)}</span>
               <span className="text-2xl font-medium tracking-tight text-muted-foreground tabular-nums"> of {formatCount(completed)}</span>
               <span className="mt-2 block text-lg font-normal text-muted-foreground">runs met their Definition of Done</span>
             </h2>

@@ -112,7 +112,7 @@ export function PackagingPage() {
                   <Status d={d} op={op} />
                   <div className="flex shrink-0 gap-2">
                     {queue === 'work' ? (
-                      <Button size="sm" disabled={running} onClick={() => build(d)}><PackageCheck aria-hidden="true" />Build Package</Button>
+                      <Button size="sm" variant="secondary" disabled={running} onClick={() => build(d)}><PackageCheck aria-hidden="true" />Build Package</Button>
                     ) : (
                       <>
                         {stale && <Button size="sm" variant="outline" disabled={running} onClick={() => build(d)}>Build r{d.revision}</Button>}

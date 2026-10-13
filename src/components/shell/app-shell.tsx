@@ -26,10 +26,9 @@ export function AppShell() {
         <AppSidebar />
         <SidebarInset className="min-w-0">
           {/* Phones: the rail becomes a named Menu button in a slim top bar. */}
-          <div className="sticky top-0 z-20 flex h-14 items-center gap-3 bg-sidebar px-4 text-sidebar-foreground md:hidden">
-            <SidebarTrigger className="size-9 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" aria-label="Menu" />
-            <span className="font-display text-lg font-medium tracking-tight text-sidebar-accent-foreground">AI Worker</span>
-            <span aria-hidden="true" className="size-1.5 rounded-full bg-ember" />
+          <div className="sticky top-0 z-20 flex h-14 items-center gap-3 bg-night px-4 text-on-dark md:hidden">
+            <SidebarTrigger className="size-9 hover:bg-sidebar-accent hover:text-on-dark" aria-label="Menu" />
+            <span className="text-[1.0625rem] font-[480] tracking-[0.01em]">AI Worker</span>
           </div>
           <main id="main" tabIndex={-1} className="flex-1 outline-none">
             <PageErrorBoundary>
