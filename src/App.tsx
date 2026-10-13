@@ -7,6 +7,7 @@ const named = <T,>(loader: () => Promise<T>, name: keyof T) =>
   lazy(() => loader().then((m) => ({ default: m[name] as unknown as React.ComponentType })))
 
 const DashboardPage = named(() => import('@/features/dashboard/dashboard-page'), 'DashboardPage')
+const RegistryLayout = named(() => import('@/features/registry/registry-layout'), 'RegistryLayout')
 const RegistryPage = named(() => import('@/features/registry/registry-page'), 'RegistryPage')
 const WorkerPage = named(() => import('@/features/worker/worker-page'), 'WorkerPage')
 const DeclarationPage = named(() => import('@/features/compose/declaration-page'), 'DeclarationPage')
@@ -71,9 +72,14 @@ function App() {
           <Route index element={<Navigate to="/home" replace />} />
           <Route element={<AppShell />}>
             <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="govern/*" element={<Navigate to="/dashboard" replace />} />
+            <Route path="govern/*" element={<Navigate to="/workers" replace />} />
 
-            <Route path="workers" element={<RegistryPage />} />
+            {/* Registry: one header and figures over three pipeline tabs, each at its own URL. */}
+            <Route element={<RegistryLayout />}>
+              <Route path="workers" element={<RegistryPage />} />
+              <Route path="packaging" element={<PackagingPage />} />
+              <Route path="customer-delivery" element={<DeliveryPage />} />
+            </Route>
             <Route path="workers/:id" element={<WorkerPage />} />
             <Route path="workers/:id/okf" element={<Redirect to={(p) => `/learning/workers/${p.id}/okf`} />} />
             <Route path="workers/:id/runtimes/:runtimeId/configuration" element={<ConfigurationPage />} />
@@ -87,8 +93,6 @@ function App() {
             <Route path="compose/guided/:id" element={<JourneyPage />} />
             <Route path="compose/:id" element={<Redirect to={(p) => `/compose/guided/${p.id}`} />} />
 
-            <Route path="packaging" element={<PackagingPage />} />
-            <Route path="customer-delivery" element={<DeliveryPage />} />
             <Route path="customer-delivery/prepare/:packageId" element={<DeliveryWizard />} />
             <Route path="knowledge" element={<Navigate to="/knowledge/skills" replace />} />
             <Route path="knowledge/brains" element={<Navigate to="/learning" replace />} />

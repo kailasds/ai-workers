@@ -142,7 +142,7 @@ export function LauncherPage() {
             </li>
           ))}
         </ol>
-        <Link to="/dashboard" className="mt-8 inline-block text-meta text-muted-foreground underline underline-offset-4 hover:text-foreground">Or go to the Dashboard</Link>
+        <Link to="/workers" className="mt-8 inline-block text-meta text-muted-foreground underline underline-offset-4 hover:text-foreground">Or go to the Registry</Link>
       </div>
     </main>
   )

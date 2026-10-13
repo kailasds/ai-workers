@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import { ChevronRight, PackageCheck, PackageOpen, Search } from 'lucide-react'
+import { ChevronRight, PackageOpen, Search } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -10,8 +10,6 @@ import { Spinner } from '@/components/ui/spinner'
 import { CopyValue } from '@/components/platform/copy-value'
 import { DetailSheet } from '@/components/platform/detail-sheet'
 import { Fact, FactList } from '@/components/platform/fact-list'
-import { PageContainer } from '@/components/platform/page-container'
-import { PageHeader } from '@/components/platform/page-header'
 import { SectionNav } from '@/components/platform/section-nav'
 import { EmptyState, ErrorState, LoadingRegion } from '@/components/platform/states'
 import { StatusBadge } from '@/components/platform/status-badge'
@@ -114,13 +112,8 @@ export function DeliveryPage() {
   const eligibilityKnown = Boolean(packages.data)
 
   return (
-    <PageContainer>
-      <PageHeader
-        title="Customer delivery"
-        description="Prepare a sealed Package for a named customer, and keep the record of what has gone out."
-        actions={<Button asChild variant="outline"><Link to="/packaging"><PackageCheck aria-hidden="true" />Packaging</Link></Button>}
-      />
-      <SectionNav value={view} onChange={(v) => setParams(v === 'delivered' ? { view: 'delivered' } : {})} items={[{ value: 'prepare', label: 'To prepare', count: drafts.data && packages.data ? toPrepare.length : null }, { value: 'delivered', label: 'Prepared packages', count: packages.data?.length }]} />
+    <div className="flex flex-col gap-5">
+      <SectionNav variant="pills" value={view} onChange={(v) => setParams(v === 'delivered' ? { view: 'delivered' } : {})} items={[{ value: 'prepare', label: 'To prepare', count: drafts.data && packages.data ? toPrepare.length : null }, { value: 'delivered', label: 'Prepared packages', count: packages.data?.length }]} />
       <InputGroup className="sm:max-w-sm">
         <InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon>
         <InputGroupInput type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={view === 'prepare' ? 'Search Worker' : 'Search Worker or customer'} aria-label="Search" />
@@ -189,6 +182,6 @@ export function DeliveryPage() {
       <DetailSheet open={open !== null} onClose={() => setOpen(null)} title={open?.worker_name} description={open ? `For ${open.destination_label ?? 'a customer not named'} · Package ${open.version}` : undefined} width="lg">
         {open && <PreparedDetail pkg={open} onChanged={(p) => { setOpen(p); packages.refresh() }} />}
       </DetailSheet>
-    </PageContainer>
+    </div>
   )
 }

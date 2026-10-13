@@ -73,7 +73,7 @@ export function DashboardPage() {
 
   return (
     <PageContainer>
-      <PageHeader title="Dashboard" description="What your Workers delivered, and what needs a look." meta={meta} utilities={utilities} />
+      <PageHeader title="Outcomes" crumbs={[{ label: 'Registry', to: '/workers' }, { label: 'Outcomes' }]} description="What your Workers delivered, and what needs a look." meta={meta} utilities={utilities} />
 
       {switching && !error && (
         <p className="text-sm text-muted-foreground" role="status">

@@ -27,7 +27,7 @@ import { RuntimesTab } from './runtimes-tab'
 import { SentinelTab } from './sentinel-tab'
 import { useWorkerParams, WORKER_VIEWS, type WorkerView } from './use-worker-params'
 
-const ORIGIN_LABEL: Record<string, string> = { '/dashboard': 'Dashboard', '/workers': 'Registry', '/learning': 'Learning', '/sentinel': 'Sentinel' }
+const ORIGIN_LABEL: Record<string, string> = { '/dashboard': 'Outcomes', '/workers': 'Registry', '/learning': 'Learning', '/sentinel': 'Sentinel' }
 
 function BackLink() {
   const { state } = useLocation() as { state: { from?: string } | null }

@@ -1,4 +1,4 @@
-import { Boxes, Brain, BrainCircuit, Gauge, Hammer, KeyRound, Package, Send, ShieldCheck, Users, type LucideIcon } from 'lucide-react'
+import { Boxes, Brain, BrainCircuit, Gauge, Hammer, KeyRound, Package, Send, ShieldCheck, Store, type LucideIcon } from 'lucide-react'
 
 export interface NavItem {
   label: string
@@ -10,6 +10,8 @@ export interface NavItem {
   purpose: string
   /** Hidden (not disabled) unless the session holds this feature. */
   feature?: string
+  /** Other paths that belong to this item, so it stays active on them. */
+  owns?: string[]
 }
 
 export interface NavGroup {
@@ -24,8 +26,8 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: 'Operate',
     items: [
-      { label: 'Dashboard', to: '/dashboard', icon: Gauge, question: "What's happening across my Workers?", purpose: 'What Workers delivered, whether they met their Definition of Done, and what it cost.' },
-      { label: 'Registry', to: '/workers', icon: Users, question: 'What Workers do I have?', purpose: 'Find, triage and manage every Worker, its runtimes and customer packages.' },
+      { label: 'Outcomes', to: '/dashboard', icon: Gauge, question: "What did my Workers deliver?", purpose: 'What Workers delivered, whether they met their Definition of Done, and what it cost.' },
+      { label: 'Registry', to: '/workers', icon: Store, question: 'Which Workers exist, and where are they?', purpose: 'Every Worker, what is being packaged, and what has gone to customers.', owns: ['/packaging', '/customer-delivery', '/compose', '/dashboard'] },
     ],
   },
   {
@@ -61,12 +63,20 @@ export const ADMIN_ITEM: NavItem = {
   feature: 'users.manage',
 }
 
-/** The rail's flat order (no section labels): build-and-ship flow first, then the library and oversight. */
-const RAIL_ORDER = ['/dashboard', '/compose', '/packaging', '/customer-delivery', '/workers', '/knowledge', '/learning', '/sentinel', '/harnesses']
+/**
+ * The rail's flat order. Registry holds the whole Worker pipeline (the Workers, Packaging and
+ * Customer delivery tabs, with Compose and the outcomes report reached from it), so the rail is
+ * the marketplace, then the library and oversight.
+ */
+const RAIL_ORDER = ['/workers', '/knowledge', '/learning', '/sentinel', '/harnesses']
 export const RAIL_ITEMS: NavItem[] = RAIL_ORDER.map((to) => NAV_GROUPS.flatMap((g) => g.items).find((i) => i.to === to)!)
 
 export const ALL_NAV_ITEMS: NavItem[] = [...NAV_GROUPS.flatMap((g) => g.items), ADMIN_ITEM]
 
 export function isActivePath(pathname: string, to: string) {
   return pathname === to || pathname.startsWith(`${to}/`)
+}
+
+export function isActiveItem(pathname: string, item: NavItem) {
+  return [item.to, ...(item.owns ?? [])].some((to) => isActivePath(pathname, to))
 }

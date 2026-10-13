@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Link, useLocation } from 'react-router'
+import { Link, Navigate, useLocation } from 'react-router'
 import { Bot, MousePointerClick, Plus, RefreshCw, Search, SearchX, SlidersHorizontal } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -11,18 +11,14 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { PageContainer } from '@/components/platform/page-container'
-import { PageHeader } from '@/components/platform/page-header'
 import { EmptyState, ErrorState, LoadingRegion } from '@/components/platform/states'
 import { FreshnessBadge } from '@/components/platform/status-badge'
 import { Timestamp } from '@/components/platform/timestamp'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useResource } from '@/hooks/use-resource'
-import { getCustomerPackages, getWorkerPortfolio } from '@/lib/api/workers'
+import { getWorkerPortfolio } from '@/lib/api/workers'
 import { formatCount } from '@/lib/format'
-import { CustomerPackagesTable } from './customer-packages'
 import { ambiguousIds, filterWorkers, matchesFacet, newestId, RUNTIME_FACETS, SORTS, sortWorkers, type RuntimeFacet } from './registry-model'
 import { useRegistryParams } from './use-registry-params'
 import { WorkerList, type Group } from './worker-list'
@@ -54,8 +50,6 @@ export function RegistryPage() {
   const { pathname, search } = useLocation()
   const wide = useMediaQuery('(min-width: 1280px)')
   const portfolio = useResource(`portfolio:${p.scenario}`, (signal) => getWorkerPortfolio({ signal, scenario: p.scenario }))
-  // Loaded independently: one failing never empties the other.
-  const packages = useResource(`packages:${p.scenario}`, (signal) => getCustomerPackages({ signal, scenario: p.scenario }))
 
   const data = portfolio.data
   const workers = useMemo(() => data?.workers ?? [], [data])
@@ -90,35 +84,11 @@ export function RegistryPage() {
     </div>
   )
 
+  // Customer packages moved to the Customer delivery tab.
+  if (p.view === 'customer') return <Navigate to="/customer-delivery?view=delivered" replace />
+
   return (
-    <PageContainer>
-      <PageHeader
-        title="Workers"
-        description="Every Worker, whether it is serving, and what it last did."
-        meta={meta}
-        utilities={
-          <Button variant="outline" size="icon" aria-label="Refresh" onClick={() => { portfolio.refresh(); packages.refresh() }}>
-            <RefreshCw className={portfolio.pending && data ? 'animate-spin' : undefined} aria-hidden="true" />
-          </Button>
-        }
-        actions={
-          <Button asChild>
-            <Link to="/compose"><Plus aria-hidden="true" />Compose a Worker</Link>
-          </Button>
-        }
-      />
-
-      <Tabs value={p.view} onValueChange={(v) => p.update({ view: v, open: null }, { push: true })} className="gap-6">
-        <TabsList variant="line" className="w-full justify-start border-b">
-          <TabsTrigger value="tcs" className="flex-none px-3">
-            Workers {data && <span className="text-muted-foreground tabular-nums">{formatCount(data.totals.workers)}</span>}
-          </TabsTrigger>
-          <TabsTrigger value="customer" className="flex-none px-3">
-            Customer packages {packages.data && <span className="text-muted-foreground tabular-nums">{packages.data.length}</span>}
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="tcs" className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5">
           {portfolio.error && data && (
             <ErrorState title="Could not refresh the Registry." message={`${portfolio.error.message} Showing the last successful read.`} onRetry={portfolio.refresh} retrying={portfolio.pending} />
           )}
@@ -211,12 +181,18 @@ export function RegistryPage() {
                     </PopoverContent>
                   </Popover>
                 </div>
-                {filtering && (
-                  <p className="flex items-center gap-2 text-meta text-muted-foreground lg:ml-auto" aria-live="polite">
-                    <span className="tabular-nums">{formatCount(matching.length)} of {formatCount(workers.length)}</span>
-                    <Button variant="link" size="xs" className="h-auto px-0 text-meta" onClick={clearAll}>Clear</Button>
-                  </p>
-                )}
+                <div className="flex items-center gap-3 lg:ml-auto">
+                  {filtering && (
+                    <p className="flex items-center gap-2 text-meta text-muted-foreground" aria-live="polite">
+                      <span className="tabular-nums">{formatCount(matching.length)} of {formatCount(workers.length)}</span>
+                      <Button variant="link" size="xs" className="h-auto px-0 text-meta" onClick={clearAll}>Clear</Button>
+                    </p>
+                  )}
+                  {meta}
+                  <Button variant="ghost" size="icon-sm" aria-label="Refresh" onClick={portfolio.refresh}>
+                    <RefreshCw className={portfolio.pending && data ? 'animate-spin' : undefined} aria-hidden="true" />
+                  </Button>
+                </div>
               </div>
 
               {matching.length === 0 ? (
@@ -240,23 +216,6 @@ export function RegistryPage() {
               )}
             </>
           )}
-        </TabsContent>
-
-        <TabsContent value="customer">
-          <Card className="gap-0 py-0">
-            {packages.error && !packages.data ? (
-              <ErrorState className="m-5" title="Customer packages could not be read." message={packages.error.message} onRetry={packages.refresh} retrying={packages.pending} />
-            ) : !packages.data ? (
-              <LoadingRegion label="Reading customer packages…" className="flex flex-col gap-3 p-5">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-              </LoadingRegion>
-            ) : (
-              <CustomerPackagesTable packages={packages.data} />
-            )}
-          </Card>
-        </TabsContent>
-      </Tabs>
 
       {!wide && (
         <Sheet open={selected !== null} onOpenChange={(o) => !o && p.update({ open: null }, { resetPage: false })}>
@@ -271,6 +230,6 @@ export function RegistryPage() {
           </SheetContent>
         </Sheet>
       )}
-    </PageContainer>
+    </div>
   )
 }

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import { ChevronDown, PackageCheck, PackageOpen, Search, SearchX, Send, TriangleAlert } from 'lucide-react'
+import { ChevronDown, PackageCheck, PackageOpen, Search, SearchX, TriangleAlert } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
@@ -8,8 +8,6 @@ import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
 import { DetailSheet } from '@/components/platform/detail-sheet'
 import { Fact, FactList } from '@/components/platform/fact-list'
-import { PageContainer } from '@/components/platform/page-container'
-import { PageHeader } from '@/components/platform/page-header'
 import { SectionNav } from '@/components/platform/section-nav'
 import { EmptyState, ErrorState, LoadingRegion } from '@/components/platform/states'
 import { StatusBadge } from '@/components/platform/status-badge'
@@ -19,14 +17,8 @@ import { getRuntimeRecords } from '@/lib/api/workers'
 import { formatRelative } from '@/lib/format'
 import { startOperation, useOperations, type Operation } from '@/lib/operations'
 import { domainLabel, operatingModeLabel, READINESS_SECTIONS } from '@/lib/vocabulary'
-import type { RuntimeRecord } from '@/lib/types/worker'
+import { queueOf, type Queue } from '../registry/pipeline-model'
 
-type Queue = 'work' | 'packaged' | 'deployed'
-
-function queueOf(d: Draft, records: RuntimeRecord[]): Queue {
-  if (!d.package) return 'work'
-  return records.some((r) => r.composition_id === d.composition_id && r.state !== 'TERMINATED') ? 'deployed' : 'packaged'
-}
 
 function Contents({ d }: { d: Draft }) {
   const c = d.contents
@@ -79,13 +71,9 @@ export function PackagingPage() {
     startOperation({ key: `build:${d.composition_id}`, label: 'Building Package', subject: d.name, phases: PACKAGE_PHASES, href: '/packaging?queue=packaged', onSucceed: () => { markPackaged(d.composition_id); drafts.refresh() } })
 
   return (
-    <PageContainer>
-      <PageHeader
-        title="Packaging"
-        description="Seal composed Workers into versioned, checksummed Packages. Deploying or delivering one is the next decision."
-        actions={<Button asChild variant="outline"><Link to="/customer-delivery"><Send aria-hidden="true" />Customer delivery</Link></Button>}
-      />
+    <div className="flex flex-col gap-5">
       <SectionNav
+        variant="pills"
         value={queue}
         onChange={(v) => setParams(v === 'work' ? {} : { queue: v })}
         items={[
@@ -171,6 +159,6 @@ export function PackagingPage() {
       <DetailSheet open={open !== null} onClose={() => setOpen(null)} title={open?.name} description={open?.package ? `Sealed Package · r${open.package.composition_revision}` : 'What a Package built now would contain'}>
         {open && <Contents d={open} />}
       </DetailSheet>
-    </PageContainer>
+    </div>
   )
 }

@@ -159,6 +159,7 @@ export function JourneyPage() {
     <PageContainer className="gap-8">
       <PageHeader
         icon={Wrench}
+        crumbs={[{ label: 'Registry', to: '/workers' }, { label: 'Compose' }]}
         title="Compose an AI Worker"
         description="Choose the work. Confirm its scope. The platform assembles the rest."
         actions={
