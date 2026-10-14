@@ -8,6 +8,7 @@ const named = <T,>(loader: () => Promise<T>, name: keyof T) =>
 
 const DashboardPage = named(() => import('@/features/dashboard/dashboard-page'), 'DashboardPage')
 const RegistryLayout = named(() => import('@/features/registry/registry-layout'), 'RegistryLayout')
+const LearningLayout = named(() => import('@/features/learning/learning-layout'), 'LearningLayout')
 const RegistryPage = named(() => import('@/features/registry/registry-page'), 'RegistryPage')
 const WorkerPage = named(() => import('@/features/worker/worker-page'), 'WorkerPage')
 const DeclarationPage = named(() => import('@/features/compose/declaration-page'), 'DeclarationPage')
@@ -74,11 +75,24 @@ function App() {
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="govern/*" element={<Navigate to="/workers" replace />} />
 
-            {/* Registry: one header and figures over three pipeline tabs, each at its own URL. */}
+            {/* Home (the Registry): one header and figures over three pipeline tabs, each at its own URL. */}
             <Route element={<RegistryLayout />}>
               <Route path="workers" element={<RegistryPage />} />
               <Route path="packaging" element={<PackagingPage />} />
               <Route path="customer-delivery" element={<DeliveryPage />} />
+            </Route>
+            {/* Learning: the same shape over Knowledge, Learning, Sentinel and Harnesses. Detail pages stand alone. */}
+            <Route element={<LearningLayout />}>
+              <Route path="knowledge/:view" element={<KnowledgeRouter />} />
+              <Route path="learning/*" element={<LearningPage />} />
+              <Route path="sentinel" element={<SentinelOverviewPage />} />
+              <Route path="sentinel/workers" element={<SentinelWorkersPage />} />
+              <Route path="sentinel/decisions" element={<SentinelDecisionsPage />} />
+              <Route path="sentinel/policy" element={<SentinelPolicyPage />} />
+              <Route path="harnesses" element={<HarnessCataloguePage />} />
+              <Route path="harnesses/certify" element={<CertifyPage />} />
+              <Route path="harnesses/conformance" element={<ConformancePage />} />
+              <Route path="harnesses/sdk/:page" element={<SdkPage />} />
             </Route>
             <Route path="workers/:id" element={<WorkerPage />} />
             <Route path="workers/:id/okf" element={<Redirect to={(p) => `/learning/workers/${p.id}/okf`} />} />
@@ -97,22 +111,12 @@ function App() {
             <Route path="knowledge" element={<Navigate to="/knowledge/skills" replace />} />
             <Route path="knowledge/brains" element={<Navigate to="/learning" replace />} />
             <Route path="knowledge/capture" element={<SkillWizard />} />
-            <Route path="knowledge/:view" element={<KnowledgeRouter />} />
             <Route path="learning/workers/:id" element={<WorkerLearningPage />} />
             <Route path="learning/workers/:id/:sub/*" element={<WorkerLearningSubpage />} />
-            <Route path="learning/*" element={<LearningPage />} />
-            <Route path="sentinel" element={<SentinelOverviewPage />} />
-            <Route path="sentinel/workers" element={<SentinelWorkersPage />} />
-            <Route path="sentinel/decisions" element={<SentinelDecisionsPage />} />
             <Route path="sentinel/decisions/:decisionId" element={<SentinelDecisionPage />} />
-            <Route path="sentinel/policy" element={<SentinelPolicyPage />} />
             <Route path="sentinel/:dimension" element={<SentinelDimensionPage />} />
-            <Route path="harnesses" element={<HarnessCataloguePage />} />
-            <Route path="harnesses/certify" element={<CertifyPage />} />
-            <Route path="harnesses/conformance" element={<ConformancePage />} />
             <Route path="harnesses/conformance/:reportId" element={<ConformanceReportPage />} />
             <Route path="harnesses/sdk" element={<Navigate to="/harnesses/sdk/overview" replace />} />
-            <Route path="harnesses/sdk/:page" element={<SdkPage />} />
             <Route path="harnesses/reference/*" element={<Navigate to="/harnesses/sdk/overview" replace />} />
             <Route path="harnesses/:key" element={<HarnessPage />} />
             <Route path="admin" element={<Navigate to="/admin/people" replace />} />

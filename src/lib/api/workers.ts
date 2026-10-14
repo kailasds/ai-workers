@@ -1,4 +1,5 @@
 import { apiGet, ApiError, USE_MOCK } from './client'
+import { workerVersions } from '@/lib/worker-versions'
 import { mockAcknowledge, mockAddDelivery, mockCustomerPackages, mockIdentityChange, mockPortfolio, mockRuntimeRecords, mockWorkspace } from './mock/workers'
 import type { ExecutiveDashboard } from '@/lib/types/dashboard'
 import type {
@@ -60,6 +61,7 @@ export async function getWorkerWorkspace(id: string, { signal, scenario }: Optio
       .filter((r) => ids.has(r.worker_id))
       .map((r) => ({ ...r, runtime_id: r.worker_id })),
     deliveries: directory.packages.filter((p) => p.composition_id === id),
+    versions: workerVersions(worker, portfolio.workers, directory.packages),
     brain,
   }
 }

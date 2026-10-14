@@ -1,10 +1,10 @@
-import { Boxes, Brain, BrainCircuit, Gauge, Hammer, KeyRound, Package, Send, ShieldCheck, Store, type LucideIcon } from 'lucide-react'
+import { Boxes, Brain, BrainCircuit, Gauge, GraduationCap, Hammer, House, KeyRound, Package, Send, ShieldCheck, Store, type LucideIcon } from 'lucide-react'
 
 export interface NavItem {
   label: string
   to: string
   icon: LucideIcon
-  /** The question the area answers, shown under its label in the rail. */
+  /** The question the area answers (the navbar item's tooltip). */
   question: string
   /** One line on what the area is for; shown in the command menu and on placeholder pages. */
   purpose: string
@@ -19,9 +19,8 @@ export interface NavGroup {
   items: NavItem[]
 }
 
-// The rail follows the questions people ask rather than the order the code grew:
-// what is happening → what do I build and ship → what do Workers know → can I trust it.
-// Labels keep the product's own vocabulary.
+// Every area, in the questions people ask: what is happening → what do I build and ship → what do
+// Workers know → can I trust it. The command menu lists these; the navbar shows MAIN_MENUS below.
 export const NAV_GROUPS: NavGroup[] = [
   {
     label: 'Operate',
@@ -64,12 +63,14 @@ export const ADMIN_ITEM: NavItem = {
 }
 
 /**
- * The rail's flat order. Registry holds the whole Worker pipeline (the Workers, Packaging and
- * Customer delivery tabs, with Compose and the outcomes report reached from it), so the rail is
- * the marketplace, then the library and oversight.
+ * The navbar's two main menus. Home holds the whole Worker pipeline (Workers, Packaging and
+ * Customer delivery tabs, with Compose and the outcomes report reached from it); Learning holds
+ * the library and oversight (Knowledge, Learning, Sentinel and Harnesses tabs).
  */
-const RAIL_ORDER = ['/workers', '/knowledge', '/learning', '/sentinel', '/harnesses']
-export const RAIL_ITEMS: NavItem[] = RAIL_ORDER.map((to) => NAV_GROUPS.flatMap((g) => g.items).find((i) => i.to === to)!)
+export const MAIN_MENUS: NavItem[] = [
+  { label: 'Home', to: '/workers', icon: House, question: 'Which Workers exist, and what has shipped?', purpose: 'Every Worker, what is being packaged, and what has gone to customers.', owns: ['/packaging', '/customer-delivery', '/compose', '/dashboard'] },
+  { label: 'Learning', to: '/knowledge', icon: GraduationCap, question: 'What do Workers know, and can I trust it?', purpose: 'Knowledge, Worker learning, Sentinel oversight and the harnesses Workers run on.', owns: ['/learning', '/sentinel', '/harnesses'] },
+]
 
 export const ALL_NAV_ITEMS: NavItem[] = [...NAV_GROUPS.flatMap((g) => g.items), ADMIN_ITEM]
 

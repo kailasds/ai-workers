@@ -100,7 +100,6 @@ export function DeliveryWizard() {
     <PageHeader
       crumbs={[{ label: 'Customer delivery', to: '/customer-delivery' }, { label: 'Prepare delivery' }]}
       title={`Prepare ${draft.name}`}
-      description={`Sealed Package · r${draft.package!.composition_revision}. One sealed Package for one named customer.`}
     />
   )
 

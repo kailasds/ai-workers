@@ -1,6 +1,18 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { cn } from '@/lib/utils'
+
+// Shared tab treatments (design.md §8). Line tabs: room to breathe, navy text and a 3px navy bar.
+// Pills: a white track, the selected item filled navy. A count is a chip that stays readable on
+// both: grey-blue with ink figures, inverting with the selected tab.
+export const LINE_TABS_LIST = 'h-auto w-full justify-start gap-1 border-b pb-1'
+export const LINE_TAB = 'flex-none px-4 py-2 text-[0.9375rem] data-active:[&>.tab-count]:bg-primary data-active:[&>.tab-count]:text-primary-foreground'
+export const PILL_TABS_LIST = 'h-12 gap-1 rounded-lg bg-card p-1 ring-1 ring-border'
+export const PILL_TAB = 'flex-none rounded-md px-4 text-[0.9375rem] text-muted-foreground hover:bg-muted data-active:bg-primary data-active:text-primary-foreground data-active:shadow-none data-active:hover:bg-primary data-active:[&>.tab-count]:bg-primary-foreground data-active:[&>.tab-count]:text-primary-strong'
+
+export function TabCount({ n }: { n: number | null | undefined }) {
+  if (n === null || n === undefined) return null
+  return <span className="tab-count rounded-full bg-chip-neutral px-2 py-px text-meta font-medium text-foreground tabular-nums">{n}</span>
+}
 
 export interface SectionItem {
   value: string
@@ -31,11 +43,11 @@ export function SectionNav({ items, value, onChange, label = 'Section', variant 
         </Select>
       </div>
       <Tabs value={value} onValueChange={onChange} className="hidden md:flex">
-        <TabsList variant={variant === 'pills' ? 'default' : 'line'} className={cn(variant === 'pills' ? 'h-11 rounded-lg bg-card p-1 ring-1 ring-border' : 'w-full justify-start border-b')} aria-label={label}>
+        <TabsList variant={variant === 'pills' ? 'default' : 'line'} className={variant === 'pills' ? PILL_TABS_LIST : LINE_TABS_LIST} aria-label={label}>
           {items.map((i) => (
-            <TabsTrigger key={i.value} value={i.value} className={cn('flex-none px-3', variant === 'pills' && 'rounded-md px-4 text-muted-foreground hover:bg-muted data-active:bg-primary data-active:text-primary-foreground data-active:shadow-none data-active:hover:bg-primary [&_.tabular-nums]:data-active:text-primary-foreground/80')}>
+            <TabsTrigger key={i.value} value={i.value} className={variant === 'pills' ? PILL_TAB : LINE_TAB}>
               {i.label}
-              {i.count !== undefined && i.count !== null && <span className="text-muted-foreground tabular-nums">{i.count}</span>}
+              <TabCount n={i.count} />
             </TabsTrigger>
           ))}
         </TabsList>

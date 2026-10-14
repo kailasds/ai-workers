@@ -155,6 +155,13 @@ export interface WorkerRun {
   context_label: string
 }
 
+/** One revision of a Worker, the compositions built at it, and the customers it went to. */
+export interface WorkerVersion {
+  revision: number
+  builds: PortfolioWorker[]
+  deliveries: CustomerPackage[]
+}
+
 /**
  * Client view model for the Worker workspace. Assembled from one moment's reads so identity,
  * scope and runtimes agree (the real console reads `worker-passport-v1` for the same reason).
@@ -166,6 +173,8 @@ export interface WorkerWorkspace {
   runtimes: RuntimeRecord[]
   runs: WorkerRun[]
   deliveries: CustomerPackage[]
+  /** Every revision of this Worker, newest first, with the customers each went to. */
+  versions: WorkerVersion[]
   /** null when the brain read is not available for this Worker. */
   brain: WorkerBrain | null
 }

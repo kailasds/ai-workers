@@ -12,7 +12,6 @@ export interface Crumb {
 export function PageHeader({
   title,
   icon: Icon,
-  description,
   meta,
   crumbs,
   utilities,
@@ -22,8 +21,7 @@ export function PageHeader({
   title: string
   /** A 48px pale-blue tile beside the title (design.md §8), for task pages such as Compose. */
   icon?: LucideIcon
-  description?: React.ReactNode
-  /** A quiet line under the description, e.g. when the data was last read. */
+  /** A quiet line under the title, e.g. when the data was last read. */
   meta?: React.ReactNode
   crumbs?: Crumb[]
   utilities?: React.ReactNode
@@ -58,7 +56,6 @@ export function PageHeader({
           </nav>
         )}
         <h1 className="text-page">{title}</h1>
-        {description && <p className="mt-1 max-w-2xl text-body text-muted-foreground">{description}</p>}
         {meta && <div className="mt-2">{meta}</div>}
         </div>
       </div>

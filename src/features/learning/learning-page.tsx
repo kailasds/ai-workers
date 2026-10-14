@@ -2,13 +2,10 @@ import { useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router'
 import { ChevronDown, ChevronRight, Info } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Fact, FactList } from '@/components/platform/fact-list'
-import { PageContainer } from '@/components/platform/page-container'
-import { PageHeader } from '@/components/platform/page-header'
 import { SectionNav } from '@/components/platform/section-nav'
 import { ErrorState, LoadingRegion } from '@/components/platform/states'
 import { useResource } from '@/hooks/use-resource'
@@ -139,12 +136,10 @@ export function LearningPage() {
   const portfolio = useResource('portfolio', (signal) => getWorkerPortfolio({ signal }))
 
   return (
-    <PageContainer>
-      <PageHeader
-        title="Learning"
-        description="What Workers added by running, and whether it was accepted."
-        utilities={
-          view === 'workers' ? (
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <SectionNav variant="pills" value={view} onChange={(v) => navigate(v === 'shared' ? '/learning/shared' : '/learning')} items={[{ value: 'workers', label: 'Workers' }, { value: 'shared', label: 'Shared learning' }]} />
+          {view === 'workers' && (
             <Select value={period} onValueChange={(v) => setParams(v === 'all' ? {} : { period: v }, { replace: true })}>
               <SelectTrigger className="w-36" aria-label="Period"><SelectValue /></SelectTrigger>
               <SelectContent align="end">
@@ -153,10 +148,8 @@ export function LearningPage() {
                 <SelectItem value="30d">Last 30 days</SelectItem>
               </SelectContent>
             </Select>
-          ) : undefined
-        }
-      />
-      <SectionNav value={view} onChange={(v) => navigate(v === 'shared' ? '/learning/shared' : '/learning')} items={[{ value: 'workers', label: 'Workers' }, { value: 'shared', label: 'Shared learning' }]} />
+          )}
+      </div>
 
       {view === 'workers' ? (
         <>
@@ -177,7 +170,6 @@ export function LearningPage() {
       ) : (
         <SharedView workers={portfolio.data.workers} />
       )}
-      <Button asChild variant="link" className="self-start px-0"><Link to="/knowledge/skills">Looking for what TCS knows? That is Knowledge.</Link></Button>
-    </PageContainer>
+    </div>
   )
 }

@@ -12,7 +12,7 @@ export function ConfigurationPage() {
   const { id = '' } = useParams()
   return (
     <PageContainer>
-      <PageHeader crumbs={[{ label: 'Registry', to: '/workers' }, { label: 'Worker', to: `/workers/${id}?view=runtimes` }, { label: 'Configuration' }]} title="Configuration and maintenance" description="Change only the settings this Worker’s owner was allowed to change. Everything else is locked in the Package and changes through a new revision." />
+      <PageHeader crumbs={[{ label: 'Registry', to: '/workers' }, { label: 'Worker', to: `/workers/${id}?view=runtimes` }, { label: 'Configuration' }]} title="Configuration and maintenance" />
       <EmptyState
         icon={Settings2}
         title="Worker configuration is unavailable"

@@ -1,7 +1,5 @@
-import { useNavigate, useParams } from 'react-router'
-import { DatabaseZap } from 'lucide-react'
-import { PageContainer } from '@/components/platform/page-container'
-import { PageHeader } from '@/components/platform/page-header'
+import { Link, useNavigate, useParams } from 'react-router'
+import { ChevronLeft, DatabaseZap } from 'lucide-react'
 import { SectionNav } from '@/components/platform/section-nav'
 import { EmptyState } from '@/components/platform/states'
 
@@ -18,9 +16,14 @@ export function GovernancePage() {
   const navigate = useNavigate()
   const key = (view in VIEWS ? view : 'coverage') as keyof typeof VIEWS
   return (
-    <PageContainer>
-      <PageHeader crumbs={[{ label: 'Knowledge', to: '/knowledge/skills' }, { label: 'Governance' }]} title="Knowledge governance" description="How a candidate becomes shared knowledge: a person promotes it, and a pack is published only after its regression gate passes." />
-      <SectionNav value={key} onChange={(v) => navigate(`/knowledge/${v}`)} items={Object.entries(VIEWS).map(([value, v]) => ({ value, label: v.label }))} />
+    <div className="flex flex-col gap-5">
+      <div>
+        <Link to="/knowledge/skills" className="inline-flex items-center gap-1 rounded-sm text-meta text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">
+          <ChevronLeft className="size-3.5" aria-hidden="true" />Knowledge library
+        </Link>
+        <h2 className="mt-1 text-section">Knowledge governance</h2>
+      </div>
+      <SectionNav variant="pills" value={key} onChange={(v) => navigate(`/knowledge/${v}`)} items={Object.entries(VIEWS).map(([value, v]) => ({ value, label: v.label }))} />
       <EmptyState
         icon={DatabaseZap}
         title="Knowledge source unavailable"
@@ -32,6 +35,6 @@ export function GovernancePage() {
           </>
         }
       />
-    </PageContainer>
+    </div>
   )
 }

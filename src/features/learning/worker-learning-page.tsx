@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router'
 import { ArrowRight, BookOpenText, Brain, ChartNoAxesColumn, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Fact, FactList } from '@/components/platform/fact-list'
 import { IconTile } from '@/components/platform/icon-tile'
@@ -66,7 +66,6 @@ export function WorkerLearningPage() {
       <PageHeader
         crumbs={[{ label: 'Learning', to: '/learning' }, { label: w.name }]}
         title={w.name}
-        description={`${data.composition?.contents.harness ?? 'Generic runtime'} · ${w.runtime.serving > 0 ? 'Running' : w.runtime.stopped > 0 ? 'Stopped' : 'No runtime'}`}
         meta={<Provenance ws={data} />}
         actions={<Button asChild variant="outline"><Link to={`/workers/${w.composition_id}`}>Open Worker</Link></Button>}
       />
@@ -78,7 +77,6 @@ export function WorkerLearningPage() {
               <IconTile icon={BookOpenText} size="sm" />
               <div>
                 <CardTitle>Knowledge this Worker runs with</CardTitle>
-                <CardDescription>Is learned knowledge served, and on what evidence?</CardDescription>
               </div>
             </CardHeader>
             <CardContent className="flex flex-col gap-4 py-5">
@@ -102,7 +100,6 @@ export function WorkerLearningPage() {
               <IconTile icon={Brain} size="sm" />
               <div>
                 <CardTitle>What GBrain produced</CardTitle>
-                <CardDescription>{brain ? brain.detail : 'The memory engine’s records, each with its actual producer.'}</CardDescription>
               </div>
             </CardHeader>
             <CardContent className="py-5">
@@ -125,7 +122,6 @@ export function WorkerLearningPage() {
               <IconTile icon={ChartNoAxesColumn} size="sm" />
               <div>
                 <CardTitle>Learning effect</CardTitle>
-                <CardDescription>What learning changed, over comparable runs only.</CardDescription>
               </div>
             </CardHeader>
             <CardContent className="py-5">
@@ -139,7 +135,6 @@ export function WorkerLearningPage() {
             <IconTile icon={ShieldCheck} size="sm" />
             <div>
               <CardTitle>Sentinel</CardTitle>
-              <CardDescription>Two separate facts: what it decides, and whether that applies.</CardDescription>
             </div>
           </CardHeader>
           <CardContent className="py-5">
@@ -174,7 +169,7 @@ export function WorkerLearningSubpage() {
   const name = ws.data && !('redirect' in ws.data) ? ws.data.worker.name : 'Worker'
   return (
     <PageContainer>
-      <PageHeader crumbs={[{ label: 'Learning', to: '/learning' }, { label: name, to: `/learning/workers/${id}` }, { label: page.title }]} title={page.title} description={page.about} />
+      <PageHeader crumbs={[{ label: 'Learning', to: '/learning' }, { label: name, to: `/learning/workers/${id}` }, { label: page.title }]} title={page.title} />
       <Card className="gap-3 p-6">
         <p className="text-item">Not reported by this Worker’s Runtime</p>
         <p className="text-body text-muted-foreground">These reads come from the Worker’s own Runtime or the platform’s synced copy. The offline capture this console runs on holds neither for this Worker, so nothing is shown rather than an empty list that would read as “none”.</p>

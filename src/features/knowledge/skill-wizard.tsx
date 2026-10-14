@@ -60,7 +60,7 @@ export function SkillWizard() {
 
   return (
     <PageContainer>
-      <PageHeader crumbs={[{ label: 'Knowledge', to: '/knowledge/skills' }, { label: revising ? 'Revise a Skill' : 'Write a Skill' }]} title={revising ? `Revise ${revising}` : 'Write a Skill'} description="A Skill is a body, a contract and its references. Nothing is published unchecked." />
+      <PageHeader crumbs={[{ label: 'Knowledge', to: '/knowledge/skills' }, { label: revising ? 'Revise a Skill' : 'Write a Skill' }]} title={revising ? `Revise ${revising}` : 'Write a Skill'} />
 
       <div className="grid items-start gap-8 md:grid-cols-[13rem_minmax(0,1fr)]">
         <ol className="flex gap-1 overflow-x-auto md:flex-col" aria-label="Steps">

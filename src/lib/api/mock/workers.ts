@@ -12,6 +12,7 @@ import customerCapture from '@/data/mock/customer-packages.json'
 import brainCapture from '@/data/mock/worker-brain-a9cb82d0.json'
 import dashboardCapture from '@/data/mock/dashboard-executive.json'
 import { ApiError } from '../client'
+import { workerVersions } from '@/lib/worker-versions'
 import type { ExecutiveDashboard } from '@/lib/types/dashboard'
 import type {
   CustomerPackage,
@@ -91,6 +92,7 @@ export async function mockWorkspace(id: string, scenario: string | null, signal?
         context_label: r.context_label,
       })),
     deliveries: clone(customer.filter((c) => c.composition_id === id)),
+    versions: clone(workerVersions(worker, portfolio.workers, customer)),
     brain: clone(brains[id] ?? null),
   }
 }

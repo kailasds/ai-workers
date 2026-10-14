@@ -1,46 +1,44 @@
 import { useMemo } from 'react'
 import { Link, Navigate, useLocation } from 'react-router'
-import { Bot, MousePointerClick, Plus, RefreshCw, Search, SearchX, SlidersHorizontal } from 'lucide-react'
+import { Bot, Plus, RefreshCw, Search, SearchX, SlidersHorizontal } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { EmptyState, ErrorState, LoadingRegion } from '@/components/platform/states'
 import { FreshnessBadge } from '@/components/platform/status-badge'
 import { Timestamp } from '@/components/platform/timestamp'
-import { useMediaQuery } from '@/hooks/use-media-query'
 import { useResource } from '@/hooks/use-resource'
 import { getWorkerPortfolio } from '@/lib/api/workers'
 import { formatCount } from '@/lib/format'
 import { ambiguousIds, filterWorkers, matchesFacet, newestId, RUNTIME_FACETS, SORTS, sortWorkers, type RuntimeFacet } from './registry-model'
 import { useRegistryParams } from './use-registry-params'
-import { WorkerList, type Group } from './worker-list'
-import { WorkerPreview } from './worker-preview'
+import { WorkerTiles, type Group } from './worker-tiles'
 
 const ALL = '__all'
 
-function ListSkeleton() {
+function TileSkeleton() {
   return (
-    <LoadingRegion label="Reading the Worker portfolio…" className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]">
-      <Card className="gap-0 py-0">
-        {Array.from({ length: 7 }, (_, i) => (
-          <div key={i} className="flex items-center justify-between gap-6 border-b px-5 py-4 last:border-0">
-            <div className="flex flex-1 flex-col gap-2">
-              <Skeleton className="h-4 w-2/3" />
-              <Skeleton className="h-3 w-1/3" />
-            </div>
-            <Skeleton className="h-4 w-16" />
+    <LoadingRegion label="Reading the Worker portfolio…" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+      {Array.from({ length: 8 }, (_, i) => (
+        <Card key={i} className="gap-0 py-0">
+          <div className="flex flex-col gap-3 bg-muted p-4">
+            <Skeleton className="size-10 rounded-block bg-track" />
+            <Skeleton className="h-4 w-3/4 bg-track" />
+            <Skeleton className="h-6 w-40 bg-track" />
           </div>
-        ))}
-      </Card>
-      <Card className="hidden h-96 p-6 xl:flex"><Skeleton className="h-full w-full" /></Card>
+          <div className="flex flex-col gap-3 p-4">
+            <Skeleton className="h-3 w-full bg-track" />
+            <div className="flex flex-wrap gap-1.5">{Array.from({ length: 4 }, (_, j) => <Skeleton key={j} className="h-6 w-20 bg-track" />)}</div>
+            <Skeleton className="h-8 w-1/2 bg-track" />
+          </div>
+        </Card>
+      ))}
     </LoadingRegion>
   )
 }
@@ -48,7 +46,6 @@ function ListSkeleton() {
 export function RegistryPage() {
   const p = useRegistryParams()
   const { pathname, search } = useLocation()
-  const wide = useMediaQuery('(min-width: 1280px)')
   const portfolio = useResource(`portfolio:${p.scenario}`, (signal) => getWorkerPortfolio({ signal, scenario: p.scenario }))
 
   const data = portfolio.data
@@ -71,12 +68,6 @@ export function RegistryPage() {
   const clearAll = () => p.update({ q: null, runtime: null, context: null, brain: null, sentinel: null })
   const from = `${pathname}${search}`
 
-  // On wide screens a Worker is always previewed (the first one if none is chosen).
-  // Narrower, the preview is a sheet that opens only when asked.
-  const ordered = groups.flatMap((g) => g.workers)
-  const selected = (p.open && workers.find((w) => w.composition_id === p.open)) || (wide ? ordered[0] : undefined) || null
-  const select = (id: string) => p.update({ open: id }, { resetPage: false, push: !wide })
-
   const meta = (
     <div className="flex items-center gap-2 text-meta whitespace-nowrap text-muted-foreground max-lg:hidden" aria-live="polite">
       {portfolio.pending && data ? <span>Updating…</span> : data ? <span>Updated <Timestamp iso={portfolio.updatedAt?.toISOString() ?? data.generated_at} /></span> : null}
@@ -86,6 +77,8 @@ export function RegistryPage() {
 
   // Customer packages moved to the Customer delivery tab.
   if (p.view === 'customer') return <Navigate to="/customer-delivery?view=delivered" replace />
+  // The old quick-look (?open=) now opens the Worker itself; Workers are cards that open on click.
+  if (p.open) return <Navigate to={`/workers/${p.open}`} replace />
 
   return (
     <div className="flex flex-col gap-5">
@@ -96,7 +89,7 @@ export function RegistryPage() {
           {portfolio.error && !data ? (
             <ErrorState title="Registry unavailable." message={portfolio.error.message} onRetry={portfolio.refresh} retrying={portfolio.pending} />
           ) : !data ? (
-            <ListSkeleton />
+            <TileSkeleton />
           ) : workers.length === 0 ? (
             <EmptyState
               icon={Bot}
@@ -198,38 +191,13 @@ export function RegistryPage() {
               {matching.length === 0 ? (
                 <EmptyState icon={SearchX} title="No Workers match" description="Try a different search, or clear the filters." action={<Button variant="outline" onClick={clearAll}>Clear filters</Button>} />
               ) : (
-                <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]">
-                  <Card className="gap-0 overflow-hidden py-0" aria-busy={portfolio.pending}>
-                    <WorkerList groups={groups} selectedId={selected?.composition_id ?? null} onSelect={select} newest={newest} ambiguous={ambiguous} expandAll={filtering} />
-                  </Card>
-
-                  {wide && (
-                    <Card className="sticky top-6 gap-0 overflow-hidden p-0" role="region" aria-label="Worker preview">
-                      {selected ? (
-                        <WorkerPreview worker={selected} from={from} />
-                      ) : (
-                        <EmptyState icon={MousePointerClick} title="Choose a Worker" className="border-0" />
-                      )}
-                    </Card>
-                  )}
+                <div aria-busy={portfolio.pending}>
+                  <WorkerTiles groups={groups} newest={newest} ambiguous={ambiguous} expandAll={filtering} from={from} />
                 </div>
               )}
             </>
           )}
 
-      {!wide && (
-        <Sheet open={selected !== null} onOpenChange={(o) => !o && p.update({ open: null }, { resetPage: false })}>
-          <SheetContent side="bottom" className="max-h-[88svh] gap-0 rounded-t-2xl sm:mx-auto sm:max-w-xl">
-            <SheetHeader className="sr-only">
-              <SheetTitle>{selected?.name ?? 'Worker'}</SheetTitle>
-              <SheetDescription>Worker preview</SheetDescription>
-            </SheetHeader>
-            <ScrollArea className="min-h-0">
-              <div>{selected && <WorkerPreview worker={selected} from={from} headingLevel="h3" />}</div>
-            </ScrollArea>
-          </SheetContent>
-        </Sheet>
-      )}
     </div>
   )
 }

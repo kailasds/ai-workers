@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import { Server } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -89,7 +89,6 @@ export function RuntimesTab({ ws }: { ws: WorkerWorkspace }) {
     <Card className="gap-0 py-0 [--card-spacing:--spacing(5)]">
       <CardHeader className="border-b py-5">
         <CardTitle>Runtimes</CardTitle>
-        <CardDescription>Each deployed instance of a Package. Lifecycle and health are separate observations.</CardDescription>
       </CardHeader>
       {runtimes.length === 0 ? (
         <EmptyState className="m-5" icon={Server} title="This Worker is composed and has no runtime" description="Deploy it from Packaging once its Package is built." />

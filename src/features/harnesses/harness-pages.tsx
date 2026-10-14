@@ -1,7 +1,7 @@
 import { Link, Navigate, useNavigate, useParams } from 'react-router'
 import { BadgeCheck, BookOpen, Cable, ChevronRight, FileSearch } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from '@/components/ui/skeleton'
 import { CopyValue } from '@/components/platform/copy-value'
 import { Fact, FactList } from '@/components/platform/fact-list'
@@ -23,12 +23,19 @@ const VIEWS = [
   { value: 'sdk', label: 'SDK reference', to: '/harnesses/sdk/overview' },
 ]
 
+// Section pages (view set) sit inside the Learning hub; a detail page stands alone with its header.
 function Layout({ view, children, title = 'Harnesses', crumbs }: { view: string; children: React.ReactNode; title?: string; crumbs?: { label: string; to?: string }[] }) {
   const navigate = useNavigate()
+  if (view)
+    return (
+      <div className="flex flex-col gap-5">
+        <SectionNav variant="pills" value={view} onChange={(v) => navigate(VIEWS.find((x) => x.value === v)!.to)} items={VIEWS} />
+        {children}
+      </div>
+    )
   return (
     <PageContainer>
-      <PageHeader crumbs={crumbs} title={title} description="Execution adapters: the serving image a Worker runs on. Choosing one changes what the Worker is." />
-      {view && <SectionNav value={view} onChange={(v) => navigate(VIEWS.find((x) => x.value === v)!.to)} items={VIEWS} />}
+      <PageHeader crumbs={crumbs} title={title} />
       {children}
     </PageContainer>
   )
@@ -110,7 +117,7 @@ export function HarnessPage() {
         <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
           <div className="flex min-w-0 flex-col gap-6">
             <Card className="gap-0 py-0">
-              <CardHeader className="border-b py-5"><CardTitle>Stages</CardTitle><CardDescription>{m.stages.length} stages, in the order a Worker moves through them.</CardDescription></CardHeader>
+              <CardHeader className="border-b py-5"><CardTitle>Stages</CardTitle></CardHeader>
               <ol className="divide-y">
                 {m.stages.map((s, i) => (
                   <li key={s.key} className="flex gap-4 px-5 py-4">
@@ -125,7 +132,7 @@ export function HarnessPage() {
               </ol>
             </Card>
             <Card className="gap-0 py-0">
-              <CardHeader className="border-b py-5"><CardTitle>Evidence metrics</CardTitle><CardDescription>Reported by the harness, not counted by the platform.</CardDescription></CardHeader>
+              <CardHeader className="border-b py-5"><CardTitle>Evidence metrics</CardTitle></CardHeader>
               <ul className="divide-y">
                 {m.evidence_metrics.map((e) => (
                   <li key={e.id} className="px-5 py-3.5">

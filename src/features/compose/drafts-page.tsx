@@ -69,7 +69,6 @@ export function DraftsPage() {
       <PageHeader
         crumbs={[{ label: 'Registry', to: '/workers' }, { label: 'Compose', to: '/compose' }, { label: 'Saved drafts' }]}
         title="Saved drafts"
-        description="Continue a Worker from its reserved identity, or start a new one."
         actions={<Button asChild><Link to="/compose"><FilePlus2 aria-hidden="true" />New Worker</Link></Button>}
       />
 

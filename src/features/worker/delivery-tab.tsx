@@ -1,7 +1,7 @@
 import { Link } from 'react-router'
 import { Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardAction, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardAction, CardHeader, CardTitle } from '@/components/ui/card'
 import type { WorkerWorkspace } from '@/lib/types/worker'
 import { CustomerPackagesTable } from '../registry/customer-packages'
 
@@ -11,7 +11,6 @@ export function DeliveryTab({ ws }: { ws: WorkerWorkspace }) {
     <Card className="gap-0 py-0 [--card-spacing:--spacing(5)]">
       <CardHeader className="border-b py-5">
         <CardTitle>Customer packages</CardTitle>
-        <CardDescription>Packages prepared from this Worker for a named customer, with their transfer evidence.</CardDescription>
         <CardAction>
           {pkg ? (
             <Button asChild size="sm">

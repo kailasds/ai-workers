@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { History } from 'lucide-react'
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardAction, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -53,11 +53,11 @@ export function RunsTab({ ws, selected, onSelect }: { ws: WorkerWorkspace; selec
     <Card className="gap-0 py-0 [--card-spacing:--spacing(5)]">
       <CardHeader className="border-b py-5">
         <CardTitle>Runs</CardTitle>
-        <CardDescription>
-          {runs.length === 0
-            ? 'Kept by the platform, so they survive the runtime that produced them.'
-            : `${formatCount(runs.length)} completed · ${formatCount(met)} met the Definition of Done · kept by the platform beyond the runtime that produced them`}
-        </CardDescription>
+        {runs.length > 0 && (
+          <CardAction className="text-meta text-muted-foreground tabular-nums">
+            <span className="text-foreground">{formatCount(met)}</span> of {formatCount(runs.length)} met
+          </CardAction>
+        )}
       </CardHeader>
       {runs.length === 0 ? (
         <EmptyState className="m-5" icon={History} title="No completed runs recorded" description={ws.worker.runtime.serving > 0 ? 'This Worker is serving. Runs appear here as soon as one finishes.' : 'Runs appear here once the Worker is deployed and finishes one.'} />

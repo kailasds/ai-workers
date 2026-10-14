@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Fact, FactList } from '@/components/platform/fact-list'
 import { StatusBadge } from '@/components/platform/status-badge'
 import { Timestamp } from '@/components/platform/timestamp'
@@ -14,7 +14,6 @@ export function SentinelTab({ ws }: { ws: WorkerWorkspace }) {
       <Card className="gap-0 py-0 [--card-spacing:--spacing(5)]">
         <CardHeader className="pt-5">
           <CardTitle>Configured</CardTitle>
-          <CardDescription>What the Package says this Worker’s Sentinel should do.</CardDescription>
         </CardHeader>
         <CardContent className="py-5">
           <FactList>
@@ -29,7 +28,6 @@ export function SentinelTab({ ws }: { ws: WorkerWorkspace }) {
       <Card className="gap-0 py-0 [--card-spacing:--spacing(5)]">
         <CardHeader className="pt-5">
           <CardTitle>Running</CardTitle>
-          <CardDescription>What a serving Worker Runtime applies right now.</CardDescription>
         </CardHeader>
         <CardContent className="py-5">
           <FactList>

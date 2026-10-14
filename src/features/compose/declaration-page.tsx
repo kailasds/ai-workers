@@ -106,7 +106,6 @@ export function DeclarationPage() {
         icon={Wrench}
         crumbs={[{ label: 'Registry', to: '/workers' }, { label: 'Compose' }]}
         title="Compose an AI Worker"
-        description="Choose the work. Confirm its scope. The platform assembles the rest."
         actions={
           <Button asChild variant="outline">
             <Link to="/compose/drafts"><FolderOpen aria-hidden="true" />Saved drafts</Link>

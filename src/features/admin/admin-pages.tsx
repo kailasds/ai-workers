@@ -30,7 +30,7 @@ function AdminLayout({ view, children, actions }: { view: 'people' | 'groups'; c
   const navigate = useNavigate()
   return (
     <PageContainer>
-      <PageHeader title="People and access" description="Onboard people, set what each may do, and group them. The platform checks authority on every request." actions={actions} />
+      <PageHeader title="People and access" actions={actions} />
       <SectionNav value={view} onChange={(v) => navigate(`/admin/${v}`)} items={[{ value: 'people', label: 'People' }, { value: 'groups', label: 'Groups' }]} />
       <Alert><Info aria-hidden="true" /><AlertDescription>{FIXTURE_NOTE}</AlertDescription></Alert>
       {children}
@@ -130,7 +130,7 @@ export function PersonPage() {
   const p = person.data
   return (
     <PageContainer>
-      <PageHeader crumbs={[{ label: 'People', to: '/admin/people' }, { label: isNew ? 'Invite someone' : (p?.displayName ?? 'Person') }]} title={isNew ? 'Invite someone' : (p?.displayName ?? 'Person')} description={isNew ? 'They receive a link to set a password. No password is created for them.' : 'Changing anything here signs this person out of every open session.'} />
+      <PageHeader crumbs={[{ label: 'People', to: '/admin/people' }, { label: isNew ? 'Invite someone' : (p?.displayName ?? 'Person') }]} title={isNew ? 'Invite someone' : (p?.displayName ?? 'Person')} />
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <Card className="gap-8 p-6">
           <fieldset className="flex flex-col gap-4">
