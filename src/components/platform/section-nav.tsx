@@ -1,13 +1,15 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
-// Shared tab treatments (design.md §8). Line tabs: room to breathe, navy text and a 3px navy bar.
+// Shared tab treatments (design.md §8). Tabs are padded 16px left/right; line tabs 4px and pills
+// 6px top/bottom. The lists override the primitive's fixed 32px height so the padding shows.
+// Line tabs: navy text and a 3px navy bar.
 // Pills: a white track, the selected item filled navy. A count is a chip that stays readable on
 // both: grey-blue with ink figures, inverting with the selected tab.
-export const LINE_TABS_LIST = 'h-auto w-full justify-start gap-1 border-b pb-1'
-export const LINE_TAB = 'flex-none px-4 py-2 text-[0.9375rem] data-active:[&>.tab-count]:bg-primary data-active:[&>.tab-count]:text-primary-foreground'
-export const PILL_TABS_LIST = 'h-12 gap-1 rounded-lg bg-card p-1 ring-1 ring-border'
-export const PILL_TAB = 'flex-none rounded-md px-4 text-[0.9375rem] text-muted-foreground hover:bg-muted data-active:bg-primary data-active:text-primary-foreground data-active:shadow-none data-active:hover:bg-primary data-active:[&>.tab-count]:bg-primary-foreground data-active:[&>.tab-count]:text-primary-strong'
+export const LINE_TABS_LIST = 'h-auto group-data-horizontal/tabs:h-auto w-full justify-start gap-1 border-b pb-1'
+export const LINE_TAB = 'h-auto flex-none px-4 py-1 text-[0.9375rem] data-active:[&>.tab-count]:bg-primary data-active:[&>.tab-count]:text-primary-foreground'
+export const PILL_TABS_LIST = 'h-auto group-data-horizontal/tabs:h-auto gap-1 rounded-lg bg-card p-1 ring-1 ring-border'
+export const PILL_TAB = 'h-auto flex-none rounded-md px-4 py-1.5 text-[0.9375rem] text-muted-foreground hover:bg-muted data-active:bg-primary data-active:text-primary-foreground data-active:shadow-none data-active:hover:bg-primary data-active:[&>.tab-count]:bg-primary-foreground data-active:[&>.tab-count]:text-primary-strong'
 
 export function TabCount({ n }: { n: number | null | undefined }) {
   if (n === null || n === undefined) return null
