@@ -1,9 +1,10 @@
+import { useLayoutEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
-import { Activity, ArrowLeft, BrainCircuit, ChevronLeft, ChevronRight, ClipboardCheck, type LucideIcon } from 'lucide-react'
+import { ArrowLeft, Bot, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Carousel, CarouselContent, CarouselItem, useCarousel } from '@/components/ui/carousel'
-import { contextHue, contextIcon, HUE, HueTile, workerTypeMeta, type Hue } from '@/components/platform/hue'
-import { runtimeStatus, RuntimeStatusDot } from '@/components/platform/runtime-status'
+import { contextHue, contextIcon, HUE, HueTile, workerTypeMeta } from '@/components/platform/hue'
+import { runtimeStatus, RuntimeStatusDot, type RuntimeStatus } from '@/components/platform/runtime-status'
 import { formatCount } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import type { Verdict } from '@/lib/types/dashboard'
@@ -20,21 +21,63 @@ const VERDICT_SHORT: Record<Verdict, string> = { MET: 'Met', NOT_MET: 'Not met',
 
 const VERDICT_TEXT: Record<Verdict, string> = { MET: 'text-success', NOT_MET: 'text-destructive', NOT_ADJUDICABLE: 'text-muted-foreground' }
 
-/** One figure in its own cell: a hue disc, a large value, then its label. */
-function Figure({ icon: Icon, hue, label, children }: { icon: LucideIcon; hue: Hue; label: string; children: React.ReactNode }) {
+// Presence, the way a colleague shows as available or away: the dot on the avatar.
+const PRESENCE: Record<RuntimeStatus, string> = {
+  serving: 'bg-success',
+  attention: 'bg-warning',
+  stopped: 'bg-subtle-foreground',
+  none: 'bg-chip-neutral',
+}
+
+/** One figure: value over label, left-aligned. Figures are parted by a hairline, nothing more. */
+function Figure({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex min-w-0 flex-col gap-2 rounded-block bg-muted p-3">
-      <span aria-hidden="true" className={cn('grid size-7 place-items-center rounded-full [&>svg]:size-3.5', HUE[hue].soft, HUE[hue].text)}><Icon /></span>
+    <div className="flex min-w-0 flex-col px-3 first:pl-0">
       {/* The label is read first; it shows under the value. */}
-      <dt className="order-last -mt-1.5 truncate text-meta text-muted-foreground">{label}</dt>
-      <dd className="truncate text-[1.375rem] leading-7 font-medium tabular-nums">{children}</dd>
+      <dt className="order-last truncate text-meta text-muted-foreground">{label}</dt>
+      <dd className="truncate text-item tabular-nums">{children}</dd>
     </div>
   )
 }
 
 /**
- * One Worker, card-shaped like an order: its bounded context's icon, id and state, name, figures,
- * its kind of work and a way in. The bottom edge carries the context's colour, so a shelf reads as one.
+ * The name on one line. When it does not fit, the end fades out; hovering or focusing the card
+ * scrolls it across to show the rest (about 40px a second), then it returns when the pointer leaves.
+ */
+function ScrollingName({ name }: { name: string }) {
+  const box = useRef<HTMLSpanElement>(null)
+  const text = useRef<HTMLSpanElement>(null)
+  const [shift, setShift] = useState(0)
+  useLayoutEffect(() => {
+    const measure = () => {
+      if (box.current && text.current) setShift(Math.max(0, text.current.scrollWidth - box.current.clientWidth))
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    if (box.current) ro.observe(box.current)
+    return () => ro.disconnect()
+  }, [name])
+  const overflows = shift > 0
+  return (
+    <span
+      ref={box}
+      title={overflows ? name : undefined}
+      className={cn('block overflow-hidden whitespace-nowrap', overflows && 'mask-r-from-85% group-hover:mask-none group-focus-visible:mask-none')}
+      style={{ '--shift': `-${shift}px`, '--dur': `${Math.max(1.2, shift / 40)}s` } as React.CSSProperties}
+    >
+      <span
+        ref={text}
+        className={cn('inline-block', overflows && 'transition-transform ease-linear [transition-duration:var(--dur)] group-hover:[transform:translateX(var(--shift))] group-focus-visible:[transform:translateX(var(--shift))]')}
+      >
+        {name}
+      </span>
+    </span>
+  )
+}
+
+/**
+ * One Worker, compact: its avatar (the context's colour, with a presence dot for runtime state),
+ * name, kind of work and revision, then three figures. The bottom edge carries the context's colour.
  */
 export function WorkerCard({ worker, isNew, from }: { worker: PortfolioWorker; isNew: boolean; from: string }) {
   const hue = contextHue(worker.bounded_context.key)
@@ -42,49 +85,42 @@ export function WorkerCard({ worker, isNew, from }: { worker: PortfolioWorker; i
   const status = runtimeStatus(worker.runtime)
   const o = worker.last_outcome
   const ran = o.verdict && o.runs > 0
+  const ring = status === 'attention' ? 'ring-warning-soft' : 'ring-card'
   return (
     <Link
       to={`/workers/${worker.composition_id}`}
       state={{ from }}
       className={cn(
-        'group relative flex h-full flex-col gap-5 overflow-hidden rounded-xl p-5 pb-6 text-card-foreground outline-none hover:ring-1 hover:ring-primary/30 focus-visible:ring-3 focus-visible:ring-ring/50',
+        'group relative flex h-full flex-col gap-4 overflow-hidden rounded-xl p-4 pb-5 text-card-foreground outline-none hover:ring-1 hover:ring-primary/30 focus-visible:ring-3 focus-visible:ring-ring/50',
         status === 'attention' ? 'bg-warning-soft' : 'bg-card',
       )}
     >
-      <div className="flex items-center gap-3">
-        <HueTile hue={hue} icon={contextIcon(worker.bounded_context.key)} />
-        <span className="min-w-0 flex-1 leading-tight">
-          <span className="block font-mono text-meta text-subtle-foreground">#{worker.composition_id.slice(0, 8)}</span>
-          <RuntimeStatusDot status={status} className="mt-0.5" />
+      <div className="flex items-start gap-3">
+        <span className="relative shrink-0">
+          <span aria-hidden="true" className={cn('grid size-10 place-items-center rounded-full [&>svg]:size-5', HUE[hue].solid)}>
+            <Bot />
+          </span>
+          <span aria-hidden="true" className={cn('absolute -right-0.5 -bottom-0.5 size-3.5 rounded-full ring-2', PRESENCE[status], ring)} />
         </span>
-        {isNew && <span className="shrink-0 rounded-full bg-brand-strong px-2 py-0.5 text-overline text-brand-foreground">New</span>}
+        <div className="min-w-0 flex-1">
+          <h4 className="text-item"><ScrollingName name={worker.name} /></h4>
+          <p className="mt-0.5 flex min-w-0 items-center gap-1.5 text-meta text-muted-foreground">
+            <span className="truncate">{type.short} · r{worker.revision}</span>
+            {isNew && <span className="shrink-0 rounded-full bg-brand-strong px-1.5 text-overline text-brand-foreground">New</span>}
+          </p>
+        </div>
+        <RuntimeStatusDot status={status} className="mt-0.5 shrink-0" />
       </div>
 
-      <div className="min-w-0">
-        <h4 className="line-clamp-2 text-[1.0625rem] leading-6 text-balance">{worker.name}</h4>
-        <p className="mt-1 text-meta text-muted-foreground">Revision {worker.revision}</p>
-      </div>
-
-      {/* The figures, each in its own tinted cell: what it has done, what it kept, how it last went. */}
-      <dl className="grid grid-cols-3 gap-1.5">
-        <Figure icon={Activity} hue="cyan" label="Runs">{formatCount(o.runs)}</Figure>
-        <Figure icon={BrainCircuit} hue="violet" label="Memory">{formatCount(worker.learning.memories)}</Figure>
-        <Figure icon={ClipboardCheck} hue="teal" label="Outcome">
+      <dl className="mt-auto grid grid-cols-3 divide-x divide-border">
+        <Figure label="Runs">{formatCount(o.runs)}</Figure>
+        <Figure label="Memory">{formatCount(worker.learning.memories)}</Figure>
+        <Figure label="Outcome">
           <span className={ran ? VERDICT_TEXT[o.verdict!] : 'text-muted-foreground'}>{ran ? VERDICT_SHORT[o.verdict!] : 'None'}</span>
         </Figure>
       </dl>
 
-      <div className="mt-auto flex items-center gap-3">
-        <span className="flex min-w-0 flex-1 items-center gap-2 text-meta text-muted-foreground">
-          <type.icon className={cn('size-4 shrink-0', HUE[type.hue].text)} aria-hidden="true" />
-          <span className="truncate">{type.short}</span>
-        </span>
-        <span aria-hidden="true" className="grid size-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground group-hover:bg-primary-hover">
-          <ChevronRight className="size-5" />
-        </span>
-      </div>
-
-      <span aria-hidden="true" className={cn('absolute inset-x-0 bottom-0 h-1.5', HUE[hue].solid)} />
+      <span aria-hidden="true" className={cn('absolute inset-x-0 bottom-0 h-1', HUE[hue].solid)} />
     </Link>
   )
 }
