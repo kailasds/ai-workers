@@ -23,19 +23,13 @@ const VIEWS = [
   { value: 'sdk', label: 'SDK reference', to: '/harnesses/sdk/overview' },
 ]
 
-// Section pages (view set) sit inside the Learning hub; a detail page stands alone with its header.
+// Harnesses is its own main menu: one header, its sections as pills; a detail page adds a breadcrumb.
 function Layout({ view, children, title = 'Harnesses', crumbs }: { view: string; children: React.ReactNode; title?: string; crumbs?: { label: string; to?: string }[] }) {
   const navigate = useNavigate()
-  if (view)
-    return (
-      <div className="flex flex-col gap-5">
-        <SectionNav variant="pills" value={view} onChange={(v) => navigate(VIEWS.find((x) => x.value === v)!.to)} items={VIEWS} />
-        {children}
-      </div>
-    )
   return (
     <PageContainer>
       <PageHeader crumbs={crumbs} title={title} />
+      {view && <SectionNav variant="pills" value={view} onChange={(v) => navigate(VIEWS.find((x) => x.value === v)!.to)} items={VIEWS} />}
       {children}
     </PageContainer>
   )

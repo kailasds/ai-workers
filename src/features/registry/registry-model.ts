@@ -82,11 +82,3 @@ export function sortWorkers(workers: PortfolioWorker[], sort: SortKey, newest: s
       b.created_at.localeCompare(a.created_at),
   )
 }
-
-/** The short composition id is shown only when another row shares name, owner, context, revision and day. */
-export function ambiguousIds(workers: PortfolioWorker[]) {
-  const key = (w: PortfolioWorker) => [w.name, w.owner, w.bounded_context.key, w.revision, w.created_at.slice(0, 10)].join('|')
-  const counts = new Map<string, number>()
-  for (const w of workers) counts.set(key(w), (counts.get(key(w)) ?? 0) + 1)
-  return new Set(workers.filter((w) => (counts.get(key(w)) ?? 0) > 1).map((w) => w.composition_id))
-}

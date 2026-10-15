@@ -1,4 +1,4 @@
-import { Code, FlaskConical, RefreshCcwDot, Workflow, type LucideIcon } from 'lucide-react'
+import { Code, FlaskConical, ListChecks, RefreshCcwDot, Repeat2, Route, TestTubes, Workflow, type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 // design.md §3 category hues. A hue names WHICH kind of thing (a bounded context, a Worker type),
@@ -24,6 +24,19 @@ const CONTEXT_HUE: Record<string, Hue> = {
   'tibco-bw-to-spring-boot-services': 'blue',
   'tibco-bw-to-spring-boot-services-tests': 'teal',
   'tibco-bw-to-spring-boot-services-tests-traceability': 'cyan',
+}
+
+// Each captured context also has its own icon, so a context reads the same on its banner, its
+// shelf and every Worker card in it. Unknown contexts fall back to Workflow.
+const CONTEXT_ICON: Record<string, LucideIcon> = {
+  'qe-testcases-to-executed-scripts': ListChecks,
+  'tibco-bw-to-spring-boot-services': Repeat2,
+  'tibco-bw-to-spring-boot-services-tests': TestTubes,
+  'tibco-bw-to-spring-boot-services-tests-traceability': Route,
+}
+
+export function contextIcon(key: string | null | undefined): LucideIcon {
+  return (key && CONTEXT_ICON[key]) || Workflow
 }
 
 export function contextHue(key: string | null | undefined): Hue {

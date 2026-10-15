@@ -25,7 +25,9 @@ import { RunsTab } from './runs-tab'
 import { RuntimesTab } from './runtimes-tab'
 import { SentinelTab } from './sentinel-tab'
 import { useComposition } from './use-composition'
+import { SimilarWorkers } from './similar-workers'
 import { VersionsTab } from './versions-tab'
+import { WorkerKpis } from './worker-kpis'
 import { useWorkerParams, WORKER_VIEWS, type WorkerView } from './use-worker-params'
 
 const ORIGIN_LABEL: Record<string, string> = { '/dashboard': 'Outcomes', '/workers': 'Home', '/learning': 'Learning', '/sentinel': 'Sentinel' }
@@ -53,7 +55,7 @@ function Header({ ws, onIdentity, onView }: { ws: WorkerWorkspace; onIdentity: (
   return (
     <header className="flex flex-col gap-3">
       <BackLink />
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+      <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-center 2xl:justify-between">
         <h1 className="min-w-0 text-page text-balance">{w.name}</h1>
         <div className="flex shrink-0 flex-wrap items-center gap-2">
           {access.reachable ? (
@@ -171,6 +173,7 @@ export function WorkerPage() {
   return (
     <PageContainer aria-busy={pending}>
       <Header ws={ws} onIdentity={() => setIdentityOpen(true)} onView={setView} />
+      <WorkerKpis ws={ws} />
 
       <Tabs value={view} onValueChange={setView} className="gap-6">
         {/* P-02: tabs on wide screens; one labelled select below 768px. */}
@@ -210,6 +213,8 @@ export function WorkerPage() {
         <TabsContent value="runtimes"><RuntimesTab ws={ws} /></TabsContent>
         <TabsContent value="delivery"><DeliveryTab ws={ws} /></TabsContent>
       </Tabs>
+
+      <SimilarWorkers worker={ws.worker} scenario={scenario} />
 
       <DetailSheet open={identityOpen} onClose={() => setIdentityOpen(false)} title="Identity details">
         <IdentityDetails ws={ws} onChanged={refresh} />

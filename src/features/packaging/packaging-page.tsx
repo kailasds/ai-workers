@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import { ChevronDown, PackageCheck, PackageOpen, Search, SearchX, TriangleAlert } from 'lucide-react'
+import { PackageCheck, PackageOpen, PencilRuler, Search, SearchX, TriangleAlert } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
-import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
 import { DetailSheet } from '@/components/platform/detail-sheet'
 import { Fact, FactList } from '@/components/platform/fact-list'
+import { Tag } from '@/components/platform/hue'
+import { PackageMedia, ProductCard } from '@/components/platform/product-card'
 import { SectionNav } from '@/components/platform/section-nav'
 import { EmptyState, ErrorState, LoadingRegion } from '@/components/platform/states'
 import { StatusBadge } from '@/components/platform/status-badge'
@@ -35,18 +35,27 @@ function Contents({ d }: { d: Draft }) {
   )
 }
 
+/** The card's state pill: building (with progress), not sealed, stale or sealed. */
 function Status({ d, op }: { d: Draft; op?: Operation }) {
-  if (op && (op.state === 'RUNNING' || op.state === 'QUEUED'))
-    return (
-      <span className="flex w-36 flex-col gap-1">
-        <span className="text-meta text-info">{op.label} · {op.progress}%</span>
-        <Progress value={op.progress} aria-label={`${op.label} ${op.progress}%`} className="h-1 [&_[data-slot=progress-indicator]]:bg-brand" />
-      </span>
-    )
-  if (!d.package) return <StatusBadge tone="neutral" icon={null}>Ready to package</StatusBadge>
-  if (d.package.composition_revision < d.revision) return <StatusBadge tone="warning">Packaged at r{d.package.composition_revision} · draft at r{d.revision}</StatusBadge>
-  return <span className="text-meta text-muted-foreground">Package r{d.package.composition_revision}</span>
+  if (op && (op.state === 'RUNNING' || op.state === 'QUEUED')) return <StatusBadge tone="info" icon={null}>Building · {op.progress}%</StatusBadge>
+  if (!d.package) return <StatusBadge tone="neutral" icon={null}>Not sealed</StatusBadge>
+  if (d.package.composition_revision < d.revision) return <StatusBadge tone="warning">Revision {d.revision} not sealed</StatusBadge>
+  return <StatusBadge tone="success">Sealed</StatusBadge>
 }
+
+/** What is in the box: the counts a Package carries. Unknown until every checkpoint is confirmed. */
+function boxKpis(d: Draft) {
+  const c = d.contents
+  const v = (n: number | undefined) => (c ? n : <span className="text-muted-foreground">–</span>)
+  return [
+    { label: 'Skills', value: v(c?.skills) },
+    { label: 'DSLs', value: v(c?.languages) },
+    { label: 'EVALs', value: v(c?.evaluations) },
+    { label: 'DoD', value: v(c?.dod_criteria) },
+  ]
+}
+
+const GRID = 'grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4'
 
 export function PackagingPage() {
   const [params, setParams] = useSearchParams()
@@ -56,7 +65,6 @@ export function PackagingPage() {
   const ops = useOperations()
   const [q, setQ] = useState('')
   const [open, setOpen] = useState<Draft | null>(null)
-  const [showBlocked, setShowBlocked] = useState(false)
 
   const all = useMemo(() => (drafts.data ?? []).filter((d) => d.status === 'ACTIVE'), [drafts.data])
   const recs = records.data ?? []
@@ -90,70 +98,103 @@ export function PackagingPage() {
       {drafts.error ? (
         <ErrorState title="Could not load Packaging." message="The packaging list could not be loaded. Check the console API, then try again." onRetry={drafts.refresh} />
       ) : !drafts.data ? (
-        <LoadingRegion label="Reading compositions…" className="flex flex-col gap-2">{Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-16" />)}</LoadingRegion>
+        <LoadingRegion label="Reading compositions…" className={GRID}>{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-80 rounded-xl bg-track" />)}</LoadingRegion>
       ) : rows.length === 0 ? (
         needle ? <EmptyState icon={SearchX} title="No matches" action={<Button variant="outline" onClick={() => setQ('')}>Clear search</Button>} /> : <EmptyState icon={PackageOpen} title={queue === 'work' ? 'Nothing waiting to be packaged' : queue === 'packaged' ? 'No Packages waiting to deploy' : 'No packaged Worker is deployed'} />
       ) : (
-        <Card className="gap-0 overflow-hidden py-0">
-          <ul className="divide-y">
-            {ready.map((d) => {
-              const op = ops.find((o) => o.id === `build:${d.composition_id}`)
-              const running = op && (op.state === 'RUNNING' || op.state === 'QUEUED')
-              const stale = d.package && d.package.composition_revision < d.revision
-              return (
-                <li key={d.composition_id} className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center">
-                  <button type="button" onClick={() => setOpen(d)} className="min-w-0 flex-1 rounded-sm text-left outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                    <span className="block truncate text-item hover:underline">{d.name}</span>
-                    <span className="block truncate text-meta text-muted-foreground">
-                      {d.contents?.context_label ?? d.identity.bounded_scope}
-                      {d.business_domain_key ? ` · ${domainLabel(d.business_domain_key)}` : ''} · {d.package ? `packaged ${formatRelative(d.package.created_at)}` : `composed ${formatRelative(d.updated_at)}`}
-                    </span>
-                  </button>
-                  <Status d={d} op={op} />
-                  <div className="flex shrink-0 gap-2">
-                    {queue === 'work' ? (
-                      <Button size="sm" variant="secondary" disabled={running} onClick={() => build(d)}><PackageCheck aria-hidden="true" />Build Package</Button>
-                    ) : (
-                      <>
-                        {stale && <Button size="sm" variant="outline" disabled={running} onClick={() => build(d)}>Build r{d.revision}</Button>}
-                        <Button asChild size="sm" variant="outline"><Link to={`/customer-delivery/prepare/${d.package!.id}`}>Prepare delivery</Link></Button>
-                      </>
-                    )}
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
+        <div className="flex flex-col gap-8">
+          {ready.length > 0 && (
+            <ul className={GRID}>
+              {ready.map((d) => {
+                const op = ops.find((o) => o.id === `build:${d.composition_id}`)
+                const running = Boolean(op && (op.state === 'RUNNING' || op.state === 'QUEUED'))
+                const stale = d.package && d.package.composition_revision < d.revision
+                return (
+                  <li key={d.composition_id}>
+                    <ProductCard
+                      hue="amber"
+                      media={
+                        <PackageMedia
+                          hue="amber"
+                          sealed={Boolean(d.package)}
+                          label={`Revision ${d.package ? d.package.composition_revision : d.revision}`}
+                          sublabel={d.package ? d.package.id.slice(0, 8) : undefined}
+                        />
+                      }
+                      status={<Status d={d} op={op} />}
+                      eyebrow={d.contents?.context_label ?? d.identity.bounded_scope}
+                      title={d.name}
+                      onOpen={() => setOpen(d)}
+                      tags={
+                        d.business_domain_key || d.contents?.harness ? (
+                          <>
+                            {d.business_domain_key && <Tag hue="cyan">{domainLabel(d.business_domain_key)}</Tag>}
+                            {d.contents?.harness && <Tag hue="blue">{d.contents.harness}</Tag>}
+                          </>
+                        ) : undefined
+                      }
+                      kpis={boxKpis(d)}
+                      footer={
+                        <>
+                          <span className="min-w-0 flex-1 truncate text-meta text-muted-foreground">
+                            {d.package ? `Sealed ${formatRelative(d.package.created_at)}` : `Composed ${formatRelative(d.updated_at)}`}
+                          </span>
+                          {queue === 'work' ? (
+                            <Button size="sm" disabled={running} onClick={() => build(d)}><PackageCheck aria-hidden="true" />Build Package</Button>
+                          ) : (
+                            <>
+                              {stale && <Button size="sm" variant="outline" disabled={running} onClick={() => build(d)}>Build r{d.revision}</Button>}
+                              <Button asChild size="sm" variant="secondary"><Link to={`/customer-delivery/prepare/${d.package!.id}`}>Prepare delivery</Link></Button>
+                            </>
+                          )}
+                        </>
+                      }
+                    />
+                  </li>
+                )
+              })}
+            </ul>
+          )}
           {blocked.length > 0 && (
-            <div className="border-t">
-              <button type="button" onClick={() => setShowBlocked((v) => !v)} aria-expanded={showBlocked} className="flex w-full items-center justify-between bg-muted/40 px-5 py-3 text-left text-meta font-medium outline-none hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset">
-                Still being assembled ({blocked.length})
-                <ChevronDown className={showBlocked ? 'size-4 rotate-180' : 'size-4'} aria-hidden="true" />
-              </button>
-              {showBlocked && (
-                <ul className="divide-y border-t">
-                  {blocked.map((d) => (
-                    <li key={d.composition_id} className="flex flex-col gap-2 px-5 py-4 sm:flex-row sm:items-start">
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-item">{d.name}</p>
-                        <ul className="mt-1 flex flex-col gap-0.5">
-                          {d.issues.slice(0, 3).map((i) => (
+            <section aria-labelledby="assembling" className="flex flex-col gap-4">
+              <h3 id="assembling" className="flex items-center gap-2 text-section">
+                Still being assembled
+                <span className="rounded-full bg-chip-neutral px-2 py-0.5 text-meta font-medium tabular-nums">{blocked.length}</span>
+              </h3>
+              <ul className={GRID}>
+                {blocked.map((d) => (
+                  <li key={d.composition_id}>
+                    <ProductCard
+                      hue="amber"
+                      media={<PackageMedia hue="amber" sealed={false} label={`Revision ${d.revision}`} />}
+                      status={<StatusBadge tone="warning">{d.issues.length === 1 ? '1 part open' : `${d.issues.length} parts open`}</StatusBadge>}
+                      eyebrow={d.contents?.context_label ?? d.identity.bounded_scope}
+                      title={d.name}
+                      onOpen={() => setOpen(d)}
+                      tags={
+                        <ul className="flex flex-col gap-1">
+                          {d.issues.slice(0, 2).map((i) => (
                             <li key={i.code} className="flex gap-1.5 text-meta text-muted-foreground">
                               <TriangleAlert className="mt-0.5 size-3 shrink-0 text-warning" aria-hidden="true" />
-                              <span><span className="text-foreground">{READINESS_SECTIONS[i.section] ?? i.section}:</span> {i.message}</span>
+                              <span className="line-clamp-2"><span className="text-foreground">{READINESS_SECTIONS[i.section] ?? i.section}:</span> {i.message}</span>
                             </li>
                           ))}
-                          {d.issues.length > 3 && <li className="text-meta text-muted-foreground">{d.issues.length - 3} more</li>}
                         </ul>
-                      </div>
-                      <Button asChild size="sm" variant="outline"><Link to={`/compose/guided/${d.composition_id}`}>Continue composing</Link></Button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+                      }
+                      kpis={boxKpis(d)}
+                      footer={
+                        <>
+                          <span className="min-w-0 flex-1 truncate text-meta text-muted-foreground">Composed {formatRelative(d.updated_at)}</span>
+                          <Button asChild size="sm" variant="outline"><Link to={`/compose/guided/${d.composition_id}`}><PencilRuler aria-hidden="true" />Continue composing</Link></Button>
+                        </>
+                      }
+                    />
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
-        </Card>
+        </div>
       )}
 
       <DetailSheet open={open !== null} onClose={() => setOpen(null)} title={open?.name} description={open?.package ? `Sealed Package · r${open.package.composition_revision}` : 'What a Package built now would contain'}>

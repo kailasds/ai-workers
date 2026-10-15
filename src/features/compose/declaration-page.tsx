@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router'
 import { ArrowLeft, FolderOpen, Wrench } from 'lucide-react'
+import { HUE, workerTypeMeta } from '@/components/platform/hue'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -8,11 +9,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup } from '@/components/ui/radio-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { PageContainer } from '@/components/platform/page-container'
 import { PageHeader } from '@/components/platform/page-header'
-import { ErrorState, LoadingRegion } from '@/components/platform/states'
 import { useResource } from '@/hooks/use-resource'
 import { getGeographies, getWorkerTypes } from '@/lib/api/catalog'
 import { createDraft } from '@/lib/api/compose'
@@ -46,7 +45,9 @@ export function DeclarationPage() {
   const types = useResource('worker-types', (signal) => getWorkerTypes({ signal }))
   const geos = useResource('geographies', (signal) => getGeographies({ signal }))
 
-  const [type, setType] = useState<string | null>(null)
+  // The kind of work is chosen before the stepper, on /compose; it arrives in the URL.
+  const [params] = useSearchParams()
+  const type = params.get('type')
   const [identity, setIdentity] = useState<string | null>(null)
   const [domain, setDomain] = useState<string | null>(null)
   const [geography, setGeography] = useState<string | null>(null)
@@ -68,14 +69,6 @@ export function DeclarationPage() {
   const typeLabel = types.data?.types.find((t) => t.key === type)?.display_name ?? null
 
   // Changing an earlier decision clears the ones that depended on it.
-  const chooseType = (v: string) => {
-    setType(v)
-    setIdentity(null)
-    setDomain(null)
-    setContext(null)
-    setCeiling(null)
-    setGrowth('keep')
-  }
   const chooseIdentity = (v: string) => {
     setIdentity(v)
     setContext(null)
@@ -98,13 +91,17 @@ export function DeclarationPage() {
 
   const identifier = useMemo(() => spiffePreview(type, identity, domain, context, name || ctx?.label || ''), [type, identity, domain, context, name, ctx])
 
+  const typeMeta = type ? workerTypeMeta(type) : null
+  const knownType = !types.data || types.data.types.some((t) => t.key === type && t.availability === 'available')
+  if (!type || !knownType) return <Navigate to="/compose" replace />
+
   const stepStates = Object.fromEntries(STEPS.map((st, i) => [st.key, i === 0 ? 'current' : 'upcoming'])) as Record<(typeof STEPS)[number]['key'], StepState>
 
   return (
     <PageContainer className="gap-8">
       <PageHeader
         icon={Wrench}
-        crumbs={[{ label: 'Registry', to: '/workers' }, { label: 'Compose' }]}
+        crumbs={[{ label: 'Home', to: '/workers' }, { label: 'Compose', to: '/compose' }, { label: typeLabel ?? 'New Worker' }]}
         title="Compose an AI Worker"
         actions={
           <Button asChild variant="outline">
@@ -122,31 +119,19 @@ export function DeclarationPage() {
             <h2 className="mt-2 text-section">Define the Worker: what it does, and where its work stops</h2>
             <p className="mt-1 text-body text-muted-foreground">Nothing enters the Worker until you confirm it.</p>
 
-            <div className="mt-8 flex flex-col gap-10">
-              <Step n={1} title="What kind of work?" hint="Decides which identities exist." active>
-                {types.error ? (
-                  <ErrorState title="Could not load Worker types." message={types.error.message} onRetry={types.refresh} />
-                ) : !types.data ? (
-                  <LoadingRegion label="Reading Worker types…" className="flex flex-col gap-2"><Skeleton className="h-16" /><Skeleton className="h-16" /></LoadingRegion>
-                ) : (
-                  <RadioGroup value={type ?? ''} onValueChange={chooseType} aria-label="Worker type" className="gap-2">
-                    {types.data.types.map((t) => (
-                      <ChoiceCard
-                        key={t.key}
-                        id={`type-${t.key}`}
-                        value={t.key}
-                        selected={type === t.key}
-                        title={t.display_name}
-                        detail={t.summary}
-                        meta={t.availability === 'available' ? `${t.bounded_context_count} bounded contexts` : 'In build'}
-                        disabledReason={t.availability !== 'available' ? t.availability_detail || 'Available later.' : null}
-                      />
-                    ))}
-                  </RadioGroup>
-                )}
-              </Step>
+            {typeMeta && (
+              <div className={cn('mt-6 flex items-center gap-3 rounded-block p-3', HUE[typeMeta.hue].soft)}>
+                <span aria-hidden="true" className={cn('grid size-10 shrink-0 place-items-center rounded-block [&>svg]:size-5', HUE[typeMeta.hue].solid)}><typeMeta.icon /></span>
+                <span className="min-w-0 flex-1">
+                  <span className={cn('block text-overline', HUE[typeMeta.hue].text)}>Kind of work</span>
+                  <span className="block truncate text-item">{typeLabel ?? typeMeta.short}</span>
+                </span>
+                <Button asChild variant="ghost" size="sm"><Link to="/compose">Change</Link></Button>
+              </div>
+            )}
 
-              <Step n={2} title="What is it?" hint="Its identity, and optionally the business and law it answers to." active={Boolean(type)}>
+            <div className="mt-8 flex flex-col gap-10">
+              <Step n={1} title="What is it?" hint="Its identity, and optionally the business and law it answers to." active>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="flex flex-col gap-1.5 sm:col-span-2">
                     <Label htmlFor="identity">Identity</Label>
@@ -186,7 +171,7 @@ export function DeclarationPage() {
                 </div>
               </Step>
 
-              <Step n={3} title="Where does it work?" hint="The one business boundary: what it produces, and what it refuses." active={Boolean(identity)}>
+              <Step n={2} title="Where does it work?" hint="The one business boundary: what it produces, and what it refuses." active={Boolean(identity)}>
                 {!identity ? (
                   <p className="text-body text-muted-foreground">Available once an identity is assigned.</p>
                 ) : contexts.length === 0 ? (
@@ -269,7 +254,7 @@ export function DeclarationPage() {
           )}
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
             <Button asChild variant="outline" size="lg">
-              <Link to="/compose/drafts"><ArrowLeft aria-hidden="true" />Back</Link>
+              <Link to="/compose"><ArrowLeft aria-hidden="true" />Back</Link>
             </Button>
             <Button size="lg" onClick={confirm} disabled={!ready}>
               {busy && <Spinner />}

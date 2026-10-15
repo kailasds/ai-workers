@@ -8,9 +8,10 @@ const named = <T,>(loader: () => Promise<T>, name: keyof T) =>
 
 const DashboardPage = named(() => import('@/features/dashboard/dashboard-page'), 'DashboardPage')
 const RegistryLayout = named(() => import('@/features/registry/registry-layout'), 'RegistryLayout')
-const LearningLayout = named(() => import('@/features/learning/learning-layout'), 'LearningLayout')
+const BrainLayout = named(() => import('@/features/learning/brain-layout'), 'BrainLayout')
 const RegistryPage = named(() => import('@/features/registry/registry-page'), 'RegistryPage')
 const WorkerPage = named(() => import('@/features/worker/worker-page'), 'WorkerPage')
+const WorkTypePage = named(() => import('@/features/compose/work-type-page'), 'WorkTypePage')
 const DeclarationPage = named(() => import('@/features/compose/declaration-page'), 'DeclarationPage')
 const JourneyPage = named(() => import('@/features/compose/journey-page'), 'JourneyPage')
 const DraftsPage = named(() => import('@/features/compose/drafts-page'), 'DraftsPage')
@@ -40,7 +41,6 @@ const PersonPage = named(() => import('@/features/admin/admin-pages'), 'PersonPa
 const GroupsPage = named(() => import('@/features/admin/admin-pages'), 'GroupsPage')
 const LoginPage = named(() => import('@/features/auth/auth-pages'), 'LoginPage')
 const ForgotPage = named(() => import('@/features/auth/auth-pages'), 'ForgotPage')
-const LauncherPage = named(() => import('@/features/auth/auth-pages'), 'LauncherPage')
 const InvitePage = lazy(() => import('@/features/auth/auth-pages').then((m) => ({ default: () => <m.SetPasswordPage mode="invite" /> })))
 const ResetPage = lazy(() => import('@/features/auth/auth-pages').then((m) => ({ default: () => <m.SetPasswordPage mode="reset" /> })))
 const ConfigurationPage = named(() => import('@/features/worker/configuration-page'), 'ConfigurationPage')
@@ -69,7 +69,8 @@ function App() {
           <Route path="auth/forgot" element={<Suspense fallback={null}><ForgotPage /></Suspense>} />
           <Route path="auth/set-password" element={<Suspense fallback={null}><InvitePage /></Suspense>} />
           <Route path="auth/reset" element={<Suspense fallback={null}><ResetPage /></Suspense>} />
-          <Route path="home" element={<Suspense fallback={null}><LauncherPage /></Suspense>} />
+          {/* The old launcher is now the starter guide, opened over Home. */}
+          <Route path="home" element={<Navigate to="/workers?guide=1" replace />} />
           <Route index element={<Navigate to="/home" replace />} />
           <Route element={<AppShell />}>
             <Route path="dashboard" element={<DashboardPage />} />
@@ -81,18 +82,14 @@ function App() {
               <Route path="packaging" element={<PackagingPage />} />
               <Route path="customer-delivery" element={<DeliveryPage />} />
             </Route>
-            {/* Learning: the same shape over Knowledge, Learning, Sentinel and Harnesses. Detail pages stand alone. */}
-            <Route element={<LearningLayout />}>
+            {/* Brain: the same shape over Knowledge, Learning and Sentinel. Detail pages stand alone. */}
+            <Route element={<BrainLayout />}>
               <Route path="knowledge/:view" element={<KnowledgeRouter />} />
               <Route path="learning/*" element={<LearningPage />} />
               <Route path="sentinel" element={<SentinelOverviewPage />} />
               <Route path="sentinel/workers" element={<SentinelWorkersPage />} />
               <Route path="sentinel/decisions" element={<SentinelDecisionsPage />} />
               <Route path="sentinel/policy" element={<SentinelPolicyPage />} />
-              <Route path="harnesses" element={<HarnessCataloguePage />} />
-              <Route path="harnesses/certify" element={<CertifyPage />} />
-              <Route path="harnesses/conformance" element={<ConformancePage />} />
-              <Route path="harnesses/sdk/:page" element={<SdkPage />} />
             </Route>
             <Route path="workers/:id" element={<WorkerPage />} />
             <Route path="workers/:id/okf" element={<Redirect to={(p) => `/learning/workers/${p.id}/okf`} />} />
@@ -101,7 +98,8 @@ function App() {
             <Route path="fleet/*" element={<Navigate to="/workers" replace />} />
             <Route path="observe/*" element={<Navigate to="/workers" replace />} />
 
-            <Route path="compose" element={<DeclarationPage />} />
+            <Route path="compose" element={<WorkTypePage />} />
+            <Route path="compose/new" element={<DeclarationPage />} />
             <Route path="compose/expert" element={<Navigate to="/compose" replace />} />
             <Route path="compose/drafts" element={<DraftsPage />} />
             <Route path="compose/guided/:id" element={<JourneyPage />} />
@@ -115,6 +113,10 @@ function App() {
             <Route path="learning/workers/:id/:sub/*" element={<WorkerLearningSubpage />} />
             <Route path="sentinel/decisions/:decisionId" element={<SentinelDecisionPage />} />
             <Route path="sentinel/:dimension" element={<SentinelDimensionPage />} />
+            <Route path="harnesses" element={<HarnessCataloguePage />} />
+            <Route path="harnesses/certify" element={<CertifyPage />} />
+            <Route path="harnesses/conformance" element={<ConformancePage />} />
+            <Route path="harnesses/sdk/:page" element={<SdkPage />} />
             <Route path="harnesses/conformance/:reportId" element={<ConformanceReportPage />} />
             <Route path="harnesses/sdk" element={<Navigate to="/harnesses/sdk/overview" replace />} />
             <Route path="harnesses/reference/*" element={<Navigate to="/harnesses/sdk/overview" replace />} />

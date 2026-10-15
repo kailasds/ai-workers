@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router'
-import { Bot, PackageCheck, PencilRuler, Send } from 'lucide-react'
+import { Bot } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Spinner } from '@/components/ui/spinner'
-import { IconTile } from '@/components/platform/icon-tile'
 
 function PublicFrame({ title, lead, children }: { title: string; lead: string; children: React.ReactNode }) {
   return (
@@ -112,38 +111,5 @@ export function SetPasswordPage({ mode }: { mode: 'invite' | 'reset' }) {
       )}
       <Link to="/login" className="text-meta underline underline-offset-4">Back to sign in</Link>
     </PublicFrame>
-  )
-}
-
-const TILES = [
-  { icon: PencilRuler, title: 'Compose a Worker', text: 'Define its work, permissions and Definition of Done.', to: '/compose', cta: 'Open Compose' },
-  { icon: PackageCheck, title: 'Package a Worker', text: 'Build a versioned Package from a composed Worker.', to: '/packaging', cta: 'Open Packaging' },
-  { icon: Send, title: 'Deliver to a customer', text: 'Prepare a Package for the customer’s environment.', to: '/customer-delivery', cta: 'Open Customer delivery' },
-]
-
-/** The launcher: arrive and choose a workspace, in the order the work happens. No counts. */
-export function LauncherPage() {
-  return (
-    <main className="grid min-h-svh place-items-center bg-background px-4 py-12">
-      <div className="w-full max-w-4xl">
-        <div className="flex items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-[10px] bg-primary text-primary-foreground"><Bot className="size-5" aria-hidden="true" /></span>
-          <h1 className="text-page">AI Worker Platform</h1>
-        </div>
-        <p className="mt-2 text-body text-muted-foreground">Compose, package and prepare a Worker for delivery.</p>
-        <ol className="mt-10 grid gap-4 md:grid-cols-3">
-          {TILES.map((t, i) => (
-            <li key={t.to}>
-              <Link to={t.to} className="group flex h-full flex-col gap-4 rounded-2xl border bg-card p-6 outline-none hover:border-primary/50 focus-visible:ring-2 focus-visible:ring-ring">
-                <span className="flex items-center justify-between"><IconTile icon={t.icon} tone={i === 0 ? 'primary' : 'brand'} /><span className="text-meta text-muted-foreground tabular-nums">{i + 1}</span></span>
-                <span><span className="block text-section">{t.title}</span><span className="mt-1 block text-body text-muted-foreground">{t.text}</span></span>
-                <span className="mt-auto text-item text-foreground group-hover:underline">{t.cta} →</span>
-              </Link>
-            </li>
-          ))}
-        </ol>
-        <Link to="/workers" className="mt-8 inline-block text-meta text-muted-foreground underline underline-offset-4 hover:text-foreground">Or go to the Registry</Link>
-      </div>
-    </main>
   )
 }

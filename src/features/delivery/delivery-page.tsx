@@ -1,15 +1,15 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import { ChevronRight, PackageOpen, Search } from 'lucide-react'
+import { PackageOpen, Search, Send } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { CopyValue } from '@/components/platform/copy-value'
 import { DetailSheet } from '@/components/platform/detail-sheet'
 import { Fact, FactList } from '@/components/platform/fact-list'
+import { PackageMedia, ProductCard } from '@/components/platform/product-card'
 import { SectionNav } from '@/components/platform/section-nav'
 import { EmptyState, ErrorState, LoadingRegion } from '@/components/platform/states'
 import { StatusBadge } from '@/components/platform/status-badge'
@@ -19,12 +19,13 @@ import { getSourcePublication } from '@/lib/api/catalog'
 import { USE_MOCK } from '@/lib/api/client'
 import { listDrafts, type Draft } from '@/lib/api/compose'
 import { acknowledgeDelivery, getCustomerPackages } from '@/lib/api/workers'
-import { formatRelative } from '@/lib/format'
+import { formatCount, formatRelative } from '@/lib/format'
 import type { CustomerPackage } from '@/lib/types/worker'
 import { CustomerPackageStateBadge } from '../registry/customer-packages'
 
 // Ranking by what a Worker has learned: an ordering, not a Learning score.
 const rank = (d: Draft) => (d.maturity ? d.maturity.skill_changes * 1000 + d.maturity.claims * 100 + d.maturity.memories : 0)
+const GRID = 'grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4'
 const kb = (bytes: number | null) => (bytes === null ? 'Not reported' : `${(bytes / 1024).toFixed(0)} KB`)
 
 function PreparedDetail({ pkg, onChanged }: { pkg: CustomerPackage; onChanged: (p: CustomerPackage) => void }) {
@@ -123,59 +124,77 @@ export function DeliveryPage() {
         drafts.error ? (
           <ErrorState title="Workers with a Package could not be read." message={drafts.error.message} onRetry={drafts.refresh} />
         ) : !drafts.data ? (
-          <LoadingRegion label="Reading packaged Workers…" className="flex flex-col gap-2">{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-16" />)}</LoadingRegion>
+          <LoadingRegion label="Reading packaged Workers…" className={GRID}>{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-80 rounded-xl bg-track" />)}</LoadingRegion>
         ) : toPrepare.length === 0 ? (
           <EmptyState icon={PackageOpen} title="Nothing waiting to be prepared" description="A Worker appears here once its Package is sealed and ready, and before it has a delivery record." action={<Button asChild variant="outline"><Link to="/packaging">Go to Packaging</Link></Button>} />
         ) : (
-          <Card className="gap-0 py-0">
-            <ul className="divide-y">
-              {toPrepare.map((d) => {
-                const m = d.maturity
-                const stale = d.package!.composition_revision < d.revision
-                return (
-                  <li key={d.composition_id} className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center">
-                    <div className="min-w-0 flex-1">
-                      <Link to={`/workers/${d.composition_id}?view=delivery`} className="block truncate text-item outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring">{d.name}</Link>
-                      <p className="truncate text-meta text-muted-foreground">{d.contents?.context_label ?? d.identity.bounded_scope} · Package r{d.package!.composition_revision} · packaged {formatRelative(d.package!.created_at)}</p>
-                      {stale && <p className="mt-1 text-meta text-warning">Newer draft available: r{d.revision}. This Package is r{d.package!.composition_revision}.</p>}
-                    </div>
-                    <span className="text-right text-meta text-muted-foreground">
-                      {!m || m.runs === 0 ? 'No runs' : <><span className="text-foreground tabular-nums">{m.runs} runs · {m.runs_met} met</span><br />{m.memories} memory records</>}
-                    </span>
-                    {eligibilityKnown ? (
-                      <Button asChild size="sm" variant="secondary"><Link to={`/customer-delivery/prepare/${d.package!.id}`}>Prepare delivery</Link></Button>
-                    ) : (
-                      <Button size="sm" variant="secondary" disabled title="Reading delivery records…">Prepare delivery</Button>
-                    )}
-                  </li>
-                )
-              })}
-            </ul>
-          </Card>
+          <ul className={GRID}>
+            {toPrepare.map((d) => {
+              const m = d.maturity
+              const stale = d.package!.composition_revision < d.revision
+              const dim = (n: number | undefined) => (n ? formatCount(n) : <span className="text-muted-foreground">0</span>)
+              return (
+                <li key={d.composition_id}>
+                  <ProductCard
+                    hue="teal"
+                    media={<PackageMedia hue="teal" sealed label={`Revision ${d.package!.composition_revision}`} sublabel={d.package!.id.slice(0, 8)} />}
+                    status={stale ? <StatusBadge tone="warning">Revision {d.revision} not sealed</StatusBadge> : <StatusBadge tone="neutral" icon={null}>Ready to prepare</StatusBadge>}
+                    eyebrow={d.contents?.context_label ?? d.identity.bounded_scope}
+                    title={d.name}
+                    href={`/workers/${d.composition_id}?view=delivery`}
+                    kpis={[
+                      { label: 'Runs', value: dim(m?.runs) },
+                      { label: 'Met', value: dim(m?.runs_met) },
+                      { label: 'Memory', value: dim(m?.memories) },
+                    ]}
+                    footer={
+                      <>
+                        <span className="min-w-0 flex-1 truncate text-meta text-muted-foreground">Sealed {formatRelative(d.package!.created_at)}</span>
+                        {eligibilityKnown ? (
+                          <Button asChild size="sm"><Link to={`/customer-delivery/prepare/${d.package!.id}`}><Send aria-hidden="true" />Prepare delivery</Link></Button>
+                        ) : (
+                          <Button size="sm" disabled title="Reading delivery records…"><Send aria-hidden="true" />Prepare delivery</Button>
+                        )}
+                      </>
+                    }
+                  />
+                </li>
+              )
+            })}
+          </ul>
         )
       ) : packages.error ? (
         <ErrorState title="Delivery records could not be read." message={packages.error.message} onRetry={packages.refresh} />
       ) : !packages.data ? (
-        <Skeleton className="h-48" />
+        <LoadingRegion label="Reading delivery records…" className={GRID}>{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-80 rounded-xl bg-track" />)}</LoadingRegion>
       ) : prepared.length === 0 ? (
         <EmptyState icon={PackageOpen} title="No customer Packages prepared" description="Prepared Packages appear here with their transfer evidence." />
       ) : (
-        <Card className="gap-0 py-0">
-          <ul className="divide-y">
-            {prepared.map((p) => (
-              <li key={p.delivery_id}>
-                <button type="button" onClick={() => setOpen(p)} className="flex w-full items-center gap-4 px-5 py-3.5 text-left outline-none hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset">
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-item">{p.worker_name}</span>
-                    <span className="block truncate text-meta text-muted-foreground">For {p.destination_label ?? 'a customer not named'} · Package {p.version} · last evidence {p.last_evidence_at ? formatRelative(p.last_evidence_at) : 'not observed'}</span>
-                  </span>
-                  <CustomerPackageStateBadge state={p.state} />
-                  <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-                </button>
-              </li>
-            ))}
-          </ul>
-        </Card>
+        <ul className={GRID}>
+          {prepared.map((p) => (
+            <li key={p.delivery_id}>
+              <ProductCard
+                hue="teal"
+                media={<PackageMedia hue="teal" sealed label={`To ${p.destination_label ?? 'customer'}`} sublabel={p.version} />}
+                status={<CustomerPackageStateBadge state={p.state} />}
+                eyebrow={p.destination_label ?? 'Customer not named'}
+                title={p.worker_name}
+                onOpen={() => setOpen(p)}
+                kpis={[
+                  { label: 'Version', value: p.version },
+                  { label: 'Size', value: p.size_bytes === null ? <span className="text-muted-foreground">–</span> : kb(p.size_bytes) },
+                  { label: 'Contents', value: `${p.contents.filter((c) => c.integrity === 'VERIFIED').length}/${p.contents.length}` },
+                ]}
+                footer={
+                  <>
+                    <span className="min-w-0 flex-1 truncate text-meta text-muted-foreground">Last evidence {p.last_evidence_at ? formatRelative(p.last_evidence_at) : 'not observed'}</span>
+                    <Button size="sm" variant="secondary" onClick={() => setOpen(p)}>Details</Button>
+                  </>
+                }
+              />
+            </li>
+          ))}
+        </ul>
       )}
       {source.data && <p className="text-meta text-muted-foreground">Source publication: {source.data.available ? source.data.detail : `unavailable · ${source.data.detail}`}</p>}
 

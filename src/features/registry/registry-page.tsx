@@ -16,29 +16,29 @@ import { Timestamp } from '@/components/platform/timestamp'
 import { useResource } from '@/hooks/use-resource'
 import { getWorkerPortfolio } from '@/lib/api/workers'
 import { formatCount } from '@/lib/format'
-import { ambiguousIds, filterWorkers, matchesFacet, newestId, RUNTIME_FACETS, SORTS, sortWorkers, type RuntimeFacet } from './registry-model'
+import { filterWorkers, matchesFacet, newestId, RUNTIME_FACETS, SORTS, sortWorkers, type RuntimeFacet } from './registry-model'
 import { useRegistryParams } from './use-registry-params'
+import { ContextShowcase } from './context-showcase'
 import { WorkerTiles, type Group } from './worker-tiles'
 
 const ALL = '__all'
 
 function TileSkeleton() {
   return (
-    <LoadingRegion label="Reading the Worker portfolio…" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-      {Array.from({ length: 8 }, (_, i) => (
-        <Card key={i} className="gap-0 py-0">
-          <div className="flex flex-col gap-3 bg-muted p-4">
-            <Skeleton className="size-10 rounded-block bg-track" />
-            <Skeleton className="h-4 w-3/4 bg-track" />
-            <Skeleton className="h-6 w-40 bg-track" />
-          </div>
-          <div className="flex flex-col gap-3 p-4">
-            <Skeleton className="h-3 w-full bg-track" />
-            <div className="flex flex-wrap gap-1.5">{Array.from({ length: 4 }, (_, j) => <Skeleton key={j} className="h-6 w-20 bg-track" />)}</div>
-            <Skeleton className="h-8 w-1/2 bg-track" />
-          </div>
-        </Card>
-      ))}
+    <LoadingRegion label="Reading the Worker portfolio…" className="flex flex-col gap-4">
+      <Skeleton className="h-16 w-full rounded-block bg-track" />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+        {Array.from({ length: 4 }, (_, i) => (
+          <Card key={i} className="gap-0 py-0">
+            <Skeleton className="h-40 rounded-none bg-track" />
+            <div className="flex flex-col gap-3 p-4">
+              <Skeleton className="h-4 w-3/4 bg-track" />
+              <Skeleton className="h-6 w-28 bg-track" />
+              <Skeleton className="h-14 w-full bg-track" />
+            </div>
+          </Card>
+        ))}
+      </div>
     </LoadingRegion>
   )
 }
@@ -51,7 +51,6 @@ export function RegistryPage() {
   const data = portfolio.data
   const workers = useMemo(() => data?.workers ?? [], [data])
   const newest = useMemo(() => newestId(workers), [workers])
-  const ambiguous = useMemo(() => ambiguousIds(workers), [workers])
 
   const { q, facet, context, learning, sentinel, sort } = p
   const matching = useMemo(() => sortWorkers(filterWorkers(workers, { q, facet, context, learning, sentinel }), sort, newest), [workers, q, facet, context, learning, sentinel, sort, newest])
@@ -62,6 +61,13 @@ export function RegistryPage() {
       .map((c) => ({ key: c.key, label: c.label, workers: matching.filter((w) => w.bounded_context.key === c.key) }))
       .filter((g) => g.workers.length > 0)
   }, [data, matching])
+
+  // The showcase always shows every context with all its Workers, whatever the filters.
+  const showcase: Group[] = useMemo(
+    () => (data?.bounded_contexts ?? []).map((c) => ({ key: c.key, label: c.label, workers: workers.filter((w) => w.bounded_context.key === c.key) })).filter((g) => g.workers.length > 0),
+    [data, workers],
+  )
+  const focus = (key: string | null) => p.update({ context: key })
 
   const filtering = Boolean(q || facet || context || learning || sentinel)
   const secondaryActive = [context, learning, sentinel].filter(Boolean).length + (sort !== 'evidence' ? 1 : 0)
@@ -99,6 +105,8 @@ export function RegistryPage() {
             />
           ) : (
             <>
+              <ContextShowcase groups={showcase} active={context} onSelect={focus} />
+
               {/* One quiet toolbar: find, narrow by state, everything else behind Filters. */}
               <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
                 <InputGroup className="lg:max-w-xs">
@@ -192,7 +200,7 @@ export function RegistryPage() {
                 <EmptyState icon={SearchX} title="No Workers match" description="Try a different search, or clear the filters." action={<Button variant="outline" onClick={clearAll}>Clear filters</Button>} />
               ) : (
                 <div aria-busy={portfolio.pending}>
-                  <WorkerTiles groups={groups} newest={newest} ambiguous={ambiguous} expandAll={filtering} from={from} />
+                  <WorkerTiles groups={groups} newest={newest} focused={context} onFocus={focus} from={from} />
                 </div>
               )}
             </>

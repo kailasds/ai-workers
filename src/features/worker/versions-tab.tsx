@@ -1,29 +1,19 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { Building2, ChevronDown, GitBranch } from 'lucide-react'
+import { ChevronDown, GitBranch } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Tag } from '@/components/platform/hue'
 import { RuntimeStatusDot, runtimeStatus } from '@/components/platform/runtime-status'
-import { EmptyState } from '@/components/platform/states'
 import { VerdictBadge } from '@/components/platform/status-badge'
-import { Timestamp } from '@/components/platform/timestamp'
 import { formatCount, formatDay } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import type { CustomerPackage, WorkerVersion, WorkerWorkspace } from '@/lib/types/worker'
 import { CustomerPackageStateBadge } from '../registry/customer-packages'
+import { CustomerLogo, CustomerShowcase } from './customer-showcase'
 
 const customerName = (p: CustomerPackage) => p.destination_label ?? 'Customer not named'
-
-/** design.md §8 icon containers: a 32px disc beside a contact-style row. */
-function CustomerDisc() {
-  return (
-    <span aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-full bg-icon-circle text-primary-strong">
-      <Building2 className="size-4" />
-    </span>
-  )
-}
 
 function Customers({ deliveries }: { deliveries: CustomerPackage[] }) {
   if (deliveries.length === 0) return <p className="text-meta text-muted-foreground md:pt-1.5">Not prepared for any customer yet</p>
@@ -31,7 +21,7 @@ function Customers({ deliveries }: { deliveries: CustomerPackage[] }) {
     <ul className="flex flex-col gap-2" aria-label="Customers">
       {deliveries.map((d) => (
         <li key={d.delivery_id} className="flex flex-wrap items-center gap-2">
-          <CustomerDisc />
+          <CustomerLogo name={customerName(d)} size="sm" />
           <span className="text-body">{customerName(d)}</span>
           <CustomerPackageStateBadge state={d.state} />
         </li>
@@ -95,48 +85,13 @@ function VersionRow({ version, currentId }: { version: WorkerVersion; currentId:
   )
 }
 
-/** Which customer holds which version, with the latest transfer evidence. */
-function CustomersCard({ versions }: { versions: WorkerVersion[] }) {
-  const deliveries = versions.flatMap((v) => v.deliveries)
-  const customers = [...new Set(deliveries.map(customerName))].sort()
-  return (
-    <Card className="gap-4 p-5">
-      <h2 className="text-section">Customers</h2>
-      {customers.length === 0 ? (
-        <EmptyState icon={Building2} title="No customer has a version of this Worker yet" />
-      ) : (
-        <ul className="flex flex-col gap-2">
-          {customers.map((c) => (
-            <li key={c} className="grid gap-3 rounded-block bg-muted p-3 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:items-start">
-              <span className="flex items-center gap-2.5 text-item">
-                <CustomerDisc />
-                {c}
-              </span>
-              <ul className="flex flex-col gap-2 md:pt-1">
-                {deliveries
-                  .filter((d) => customerName(d) === c)
-                  .map((d) => (
-                    <li key={d.delivery_id} className="flex flex-wrap items-center gap-2 text-meta">
-                      <Tag hue="blue" icon={GitBranch} className="bg-card">Revision {d.revision}</Tag>
-                      <CustomerPackageStateBadge state={d.state} />
-                      {d.last_evidence_at && <span className="text-muted-foreground">last evidence <Timestamp iso={d.last_evidence_at} /></span>}
-                    </li>
-                  ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-      )}
-    </Card>
-  )
-}
-
 // A version is a revision of this Worker (same name and bounded context); each revision may have
 // several builds. Customer packages name their version by revision, so customers group under it.
 export function VersionsTab({ ws }: { ws: WorkerWorkspace }) {
   const { versions } = ws
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-8">
+      <CustomerShowcase versions={versions} />
       <Card className="gap-4 p-5">
         <h2 className="text-section">Versions</h2>
         <ul className="flex flex-col gap-2">
@@ -145,7 +100,6 @@ export function VersionsTab({ ws }: { ws: WorkerWorkspace }) {
           ))}
         </ul>
       </Card>
-      <CustomersCard versions={versions} />
     </div>
   )
 }
