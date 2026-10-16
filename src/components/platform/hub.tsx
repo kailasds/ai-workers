@@ -112,7 +112,7 @@ export function StageTabs({ label, stages }: { label: string; stages: Stage[] })
               className={({ isActive }) =>
                 cn(
                   'group relative flex min-w-[11rem] flex-1 items-center gap-3 rounded-block border px-4 py-3 outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
-                  isActive ? 'border-primary/30 bg-card' : 'border-transparent hover:bg-card/70',
+                  isActive ? 'border-primary/30 bg-card' : 'border-border/70 bg-card/55 hover:bg-card',
                 )
               }
             >

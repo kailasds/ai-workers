@@ -10,9 +10,10 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { Pager } from '@/components/platform/pager'
 import { EmptyState, ErrorState, LoadingRegion } from '@/components/platform/states'
 import { FreshnessBadge } from '@/components/platform/status-badge'
-import { Timestamp } from '@/components/platform/timestamp'
+import { useMediaQuery } from '@/hooks/use-media-query'
 import { useResource } from '@/hooks/use-resource'
 import { getWorkerTypes } from '@/lib/api/catalog'
 import { getWorkerPortfolio } from '@/lib/api/workers'
@@ -23,6 +24,15 @@ import { TypeShowcase, type TypeGroup } from './type-showcase'
 import { WorkerGrid } from './worker-tiles'
 
 const ALL = '__all'
+
+/** Workers per row at the grid's breakpoints (md 2, xl 3, 2xl 4), so a page is always two full rows. */
+function useColumns() {
+  const md = useMediaQuery('(min-width: 48rem)')
+  const xl = useMediaQuery('(min-width: 80rem)')
+  const xxl = useMediaQuery('(min-width: 96rem)')
+  return xxl ? 4 : xl ? 3 : md ? 2 : 1
+}
+const ROWS = 2
 
 function TileSkeleton() {
   return (
@@ -72,12 +82,11 @@ export function RegistryPage() {
   const clearAll = () => p.update({ q: null, runtime: null, type: null, context: null, brain: null, sentinel: null })
   const from = `${pathname}${search}`
 
-  const meta = (
-    <div className="flex items-center gap-2 text-meta whitespace-nowrap text-muted-foreground max-lg:hidden" aria-live="polite">
-      {portfolio.pending && data ? <span>Updating…</span> : data ? <span>Updated <Timestamp iso={portfolio.updatedAt?.toISOString() ?? data.generated_at} /></span> : null}
-      {data && data.freshness.state !== 'CURRENT' && <FreshnessBadge state={data.freshness.state} />}
-    </div>
-  )
+  // Two rows per page; the page lives in the URL and filters reset it to the first.
+  const pageSize = useColumns() * ROWS
+  const pages = Math.max(1, Math.ceil(matching.length / pageSize))
+  const page = Math.min(p.page, pages)
+  const shown = matching.slice((page - 1) * pageSize, page * pageSize)
 
   // Customer packages moved to the Customer delivery tab.
   if (p.view === 'customer') return <Navigate to="/customer-delivery?view=delivered" replace />
@@ -187,13 +196,8 @@ export function RegistryPage() {
                   </Popover>
                 </div>
                 <div className="flex shrink-0 items-center gap-3 lg:ml-auto">
-                  {filtering && (
-                    <p className="flex items-center gap-2 text-meta text-muted-foreground" aria-live="polite">
-                      <span className="tabular-nums">{formatCount(matching.length)} of {formatCount(workers.length)}</span>
-                      <Button variant="link" size="xs" className="h-auto px-0 text-meta" onClick={clearAll}>Clear</Button>
-                    </p>
-                  )}
-                  {meta}
+                  {filtering && <Button variant="link" size="xs" className="h-auto px-0 text-meta" onClick={clearAll}>Clear</Button>}
+                  {data.freshness.state !== 'CURRENT' && <FreshnessBadge state={data.freshness.state} />}
                   <Button variant="ghost" size="icon" aria-label="Refresh" onClick={portfolio.refresh}>
                     <RefreshCw className={portfolio.pending && data ? 'animate-spin' : undefined} aria-hidden="true" />
                   </Button>
@@ -207,7 +211,8 @@ export function RegistryPage() {
                   <h2 id="workers-heading" className="text-section">
                     {typeLabel ?? 'All Workers'} <span className="text-muted-foreground tabular-nums">{formatCount(matching.length)}</span>
                   </h2>
-                  <WorkerGrid workers={matching} newest={newest} from={from} />
+                  <WorkerGrid workers={shown} newest={newest} from={from} />
+                  <Pager page={page} pageSize={pageSize} total={matching.length} onPage={(n) => p.update({ page: String(n) }, { resetPage: false })} label="Workers" />
                 </section>
               )}
             </>
