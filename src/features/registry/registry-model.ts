@@ -36,6 +36,7 @@ export function matchesFacet(w: PortfolioWorker, facet: RuntimeFacet) {
 export interface RegistryFilters {
   q: string
   facet: RuntimeFacet | null
+  type: string | null
   context: string | null
   learning: LearningFilter | null
   sentinel: SentinelFilter | null
@@ -45,6 +46,7 @@ export function filterWorkers(workers: PortfolioWorker[], f: RegistryFilters) {
   const q = f.q.trim().toLowerCase()
   return workers.filter((w) => {
     if (f.facet && !matchesFacet(w, f.facet)) return false
+    if (f.type && w.worker_type !== f.type) return false
     if (f.context && w.bounded_context.key !== f.context) return false
     if (f.learning === 'memory' && w.learning.memories === 0) return false
     if (f.learning === 'recent' && w.learning.recent_delta === 0) return false

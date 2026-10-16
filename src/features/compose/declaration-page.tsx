@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router'
 import { ArrowLeft, FolderOpen, Wrench } from 'lucide-react'
+import { Select as SelectPrimitive } from 'radix-ui'
 import { HUE, workerTypeMeta } from '@/components/platform/hue'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -17,7 +18,7 @@ import { getGeographies, getWorkerTypes } from '@/lib/api/catalog'
 import { createDraft } from '@/lib/api/compose'
 import { cn } from '@/lib/utils'
 import { ChoiceCard } from './choice-card'
-import { BUSINESS_DOMAINS, CONTEXTS, contextOf, IDENTITIES, identityOf, spiffePreview, STEPS, widerContexts } from './compose-model'
+import { BUSINESS_DOMAINS, CONTEXTS, contextOf, IDENTITIES, identityOf, spiffePreview, STEPS, widerContexts, type ContextOption, type IdentityOption } from './compose-model'
 import { ComposeStepper, type StepState } from './compose-stepper'
 import { DeclarationPanel } from './worker-panel'
 
@@ -37,6 +38,43 @@ function Step({ n, title, hint, active, children }: { n: number; title: string; 
       </div>
       <div className="sm:pl-9">{children}</div>
     </section>
+  )
+}
+
+/**
+ * One identity in the picker: its name and scope count, what estates it covers, and, when no
+ * bounded context is admitted for it yet, why it cannot be chosen. Only the name shows in the trigger.
+ */
+function IdentityItem({ identity, scopes }: { identity: IdentityOption; scopes: number }) {
+  const available = identity.availability === 'available'
+  return (
+    <SelectPrimitive.Item
+      value={identity.key}
+      disabled={!available}
+      className="flex cursor-default flex-col gap-1 rounded-lg px-3 py-2.5 outline-hidden select-none focus:bg-muted data-[state=checked]:bg-primary-soft data-disabled:pointer-events-none"
+    >
+      <span className="flex items-baseline justify-between gap-4">
+        <span className={cn('text-item font-semibold', !available && 'text-muted-foreground')}>
+          <SelectPrimitive.ItemText>{identity.label}</SelectPrimitive.ItemText>
+        </span>
+        {available && <span className="shrink-0 text-meta text-muted-foreground tabular-nums">{scopes} {scopes === 1 ? 'scope' : 'scopes'}</span>}
+      </span>
+      <span className="text-meta text-muted-foreground">{identity.summary}</span>
+      {!available && <span className="text-meta font-medium text-warning">Available later. No bounded context is admitted for it yet.</span>}
+    </SelectPrimitive.Item>
+  )
+}
+
+/** A laddered context reads as its shared base plus what this step adds, the additions in the primary colour. */
+function ContextTitle({ c }: { c: ContextOption }) {
+  if (!c.stages) return c.label
+  return (
+    <>
+      {c.stages.base}
+      {c.stages.additions.map((a) => (
+        <span key={a} className="text-primary-strong"> + {a}</span>
+      ))}
+    </>
   )
 }
 
@@ -137,9 +175,9 @@ export function DeclarationPage() {
                     <Label htmlFor="identity">Identity</Label>
                     <Select value={identity ?? ''} onValueChange={chooseIdentity} disabled={!type}>
                       <SelectTrigger id="identity" className="w-full"><SelectValue placeholder={type ? 'Choose an identity' : 'Choose a Worker type first'} /></SelectTrigger>
-                      <SelectContent>
+                      <SelectContent position="popper" className="max-h-96 w-(--radix-select-trigger-width) p-1">
                         {identities.map((i) => (
-                          <SelectItem key={i.key} value={i.key}>{i.label} <span className="text-muted-foreground">· {CONTEXTS.filter((c) => c.identity === i.key).length} scopes</span></SelectItem>
+                          <IdentityItem key={i.key} identity={i} scopes={CONTEXTS.filter((c) => c.identity === i.key).length} />
                         ))}
                       </SelectContent>
                     </Select>
@@ -185,8 +223,8 @@ export function DeclarationPage() {
                           id={`ctx-${c.key}`}
                           value={c.key}
                           selected={context === c.key}
-                          title={c.label}
-                          detail={c.adds ? `+ ${c.adds}` : c.includes}
+                          title={<ContextTitle c={c} />}
+                          detail={c.stages ? c.label : c.adds ? `+ ${c.adds}` : c.includes}
                           meta={`${c.excludes.length} excluded`}
                           disabledReason={c.availability !== 'available' ? 'In build · Available later' : null}
                         >
@@ -225,13 +263,13 @@ export function DeclarationPage() {
                     )}
 
                     {ctx && (
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        <div className="flex flex-col gap-1.5">
+                      <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-1.5 sm:max-w-md">
                           <Label htmlFor="name">Worker name <span className="font-normal text-muted-foreground">· optional</span></Label>
                           <Input id="name" value={name} maxLength={120} onChange={(e) => setName(e.target.value)} placeholder="Named after its work and business domain" aria-invalid={nameInvalid} aria-describedby="name-hint" />
                           <p id="name-hint" className={cn('text-meta', nameInvalid ? 'text-destructive' : 'text-muted-foreground')}>{nameInvalid ? 'A name has at least 2 characters.' : 'How the Worker is listed everywhere.'}</p>
                         </div>
-                        <label htmlFor="auto" className={cn('flex gap-3 self-start rounded-xl border p-4', auto && 'border-primary bg-primary-soft')}>
+                        <label htmlFor="auto" className={cn('flex cursor-pointer gap-3 rounded-xl border p-4', auto && 'border-primary bg-primary-soft')}>
                           <Checkbox id="auto" checked={auto} onCheckedChange={(v) => setAuto(v === true)} className="mt-0.5" />
                           <span>
                             <span className="block text-item font-semibold">Assemble automatically</span>

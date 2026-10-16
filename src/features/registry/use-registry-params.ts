@@ -12,6 +12,7 @@ export function useRegistryParams() {
     q: params.get('q') ?? '',
     sort: pick<SortKey>(params.get('sort'), ['evidence', 'newest', 'oldest']) ?? 'evidence',
     facet: pick<RuntimeFacet>(params.get('runtime'), ['serving', 'stopped', 'none', 'attention']),
+    type: params.get('type'),
     context: params.get('context'),
     learning: pick<LearningFilter>(params.get('brain'), ['memory', 'recent', 'contradictions']),
     sentinel: pick<SentinelFilter>(params.get('sentinel'), ['with', 'without']),

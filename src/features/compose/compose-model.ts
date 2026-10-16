@@ -13,6 +13,8 @@ export interface IdentityOption {
   workerType: string
   label: string
   summary: string
+  /** In-build identities are listed but cannot be chosen until a bounded context is admitted for them. */
+  availability: 'available' | 'in_build'
 }
 
 export interface ContextOption {
@@ -26,12 +28,17 @@ export interface ContextOption {
   /** The ladder position: each step adds to the previous one. */
   step: number
   adds: string | null
+  /** For laddered contexts: the shared base of the work, and what each step adds on top of it. */
+  stages?: { base: string; additions: string[] }
   availability: 'available' | 'in_build'
 }
 
 export const IDENTITIES: IdentityOption[] = [
-  { key: 'qe-test-script-generation', workerType: 'quality-engineering', label: 'Test Script Generation and Execution', summary: 'Turns written test cases into automation and runs it.' },
-  { key: 'integration-modernization', workerType: 'modernization', label: 'Integration modernisation', summary: 'Converts an integration service into target code.' },
+  { key: 'qe-test-script-generation', workerType: 'quality-engineering', label: 'Test Script Generation and Execution', summary: 'Turns written test cases into automation and runs it.', availability: 'available' },
+  { key: 'integration-modernization', workerType: 'modernization', label: 'Integration modernisation', summary: 'Middleware estates: the flows, orchestrations, adapters and message contracts that hold systems together.', availability: 'available' },
+  { key: 'mainframe-modernization', workerType: 'modernization', label: 'Mainframe modernisation', summary: 'COBOL, JCL and CICS estates, and the batch and online workloads that run on them.', availability: 'in_build' },
+  { key: 'tech-currency-upgrade', workerType: 'modernization', label: 'Tech currency upgrade', summary: 'In-place version uplift, where the architecture stays and the runtime, framework and dependencies move forward.', availability: 'in_build' },
+  { key: 'eol-technology-refresh', workerType: 'modernization', label: 'End-of-life technology refresh', summary: 'Estates on a language or runtime the vendor has stopped supporting, where the platform is replaced rather than raised.', availability: 'in_build' },
 ]
 
 const MOD_EXCLUDES = [
@@ -68,6 +75,7 @@ export const CONTEXTS: ContextOption[] = [
     excludes: ['Unit testing of the generated services', ...MOD_EXCLUDES],
     step: 1,
     adds: null,
+    stages: { base: 'Analysis, SPEC generation and code generation', additions: [] },
     availability: 'available',
   },
   {
@@ -80,6 +88,7 @@ export const CONTEXTS: ContextOption[] = [
     excludes: ['Integration tests against live endpoints', ...MOD_EXCLUDES],
     step: 2,
     adds: 'Unit tests for the generated services',
+    stages: { base: 'Analysis, SPEC generation and code generation', additions: ['Unit testing'] },
     availability: 'available',
   },
   {
@@ -92,6 +101,7 @@ export const CONTEXTS: ContextOption[] = [
     excludes: ['Integration tests against live endpoints', ...MOD_EXCLUDES],
     step: 3,
     adds: 'A source-to-target traceability report',
+    stages: { base: 'Analysis, SPEC generation and code generation', additions: ['Unit testing', 'Traceability'] },
     availability: 'available',
   },
 ]
@@ -106,6 +116,8 @@ export const BUSINESS_DOMAINS = [
 export const domainOf = (key: string | null) => BUSINESS_DOMAINS.find((d) => d.key === key) ?? null
 export const contextOf = (key: string | null) => CONTEXTS.find((c) => c.key === key) ?? null
 export const identityOf = (key: string | null) => IDENTITIES.find((i) => i.key === key) ?? null
+/** The identity a bounded context is issued under. */
+export const identityOfContext = (contextKey: string | null) => identityOf(contextOf(contextKey)?.identity ?? null)
 
 /** The wider contexts above this one on its ladder (where growth could lead). */
 export function widerContexts(contextKey: string) {

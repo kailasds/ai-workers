@@ -14,28 +14,27 @@ import { EmptyState, ErrorState, LoadingRegion } from '@/components/platform/sta
 import { FreshnessBadge } from '@/components/platform/status-badge'
 import { Timestamp } from '@/components/platform/timestamp'
 import { useResource } from '@/hooks/use-resource'
+import { getWorkerTypes } from '@/lib/api/catalog'
 import { getWorkerPortfolio } from '@/lib/api/workers'
 import { formatCount } from '@/lib/format'
 import { filterWorkers, matchesFacet, newestId, RUNTIME_FACETS, SORTS, sortWorkers, type RuntimeFacet } from './registry-model'
 import { useRegistryParams } from './use-registry-params'
-import { ContextShowcase } from './context-showcase'
-import { WorkerTiles, type Group } from './worker-tiles'
+import { TypeShowcase, type TypeGroup } from './type-showcase'
+import { WorkerGrid } from './worker-tiles'
 
 const ALL = '__all'
 
 function TileSkeleton() {
   return (
-    <LoadingRegion label="Reading the Worker portfolio…" className="flex flex-col gap-4">
-      <Skeleton className="h-16 w-full rounded-block bg-track" />
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+    <LoadingRegion label="Reading the Worker portfolio…" className="flex flex-col gap-5">
+      <Skeleton className="h-56 w-full rounded-panel bg-track" />
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {Array.from({ length: 4 }, (_, i) => (
-          <Card key={i} className="gap-0 py-0">
-            <Skeleton className="h-40 rounded-none bg-track" />
-            <div className="flex flex-col gap-3 p-4">
-              <Skeleton className="h-4 w-3/4 bg-track" />
-              <Skeleton className="h-6 w-28 bg-track" />
-              <Skeleton className="h-14 w-full bg-track" />
-            </div>
+          <Card key={i} className="gap-4 p-5">
+            <Skeleton className="h-6 w-2/3 bg-track" />
+            <Skeleton className="h-11 w-3/4 bg-track" />
+            <Skeleton className="h-9 w-full bg-track" />
+            <Skeleton className="h-20 w-full bg-track" />
           </Card>
         ))}
       </div>
@@ -47,31 +46,30 @@ export function RegistryPage() {
   const p = useRegistryParams()
   const { pathname, search } = useLocation()
   const portfolio = useResource(`portfolio:${p.scenario}`, (signal) => getWorkerPortfolio({ signal, scenario: p.scenario }))
+  const types = useResource('worker-types', (signal) => getWorkerTypes({ signal }))
 
   const data = portfolio.data
   const workers = useMemo(() => data?.workers ?? [], [data])
   const newest = useMemo(() => newestId(workers), [workers])
 
-  const { q, facet, context, learning, sentinel, sort } = p
-  const matching = useMemo(() => sortWorkers(filterWorkers(workers, { q, facet, context, learning, sentinel }), sort, newest), [workers, q, facet, context, learning, sentinel, sort, newest])
-  const facetBase = useMemo(() => filterWorkers(workers, { q, facet: null, context, learning, sentinel }), [workers, q, context, learning, sentinel])
-  const groups: Group[] = useMemo(() => {
-    const order = data?.bounded_contexts ?? []
-    return order
-      .map((c) => ({ key: c.key, label: c.label, workers: matching.filter((w) => w.bounded_context.key === c.key) }))
-      .filter((g) => g.workers.length > 0)
-  }, [data, matching])
+  const { q, facet, type, context, learning, sentinel, sort } = p
+  const matching = useMemo(() => sortWorkers(filterWorkers(workers, { q, facet, type, context, learning, sentinel }), sort, newest), [workers, q, facet, type, context, learning, sentinel, sort, newest])
+  const facetBase = useMemo(() => filterWorkers(workers, { q, facet: null, type, context, learning, sentinel }), [workers, q, type, context, learning, sentinel])
 
-  // The showcase always shows every context with all its Workers, whatever the filters.
-  const showcase: Group[] = useMemo(
-    () => (data?.bounded_contexts ?? []).map((c) => ({ key: c.key, label: c.label, workers: workers.filter((w) => w.bounded_context.key === c.key) })).filter((g) => g.workers.length > 0),
-    [data, workers],
+  // The showcase always shows every Worker type with all its Workers, whatever the filters.
+  const showcase: TypeGroup[] = useMemo(
+    () => (types.data?.types ?? []).filter((t) => t.availability !== 'withdrawn').map((t) => ({ type: t, workers: workers.filter((w) => w.worker_type === t.key) })),
+    [types.data, workers],
   )
-  const focus = (key: string | null) => p.update({ context: key })
+  // Bounded contexts on offer narrow to the chosen type; choosing a type drops a context outside it.
+  const inType = (key: string, ctx: string) => workers.some((w) => w.worker_type === key && w.bounded_context.key === ctx)
+  const contextOptions = (data?.bounded_contexts ?? []).filter((c) => !type || inType(type, c.key))
+  const chooseType = (key: string | null) => p.update({ type: key, context: key && context && !inType(key, context) ? null : context })
+  const typeLabel = type ? (types.data?.types.find((t) => t.key === type)?.display_name ?? type) : null
 
-  const filtering = Boolean(q || facet || context || learning || sentinel)
-  const secondaryActive = [context, learning, sentinel].filter(Boolean).length + (sort !== 'evidence' ? 1 : 0)
-  const clearAll = () => p.update({ q: null, runtime: null, context: null, brain: null, sentinel: null })
+  const filtering = Boolean(q || facet || type || context || learning || sentinel)
+  const secondaryActive = [learning, sentinel].filter(Boolean).length + (sort !== 'evidence' ? 1 : 0)
+  const clearAll = () => p.update({ q: null, runtime: null, type: null, context: null, brain: null, sentinel: null })
   const from = `${pathname}${search}`
 
   const meta = (
@@ -105,15 +103,31 @@ export function RegistryPage() {
             />
           ) : (
             <>
-              <ContextShowcase groups={showcase} active={context} onSelect={focus} />
+              <TypeShowcase groups={showcase} active={type} onSelect={chooseType} />
 
               {/* One quiet toolbar: find, narrow by state, everything else behind Filters. */}
-              <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-                <InputGroup className="lg:max-w-xs">
+              <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center">
+                <InputGroup className="lg:w-64 lg:shrink-0">
                   <InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon>
                   <InputGroupInput type="search" value={q} onChange={(e) => p.update({ q: e.target.value })} placeholder="Search Workers" aria-label="Search name, owner, context or identity" />
                 </InputGroup>
-                <div className="flex items-center gap-2">
+                <div className="grid grid-cols-2 gap-2 lg:flex lg:shrink-0">
+                  <Select value={type ?? ALL} onValueChange={(v) => chooseType(v === ALL ? null : v)}>
+                    <SelectTrigger className="w-full lg:w-52" aria-label="Worker type"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={ALL}>All Worker types</SelectItem>
+                      {showcase.filter((g) => g.workers.length > 0).map((g) => <SelectItem key={g.type.key} value={g.type.key}>{g.type.display_name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                  <Select value={context ?? ALL} onValueChange={(v) => p.update({ context: v === ALL ? null : v })}>
+                    <SelectTrigger className="w-full lg:w-60" aria-label="Bounded context"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={ALL}>All bounded contexts</SelectItem>
+                      {contextOptions.map((c) => <SelectItem key={c.key} value={c.key}>{c.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex min-w-0 items-center gap-2 lg:grow lg:basis-[30rem]">
                   <div className="no-scrollbar -mx-4 min-w-0 flex-1 overflow-x-auto px-4 sm:mx-0 sm:px-0">
                     <ToggleGroup type="single" variant="outline" spacing={0} value={facet ?? ALL} onValueChange={(v) => v && p.update({ runtime: v === ALL ? null : v })} aria-label="Runtime" className="w-max">
                       <ToggleGroupItem value={ALL}>All</ToggleGroupItem>
@@ -136,16 +150,6 @@ export function RegistryPage() {
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent align="end" className="flex w-80 flex-col gap-4">
-                      <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="f-context">Bounded context</Label>
-                        <Select value={context ?? ALL} onValueChange={(v) => p.update({ context: v === ALL ? null : v })}>
-                          <SelectTrigger id="f-context" className="w-full"><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value={ALL}>All contexts</SelectItem>
-                            {data.bounded_contexts.map((c) => <SelectItem key={c.key} value={c.key}>{c.label}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                      </div>
                       <div className="flex flex-col gap-1.5">
                         <Label htmlFor="f-learning">Learning</Label>
                         <Select value={learning ?? ALL} onValueChange={(v) => p.update({ brain: v === ALL ? null : v })}>
@@ -182,7 +186,7 @@ export function RegistryPage() {
                     </PopoverContent>
                   </Popover>
                 </div>
-                <div className="flex items-center gap-3 lg:ml-auto">
+                <div className="flex shrink-0 items-center gap-3 lg:ml-auto">
                   {filtering && (
                     <p className="flex items-center gap-2 text-meta text-muted-foreground" aria-live="polite">
                       <span className="tabular-nums">{formatCount(matching.length)} of {formatCount(workers.length)}</span>
@@ -199,9 +203,12 @@ export function RegistryPage() {
               {matching.length === 0 ? (
                 <EmptyState icon={SearchX} title="No Workers match" description="Try a different search, or clear the filters." action={<Button variant="outline" onClick={clearAll}>Clear filters</Button>} />
               ) : (
-                <div aria-busy={portfolio.pending}>
-                  <WorkerTiles groups={groups} newest={newest} focused={context} onFocus={focus} from={from} />
-                </div>
+                <section aria-labelledby="workers-heading" aria-busy={portfolio.pending} className="flex flex-col gap-4">
+                  <h2 id="workers-heading" className="text-section">
+                    {typeLabel ?? 'All Workers'} <span className="text-muted-foreground tabular-nums">{formatCount(matching.length)}</span>
+                  </h2>
+                  <WorkerGrid workers={matching} newest={newest} from={from} />
+                </section>
               )}
             </>
           )}
