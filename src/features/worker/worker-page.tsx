@@ -214,7 +214,7 @@ export function WorkerPage() {
         <TabsContent value="delivery"><DeliveryTab ws={ws} /></TabsContent>
       </Tabs>
 
-      <SimilarWorkers worker={ws.worker} scenario={scenario} />
+      {view === 'versions' && <SimilarWorkers worker={ws.worker} scenario={scenario} />}
 
       <DetailSheet open={identityOpen} onClose={() => setIdentityOpen(false)} title="Identity details">
         <IdentityDetails ws={ws} onChanged={refresh} />

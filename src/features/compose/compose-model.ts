@@ -170,7 +170,7 @@ export const STEPS: { key: StationKey; label: string; sub: string }[] = [
   { key: 'brain', label: 'Worker Brain', sub: 'Skills · DSL · EVALs' },
   { key: 'definition_of_done', label: 'Definition of Done', sub: 'Release gates' },
   { key: 'autonomy', label: 'Autonomy', sub: 'How far it acts' },
-  { key: 'package_deploy', label: 'Package', sub: 'Build and deploy' },
+  { key: 'package_deploy', label: 'Worker summary', sub: 'Review · build' },
 ]
 
 export const checkpointsOf = (station: StationKey) => CHECKPOINTS.filter((c) => c.station === station)

@@ -36,7 +36,7 @@ export function similarTo(worker: PortfolioWorker, all: PortfolioWorker[]) {
 function Arrows() {
   const { scrollPrev, scrollNext, canScrollPrev, canScrollNext } = useCarousel()
   if (!canScrollPrev && !canScrollNext) return null
-  const btn = 'grid size-10 place-items-center rounded-full bg-card text-foreground outline-none hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-40 disabled:hover:bg-card'
+  const btn = 'grid size-10 place-items-center rounded-lg bg-card text-foreground outline-none hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-40 disabled:hover:bg-card'
   return (
     <span className="flex shrink-0 gap-2">
       <button type="button" className={btn} onClick={scrollPrev} disabled={!canScrollPrev} aria-label="Previous similar Workers"><ChevronLeft className="size-4" aria-hidden="true" /></button>

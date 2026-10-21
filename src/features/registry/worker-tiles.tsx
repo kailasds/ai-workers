@@ -33,9 +33,9 @@ function Figure({ label, children }: { label: string; children: React.ReactNode 
 }
 
 /**
- * One Worker: a tag for its kind of work, its identity as the title with the Worker's own name
- * beneath, its bounded context and revision, two lines on what that context produces, and three
- * figure tiles.
+ * One Worker: a tag for its kind of work, its identity as the title with its bounded context and
+ * revision beneath (the Worker's own name is in the title's tooltip), two lines on what that context
+ * produces, and three figure tiles.
  * Hovering outlines the card in the primary colour and tints it.
  */
 export function WorkerCard({ worker, isNew, from }: { worker: PortfolioWorker; isNew: boolean; from: string }) {
@@ -70,22 +70,18 @@ export function WorkerCard({ worker, isNew, from }: { worker: PortfolioWorker; i
           <span aria-hidden="true" className={cn('absolute -right-0.5 -bottom-0.5 size-3.5 rounded-full ring-2 ring-card', PRESENCE[status])} />
         </span>
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-section" title={identity?.label ?? worker.name}>{identity?.label ?? worker.name}</h3>
-          <p className="mt-0.5 flex min-w-0 items-center gap-1.5 text-meta text-muted-foreground">
-            <span className="truncate" title={worker.name}>{worker.name}</span>
+          <h3 className="truncate text-section" title={identity ? `${identity.label} · ${worker.name}` : worker.name}>{identity?.label ?? worker.name}</h3>
+          <div className="mt-1 flex min-w-0 items-center gap-1.5">
+            <span title={worker.bounded_context.label} className="min-w-0">
+              <span className="inline-flex h-6 max-w-full items-center gap-1 rounded-tag bg-muted px-2 text-meta font-medium whitespace-nowrap text-muted-foreground">
+                {createElement(ContextIcon, { className: 'size-3.5 shrink-0', 'aria-hidden': true })}
+                <span className="truncate">{worker.bounded_context.label}</span>
+              </span>
+            </span>
+            <span className="shrink-0 rounded-tag border px-1.5 text-meta leading-[1.375rem] text-muted-foreground tabular-nums">r{worker.revision}</span>
             {isNew && <span className="shrink-0 rounded-full bg-brand-strong px-1.5 text-overline text-brand-foreground">New</span>}
-          </p>
+          </div>
         </div>
-      </div>
-
-      <div className="flex min-w-0 items-center gap-2">
-        <span title={worker.bounded_context.label} className="min-w-0">
-          <span className="inline-flex h-6 max-w-full items-center gap-1 rounded-tag bg-muted px-2 text-meta font-medium whitespace-nowrap text-muted-foreground">
-            {createElement(ContextIcon, { className: 'size-3.5 shrink-0', 'aria-hidden': true })}
-            <span className="truncate">{worker.bounded_context.label}</span>
-          </span>
-        </span>
-        <span className="shrink-0 rounded-tag border px-2 text-meta leading-[1.375rem] text-muted-foreground tabular-nums">r{worker.revision}</span>
       </div>
 
       <p className="line-clamp-2 border-t pt-4 text-meta text-muted-foreground" title={worker.outcome}>{worker.outcome}</p>
