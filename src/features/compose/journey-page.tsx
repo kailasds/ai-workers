@@ -235,7 +235,7 @@ export function JourneyPage() {
                             aria-current={here ? 'step' : undefined}
                             onClick={() => go(pt.key)}
                             className={cn(
-                              'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-meta font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                              'inline-flex items-center gap-1.5 rounded-lg border px-3 py-1 text-meta font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring',
                               here ? 'border-primary bg-primary-soft text-primary-strong' : ok ? 'hover:bg-muted/60' : 'text-subtle-foreground',
                             )}
                           >

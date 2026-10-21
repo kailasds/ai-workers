@@ -108,7 +108,7 @@
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
-    --radius-xl: 1rem; /* card tier 16px */
+    --radius-xl: 0.875rem; /* card tier 14px */
     --radius-block: 0.75rem; /* nested blocks, header icon buttons, avatars: 12px */
     --radius-panel: 1.5rem; /* content panel, navy identity panel: 24px */
     --radius-tag: 0.375rem; /* category tags: 6px */
@@ -126,27 +126,27 @@
     --popover: #FFFFFF;
     --popover-foreground: #111315;
 
-    /* Navy: the brand and the one action. */
-    --primary: #284A77;
-    --primary-hover: #213F67;
+    /* Light blue: the brand and the one action. */
+    --primary: #2774C9;
+    --primary-hover: #1F64B0;
     --primary-foreground: #FFFFFF;
-    --primary-soft: #E2ECF6;
-    --primary-strong: #284A77;
+    --primary-soft: #EAF3FC;
+    --primary-strong: #1B5FA6;
 
     /* Cyan: data in motion. Never behind text; brand-strong when it must hold white text. */
     --brand: #009FF4;
     --brand-strong: #0A74B8;
     --brand-foreground: #FFFFFF;
 
-    --secondary: #E2ECF6;
-    --secondary-foreground: #284A77;
+    --secondary: #EAF3FC;
+    --secondary-foreground: #1B5FA6;
     --muted: #F4F8FB;
     --muted-foreground: #5E6266;
     --subtle-foreground: #6E7276;
-    --accent: #E2ECF6;
-    --accent-foreground: #284A77;
+    --accent: #EAF3FC;
+    --accent-foreground: #1B5FA6;
 
-    --identity: #284A77;
+    --identity: #2774C9;
     --identity-foreground: #FFFFFF;
 
     --success: #25713D;
@@ -155,7 +155,7 @@
     --warning: #8A5A12;
     --warning-soft: #FCEBD3;
     --warning-foreground: #FFFFFF;
-    --info: #284A77;
+    --info: #1B5FA6;
     --info-foreground: #FFFFFF;
     --destructive: #A2333C;
     --destructive-soft: #F8E4E5;
@@ -167,8 +167,8 @@
     --icon-circle: #E9ECF6;
 
     /* Category hues (design.md §3): one per bounded context / kind of thing; solid for icon tiles, soft for tags. */
-    --hue-blue: #284A77;
-    --hue-blue-soft: #E2ECF6;
+    --hue-blue: #1F6FC5;
+    --hue-blue-soft: #EAF3FC;
     --hue-cyan: #0A6A9E;
     --hue-cyan-soft: #DDF2FD;
     --hue-violet: #5B3FA8;
@@ -187,9 +187,9 @@
 
     --border: #E9EDF0;
     --input: #E3E8EE;
-    --ring: #284A77;
+    --ring: #2774C9;
 
-    --chart-1: #284A77;
+    --chart-1: #2774C9;
     --chart-2: #009FF4;
     --chart-3: #BCD8F1;
     --chart-4: #E0ECF8;
@@ -200,12 +200,12 @@
     --sidebar: #FFFFFF;
     --sidebar-foreground: #5B5E61;
     --sidebar-muted: #6E7276;
-    --sidebar-primary: #284A77;
+    --sidebar-primary: #2774C9;
     --sidebar-primary-foreground: #FFFFFF;
     --sidebar-accent: #F4F8FB;
     --sidebar-accent-foreground: #111315;
     --sidebar-border: #E9EDF0;
-    --sidebar-ring: #284A77;
+    --sidebar-ring: #2774C9;
 }
 
 @layer base {

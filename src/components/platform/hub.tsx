@@ -73,7 +73,7 @@ export function KpiBand({ title, columns = 4, children }: { title: string; colum
     })
   }
   return (
-    <section aria-labelledby="glance-title" className="rounded-panel bg-identity p-2 text-identity-foreground">
+    <section aria-labelledby="glance-title" className="rounded-xl bg-identity p-2 text-identity-foreground">
       <div className={cn('flex items-center justify-between gap-4 pl-3', open && 'pb-2')}>
         <h2 id="glance-title" className="text-section">{title}</h2>
         <button

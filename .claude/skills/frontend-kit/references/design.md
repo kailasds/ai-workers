@@ -31,27 +31,27 @@ mood is calm and orderly; density is medium-airy.
   --card: #FFFFFF;  --card-foreground: #111315;
   --popover: #FFFFFF; --popover-foreground: #111315;
 
-  --primary: #284A77;               /* navy, measured: active rail item, primary button, profile panel, pager */
-  --primary-hover: #213F67;         /* ~derived */
-  --primary-foreground: #FFFFFF;    /* 9.0:1 */
-  --primary-soft: #E2ECF6;          /* pale blue, measured: icon buttons, segmented active, Filter, pager idle */
-  --primary-strong: #284A77;        /* navy text on the pale tint, 7.5:1 */
+  --primary: #2774C9;               /* light blue (changed from navy #284A77 on request): active rail item, primary button, profile panel, pager; 4.7:1 with white */
+  --primary-hover: #1F64B0;
+  --primary-foreground: #FFFFFF;    /* 4.7:1 */
+  --primary-soft: #EAF3FC;          /* pale blue, measured: icon buttons, segmented active, Filter, pager idle */
+  --primary-strong: #1B5FA6;        /* blue text on the pale tint, 5.8:1 */
 
   --brand: #009FF4;                 /* cyan, measured: logo, progress fill, 2nd data series. Never under text */
   --brand-strong: #0A74B8;          /* cyan when it must hold white text, 5.0:1 (§1) */
   --brand-foreground: #FFFFFF;
 
-  --secondary: #E2ECF6;  --secondary-foreground: #284A77;
+  --secondary: #EAF3FC;  --secondary-foreground: #1B5FA6;
   --muted: #F4F8FB;      --muted-foreground: #5E6266;       /* nested rows and info blocks inside cards */
   --subtle-foreground: #6E7276;                              /* IDs, captions, axis labels */
-  --accent: #E2ECF6;     --accent-foreground: #284A77;       /* menu and row hover */
+  --accent: #EAF3FC;     --accent-foreground: #1B5FA6;       /* menu and row hover */
 
-  --identity: #284A77;  --identity-foreground: #FFFFFF;     /* the navy profile panel */
+  --identity: #2774C9;  --identity-foreground: #FFFFFF;     /* the light blue profile panel */
 
   --success: #25713D;  --success-soft: #E6F8EB;              /* measured tint; text AA-adjusted */
   --warning: #8A5A12;  --warning-soft: #FCEBD3;
   --destructive: #A2333C; --destructive-soft: #F8E4E5;
-  --info: #284A77;
+  --info: #1B5FA6;
   --rating: #E4891A;                                         /* star only, measured */
 
   --track: #E0ECF8;                                          /* progress and gauge remainder, measured */
@@ -60,16 +60,16 @@ mood is calm and orderly; density is medium-airy.
 
   --border: #E9EDF0;                /* in-card dividers, measured */
   --input: #E3E8EE;                 /* field and white-button edge, ~approx */
-  --ring: #284A77;
+  --ring: #2774C9;
 
-  --chart-1: #284A77; --chart-2: #009FF4; --chart-3: #BCD8F1; --chart-4: #E0ECF8; --chart-5: #D4D8E4;
+  --chart-1: #2774C9; --chart-2: #009FF4; --chart-3: #BCD8F1; --chart-4: #E0ECF8; --chart-5: #D4D8E4;
 
   --radius: 0.625rem;   /* control tier 10px ~approx */
 
   --sidebar: #FFFFFF; --sidebar-foreground: #5B5E61; --sidebar-muted: #6E7276;
-  --sidebar-primary: #284A77; --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-primary: #2774C9; --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #F4F8FB; --sidebar-accent-foreground: #111315;
-  --sidebar-border: #E9EDF0; --sidebar-ring: #284A77;
+  --sidebar-border: #E9EDF0; --sidebar-ring: #2774C9;
 }
 ```
 **Category hues (project extension, 2026-10-13).** The reference has one blue family. The product owner
@@ -77,7 +77,7 @@ asked for more colour in tags and icons, so six category hues were added. Each i
 text on its soft fill (5.1–7.5:1) and white on its solid (5.9–9.0:1).
 
 ```css
-  --hue-blue: #284A77;   --hue-blue-soft: #E2ECF6;
+  --hue-blue: #1F6FC5;   --hue-blue-soft: #EAF3FC;   /* moved into the primary family with the light-blue change; 4.5:1 on its soft */
   --hue-cyan: #0A6A9E;   --hue-cyan-soft: #DDF2FD;
   --hue-violet: #5B3FA8; --hue-violet-soft: #ECE7FB;
   --hue-teal: #0E6B60;   --hue-teal-soft: #DCF3EE;
@@ -93,10 +93,10 @@ Part hues, used only to tell the kinds of knowledge apart:
 ## 3. Color roles
 | Colour | Job (one each) |
 | --- | --- |
-| `#284A77` navy | **The brand and the one action.** The active rail item (filled), the primary button ("Add Instructor"), the active pager page, filled count chips, the profile/identity panel, the first data series and the gauge. Navy text on pale blue. |
+| `#2774C9` light blue | **The brand and the one action.** The active rail item (filled), the primary button ("Add Instructor"), the active pager page, filled count chips, the profile/identity panel, the first data series and the gauge. Blue text (`#1B5FA6`) on pale blue. |
 | `#009FF4` cyan | **Data in motion.** Progress-bar fills, the second chart series, the logo. Never behind text. |
 | `#0A74B8` cyan-strong | **A cyan chip that holds text** (the corrected "Contract"). |
-| `#E2ECF6` pale blue | **Soft controls and "chosen".** Header icon buttons (bell, settings), the selected segment, the Filter button, idle pager pages, the "Above Average" pill, category tags. |
+| `#EAF3FC` pale blue | **Soft controls and "chosen".** Header icon buttons (bell, settings), the selected segment, the Filter button, idle pager pages, the "Above Average" pill, category tags. |
 | `#BCD8F1` light blue | **Third data series**, and a secondary chip ("Part-Time"). |
 | `#E0ECF8` track | **The unfilled part** of progress bars and gauges. |
 | `#D4D8E4` grey-blue | **A neutral chip** ("Design", "Marketing" type) and the last chart series. |
@@ -148,14 +148,14 @@ Hierarchy comes from **one navy mass, then white cards on the pale panel, then s
   - The page header sits inside the panel, at the top.
 - **Radius tiers (~approx):**
   - **24px:** the content panel and the navy profile panel.
-  - **16px** (`--radius-xl`): cards.
+  - **14px** (`--radius-xl`): cards.
   - **12px:** nested blocks inside cards (course rows, info blocks, white cards inside the navy panel), header
     icon buttons, avatars.
   - **10px** (`--radius`): buttons, inputs, selects, segmented controls and their items, the Filter button,
     rail items, pager buttons.
   - **6px:** category tags ("Marketing", "Beginner").
   - **Full:** status pills, chips ("Full-Time"), count chips, the delta pill, progress bars, dots.
-  - **Nested:** inner radius = outer radius − inset (polish.md §1). For example, a 16px card with a 12px
+  - **Nested:** inner radius = outer radius − inset (polish.md §1). For example, a 14px card with a 12px
     inset takes 4–6px inner rows, rounded up to the 12px block tier only when the inset is small.
 - **Spacing scale (~approx real px):**
   - 4: label to value.

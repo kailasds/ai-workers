@@ -95,7 +95,7 @@ export function TypeShowcase({ groups, active, onSelect }: { groups: TypeGroup[]
             return (
               <CarouselItem key={g.type.key} aria-label={`${i + 1} of ${groups.length}: ${g.type.display_name}`}>
                 <div
-                  className={cn('relative flex min-h-56 items-center justify-between gap-6 overflow-hidden rounded-panel px-6 py-8 sm:px-10', HUE[meta.hue].soft)}
+                  className={cn('relative flex min-h-56 items-center justify-between gap-6 overflow-hidden rounded-xl px-6 py-8 sm:px-10', HUE[meta.hue].soft)}
                   style={{ backgroundImage: 'linear-gradient(var(--card) 1px, transparent 1px), linear-gradient(90deg, var(--card) 1px, transparent 1px)', backgroundSize: '44px 44px' }}
                 >
                   <div className="relative min-w-0 max-w-2xl">
@@ -112,12 +112,12 @@ export function TypeShowcase({ groups, active, onSelect }: { groups: TypeGroup[]
                         </p>
                         <div className="mt-5 flex flex-wrap gap-2">
                           {g.workers.length > 0 && (
-                            <Button className="rounded-full px-5" onClick={() => onSelect(g.type.key)}>
+                            <Button className="px-5" onClick={() => onSelect(g.type.key)}>
                               View Workers
                               <ArrowRight aria-hidden="true" />
                             </Button>
                           )}
-                          <Button asChild variant="outline" className="rounded-full bg-card px-5">
+                          <Button asChild variant="outline" className="bg-card px-5">
                             <Link to={`/compose/new?type=${g.type.key}`}><Plus aria-hidden="true" />Compose</Link>
                           </Button>
                         </div>
