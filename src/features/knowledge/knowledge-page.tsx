@@ -51,11 +51,11 @@ export function KnowledgePage() {
         </div>
       </div>
 
-      {current === 'skills' && (skills.error ? <ErrorState title="The Skill library could not be read from this platform." message={skills.error.message} onRetry={skills.refresh} /> : !skills.data ? <Loading label="Reading the registry…" /> : <SkillsTab library={skills.data} />)}
+      {current === 'skills' && (skills.error ? <ErrorState title="Couldn’t load Skills." message={skills.error.message} onRetry={skills.refresh} /> : !skills.data ? <Loading label="Loading Skills…" /> : <SkillsTab library={skills.data} />)}
       {current === 'languages' && (dsl.error ? <ErrorState title="The language catalogue could not be read." message={dsl.error.message} onRetry={dsl.refresh} /> : !dsl.data ? <Loading label="Reading the languages…" /> : <LanguagesTab domains={dsl.data.domains} />)}
       {current === 'evals' && (evals.error ? <ErrorState title="The EVAL catalogue could not be read." message={evals.error.message} onRetry={evals.refresh} /> : !evals.data ? <Loading label="Reading EVALs…" /> : <EvalsTab evals={evals.data.evaluations} />)}
       {current === 'dod' && (dod.error ? <ErrorState title="The Definition of Done library could not be read." message={dod.error.message} onRetry={dod.refresh} /> : !dod.data ? <Loading label="Reading the Definition of Done…" /> : <DodTab rubrics={dod.data.rubrics} />)}
-      {current === 'models' && <EmptyState icon={Cpu} title="No fine-tuned small language model is registered" description="A domain-taught model appears here beside the general model it was taught from, so the difference is the domain." />}
+      {current === 'models' && <EmptyState icon={Cpu} title="No fine-tuned small language model is registered" description="Fine-tuned models will show up here next to their base model." />}
     </div>
   )
 }

@@ -24,7 +24,7 @@ import { useResource } from '@/hooks/use-resource'
 import { deleteGroup, effectiveFeatures, FEATURES, getPerson, inheritedFeatures, listGroups, listPeople, ROLES, saveGroup, savePerson, setPersonEnabled, type Group, type Person } from '@/lib/api/admin'
 import { formatRelative } from '@/lib/format'
 
-const FIXTURE_NOTE = 'Example people from the console’s test fixtures: the captured session could not read the real list.'
+const FIXTURE_NOTE = 'Showing sample people. The real list couldn’t be loaded.'
 
 function AdminLayout({ view, children, actions }: { view: 'people' | 'groups'; children: React.ReactNode; actions?: React.ReactNode }) {
   const navigate = useNavigate()
@@ -165,7 +165,7 @@ export function PersonPage() {
           </fieldset>
           <fieldset className="flex flex-col gap-4">
             <legend className="mb-1 text-section">What they can do</legend>
-            <p className="text-meta text-muted-foreground">A tick from the role or a group says so. Only differences from that baseline are saved.</p>
+            <p className="text-meta text-muted-foreground">Ticked items come from the role or a group. Only your changes are saved.</p>
             {[...new Set(FEATURES.map((f) => f.group))].map((group) => (
               <div key={group}>
                 <p className="text-overline text-muted-foreground uppercase">{group}</p>
@@ -247,7 +247,7 @@ export function GroupsPage() {
         </Card>
       )}
       {!data ? <Skeleton className="h-32" /> : data.length === 0 ? (
-        <EmptyState icon={Users} title="No groups yet" description="Create one to give a team the same access in a single step." />
+        <EmptyState icon={Users} title="No groups yet" description="Create a group to give a team the same access." />
       ) : (
         <Card className="gap-0 py-0">
           <ul className="divide-y">

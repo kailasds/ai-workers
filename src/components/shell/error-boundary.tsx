@@ -28,7 +28,7 @@ class Boundary extends Component<Props, { error: Error | null; key: string }> {
     if (!this.state.error) return this.props.children
     return (
       <PageContainer>
-        <ErrorState title="This page could not load." message="Reload the page, or choose another section. Nothing you have saved was lost." onRetry={() => window.location.reload()} />
+        <ErrorState title="This page could not load." message="Reload the page or go to another section. Your saved work is safe." onRetry={() => window.location.reload()} />
       </PageContainer>
     )
   }

@@ -16,7 +16,7 @@ export function ConfigurationPage() {
       <EmptyState
         icon={Settings2}
         title="Worker configuration is unavailable"
-        description="The packaged settings are read from the runtime itself. This console runs on captured data, which holds no runtime’s maintenance schema."
+        description="Settings come from the running Worker, which isn’t available in this demo."
         action={<Button asChild variant="outline"><Link to={`/workers/${id}?view=runtimes`}>Back to runtimes</Link></Button>}
       />
     </PageContainer>

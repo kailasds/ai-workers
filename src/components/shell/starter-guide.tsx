@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils'
 
 const STEPS: { icon: LucideIcon; hue: Hue; title: string; text: string; to: string }[] = [
   { icon: PencilRuler, hue: 'blue', title: 'Compose a Worker', text: 'Define its work, permissions and Definition of Done.', to: '/compose' },
-  { icon: PackageCheck, hue: 'amber', title: 'Package a Worker', text: 'Seal a composed Worker into a versioned Package.', to: '/packaging' },
+  { icon: PackageCheck, hue: 'amber', title: 'Package a Worker', text: 'Build a versioned Package from a finished Worker.', to: '/packaging' },
   { icon: Send, hue: 'teal', title: 'Deliver to a customer', text: 'Prepare a Package for the customer’s environment.', to: '/customer-delivery' },
 ]
 
@@ -57,8 +57,8 @@ export function StarterGuide({ open, onClose }: { open: boolean; onClose: () => 
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="gap-6 p-6 sm:max-w-3xl">
         <DialogHeader>
-          <DialogTitle className="text-page">What would you like to do?</DialogTitle>
-          <DialogDescription className="sr-only">Choose where to start, or skip to Home.</DialogDescription>
+          <DialogTitle className="text-page">Get started</DialogTitle>
+          <DialogDescription className="sr-only">Pick a place to start.</DialogDescription>
         </DialogHeader>
         <ol className="grid gap-3 md:grid-cols-3">
           {STEPS.map((s, i) => (

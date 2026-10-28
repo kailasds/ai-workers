@@ -14,7 +14,7 @@ export function CommandMenu({ open, onOpenChange, features }: { open: boolean; o
       <Command>
       <CommandInput placeholder="Jump to an area…" />
       <CommandList>
-        <CommandEmpty>Nothing in the console matches that.</CommandEmpty>
+        <CommandEmpty>No results.</CommandEmpty>
         <CommandGroup heading="Areas">
           {items.map((item) => (
             <CommandItem

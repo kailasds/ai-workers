@@ -2,7 +2,7 @@ import { createElement } from 'react'
 import { Link } from 'react-router'
 import { contextHue, contextIcon, HUE, Tag, workerTypeMeta } from '@/components/platform/hue'
 import { runtimeStatus, RuntimeStatusDot, type RuntimeStatus } from '@/components/platform/runtime-status'
-import { identityOfContext } from '@/features/compose/compose-model'
+import { contextOf, identityOfContext } from '@/features/compose/compose-model'
 import { formatCount } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import type { Verdict } from '@/lib/types/dashboard'
@@ -42,6 +42,8 @@ export function WorkerCard({ worker, isNew, from }: { worker: PortfolioWorker; i
   const hue = contextHue(worker.bounded_context.key)
   const type = workerTypeMeta(worker.worker_type)
   const identity = identityOfContext(worker.bounded_context.key)
+  // The identity is the title, so the tag says what this Worker delivers rather than repeating it.
+  const scope = contextOf(worker.bounded_context.key)?.scope ?? worker.bounded_context.label
   const status = runtimeStatus(worker.runtime)
   const o = worker.last_outcome
   const ran = o.verdict && o.runs > 0
@@ -75,7 +77,7 @@ export function WorkerCard({ worker, isNew, from }: { worker: PortfolioWorker; i
             <span title={worker.bounded_context.label} className="min-w-0">
               <span className="inline-flex h-6 max-w-full items-center gap-1 rounded-tag bg-muted px-2 text-meta font-medium whitespace-nowrap text-muted-foreground">
                 {createElement(ContextIcon, { className: 'size-3.5 shrink-0', 'aria-hidden': true })}
-                <span className="truncate">{worker.bounded_context.label}</span>
+                <span className="truncate">{scope}</span>
               </span>
             </span>
             <span className="shrink-0 rounded-tag border px-1.5 text-meta leading-[1.375rem] text-muted-foreground tabular-nums">r{worker.revision}</span>

@@ -31,7 +31,7 @@ export function SentinelDecisionsPage() {
           </Select>
         </div>
       </div>
-      <EmptyState icon={ScrollText} title="No platform decisions yet" description="Every decision and its reasoning appears here, newest first, hash-linked to the one before it. Shadow decisions read “Would …” and were never sent." />
+      <EmptyState icon={ScrollText} title="No platform decisions yet" description="Decisions show up here, newest first. Shadow-mode decisions start with “Would…” and weren’t applied." />
     </SentinelLayout>
   )
 }
@@ -39,7 +39,7 @@ export function SentinelDecisionsPage() {
 export function SentinelDecisionPage() {
   return (
     <SentinelLayout view="" title="Decision" crumbs={[{ label: 'Sentinel', to: '/sentinel' }, { label: 'Decisions', to: '/sentinel/decisions' }, { label: 'Decision' }]}>
-      <EmptyState icon={ScrollText} title="Decision not found" description="No decision with this id is in the Platform Sentinel’s log." />
+      <EmptyState icon={ScrollText} title="Decision not found" description="No decision with this ID." />
     </SentinelLayout>
   )
 }

@@ -13,9 +13,9 @@ export const RUNTIME_FACETS: { value: RuntimeFacet; label: string }[] = [
 ]
 
 export const SORTS: { value: SortKey; label: string; hint: string }[] = [
-  { value: 'evidence', label: 'Most evidence', hint: 'Newest Worker, then those with memory records, a Met outcome, a healthy runtime. Not a Learning score.' },
-  { value: 'newest', label: 'Newest composed', hint: 'By the time the Worker was composed.' },
-  { value: 'oldest', label: 'Oldest composed', hint: 'By the time the Worker was composed.' },
+  { value: 'evidence', label: 'Most active', hint: 'Newest first, then Workers with memory, a met outcome or a healthy runtime.' },
+  { value: 'newest', label: 'Newest composed', hint: 'By creation date.' },
+  { value: 'oldest', label: 'Oldest composed', hint: 'By creation date.' },
 ]
 
 export function matchesFacet(w: PortfolioWorker, facet: RuntimeFacet) {

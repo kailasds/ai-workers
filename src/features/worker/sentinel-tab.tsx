@@ -19,10 +19,10 @@ export function SentinelTab({ ws }: { ws: WorkerWorkspace }) {
           <FactList>
             <Fact label="Source">From Package · r{ws.composition?.package?.composition_revision ?? ws.worker.revision}</Fact>
             <Fact label="Worker Sentinel">
-              <StatusBadge tone="neutral" icon={null}>{configured ? 'Composed with one' : 'Composed without'}</StatusBadge>
+              <StatusBadge tone="neutral" icon={null}>{configured ? 'With Sentinel' : 'Without Sentinel'}</StatusBadge>
             </Fact>
           </FactList>
-          {!configured && <p className="mt-4 text-meta text-muted-foreground">No authority is inferred when configuration is absent.</p>}
+          {!configured && <p className="mt-4 text-meta text-muted-foreground">No Sentinel settings configured.</p>}
         </CardContent>
       </Card>
       <Card className="gap-0 py-0 [--card-spacing:--spacing(5)]">
@@ -32,12 +32,12 @@ export function SentinelTab({ ws }: { ws: WorkerWorkspace }) {
         <CardContent className="py-5">
           <FactList>
             <Fact label="Reporting">
-              {running ? <StatusBadge tone="neutral" icon={null}>From its Worker Runtime</StatusBadge> : <span className="text-muted-foreground">Not reporting: no Worker Runtime is running</span>}
+              {running ? <StatusBadge tone="neutral" icon={null}>From its Worker Runtime</StatusBadge> : <span className="text-muted-foreground">Not running</span>}
             </Fact>
             <Fact label="Last action">{s.last_action ?? <span className="text-muted-foreground">None reported</span>}</Fact>
             <Fact label="Observed"><Timestamp iso={s.observed_at} /></Fact>
           </FactList>
-          <p className="mt-4 text-meta text-muted-foreground">Fleet-wide decisions, restrictions and stops are in Sentinel.</p>
+          <p className="mt-4 text-meta text-muted-foreground">See Sentinel for decisions across all Workers.</p>
         </CardContent>
       </Card>
     </div>

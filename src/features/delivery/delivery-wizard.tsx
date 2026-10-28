@@ -58,10 +58,10 @@ export function DeliveryWizard() {
   const m = draft.maturity
   const learning = [
     { key: 'memory', label: 'Memory records', count: m?.memories ?? 0, detail: m ? `${m.memory_kinds.episodic} episodic · ${m.memory_kinds.semantic} semantic · ${m.memory_kinds.procedural} procedural` : '' },
-    { key: 'brain', label: 'Agreed claims', count: m?.claims ?? 0, detail: 'Sentences several runs agreed on' },
-    { key: 'skills', label: 'Proposed Skill changes', count: m?.skill_changes ?? 0, detail: 'Each addition with the runs that agreed' },
+    { key: 'brain', label: 'Agreed claims', count: m?.claims ?? 0, detail: 'Statements confirmed across several runs' },
+    { key: 'skills', label: 'Proposed Skill changes', count: m?.skill_changes ?? 0, detail: 'Suggested additions, with supporting runs' },
   ]
-  const customerError = customer.trim() === '' ? 'Enter the Customer.' : customer.length > 120 ? 'Use at most 120 characters.' : null
+  const customerError = customer.trim() === '' ? 'Enter a customer name.' : customer.length > 120 ? 'Use at most 120 characters.' : null
   const canPass = [dropped.size === 0, true, !customerError, true]
   const reachable = (i: number) => canPass.slice(0, i).every(Boolean)
 
@@ -111,7 +111,7 @@ export function DeliveryWizard() {
           {!op ? (
             <>
               <p className="text-item">Lost contact with the preparation. It may still be running.</p>
-              <p className="text-body text-muted-foreground">Choices are not saved anywhere else, so they show as not reported. Check Prepared packages for the record.</p>
+              <p className="text-body text-muted-foreground">Check Prepared packages for the final record.</p>
               <Button asChild variant="outline" className="self-start"><Link to="/customer-delivery?view=delivered">Prepared packages</Link></Button>
             </>
           ) : op.state === 'SUCCEEDED' ? (
@@ -126,7 +126,7 @@ export function DeliveryWizard() {
             <>
               <p className="text-item">{op.phase}</p>
               <Progress value={op.progress} aria-label={`Preparing ${op.progress}%`} className="h-1.5 [&_[data-slot=progress-indicator]]:bg-brand" />
-              <p className="text-meta text-muted-foreground">You can close this page. Preparation continues, and a notice appears when it finishes.</p>
+              <p className="text-meta text-muted-foreground">You can leave this page. We’ll let you know when it’s ready.</p>
             </>
           )}
         </Card>
@@ -152,12 +152,12 @@ export function DeliveryWizard() {
         <Card className="gap-0 py-0">
           <CardHeader className="border-b p-6">
             <p className="text-overline text-muted-foreground uppercase">Step {step + 1} of 4</p>
-            <h2 className="mt-1 text-section">{['What the customer receives', 'Send what it learned?', 'Who it is for', 'Review and prepare'][step]}</h2>
+            <h2 className="mt-1 text-section">{['What the customer receives', 'Include learning?', 'Customer', 'Review and prepare'][step]}</h2>
           </CardHeader>
           <CardContent className="flex flex-col gap-5 p-6">
             {step === 0 && (
               <>
-                <p className="text-meta text-muted-foreground">Only Skills can be left out. Languages, EVALs and the Definition of Done travel as sealed: dropping one would be composing a different Worker.</p>
+                <p className="text-meta text-muted-foreground">You can leave out Skills. Languages, EVALs and the Definition of Done are always included.</p>
                 <section>
                   <h3 className="text-item">Skills</h3>
                   <ul className="mt-2 flex flex-col gap-2">
@@ -174,7 +174,7 @@ export function DeliveryWizard() {
                 {dropped.size > 0 && (
                   <Alert className="border-warning/30 bg-warning/5">
                     <AlertTitle className="text-item">Leaving out {dropped.size} {dropped.size === 1 ? 'Skill' : 'Skills'} seals a new Package</AlertTitle>
-                    <AlertDescription>A new revision and a new digest. The sealed Package is not changed. Narrowing is not available in this offline console, so carry every Skill to continue.</AlertDescription>
+                    <AlertDescription>Removing Skills creates a new revision. That isn’t available in this demo, so keep every Skill selected.</AlertDescription>
                   </Alert>
                 )}
                 <FactList>
@@ -186,8 +186,8 @@ export function DeliveryWizard() {
             )}
             {step === 1 && (
               <>
-                <p className="text-meta text-muted-foreground">Including learning sends it beside the Package, with its own digests. It is not approval or adoption.</p>
-                {!m || m.runs === 0 ? <p className="text-body text-muted-foreground">This Worker has no runs here, so it has no recorded learning to send.</p> : null}
+                <p className="text-meta text-muted-foreground">Learning is sent alongside the Package as separate files.</p>
+                {!m || m.runs === 0 ? <p className="text-body text-muted-foreground">This Worker hasn’t run yet, so there’s no learning to send.</p> : null}
                 <ul className="flex flex-col gap-2">
                   {learning.map((l) => (
                     <li key={l.key}>
@@ -206,21 +206,21 @@ export function DeliveryWizard() {
                 <div className="flex flex-col gap-1.5">
                   <Label htmlFor="customer">Customer</Label>
                   <Input id="customer" value={customer} maxLength={140} onChange={(e) => setCustomer(e.target.value)} aria-invalid={customer !== '' && Boolean(customerError)} aria-describedby="customer-hint" />
-                  <p id="customer-hint" className={cn('text-meta', customer !== '' && customerError ? 'text-destructive' : 'text-muted-foreground')}>{customer !== '' && customerError ? customerError : 'Recorded on the delivery.'}</p>
+                  <p id="customer-hint" className={cn('text-meta', customer !== '' && customerError ? 'text-destructive' : 'text-muted-foreground')}>{customer !== '' && customerError ? customerError : 'Saved with the delivery record.'}</p>
                 </div>
                 <RadioGroup value={images} onValueChange={(v) => setImages(v as typeof images)} className="gap-2" aria-label="Container images">
-                  <ChoiceCard id="img-sep" value="SEPARATE" selected={images === 'SEPARATE'} title="A second link beside the package" detail="The package stays small." />
-                  <ChoiceCard id="img-bun" value="BUNDLED" selected={images === 'BUNDLED'} title="One file to send" detail="The images are most of its size." />
+                  <ChoiceCard id="img-sep" value="SEPARATE" selected={images === 'SEPARATE'} title="Separate download" detail="The package stays small." />
+                  <ChoiceCard id="img-bun" value="BUNDLED" selected={images === 'BUNDLED'} title="Single file" detail="Much larger download." />
                 </RadioGroup>
-                <p className="text-meta text-muted-foreground">The run folder always travels: compose file, README and settings.</p>
+                <p className="text-meta text-muted-foreground">The run folder (compose file, README and settings) is always included.</p>
               </>
             )}
             {step === 3 && (
               <FactList>
                 <Fact label="Worker">{draft.name} · Package r{draft.package!.composition_revision}</Fact>
                 <Fact label="Customer">{customer}</Fact>
-                <Fact label="Learning">{include.size === 0 ? 'None. The Package travels without learning.' : learning.filter((l) => include.has(l.key)).map((l) => l.label).join(', ')}</Fact>
-                <Fact label="Container images">{images === 'SEPARATE' ? 'A second link beside the package' : 'Inside one file'}</Fact>
+                <Fact label="Learning">{include.size === 0 ? 'Not included' : learning.filter((l) => include.has(l.key)).map((l) => l.label).join(', ')}</Fact>
+                <Fact label="Container images">{images === 'SEPARATE' ? 'Separate download' : 'Single file'}</Fact>
               </FactList>
             )}
           </CardContent>

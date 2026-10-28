@@ -33,7 +33,7 @@ function Actions({ pkg }: { pkg: CustomerPackage }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-64">
         <DropdownMenuItem asChild><Link to="/customer-delivery?view=delivered">Share, acknowledge or publish</Link></DropdownMenuItem>
-        <DropdownMenuLabel className="text-meta font-normal text-muted-foreground">Transfer actions live with the record in Customer delivery.</DropdownMenuLabel>
+        <DropdownMenuLabel className="text-meta font-normal text-muted-foreground">Manage these in Customer delivery.</DropdownMenuLabel>
       </DropdownMenuContent>
     </DropdownMenu>
   )
@@ -46,7 +46,7 @@ export function CustomerPackagesTable({ packages, compact = false }: { packages:
         className="m-5"
         icon={PackageOpen}
         title="No customer Packages prepared"
-        description="Prepared Packages appear here with their transfer evidence."
+        description="Prepared Packages show up here."
         action={<Button asChild variant="outline"><Link to="/customer-delivery">Go to Customer delivery</Link></Button>}
       />
     )

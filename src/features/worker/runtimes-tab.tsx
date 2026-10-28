@@ -43,19 +43,19 @@ function DeployDialog({ op, workerName, onClose }: { op: Op | null; workerName: 
               <DialogTitle className="text-section">{op.kind === 'resume' ? 'Resume runtime' : 'Deploy again'}</DialogTitle>
               <DialogDescription className="text-body">
                 <span className="font-medium text-foreground">{workerName}</span> · {op.runtime.target} slot {op.runtime.runtime_slot}.{' '}
-                {op.kind === 'resume' ? 'Its service starts again with the images it had. The stop is lifted and recorded.' : 'Redeploy updates the Worker Runtime only. The harness image comes from the Package.'}
+                {op.kind === 'resume' ? 'Restarts the Worker with the same images.' : 'Redeploys the Worker runtime. The harness image stays as packaged.'}
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="limit">Monthly spending limit (USD)</Label>
               <Input id="limit" inputMode="decimal" value={limit} onChange={(e) => setLimit(e.target.value)} aria-invalid={limit !== '' && !limitValid} aria-describedby="limit-hint" />
-              <p id="limit-hint" className="text-meta text-muted-foreground">Required. Blank never means unlimited. Resets at the start of each month (UTC).</p>
+              <p id="limit-hint" className="text-meta text-muted-foreground">Required. Resets on the 1st of each month (UTC).</p>
             </div>
             {needsReason && (
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="reason">Reason</Label>
                 <Textarea id="reason" value={reason} onChange={(e) => setReason(e.target.value)} maxLength={500} rows={3} aria-describedby="reason-hint" />
-                <p id="reason-hint" className="text-meta text-muted-foreground">Recorded with the Platform Sentinel decision so other operators can read why.</p>
+                <p id="reason-hint" className="text-meta text-muted-foreground">Saved with the decision so others can see why.</p>
               </div>
             )}
             {error && (
@@ -68,7 +68,7 @@ function DeployDialog({ op, workerName, onClose }: { op: Op | null; workerName: 
               <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
               <Button
                 disabled={!ready}
-                onClick={() => setError(USE_MOCK ? 'This console is running on captured mock data, so deployments are not available.' : 'Deployment is wired in a later phase.')}
+                onClick={() => setError(USE_MOCK ? 'Deploying isn’t available in this demo.' : 'Coming soon.')}
               >
                 {op.kind === 'resume' ? 'Resume runtime' : 'Deploy again'}
               </Button>
@@ -91,7 +91,7 @@ export function RuntimesTab({ ws }: { ws: WorkerWorkspace }) {
         <CardTitle>Runtimes</CardTitle>
       </CardHeader>
       {runtimes.length === 0 ? (
-        <EmptyState className="m-5" icon={Server} title="This Worker is composed and has no runtime" description="Deploy it from Packaging once its Package is built." />
+        <EmptyState className="m-5" icon={Server} title="Not deployed yet" description="Deploy it from Packaging once its Package is built." />
       ) : (
         <ul className="divide-y">
           {runtimes.map((r) => (

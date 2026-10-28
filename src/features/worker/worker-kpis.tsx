@@ -34,10 +34,10 @@ export function WorkerKpis({ ws }: { ws: WorkerWorkspace }) {
     <dl className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
       <Kpi icon={Activity} hue="cyan" label="Runs" value={formatCount(runs)} caption={m?.last_run_at ? 'Completed so far' : 'No runs yet'} />
       <Kpi icon={ClipboardCheck} hue="teal" label="DoD met" value={met === null || runs === 0 ? dash : formatPercent(met / runs)} caption={met === null ? 'Not reported' : `${formatCount(met)} of ${formatCount(runs)} runs`} />
-      <Kpi icon={BrainCircuit} hue="violet" label="Memory records" value={formatCount(w.learning.memories)} caption={w.learning.contradictions > 0 ? `${w.learning.contradictions} contradictions` : 'From running'} />
+      <Kpi icon={BrainCircuit} hue="violet" label="Memory records" value={formatCount(w.learning.memories)} caption={w.learning.contradictions > 0 ? `${w.learning.contradictions} contradictions` : 'Saved from runs'} />
       <Kpi icon={Server} hue="blue" label="Runtimes" value={formatCount(live.length)} caption={`${formatCount(running)} running`} />
       <Kpi icon={GitBranch} hue="amber" label="Versions" value={formatCount(ws.versions.length)} caption={`${formatCount(delivered)} delivered`} />
-      <Kpi icon={Building2} hue="rose" label="Customers" value={formatCount(customers)} caption={customers === 0 ? 'None yet' : 'Holding a version'} />
+      <Kpi icon={Building2} hue="rose" label="Customers" value={formatCount(customers)} caption={customers === 0 ? 'None yet' : 'With a version'} />
     </dl>
   )
 }

@@ -23,7 +23,7 @@ export function ContextBars({ data, detailLink }: { data: ExecutiveDashboard; de
   return (
     <Card role="region" aria-labelledby="contexts-title" className="gap-0 py-0">
       <div className="flex items-center justify-between gap-3 px-5 pt-5 pb-3">
-        <h2 id="contexts-title" className="text-section">Where the work happened</h2>
+        <h2 id="contexts-title" className="text-section">Runs by bounded context</h2>
         <Button asChild variant="ghost" size="sm">
           <Link to={detailLink('contexts')}>Compare cost</Link>
         </Button>

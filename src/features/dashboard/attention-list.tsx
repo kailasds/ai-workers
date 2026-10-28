@@ -63,14 +63,14 @@ export function AttentionList({ signals, data }: { signals: Signal[]; data: Exec
             <SheetContent className="w-full gap-0 data-[side=right]:sm:max-w-md">
               <SheetHeader className="border-b">
                 <SheetTitle className="text-section">Needs attention</SheetTitle>
-                <SheetDescription>Observed in this period’s figures. Most serious first.</SheetDescription>
+                <SheetDescription>This period, most serious first.</SheetDescription>
               </SheetHeader>
               <ScrollArea className="min-h-0 flex-1">
                 <ul className="divide-y py-2">
                   {signals.map((s) => <Row key={s.id} signal={s} />)}
                 </ul>
                 <section aria-labelledby="sources-title" className="border-t px-5 py-5">
-                  <h3 id="sources-title" className="text-overline text-muted-foreground uppercase">Where these figures come from</h3>
+                  <h3 id="sources-title" className="text-overline text-muted-foreground uppercase">Data sources</h3>
                   <ul className="mt-3 flex flex-col gap-3">
                     {data.freshness.sources.map((src) => (
                       <li key={src.key} className="flex items-center justify-between gap-3">
@@ -91,7 +91,7 @@ export function AttentionList({ signals, data }: { signals: Signal[]; data: Exec
       {signals.length === 0 ? (
         <div className="flex items-center gap-3 px-5 pt-2 pb-6">
           <IconTile icon={CircleCheck} tone="neutral" size="sm" />
-          <p className="text-body text-muted-foreground">Nothing in this period’s figures. Oversight lives in Sentinel.</p>
+          <p className="text-body text-muted-foreground">Nothing needs attention this period.</p>
         </div>
       ) : (
         <ul className="divide-y pb-2">

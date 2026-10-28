@@ -150,12 +150,12 @@ export function DeclarationPage() {
 
       <ComposeStepper states={stepStates} />
 
-      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-5 lg:grid-cols-[minmax(0,1fr)_22rem] xl:grid-cols-[minmax(0,1fr)_24rem]">
+      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-5 lg:grid-cols-[22rem_minmax(0,1fr)] xl:grid-cols-[24rem_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-5">
           <div className="rounded-xl border bg-card p-5 sm:p-8">
             <p className="text-overline font-semibold text-primary-strong uppercase">Step 1 of {STEPS.length}</p>
-            <h2 className="mt-2 text-section">Define the Worker: what it does, and where its work stops</h2>
-            <p className="mt-1 text-body text-muted-foreground">Nothing enters the Worker until you confirm it.</p>
+            <h2 className="mt-2 text-section">Define the Worker</h2>
+            <p className="mt-1 text-body text-muted-foreground">Pick its identity and the scope it works in.</p>
 
             {typeMeta && (
               <div className={cn('mt-6 flex items-center gap-3 rounded-block p-3', HUE[typeMeta.hue].soft)}>
@@ -169,7 +169,7 @@ export function DeclarationPage() {
             )}
 
             <div className="mt-8 flex flex-col gap-10">
-              <Step n={1} title="What is it?" hint="Its identity, and optionally the business and law it answers to." active>
+              <Step n={1} title="Basics" hint="Identity, plus an optional business domain and geography." active>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="flex flex-col gap-1.5 sm:col-span-2">
                     <Label htmlFor="identity">Identity</Label>
@@ -191,7 +191,7 @@ export function DeclarationPage() {
                         {BUSINESS_DOMAINS.map((d) => <SelectItem key={d.key} value={d.key}>{d.label}</SelectItem>)}
                       </SelectContent>
                     </Select>
-                    <p className="text-meta text-muted-foreground">Decides which Skills, languages and EVALs come with it.</p>
+                    <p className="text-meta text-muted-foreground">Sets which Skills, languages and EVALs are included.</p>
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <Label htmlFor="geography">Geography <span className="font-normal text-muted-foreground">· optional</span></Label>
@@ -204,14 +204,14 @@ export function DeclarationPage() {
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className="text-meta text-muted-foreground">{geo ? (geo.review_note ?? geo.summary) : 'Changes only which compliance checks bind. Not a deployment region.'}</p>
+                    <p className="text-meta text-muted-foreground">{geo ? (geo.review_note ?? geo.summary) : 'Only affects which compliance checks apply. Not the deployment region.'}</p>
                   </div>
                 </div>
               </Step>
 
-              <Step n={2} title="Where does it work?" hint="The one business boundary: what it produces, and what it refuses." active={Boolean(identity)}>
+              <Step n={2} title="Scope" hint="What the Worker produces, and what’s out of scope." active={Boolean(identity)}>
                 {!identity ? (
-                  <p className="text-body text-muted-foreground">Available once an identity is assigned.</p>
+                  <p className="text-body text-muted-foreground">Choose an identity first.</p>
                 ) : contexts.length === 0 ? (
                   <p className="text-body text-muted-foreground">{identityOf(identity)?.label} entitles no bounded context yet.</p>
                 ) : (
@@ -240,20 +240,20 @@ export function DeclarationPage() {
 
                     {ctx && (
                       <div className="flex flex-col gap-3">
-                        <p className="text-item font-semibold">May it grow into a wider context?</p>
+                        <p className="text-item font-semibold">Can it expand its scope later?</p>
                         <RadioGroup value={growth} onValueChange={(v) => setGrowth(v as 'keep' | 'allow')} className="gap-2">
-                          <ChoiceCard id="growth-keep" value="keep" selected={growth === 'keep'} title="Keep this bounded context" />
+                          <ChoiceCard id="growth-keep" value="keep" selected={growth === 'keep'} title="Keep this scope" />
                           <ChoiceCard
                             id="growth-allow"
                             value="allow"
                             selected={growth === 'allow'}
-                            title="Allow growth on evidence"
-                            detail="The Sentinel records when the Worker qualifies for the next bounded context, up to the ceiling. Nothing moves yet."
-                            disabledReason={wider.length === 0 ? 'This is the widest bounded context for this identity.' : null}
+                            title="Allow it to expand"
+                            detail="Sentinel flags when the Worker is ready for the next scope, up to the limit you set. Nothing changes automatically."
+                            disabledReason={wider.length === 0 ? 'This is already the widest scope.' : null}
                           >
                             {growth === 'allow' && wider.length > 0 && (
                               <Select value={ceiling ?? ''} onValueChange={setCeiling}>
-                                <SelectTrigger className="mt-3 w-full" aria-label="Growth ceiling"><SelectValue placeholder="Growth ceiling" /></SelectTrigger>
+                                <SelectTrigger className="mt-3 w-full" aria-label="Expansion limit"><SelectValue placeholder="Expansion limit" /></SelectTrigger>
                                 <SelectContent>{wider.map((w) => <SelectItem key={w.key} value={w.key}>{w.label}</SelectItem>)}</SelectContent>
                               </Select>
                             )}
@@ -266,14 +266,14 @@ export function DeclarationPage() {
                       <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-1.5 sm:max-w-md">
                           <Label htmlFor="name">Worker name <span className="font-normal text-muted-foreground">· optional</span></Label>
-                          <Input id="name" value={name} maxLength={120} onChange={(e) => setName(e.target.value)} placeholder="Named after its work and business domain" aria-invalid={nameInvalid} aria-describedby="name-hint" />
-                          <p id="name-hint" className={cn('text-meta', nameInvalid ? 'text-destructive' : 'text-muted-foreground')}>{nameInvalid ? 'A name has at least 2 characters.' : 'How the Worker is listed everywhere.'}</p>
+                          <Input id="name" value={name} maxLength={120} onChange={(e) => setName(e.target.value)} placeholder="e.g. Claims integration – Payments" aria-invalid={nameInvalid} aria-describedby="name-hint" />
+                          <p id="name-hint" className={cn('text-meta', nameInvalid ? 'text-destructive' : 'text-muted-foreground')}>{nameInvalid ? 'A name has at least 2 characters.' : 'Shown wherever the Worker is listed.'}</p>
                         </div>
                         <label htmlFor="auto" className={cn('flex cursor-pointer gap-3 rounded-xl border p-4', auto && 'border-primary bg-primary-soft')}>
                           <Checkbox id="auto" checked={auto} onCheckedChange={(v) => setAuto(v === true)} className="mt-0.5" />
                           <span>
                             <span className="block text-item font-semibold">Assemble automatically</span>
-                            <span className="block text-meta text-muted-foreground">{auto ? 'Pauses only for questions, errors and deployment.' : 'Pauses at each of the eight checkpoints for you to review.'}</span>
+                            <span className="block text-meta text-muted-foreground">{auto ? 'Only stops for questions, errors and deployment.' : 'Stops at each of the 8 checkpoints for your review.'}</span>
                           </span>
                         </label>
                       </div>
@@ -301,7 +301,7 @@ export function DeclarationPage() {
           </div>
         </div>
 
-        <div className="min-w-0 lg:sticky lg:top-6">
+        <div className="min-w-0 lg:sticky lg:top-6 lg:order-first">
           <DeclarationPanel
             typeLabel={typeLabel}
             identity={identity}

@@ -84,10 +84,10 @@ export function EvalsTab({ evals }: { evals: Evaluation[] }) {
       <DetailSheet open={open !== null} onClose={() => setOpen(null)} title={open?.name} description={open ? `${human(open.category)} · v${open.version}` : undefined} width="lg">
         {open && (
           <div className="flex flex-col gap-6">
-            <p className="text-body whitespace-pre-line">{open.description?.trim() || 'The registry stores no description for this check.'}</p>
+            <p className="text-body whitespace-pre-line">{open.description?.trim() || 'No description.'}</p>
             <FactList>
               <Fact label="Key"><span className="font-mono text-meta">{open.id}</span></Fact>
-              <Fact label="Holds a Worker to it">{open.hard_gate ? 'Required gate: a run fails without it' : 'Measured check: recorded, does not fail a run'}</Fact>
+              <Fact label="Type">{open.hard_gate ? 'Required: the run fails if this doesn’t pass' : 'Tracked: recorded, doesn’t fail the run'}</Fact>
               <Fact label="Passes at">{open.pass_threshold !== null ? formatPercent(open.pass_threshold) : 'No threshold recorded'}</Fact>
               <Fact label="Measured as">{human(open.category)}</Fact>
             </FactList>

@@ -8,7 +8,7 @@ import { Timestamp } from '@/components/platform/timestamp'
 import type { WorkerWorkspace } from '@/lib/types/worker'
 
 const DURABILITY: Record<string, string> = {
-  EPHEMERAL: 'Ephemeral: destroyed every time the task is replaced',
+  EPHEMERAL: 'Temporary: cleared when the task restarts',
   UNKNOWN: 'Not reported',
 }
 
@@ -33,7 +33,7 @@ export function BrainTab({ ws }: { ws: WorkerWorkspace }) {
             ) : serving ? (
               'Not read in this view'
             ) : (
-              <span className="text-muted-foreground">Not observed: no serving runtime</span>
+              <span className="text-muted-foreground">Not running</span>
             )}
           </Fact>
         </FactList>
@@ -45,9 +45,9 @@ export function BrainTab({ ws }: { ws: WorkerWorkspace }) {
       </Card>
 
       <Card className="gap-4 p-5">
-        <h2 className="text-section">Held back from compounding</h2>
+        <h2 className="text-section">Held back</h2>
         {heldBack.length === 0 ? (
-          <p className="text-body text-muted-foreground">{brain ? 'Nothing is held back.' : 'Not observed: the brain was not read.'}</p>
+          <p className="text-body text-muted-foreground">{brain ? 'Nothing is held back.' : 'Not available.'}</p>
         ) : (
           <>
             <p className="text-meta text-muted-foreground">

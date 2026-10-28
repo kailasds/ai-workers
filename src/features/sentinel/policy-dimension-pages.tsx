@@ -19,9 +19,9 @@ export function SentinelPolicyPage() {
         <EmptyState icon={Gavel} title="Platform policy is available to administrators" />
       ) : (
         <Card className="gap-3 p-6">
-          <p className="text-overline text-muted-foreground uppercase">Platform policy · defaults, no revision saved</p>
-          <h2 className="text-section">The platform sets no bounds, managed values or directives</h2>
-          <p className="text-body text-muted-foreground">Rules are grouped by the one dimension that owns each setting. Platform policy can only tighten a Worker: Worker settings are clamped to platform bounds. Read-only here; editing arrives with policy v2.</p>
+          <p className="text-overline text-muted-foreground uppercase">Platform policy · defaults</p>
+          <h2 className="text-section">No platform limits set</h2>
+          <p className="text-body text-muted-foreground">Platform policy can only tighten Worker settings, never loosen them. Read-only for now.</p>
         </Card>
       )}
     </SentinelLayout>
@@ -49,7 +49,7 @@ export function SentinelDimensionPage() {
       </Card>
       <section aria-labelledby="panel-title" className="flex flex-col gap-3">
         <h2 id="panel-title" className="text-section">{d.panel}</h2>
-        <EmptyState icon={Radar} title={d.empty} description="What this dimension checks is listed as it is measured. Until then every check reads “Not measured”, never as a pass." />
+        <EmptyState icon={Radar} title={d.empty} description="Checks show up here once they’re measured." />
       </section>
     </SentinelLayout>
   )

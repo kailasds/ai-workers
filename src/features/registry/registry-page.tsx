@@ -9,7 +9,6 @@ import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Pager } from '@/components/platform/pager'
 import { EmptyState, ErrorState, LoadingRegion } from '@/components/platform/states'
 import { FreshnessBadge } from '@/components/platform/status-badge'
@@ -36,7 +35,7 @@ const ROWS = 2
 
 function TileSkeleton() {
   return (
-    <LoadingRegion label="Reading the Worker portfolio…" className="flex flex-col gap-5">
+    <LoadingRegion label="Loading Workers…" className="flex flex-col gap-5">
       <Skeleton className="h-56 w-full rounded-xl bg-track" />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {Array.from({ length: 4 }, (_, i) => (
@@ -78,7 +77,8 @@ export function RegistryPage() {
   const typeLabel = type ? (types.data?.types.find((t) => t.key === type)?.display_name ?? type) : null
 
   const filtering = Boolean(q || facet || type || context || learning || sentinel)
-  const secondaryActive = [learning, sentinel].filter(Boolean).length + (sort !== 'evidence' ? 1 : 0)
+  // Everything behind the Filters button that is set, so the button says so.
+  const moreActive = [context, facet, learning, sentinel].filter(Boolean).length + (sort !== 'evidence' ? 1 : 0)
   const clearAll = () => p.update({ q: null, runtime: null, type: null, context: null, brain: null, sentinel: null })
   const from = `${pathname}${search}`
 
@@ -114,51 +114,59 @@ export function RegistryPage() {
             <>
               <TypeShowcase groups={showcase} active={type} onSelect={chooseType} />
 
-              {/* One quiet toolbar: find, narrow by state, everything else behind Filters. */}
-              <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center">
-                <InputGroup className="lg:w-64 lg:shrink-0">
-                  <InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon>
-                  <InputGroupInput type="search" value={q} onChange={(e) => p.update({ q: e.target.value })} placeholder="Search Workers" aria-label="Search name, owner, context or identity" />
-                </InputGroup>
-                <div className="grid grid-cols-2 gap-2 lg:flex lg:shrink-0">
+              {/* The heading on the left; search, Worker type and Filters on the right of the same row. */}
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <h2 id="workers-heading" className="shrink-0 text-section">
+                  {typeLabel ?? 'All Workers'} <span className="text-muted-foreground tabular-nums">{formatCount(matching.length)}</span>
+                </h2>
+                <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+                  <InputGroup className="w-full sm:w-64">
+                    <InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon>
+                    <InputGroupInput type="search" value={q} onChange={(e) => p.update({ q: e.target.value })} placeholder="Search Workers" aria-label="Search name, owner, context or identity" />
+                  </InputGroup>
                   <Select value={type ?? ALL} onValueChange={(v) => chooseType(v === ALL ? null : v)}>
-                    <SelectTrigger className="w-full lg:w-52" aria-label="Worker type"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="w-full sm:w-56" aria-label="Worker type"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value={ALL}>All Worker types</SelectItem>
                       {showcase.filter((g) => g.workers.length > 0).map((g) => <SelectItem key={g.type.key} value={g.type.key}>{g.type.display_name}</SelectItem>)}
                     </SelectContent>
                   </Select>
-                  <Select value={context ?? ALL} onValueChange={(v) => p.update({ context: v === ALL ? null : v })}>
-                    <SelectTrigger className="w-full lg:w-60" aria-label="Bounded context"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value={ALL}>All bounded contexts</SelectItem>
-                      {contextOptions.map((c) => <SelectItem key={c.key} value={c.key}>{c.label}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex min-w-0 items-center gap-2 lg:grow lg:basis-[30rem]">
-                  <div className="no-scrollbar -mx-4 min-w-0 flex-1 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-                    <ToggleGroup type="single" variant="outline" spacing={0} value={facet ?? ALL} onValueChange={(v) => v && p.update({ runtime: v === ALL ? null : v })} aria-label="Runtime" className="w-max">
-                      <ToggleGroupItem value={ALL}>All</ToggleGroupItem>
-                      {RUNTIME_FACETS.map((f) => {
-                        const n = facetBase.filter((w) => matchesFacet(w, f.value as RuntimeFacet)).length
-                        return (
-                          <ToggleGroupItem key={f.value} value={f.value} disabled={n === 0 && facet !== f.value}>
-                            {f.label} <span className="text-muted-foreground tabular-nums">{n}</span>
-                          </ToggleGroupItem>
-                        )
-                      })}
-                    </ToggleGroup>
-                  </div>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="outline" className="shrink-0">
                         <SlidersHorizontal aria-hidden="true" />
-                        <span className="max-sm:sr-only">Filters</span>
-                        {secondaryActive > 0 && <Badge className="h-4 min-w-4 rounded-full px-1 tabular-nums">{secondaryActive}</Badge>}
+                        Filters
+                        {moreActive > 0 && <Badge className="h-4 min-w-4 rounded-full px-1 tabular-nums">{moreActive}</Badge>}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent align="end" className="flex w-80 flex-col gap-4">
+                      <div className="flex flex-col gap-1.5">
+                        <Label htmlFor="f-context">Bounded context</Label>
+                        <Select value={context ?? ALL} onValueChange={(v) => p.update({ context: v === ALL ? null : v })}>
+                          <SelectTrigger id="f-context" className="w-full"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value={ALL}>All bounded contexts</SelectItem>
+                            {contextOptions.map((c) => <SelectItem key={c.key} value={c.key}>{c.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <Label htmlFor="f-runtime">Status</Label>
+                        <Select value={facet ?? ALL} onValueChange={(v) => p.update({ runtime: v === ALL ? null : v })}>
+                          <SelectTrigger id="f-runtime" className="w-full"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value={ALL}>Any status</SelectItem>
+                            {RUNTIME_FACETS.map((f) => {
+                              const n = facetBase.filter((w) => matchesFacet(w, f.value as RuntimeFacet)).length
+                              return (
+                                <SelectItem key={f.value} value={f.value} disabled={n === 0 && facet !== f.value}>
+                                  {f.label} <span className="text-muted-foreground tabular-nums">{n}</span>
+                                </SelectItem>
+                              )
+                            })}
+                          </SelectContent>
+                        </Select>
+                      </div>
                       <div className="flex flex-col gap-1.5">
                         <Label htmlFor="f-learning">Learning</Label>
                         <Select value={learning ?? ALL} onValueChange={(v) => p.update({ brain: v === ALL ? null : v })}>
@@ -177,8 +185,8 @@ export function RegistryPage() {
                           <SelectTrigger id="f-sentinel" className="w-full"><SelectValue /></SelectTrigger>
                           <SelectContent>
                             <SelectItem value={ALL}>All Workers</SelectItem>
-                            <SelectItem value="with">Composed with one</SelectItem>
-                            <SelectItem value="without">Composed without</SelectItem>
+                            <SelectItem value="with">With Sentinel</SelectItem>
+                            <SelectItem value="without">Without Sentinel</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -194,13 +202,13 @@ export function RegistryPage() {
                       </div>
                     </PopoverContent>
                   </Popover>
-                </div>
-                <div className="flex shrink-0 items-center gap-3 lg:ml-auto">
-                  {filtering && <Button variant="link" size="xs" className="h-auto px-0 text-meta" onClick={clearAll}>Clear</Button>}
-                  {data.freshness.state !== 'CURRENT' && <FreshnessBadge state={data.freshness.state} />}
-                  <Button variant="ghost" size="icon" aria-label="Refresh" onClick={portfolio.refresh}>
-                    <RefreshCw className={portfolio.pending && data ? 'animate-spin' : undefined} aria-hidden="true" />
-                  </Button>
+                  {filtering && <Button variant="link" size="xs" className="h-auto px-1 text-meta" onClick={clearAll}>Clear</Button>}
+                  <div className="flex shrink-0 items-center gap-3">
+                    {data.freshness.state !== 'CURRENT' && <FreshnessBadge state={data.freshness.state} />}
+                    <Button variant="ghost" size="icon" aria-label="Refresh" onClick={portfolio.refresh}>
+                      <RefreshCw className={portfolio.pending && data ? 'animate-spin' : undefined} aria-hidden="true" />
+                    </Button>
+                  </div>
                 </div>
               </div>
 
@@ -208,9 +216,6 @@ export function RegistryPage() {
                 <EmptyState icon={SearchX} title="No Workers match" description="Try a different search, or clear the filters." action={<Button variant="outline" onClick={clearAll}>Clear filters</Button>} />
               ) : (
                 <section aria-labelledby="workers-heading" aria-busy={portfolio.pending} className="flex flex-col gap-4">
-                  <h2 id="workers-heading" className="text-section">
-                    {typeLabel ?? 'All Workers'} <span className="text-muted-foreground tabular-nums">{formatCount(matching.length)}</span>
-                  </h2>
                   <WorkerGrid workers={shown} newest={newest} from={from} />
                   <Pager page={page} pageSize={pageSize} total={matching.length} onPage={(n) => p.update({ page: String(n) }, { resetPage: false })} label="Workers" />
                 </section>

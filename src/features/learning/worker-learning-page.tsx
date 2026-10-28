@@ -16,16 +16,16 @@ import { getWorkerWorkspace } from '@/lib/api/workers'
 import type { WorkerWorkspace } from '@/lib/types/worker'
 
 const SUBPAGES: Record<string, { title: string; about: string }> = {
-  okf: { title: 'Knowledge it runs with (OKF)', about: 'The exact knowledge bundle the Worker’s Runtime serves, a person’s proposed edits, and each item’s history.' },
-  effect: { title: 'Learning effect', about: 'Comparable runs only, before and after a learned item was served. Needs 3 qualifying runs on each side.' },
-  skills: { title: 'Skills', about: 'The Skills in the bundle, each SKILL.md in full, and the changes the Worker proposed.' },
-  facts: { title: 'Facts', about: 'Landscape and experience facts, verbatim, with their confidence as supplied.' },
-  sharing: { title: 'Sharing', about: 'Who may read or compound on this Worker’s learning. Sharing is declared, not active.' },
-  records: { title: 'All records', about: 'Everything the platform holds for this Worker, one class at a time, with redaction receipts.' },
-  sync: { title: 'Data transfer', about: 'Whether this Worker’s learning reaches the platform, and what the filter kept back.' },
-  routing: { title: 'Model routing', about: 'The Worker’s live routing: tiers, evidence per tier, and recommendations.' },
-  sentinel: { title: 'Sentinel decision log', about: 'This Worker’s Sentinel decisions. Shadow decisions read “Would …”, and a missing reason stays missing.' },
-  brain: { title: 'GBrain records', about: 'One record type’s items, each with the evidence it rests on.' },
+  okf: { title: 'Knowledge it runs with (OKF)', about: 'The knowledge this Worker uses, proposed edits, and history.' },
+  effect: { title: 'Learning effect', about: 'Compares similar runs before and after something was learned. Needs 3 runs on each side.' },
+  skills: { title: 'Skills', about: 'Skills in use, their full content, and changes the Worker suggested.' },
+  facts: { title: 'Facts', about: 'Facts the Worker has recorded, with confidence scores.' },
+  sharing: { title: 'Sharing', about: 'Who can use this Worker’s learning. Sharing isn’t switched on yet.' },
+  records: { title: 'All records', about: 'All records for this Worker, by type, with redaction details.' },
+  sync: { title: 'Data transfer', about: 'Whether learning is synced to the platform, and what was filtered out.' },
+  routing: { title: 'Model routing', about: 'Current model routing, results per tier, and suggestions.' },
+  sentinel: { title: 'Sentinel decision log', about: 'Sentinel decisions for this Worker. Shadow-mode decisions start with “Would…”.' },
+  brain: { title: 'GBrain records', about: 'Records of this type, with supporting evidence.' },
 }
 
 const RECORD_TYPES = ['Memories: experience facts', 'Routing experience', 'Run memories', 'Agreed across runs', 'Skill proposals', 'Lessons from runs not met', 'Run summaries', 'Housekeeping', 'Retention']
@@ -59,7 +59,7 @@ export function WorkerLearningPage() {
   const m = data.composition?.maturity
   const brain = data.brain
   const mode = sentinel.data?.mode
-  const recordState = brain?.state === 'not_packaged' ? 'Not produced: no memory engine is packaged' : w.runtime.serving > 0 ? 'Not read: the Runtime refused the console’s request' : 'Not observed: no serving runtime'
+  const recordState = brain?.state === 'not_packaged' ? 'Not produced: no memory engine is packaged' : w.runtime.serving > 0 ? 'Not available: the runtime declined the request' : 'Not running'
 
   return (
     <PageContainer>
@@ -139,7 +139,7 @@ export function WorkerLearningPage() {
           </CardHeader>
           <CardContent className="py-5">
             <FactList>
-              <Fact label="Decides" className="sm:grid-cols-[6rem_minmax(0,1fr)]">{w.sentinel.worker_runtime === 'WORKER_RUNTIME' ? 'Not reported' : 'Signals only: no Worker Runtime running'}</Fact>
+              <Fact label="Decides" className="sm:grid-cols-[6rem_minmax(0,1fr)]">{w.sentinel.worker_runtime === 'WORKER_RUNTIME' ? 'Not reported' : 'Not running'}</Fact>
               <Fact label="Applies" className="sm:grid-cols-[6rem_minmax(0,1fr)]">No{mode?.why ? <span className="block text-meta text-muted-foreground">{mode.why}</span> : null}</Fact>
               <Fact label="Decisions" className="sm:grid-cols-[6rem_minmax(0,1fr)]">No decisions recorded</Fact>
               <Fact label="Chain" className="sm:grid-cols-[6rem_minmax(0,1fr)]">Decision chain not checked</Fact>
@@ -172,7 +172,7 @@ export function WorkerLearningSubpage() {
       <PageHeader crumbs={[{ label: 'Learning', to: '/learning' }, { label: name, to: `/learning/workers/${id}` }, { label: page.title }]} title={page.title} />
       <Card className="gap-3 p-6">
         <p className="text-item">Not reported by this Worker’s Runtime</p>
-        <p className="text-body text-muted-foreground">These reads come from the Worker’s own Runtime or the platform’s synced copy. The offline capture this console runs on holds neither for this Worker, so nothing is shown rather than an empty list that would read as “none”.</p>
+        <p className="text-body text-muted-foreground">This data comes from the Worker’s runtime, which isn’t available in this demo.</p>
         <Button asChild variant="outline" size="sm" className="self-start"><Link to={`/learning/workers/${id}`}>Back to {name}</Link></Button>
       </Card>
     </PageContainer>

@@ -48,7 +48,7 @@ export function DeclarationPanel({ typeLabel, identity, domain, context, identif
   return (
     <section aria-labelledby="worker-panel-title" className="overflow-hidden rounded-panel bg-card">
       <div className="-m-px">
-        <PanelHead pill={pill} ready={Boolean(ctx)} title={id?.label ?? 'Not yet assigned'} subtitle={ctx?.label ?? 'Its identity forms as you decide.'} />
+        <PanelHead pill={pill} ready={Boolean(ctx)} title={id?.label ?? 'New Worker'} subtitle={ctx?.label ?? 'Details fill in as you choose.'} />
       </div>
       <div className="px-6 pb-5">
         <ul className="-mx-2 flex flex-col pt-2">
@@ -150,8 +150,8 @@ export function ComposingPanel({ draft, proposal, current, settled, onGo }: {
     const detail =
       state === 'done' ? content
       : state === 'assembling' ? 'Assembling…'
-      : state === 'waiting' ? 'Not yet resolved'
-      : state === 'attention' ? 'Needs a person'
+      : state === 'waiting' ? 'Pending'
+      : state === 'attention' ? 'Needs review'
       : cps.length > 1 ? `${accepted} of ${cps.length} parts confirmed`
       : content
     const target = cps.find((c) => c.key === current)?.key ?? cps.find((c) => !draft.accepted.includes(c.key))?.key ?? cps[0].key
@@ -177,7 +177,7 @@ export function ComposingPanel({ draft, proposal, current, settled, onGo }: {
               <div className="flex justify-between gap-4"><dt className="text-muted-foreground">Worker</dt><dd className="min-w-0 truncate text-right">{draft.name}</dd></div>
               <div className="flex justify-between gap-4"><dt className="text-muted-foreground">Business domain</dt><dd>{domainOf(draft.business_domain_key)?.label ?? 'None'}</dd></div>
               <div className="flex justify-between gap-4"><dt className="text-muted-foreground">Identity</dt><dd>{draft.identity.status === 'PROVISIONED' ? 'Reserved, not issued' : draft.identity.status.toLowerCase()}</dd></div>
-              <div className="flex flex-col gap-1"><dt className="text-muted-foreground">Bounded scope</dt><dd className="font-mono text-meta break-all">{draft.identity.bounded_scope}</dd></div>
+              <div className="flex flex-col gap-1"><dt className="text-muted-foreground">Scope</dt><dd className="font-mono text-meta break-all">{draft.identity.bounded_scope}</dd></div>
             </dl>
           </CollapsibleContent>
         </Collapsible>

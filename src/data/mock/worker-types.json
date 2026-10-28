@@ -22,7 +22,7 @@
    "display_name": "Full Stack Software Engineering Worker",
    "summary": "Builds new software and changes existing systems, with tests that fail without the change.",
    "availability": "in_build",
-   "availability_detail": "No harness has been admitted for this type yet.",
+   "availability_detail": "No harness is available for this type yet.",
    "bounded_context_count": 0
   }
  ]

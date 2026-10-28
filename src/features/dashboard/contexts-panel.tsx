@@ -54,7 +54,7 @@ export function ContextsPanel({ data, detailLink }: { data: ExecutiveDashboard; 
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-meta text-muted-foreground">Compared over the same period. Averages are over the runs that reported, beside their coverage.</p>
+        <p className="text-meta text-muted-foreground">Same period for all. Averages only use runs that reported data.</p>
         <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={cut} onValueChange={(v) => v && setCut(v as Cut)} aria-label="Group by">
           <ToggleGroupItem value="contexts">Bounded context</ToggleGroupItem>
           <ToggleGroupItem value="identities">Worker identity</ToggleGroupItem>
@@ -72,7 +72,7 @@ export function ContextsPanel({ data, detailLink }: { data: ExecutiveDashboard; 
                   <TableHead className="pl-0">{cut === 'contexts' ? 'Bounded context' : 'Worker identity'}</TableHead>
                   <TableHead>Workers</TableHead>
                   <TableHead className="text-right">Runs</TableHead>
-                  <TableHead>Met the bar</TableHead>
+                  <TableHead>Met DoD</TableHead>
                   <TableHead className="text-right">Cost per run</TableHead>
                   <TableHead className="pr-0 text-right">Tokens per run</TableHead>
                 </TableRow>
@@ -117,7 +117,7 @@ export function ContextsPanel({ data, detailLink }: { data: ExecutiveDashboard; 
                 <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                   <div><dt className="text-meta text-muted-foreground">Workers</dt><dd className="tabular-nums">{row.registered} · {row.packaged} packaged</dd></div>
                   <div><dt className="text-meta text-muted-foreground">Runs</dt><dd className="tabular-nums">{row.completed_runs}</dd></div>
-                  <div><dt className="text-meta text-muted-foreground">Met the bar</dt><dd><DodCell row={row} /></dd></div>
+                  <div><dt className="text-meta text-muted-foreground">Met DoD</dt><dd><DodCell row={row} /></dd></div>
                   <div><dt className="text-meta text-muted-foreground">Cost per run</dt><dd><MeasuredValue metric={row.model_cost_per_run} format={formatUsd} /><Reported row={row} /></dd></div>
                 </dl>
               </li>

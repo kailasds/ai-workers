@@ -26,7 +26,7 @@ function ArchiveConfirm({ draft, onDone, onCancel }: { draft: Draft; onDone: () 
   return (
     <div role="group" aria-labelledby={`archive-${draft.composition_id}`} className="mt-3 rounded-xl border border-destructive/30 bg-destructive/5 p-4">
       <p id={`archive-${draft.composition_id}`} className="text-item">Archive {draft.name}?</p>
-      <p className="mt-1 text-meta text-muted-foreground">It leaves Saved drafts and can no longer be continued. It has no Package, so no runtime is affected.</p>
+      <p className="mt-1 text-meta text-muted-foreground">It’s removed from Saved drafts and can’t be resumed. Nothing deployed is affected.</p>
       {error && <p className="mt-2 text-meta text-destructive">{error}</p>}
       <div className="mt-3 flex gap-2">
         <Button
@@ -77,11 +77,11 @@ export function DraftsPage() {
       )}
 
       {error && !data ? (
-        <ErrorState title="Saved drafts unavailable" message="Saved drafts could not be loaded. Check the console API, then try again." onRetry={refresh} retrying={pending} />
+        <ErrorState title="Saved drafts unavailable" message="Couldn’t load drafts. Try again." onRetry={refresh} retrying={pending} />
       ) : !data ? (
         <LoadingRegion label="Loading saved drafts…" className="flex flex-col gap-2">{Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-16" />)}</LoadingRegion>
       ) : active.length === 0 ? (
-        <EmptyState icon={FolderOpen} title="No saved drafts yet" description="Start a new Worker and it will be saved here as you go." action={<Button asChild><Link to="/compose">New Worker</Link></Button>} />
+        <EmptyState icon={FolderOpen} title="No saved drafts yet" description="Drafts are saved here automatically as you compose." action={<Button asChild><Link to="/compose">New Worker</Link></Button>} />
       ) : (
         <>
           <InputGroup className="sm:max-w-sm">
@@ -89,7 +89,7 @@ export function DraftsPage() {
             <InputGroupInput type="search" value={q} onChange={(e) => { setQ(e.target.value); setPage(1) }} placeholder="Search drafts by name" aria-label="Search saved drafts" />
           </InputGroup>
           {matching.length === 0 ? (
-            <EmptyState icon={SearchX} title="No drafts match this search" description="Clear the search to see every draft." action={<Button variant="outline" onClick={() => setQ('')}>Clear search</Button>} />
+            <EmptyState icon={SearchX} title="No drafts match this search" description="Clear the search to see all drafts." action={<Button variant="outline" onClick={() => setQ('')}>Clear search</Button>} />
           ) : (
             <Card className="gap-0 py-0">
               <ul className="divide-y">
@@ -102,7 +102,7 @@ export function DraftsPage() {
                         <div className="min-w-0 flex-1">
                           <Link to={`/compose/guided/${d.composition_id}`} className="text-item outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring">{d.name}</Link>
                           <p className="mt-0.5 truncate text-meta text-muted-foreground">
-                            {d.identity.bounded_scope || 'No scope recorded'} · r{d.revision} · updated {formatRelative(d.updated_at)}
+                            {d.identity.bounded_scope || 'No scope yet'} · r{d.revision} · updated {formatRelative(d.updated_at)}
                           </p>
                           <div className="mt-2 flex flex-wrap items-center gap-2 text-meta text-muted-foreground">
                             <span className="tabular-nums">{composed ? 'Composed' : `${d.accepted.length} of ${CHECKPOINTS.length} confirmed`}</span>

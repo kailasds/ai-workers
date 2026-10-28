@@ -43,12 +43,12 @@ function PreparedDetail({ pkg, onChanged }: { pkg: CustomerPackage; onChanged: (
       </div>
       {!canShare && <p className="-mt-4 text-meta text-muted-foreground">{pkg.state === 'FAILED' ? 'Preparation failed. A failed Package cannot be shared.' : 'Available once preparation finishes.'}</p>}
       {shareNote && (
-        <Alert><AlertTitle className="text-item">No link was created</AlertTitle><AlertDescription>{USE_MOCK ? 'Share links are signed by the platform. This console runs on captured data and creates none.' : 'Sharing is wired in a later revision.'}</AlertDescription></Alert>
+        <Alert><AlertTitle className="text-item">No link was created</AlertTitle><AlertDescription>{USE_MOCK ? 'Share links aren’t available in this demo.' : 'Coming soon.'}</AlertDescription></Alert>
       )}
       {confirming && (
         <div role="group" aria-labelledby="ack-title" className="rounded-xl border p-4">
           <p id="ack-title" className="text-item">Record that {pkg.destination_label ?? 'the customer'} acknowledged Package {pkg.version}?</p>
-          <p className="mt-1 text-meta text-muted-foreground">It records an acknowledgement only. It does not verify that the customer deployed or is running it.</p>
+          <p className="mt-1 text-meta text-muted-foreground">This only records that the customer confirmed receipt. It doesn’t confirm deployment.</p>
           {error && <p className="mt-2 text-meta text-destructive">{error}</p>}
           <div className="mt-3 flex gap-2">
             <Button size="sm" disabled={busy} onClick={async () => { setBusy(true); try { onChanged(await acknowledgeDelivery(pkg.delivery_id)); setConfirming(false) } catch (c) { setError(c instanceof Error ? c.message : 'Acknowledgement could not be recorded.') } finally { setBusy(false) } }}>
@@ -67,7 +67,7 @@ function PreparedDetail({ pkg, onChanged }: { pkg: CustomerPackage; onChanged: (
       </FactList>
       {pkg.requirements && (
         <section>
-          <h3 className="text-item">To run it, the customer needs</h3>
+          <h3 className="text-item">Customer requirements</h3>
           <FactList className="mt-2">{Object.entries(pkg.requirements).map(([k, v]) => <Fact key={k} label={k.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase())}>{v}</Fact>)}</FactList>
         </section>
       )}
@@ -86,7 +86,7 @@ function PreparedDetail({ pkg, onChanged }: { pkg: CustomerPackage; onChanged: (
         <Fact label="Learning callback">{pkg.callback.configured === 'DISABLED' ? 'Disabled' : 'Enabled'} · {pkg.callback.observed === 'NOT_OBSERVED' ? 'Not observed' : pkg.callback.observed}</Fact>
         <Fact label="Source">{pkg.source.state === 'PUBLISHED' ? <>Published{pkg.source.tag ? <span className="block font-mono text-meta break-all text-muted-foreground">{pkg.source.tag}</span> : null}</> : pkg.source.state.replace(/_/g, ' ').toLowerCase()}</Fact>
       </FactList>
-      <p className="text-meta text-muted-foreground">Customer runtime status: not observed by this record. Prepared is not sent; a share link is not receipt; an acknowledgement is not a deployment.</p>
+      <p className="text-meta text-muted-foreground">We can’t see the customer’s runtime from here. Prepared, shared or acknowledged doesn’t mean deployed.</p>
     </div>
   )
 }
@@ -126,7 +126,7 @@ export function DeliveryPage() {
         ) : !drafts.data ? (
           <LoadingRegion label="Reading packaged Workers…" className={GRID}>{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-80 rounded-xl bg-track" />)}</LoadingRegion>
         ) : toPrepare.length === 0 ? (
-          <EmptyState icon={PackageOpen} title="Nothing waiting to be prepared" description="A Worker appears here once its Package is sealed and ready, and before it has a delivery record." action={<Button asChild variant="outline"><Link to="/packaging">Go to Packaging</Link></Button>} />
+          <EmptyState icon={PackageOpen} title="Nothing waiting to be prepared" description="Workers show up here once their Package is built." action={<Button asChild variant="outline"><Link to="/packaging">Go to Packaging</Link></Button>} />
         ) : (
           <ul className={GRID}>
             {toPrepare.map((d) => {
@@ -168,7 +168,7 @@ export function DeliveryPage() {
       ) : !packages.data ? (
         <LoadingRegion label="Reading delivery records…" className={GRID}>{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-80 rounded-xl bg-track" />)}</LoadingRegion>
       ) : prepared.length === 0 ? (
-        <EmptyState icon={PackageOpen} title="No customer Packages prepared" description="Prepared Packages appear here with their transfer evidence." />
+        <EmptyState icon={PackageOpen} title="No customer Packages prepared" description="Prepared Packages show up here." />
       ) : (
         <ul className={GRID}>
           {prepared.map((p) => (

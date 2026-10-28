@@ -28,10 +28,10 @@ export function BrainLayout() {
   const o = f.sentinel.data
 
   const band = (
-    <KpiBand title="The Brain at a glance" columns={3}>
-      <Kpi label="Skills in the library" icon={Brain} hue="violet" value={f.skills.data?.skills.length} loading={!f.skills.data && !f.skills.error} failed={Boolean(f.skills.error && !f.skills.data)} to="/knowledge/skills" caption={f.evals.data ? `${formatCount(f.evals.data.evaluations.length)} EVAL Playbooks to hold them to` : 'Reusable Worker capabilities'} />
-      <Kpi label="Workers that have learned" icon={BrainCircuit} hue="cyan" value={learning?.length} unit={workers ? `of ${formatCount(workers.length)}` : undefined} loading={!f.portfolio.data && !f.portfolio.error} failed={Boolean(f.portfolio.error && !f.portfolio.data)} to="/learning" caption={memories !== undefined ? `${formatCount(memories)} memory records from running` : 'Memory records from running'} />
-      <Kpi label="Watched by a reporting Sentinel" icon={ShieldCheck} hue="rose" value={o?.coverage.reporting} unit={o ? `of ${formatCount(o.coverage.running)} running` : undefined} loading={!o && !f.sentinel.error} failed={Boolean(f.sentinel.error && !o)} to="/sentinel" caption={o ? `${formatCount(o.needs_review)} need review · ${formatCount(o.in_force.length)} restrictions in force` : 'Oversight across every Worker'} />
+    <KpiBand title="Overview" columns={3}>
+      <Kpi label="Skills in the library" icon={Brain} hue="violet" value={f.skills.data?.skills.length} loading={!f.skills.data && !f.skills.error} failed={Boolean(f.skills.error && !f.skills.data)} to="/knowledge/skills" caption={f.evals.data ? `${formatCount(f.evals.data.evaluations.length)} EVAL Playbooks to hold them to` : 'Reusable instructions'} />
+      <Kpi label="Workers with memory" icon={BrainCircuit} hue="cyan" value={learning?.length} unit={workers ? `of ${formatCount(workers.length)}` : undefined} loading={!f.portfolio.data && !f.portfolio.error} failed={Boolean(f.portfolio.error && !f.portfolio.data)} to="/learning" caption={memories !== undefined ? `${formatCount(memories)} memory records from running` : 'Saved from their runs'} />
+      <Kpi label="Monitored by Sentinel" icon={ShieldCheck} hue="rose" value={o?.coverage.reporting} unit={o ? `of ${formatCount(o.coverage.running)} running` : undefined} loading={!o && !f.sentinel.error} failed={Boolean(f.sentinel.error && !o)} to="/sentinel" caption={o ? `${formatCount(o.needs_review)} need review · ${formatCount(o.in_force.length)} restrictions in force` : 'Across all Workers'} />
     </KpiBand>
   )
 

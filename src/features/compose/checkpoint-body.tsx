@@ -6,7 +6,7 @@ import { domainOf, widerContexts, type CheckpointKey } from './compose-model'
 import type { Proposal } from './proposal'
 
 function Items({ items }: { items: { key: string; title: string; detail?: React.ReactNode; meta?: React.ReactNode }[] }) {
-  if (items.length === 0) return <p className="text-body text-muted-foreground">Nothing was selected for this part.</p>
+  if (items.length === 0) return <p className="text-body text-muted-foreground">Nothing selected.</p>
   return (
     <ul className="divide-y rounded-xl border">
       {items.map((i) => (
@@ -41,7 +41,7 @@ export function CheckpointBody({ k, draft, p }: { k: CheckpointKey; draft: Draft
               <p className="mt-2 flex gap-2 text-body"><Check className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />{p.context?.includes}</p>
             </section>
             <section>
-              <h3 className="text-overline text-muted-foreground uppercase">Refuses</h3>
+              <h3 className="text-overline text-muted-foreground uppercase">Excludes</h3>
               <ul className="mt-2 flex flex-col gap-1.5">
                 {draft.identity.scope_excludes.map((x) => (
                   <li key={x} className="flex gap-2 text-body"><Ban className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />{x}</li>
@@ -60,7 +60,7 @@ export function CheckpointBody({ k, draft, p }: { k: CheckpointKey; draft: Draft
             <Fact label="Harness">{p.harness?.display_name ?? 'Generic runtime'}</Fact>
             <Fact label="Model routing">{p.models.routing}</Fact>
             <Fact label="Maker model">{p.models.maker}</Fact>
-            <Fact label="Verifier model">{p.models.verifier} <span className="text-meta text-muted-foreground">· independent of the maker</span></Fact>
+            <Fact label="Verifier model">{p.models.verifier} <span className="text-meta text-muted-foreground">· separate from the maker</span></Fact>
           </FactList>
           {p.procedure.length > 0 && (
             <ol className="flex flex-col gap-2">
@@ -77,7 +77,7 @@ export function CheckpointBody({ k, draft, p }: { k: CheckpointKey; draft: Draft
     case 'skills':
       return <Items items={p.skills.map((s) => ({ key: s.name, title: s.title, detail: s.description, meta: <span className="text-meta text-muted-foreground tabular-nums">{s.worker_count} Workers</span> }))} />
     case 'domain_language':
-      return <Items items={p.languages.map((l) => ({ key: l.domain_id, title: l.name, detail: `${l.path}. Bound because the work answers to this area.`, meta: l.plugin_slug ? null : <StatusBadge tone="neutral" icon={null}>Not yet available</StatusBadge> }))} />
+      return <Items items={p.languages.map((l) => ({ key: l.domain_id, title: l.name, detail: `${l.path}. Added because the work falls under this area.`, meta: l.plugin_slug ? null : <StatusBadge tone="neutral" icon={null}>Not yet available</StatusBadge> }))} />
     case 'evals':
       return <Items items={p.evals.map((e) => ({ key: e.id, title: e.name, detail: e.description?.split('. ')[0], meta: <StatusBadge tone="neutral" icon={null}>{e.hard_gate ? 'Required gate' : 'Measured check'}</StatusBadge> }))} />
     case 'gbrain':
@@ -86,8 +86,8 @@ export function CheckpointBody({ k, draft, p }: { k: CheckpointKey; draft: Draft
           <Fact label="Memory engine">{p.memory.engine}</Fact>
           <Fact label="Durability">{p.memory.durability}</Fact>
           <Fact label="Memory types">{p.memory.types.join(' · ')}</Fact>
-          <Fact label="Before it compounds">{p.memory.minimumObservations} agreeing runs{p.memory.requiresDodMet ? ' that met the Definition of Done' : ''}</Fact>
-          <Fact label="Shared Skills">Never written by a Worker. It records proposals only.</Fact>
+          <Fact label="Review before reuse">{p.memory.minimumObservations} agreeing runs{p.memory.requiresDodMet ? ' that met the Definition of Done' : ''}</Fact>
+          <Fact label="Shared Skills">Workers can only propose changes here.</Fact>
         </FactList>
       )
     case 'definition_of_done': {
@@ -99,8 +99,8 @@ export function CheckpointBody({ k, draft, p }: { k: CheckpointKey; draft: Draft
             items={p.rubrics.map((r) => ({
               key: r.criterion_key,
               title: r.display_name,
-              detail: r.availability === 'AVAILABLE' ? (r.default_threshold ? `Passes at ${r.default_threshold}` : 'No required threshold') : (r.availability_detail ?? 'Nothing here can measure this yet.'),
-              meta: <StatusBadge tone={r.availability === 'AVAILABLE' ? 'neutral' : 'warning'} icon={null}>{r.availability !== 'AVAILABLE' ? 'Not measurable yet' : r.gating_by_default ? 'Stops a release' : 'Observed'}</StatusBadge>,
+              detail: r.availability === 'AVAILABLE' ? (r.default_threshold ? `Passes at ${r.default_threshold}` : 'No required threshold') : (r.availability_detail ?? 'Can’t be measured yet.'),
+              meta: <StatusBadge tone={r.availability === 'AVAILABLE' ? 'neutral' : 'warning'} icon={null}>{r.availability !== 'AVAILABLE' ? 'Not measurable yet' : r.gating_by_default ? 'Blocks release' : 'Observed'}</StatusBadge>,
             }))}
           />
         </div>
@@ -110,9 +110,9 @@ export function CheckpointBody({ k, draft, p }: { k: CheckpointKey; draft: Draft
       return (
         <FactList>
           <Fact label="Operating mode">{p.autonomy.mode}</Fact>
-          <Fact label="Autonomy level">Level {p.autonomy.level} <span className="text-meta text-muted-foreground">· each level widens what it may do without being asked</span></Fact>
+          <Fact label="Autonomy level">Level {p.autonomy.level} <span className="text-meta text-muted-foreground">· higher levels need less approval</span></Fact>
           <Fact label="Worker Sentinel">{p.autonomy.sentinel}</Fact>
-          <Fact label="Spending limit">Set at deployment, never here</Fact>
+          <Fact label="Spending limit">Set when deploying</Fact>
         </FactList>
       )
   }

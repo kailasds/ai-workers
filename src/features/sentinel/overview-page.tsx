@@ -82,7 +82,7 @@ export function SentinelOverviewPage() {
           <Posture o={data} />
           <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
             <Card className="gap-0 py-0">
-              <h2 className="px-5 pt-5 pb-3 text-section">Five dimensions</h2>
+              <h2 className="px-5 pt-5 pb-3 text-section">What Sentinel checks</h2>
               <ul className="divide-y border-t">
                 {DIMENSIONS.map((d) => {
                   const dim = data.dimensions.find((x) => x.key === d.key)
@@ -107,7 +107,7 @@ export function SentinelOverviewPage() {
             <div className="flex flex-col gap-6">
               <Card className="gap-2 p-5">
                 <h2 className="text-section">In force now</h2>
-                <p className="text-body text-muted-foreground">{data.in_force.length === 0 ? 'Nothing is in force. That is a fact about restrictions, not a safety claim.' : `${data.in_force.length} restrictions`}</p>
+                <p className="text-body text-muted-foreground">{data.in_force.length === 0 ? 'No restrictions are active.' : `${data.in_force.length} restrictions`}</p>
               </Card>
               <Card className="gap-2 p-5">
                 <div className="flex items-center justify-between">

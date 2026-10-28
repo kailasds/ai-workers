@@ -28,7 +28,7 @@ export function LanguagesTab({ domains }: { domains: DslDomain[] }) {
   const groups = useMemo(() => {
     const map = new Map<string, DslDomain[]>()
     for (const d of domains) {
-      const area = d.path.includes(' > ') ? d.path.split(' > ')[0] : 'Filed nowhere'
+      const area = d.path.includes(' > ') ? d.path.split(' > ')[0] : 'Uncategorised'
       map.set(area, [...(map.get(area) ?? []), d])
     }
     return [...map.entries()].sort((a, b) => b[1].length - a[1].length)
@@ -73,9 +73,9 @@ export function LanguagesTab({ domains }: { domains: DslDomain[] }) {
               <Fact label="Market">{open.market ?? 'Not stated'}</Fact>
               <Fact label="Industry">{open.industry ?? 'Not stated'}</Fact>
               <Fact label="Lines of business">{open.lines_of_business.length ? open.lines_of_business.join(', ') : 'All lines of business'}</Fact>
-              <Fact label="Workers can use it">{open.plugin_slug ? `Yes · ${open.plugin_slug}` : 'Not yet: browsable, not usable'}</Fact>
+              <Fact label="Workers can use it">{open.plugin_slug ? `Yes · ${open.plugin_slug}` : 'Not yet'}</Fact>
             </FactList>
-            <p className="rounded-lg bg-muted px-3 py-2 text-meta text-muted-foreground">The concept and rule graph is read from the registry when opened. The offline capture holds the catalogue only.</p>
+            <p className="rounded-lg bg-muted px-3 py-2 text-meta text-muted-foreground">The full rule graph isn’t available in this demo.</p>
           </div>
         )}
       </DetailSheet>

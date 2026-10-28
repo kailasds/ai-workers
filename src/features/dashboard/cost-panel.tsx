@@ -49,7 +49,7 @@ export function CostPanel({ data, measure, onMeasure }: { data: ExecutiveDashboa
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-meta text-muted-foreground">Reported model cost is what the runs reported, not a bill.</p>
+        <p className="text-meta text-muted-foreground">Model cost as reported by runs. Not an invoice.</p>
         <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={measure} onValueChange={(v) => v && onMeasure(v as Measure)} aria-label="Measure">
           <ToggleGroupItem value="cost">Cost</ToggleGroupItem>
           <ToggleGroupItem value="tokens">Tokens</ToggleGroupItem>
@@ -57,7 +57,7 @@ export function CostPanel({ data, measure, onMeasure }: { data: ExecutiveDashboa
       </div>
 
       {!isObserved(total) ? (
-        <EmptyState className="mt-4" icon={Coins} title={`No run in this period reported its ${unit}`} description="A Worker that could not read its usage says so. Nothing is shown as zero." />
+        <EmptyState className="mt-4" icon={Coins} title={`No run in this period reported its ${unit}`} description="Workers that couldn’t report usage are marked, not shown as zero." />
       ) : (
         <>
           <div className="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1">
@@ -117,7 +117,7 @@ export function CostPanel({ data, measure, onMeasure }: { data: ExecutiveDashboa
                   ))}
                 </tbody>
               </table>
-              <p className="mt-1 text-meta text-muted-foreground">Periods in which no run finished are left out.</p>
+              <p className="mt-1 text-meta text-muted-foreground">Periods with no finished runs are hidden.</p>
             </CollapsibleContent>
           </Collapsible>
         </>

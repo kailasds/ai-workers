@@ -39,8 +39,8 @@ function PipelineBand({ p }: { p: Pipeline }) {
   const packaged = p.drafts.data?.filter((d) => d.status === 'ACTIVE' && d.package).length
   const acked = p.packages.data ? acknowledged(p.packages.data).length : null
   return (
-    <KpiBand title="The pipeline at a glance">
-        <Kpi label="Workers" icon={Bot} hue="blue" value={totals?.workers} loading={!p.portfolio.data && !p.portfolio.error} failed={Boolean(p.portfolio.error && !p.portfolio.data)} to="/workers" caption={totals ? <><span className="text-foreground">{formatCount(totals.serving)} serving</span> · {formatCount(totals.attention)} need attention</> : 'Every Worker on the platform'}>
+    <KpiBand title="Overview">
+        <Kpi label="Workers" icon={Bot} hue="blue" value={totals?.workers} loading={!p.portfolio.data && !p.portfolio.error} failed={Boolean(p.portfolio.error && !p.portfolio.data)} to="/workers" caption={totals ? <><span className="text-foreground">{formatCount(totals.serving)} serving</span> · {formatCount(totals.attention)} need attention</> : 'All Workers'}>
           {totals && totals.workers > 0 && (
             <div role="img" aria-label={`${totals.serving} of ${totals.workers} serving`} className="flex h-1.5 gap-px overflow-hidden rounded-full bg-track">
               <span className="bg-brand" style={{ flexGrow: totals.serving, flexBasis: 0 }} />
@@ -52,8 +52,8 @@ function PipelineBand({ p }: { p: Pipeline }) {
         <Kpi label="Met Definition of Done" icon={ClipboardCheck} hue="violet" value={dod?.met} unit={completed !== null ? `of ${formatCount(completed)} runs` : undefined} loading={!o && !p.outcomes.error} failed={Boolean(p.outcomes.error && !o)} to="/dashboard" caption={<>Last 30 days · <span className="text-primary underline-offset-4 group-hover:underline">Outcomes report</span></>}>
           {dod && completed ? <VerdictBar counts={{ MET: dod.met, NOT_MET: dod.not_met, NOT_ADJUDICABLE: dod.not_adjudicable }} className="h-1.5 bg-track" /> : null}
         </Kpi>
-        <Kpi label="Ready to package" icon={Package} hue="amber" value={p.toPackage} loading={p.toPackage === null && !p.drafts.error && !p.records.error} failed={Boolean(p.drafts.error || p.records.error)} to="/packaging" caption={packaged !== undefined ? `${formatCount(packaged)} sealed Packages so far` : 'Composed, nothing blocking'} />
-        <Kpi label="With customers" icon={Send} hue="teal" value={p.packages.data?.length} loading={!p.packages.data && !p.packages.error} failed={Boolean(p.packages.error && !p.packages.data)} to="/customer-delivery?view=delivered" caption={acked !== null ? `${formatCount(acked)} acknowledged · ${p.toPrepare ?? '—'} waiting to prepare` : 'Prepared customer Packages'} />
+        <Kpi label="Ready to package" icon={Package} hue="amber" value={p.toPackage} loading={p.toPackage === null && !p.drafts.error && !p.records.error} failed={Boolean(p.drafts.error || p.records.error)} to="/packaging" caption={packaged !== undefined ? `${formatCount(packaged)} sealed Packages so far` : 'Ready to build'} />
+        <Kpi label="With customers" icon={Send} hue="teal" value={p.packages.data?.length} loading={!p.packages.data && !p.packages.error} failed={Boolean(p.packages.error && !p.packages.data)} to="/customer-delivery?view=delivered" caption={acked !== null ? `${formatCount(acked)} acknowledged · ${p.toPrepare ?? '—'} waiting to prepare` : 'Packages sent to customers'} />
     </KpiBand>
   )
 }

@@ -83,7 +83,7 @@ export function RunsPanel({ data, verdict, context, measure, page, onChange }: R
     <div>
       <h3 ref={heading} tabIndex={-1} className="sr-only outline-none">Runs, page {current} of {pages}</h3>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-meta text-muted-foreground">Every completed run behind the figures, newest first.</p>
+        <p className="text-meta text-muted-foreground">Completed runs, newest first.</p>
         <p className="text-meta text-muted-foreground tabular-nums" aria-live="polite">
           {filtering ? `${formatCount(filtered.length)} of ${formatCount(rows.length)} runs` : `${formatCount(rows.length)} runs`}
         </p>
@@ -119,13 +119,13 @@ export function RunsPanel({ data, verdict, context, measure, page, onChange }: R
       </div>
 
       {rows.length === 0 ? (
-        <EmptyState className="mt-4" icon={ListFilter} title="No runs completed in this period" description="Runs appear here as soon as a Worker reports one finished." />
+        <EmptyState className="mt-4" icon={ListFilter} title="No runs completed in this period" description="Runs show up here when they finish." />
       ) : filtered.length === 0 ? (
         <EmptyState
           className="mt-4"
           icon={SearchX}
           title="No runs match these filters"
-          description="Filters narrow the runs already loaded for this period."
+          description="Try different filters."
           action={<Button variant="outline" onClick={() => onChange({ verdict: null, context: null })}>Clear filters</Button>}
         />
       ) : (

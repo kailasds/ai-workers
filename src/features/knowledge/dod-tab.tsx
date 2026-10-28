@@ -15,7 +15,7 @@ export const METHOD: Record<string, string> = {
 const AVAILABILITY: Record<string, string> = {
   AVAILABLE: 'Measurable',
   REQUIRES_TOOL: 'Needs a tool',
-  NOT_IMPLEMENTED: 'Nothing can measure this yet',
+  NOT_IMPLEMENTED: 'Can’t be measured yet',
 }
 
 export function DodTab({ rubrics }: { rubrics: DodRubric[] }) {
@@ -36,14 +36,14 @@ export function DodTab({ rubrics }: { rubrics: DodRubric[] }) {
 
   return (
     <>
-      <p className="mb-4 text-meta text-muted-foreground">What a Worker has to prove before its work counts as done. A narrower scope may tighten a gate, never loosen one. Not measured is not the same as failed.</p>
+      <p className="mb-4 text-meta text-muted-foreground">What a Worker must pass before its work counts as done. A narrower scope can tighten a gate but not loosen it.</p>
       <Card className="gap-0 overflow-hidden py-0">
         <section aria-label="Release gates">
-          <GroupHeader label="Release gates · stop a release" count={gating.length} />
+          <GroupHeader label="Release gates · block release" count={gating.length} />
           <ul className="divide-y">{gating.map(row)}</ul>
         </section>
-        <section aria-label="Observed, not gating">
-          <GroupHeader label="Observed, not gating" count={observed.length} />
+        <section aria-label="Tracked only">
+          <GroupHeader label="Tracked only" count={observed.length} />
           <ul className="divide-y">{observed.map(row)}</ul>
         </section>
       </Card>
@@ -54,20 +54,20 @@ export function DodTab({ rubrics }: { rubrics: DodRubric[] }) {
             <FactList>
               <Fact label="Reported as"><span className="font-mono text-meta">{open.criterion_key}</span></Fact>
               <Fact label="Passes at">{open.default_threshold ?? 'No required threshold'}</Fact>
-              <Fact label="Release">{open.gating_by_default ? 'Release gate: stops a release' : 'Observed, not gating'}</Fact>
-              <Fact label="Can it be measured">{AVAILABILITY[open.availability] ?? open.availability}{open.availability_detail ? <span className="block text-meta text-muted-foreground">{open.availability_detail}</span> : null}</Fact>
+              <Fact label="Release">{open.gating_by_default ? 'Release gate: blocks release' : 'Tracked only'}</Fact>
+              <Fact label="Measurable">{AVAILABILITY[open.availability] ?? open.availability}{open.availability_detail ? <span className="block text-meta text-muted-foreground">{open.availability_detail}</span> : null}</Fact>
               {open.skill_ref && <Fact label="Measured by"><span className="font-mono text-meta break-all">{open.skill_ref}</span></Fact>}
               {open.aliases.length > 0 && <Fact label="Also called">{open.aliases.join(', ')}</Fact>}
             </FactList>
             {open.computation && open.computation.steps.length > 0 && (
               <section>
-                <h3 className="text-item">How the number is produced</h3>
+                <h3 className="text-item">How it’s calculated</h3>
                 <ol className="mt-2 flex list-decimal flex-col gap-1.5 pl-5 text-body">{open.computation.steps.map((s) => <li key={s}>{s}</li>)}</ol>
               </section>
             )}
             {open.computation?.rule && (
               <section>
-                <h3 className="text-item">What makes it pass</h3>
+                <h3 className="text-item">Pass criteria</h3>
                 <p className="mt-1 text-body">{open.computation.rule}</p>
               </section>
             )}

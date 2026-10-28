@@ -170,9 +170,9 @@ export function HarnessPage() {
 const CERTIFY_STEPS = [
   { title: 'Build', who: 'Harness team', text: 'Write the run function and manifest with the Python SDK, then build the image.' },
   { title: 'Check', who: 'Harness team', text: 'Run the conformance suite against the image.' },
-  { title: 'Review', who: 'Harness team', text: 'Read the report; fix and run again. Only a version that passes can be certified.' },
-  { title: 'Request certification', who: 'Harness team', text: 'Send the report to a maintainer yourself. The person who ran the suite cannot certify their own report.' },
-  { title: 'Certify', who: 'Maintainer', text: 'On the prod host, in their own terminal, the maintainer re-runs the suite against the same image, confirms, and the platform records who certified and when.' },
+  { title: 'Review', who: 'Harness team', text: 'Fix any failures and run again. Only passing versions can be certified.' },
+  { title: 'Request certification', who: 'Harness team', text: 'Send the report to a maintainer. You can’t certify your own report.' },
+  { title: 'Certify', who: 'Maintainer', text: 'A maintainer re-runs the suite on the prod host and confirms. The platform records who certified it and when.' },
 ]
 
 export function CertifyPage() {
@@ -205,7 +205,7 @@ export function CertifyPage() {
           })}
         </ul>
       </Card>
-      <p className="text-meta text-muted-foreground">This guide sends nothing. Compose shows each version’s state; it does not refuse an uncertified version yet. Conformance is evidence, not a security boundary.</p>
+      <p className="text-meta text-muted-foreground">This guide is for reference only. Compose shows whether a version is certified, but doesn’t block uncertified ones yet.</p>
     </Layout>
   )
 }
@@ -254,7 +254,7 @@ export function ConformanceReportPage() {
             <Fact label="Checked">{h.conformance?.checked_at ? formatDay(h.conformance.checked_at) : 'Not reported'}</Fact>
             <Fact label="Report"><span className="font-mono text-meta">{reportId}</span></Fact>
           </FactList>
-          <p className="mt-5 text-meta text-muted-foreground">The fifteen checks, the image digest the report covers and the source commit live in the report document. This capture holds the catalogue’s summary only, so each check would read as pending, never as passed.</p>
+          <p className="mt-5 text-meta text-muted-foreground">Full check results are in the report document. Only the summary is available here.</p>
         </Card>
       )}
     </Layout>
@@ -293,7 +293,7 @@ export function SdkPage() {
         </nav>
         <Card className="gap-4 p-6">
           <div className="flex items-center gap-3"><IconTile icon={BookOpen} size="sm" /><h2 className="text-section">{current[1]}</h2></div>
-          <p className="text-body text-muted-foreground">This page renders from the Harness–Worker Contract (<span className="font-mono text-meta">/hwc/v1</span>), read from the platform. The contract is not part of the offline capture, so the page cannot be drawn here.</p>
+          <p className="text-body text-muted-foreground">This page renders from the Harness–Worker Contract (<span className="font-mono text-meta">/hwc/v1</span>), which isn’t available in this demo.</p>
           <div className="flex justify-between border-t pt-4">
             {index > 0 ? <Button asChild variant="ghost" size="sm"><Link to={`/harnesses/sdk/${SDK_PAGES[index - 1][0]}`}>← {SDK_PAGES[index - 1][1]}</Link></Button> : <span />}
             {index < SDK_PAGES.length - 1 && <Button asChild variant="ghost" size="sm"><Link to={`/harnesses/sdk/${SDK_PAGES[index + 1][0]}`}>{SDK_PAGES[index + 1][1]} →</Link></Button>}

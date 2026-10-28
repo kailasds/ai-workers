@@ -71,19 +71,19 @@ function Scope({ ws }: { ws: WorkerWorkspace }) {
   const identity = ws.composition?.identity
   return (
     <Card className="gap-4 p-5">
-      <h2 className="text-section">What it owns</h2>
+      <h2 className="text-section">Responsibilities</h2>
       <p className="max-w-3xl text-body">{ws.worker.outcome}</p>
       {identity && (
         <div className="grid gap-3 md:grid-cols-2">
           <section aria-labelledby="may-do" className="rounded-block bg-muted p-4">
-            <h3 id="may-do" className="text-overline text-muted-foreground">May do</h3>
+            <h3 id="may-do" className="text-overline text-muted-foreground">Can</h3>
             <p className="mt-2 flex gap-2 text-body">
               <Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden="true" />
               {identity.bounded_scope}
             </p>
           </section>
           <section aria-labelledby="may-not" className="rounded-block bg-muted p-4">
-            <h3 id="may-not" className="text-overline text-muted-foreground">May not</h3>
+            <h3 id="may-not" className="text-overline text-muted-foreground">Can’t</h3>
             <ul className="mt-2 flex flex-col gap-1.5">
               {identity.scope_excludes.map((x) => (
                 <li key={x} className="flex gap-2 text-body">
@@ -142,7 +142,7 @@ export function PackageTab({ ws, comp }: { ws: WorkerWorkspace; comp: Compositio
 /** Identity details, shown in a sheet from the header. */
 export function IdentityDetails({ ws, onChanged }: { ws: WorkerWorkspace; onChanged: () => void }) {
   const id = ws.composition?.identity
-  if (!id) return <p className="text-body text-muted-foreground">Identity details were not reported for this Worker.</p>
+  if (!id) return <p className="text-body text-muted-foreground">No identity details.</p>
   return (
     <div className="flex flex-col gap-5">
       <FactList>
@@ -152,7 +152,7 @@ export function IdentityDetails({ ws, onChanged }: { ws: WorkerWorkspace; onChan
         </Fact>
         <Fact label="Worker ID"><CopyValue value={id.worker_id} display={id.worker_id.split('/').pop()} label="Worker ID" /></Fact>
         <Fact label="SPIFFE ID"><CopyValue value={id.spiffe_id} display={`…/${id.spiffe_id.split('/').pop()}`} label="SPIFFE ID" /></Fact>
-        <Fact label="Bounded scope"><span className="font-mono text-meta break-all">{id.bounded_scope}</span></Fact>
+        <Fact label="Scope"><span className="font-mono text-meta break-all">{id.bounded_scope}</span></Fact>
       </FactList>
       <IdentityControls compositionId={ws.worker.composition_id} workerName={ws.worker.name} state={id.status} onChanged={onChanged} />
     </div>

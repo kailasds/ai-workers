@@ -64,8 +64,8 @@ function PlatformRecord({ workers, from }: { workers: PortfolioWorker[]; from: s
   return (
     <section aria-labelledby="record-title" className="flex flex-col gap-3">
       <div>
-        <h2 id="record-title" className="text-section">What the platform holds</h2>
-        <p className="text-meta text-muted-foreground">Memory records kept by the platform from each Worker’s runs. A record is not approval or adoption, and this ordering is not a Learning score.</p>
+        <h2 id="record-title" className="text-section">Memory by Worker</h2>
+        <p className="text-meta text-muted-foreground">Memory records saved from each Worker’s runs.</p>
       </div>
       <Card className="gap-0 py-0">
         <ul className="divide-y">{learned.map(row)}</ul>
@@ -91,13 +91,13 @@ function SharedView({ workers }: { workers: PortfolioWorker[] }) {
     <div className="flex flex-col gap-6">
       <Alert>
         <Info aria-hidden="true" />
-        <AlertTitle className="text-item">Sharing is declared, not active.</AlertTitle>
-        <AlertDescription>No knowledge has moved between Workers.</AlertDescription>
+        <AlertTitle className="text-item">Sharing isn’t switched on yet.</AlertTitle>
+        <AlertDescription>No knowledge has been shared between Workers.</AlertDescription>
       </Alert>
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <Card className="gap-0 py-0">
           <div className="px-5 pt-5 pb-3">
-            <h2 className="text-section">Who would share with whom</h2>
+            <h2 className="text-section">Sharing map</h2>
             <p className="text-meta text-muted-foreground">{groups.length} bounded contexts · {workers.length} Workers</p>
           </div>
           <ul className="divide-y border-t">
@@ -116,7 +116,7 @@ function SharedView({ workers }: { workers: PortfolioWorker[] }) {
             <Fact label="Definition of Done" className="sm:grid-cols-[8rem_minmax(0,1fr)]">Required</Fact>
             <Fact label="Shared material" className="sm:grid-cols-[8rem_minmax(0,1fr)]">Conversion patterns only</Fact>
             <Fact label="Customer material" className="sm:grid-cols-[8rem_minmax(0,1fr)]">Excluded</Fact>
-            <Fact label="Availability" className="sm:grid-cols-[8rem_minmax(0,1fr)]">Admission path not built</Fact>
+            <Fact label="Availability" className="sm:grid-cols-[8rem_minmax(0,1fr)]">Not available yet</Fact>
           </FactList>
         </Card>
       </div>
@@ -155,7 +155,7 @@ export function LearningPage() {
         <>
           {fleet.error ? <ErrorState title="Learning could not be read." message={fleet.error.message} onRetry={fleet.refresh} /> : !fleet.data ? <Skeleton className="h-24" /> : <FleetSummary data={fleet.data} />}
           {fleet.data && fleet.data.workers.length === 0 && (
-            <p className="-mt-2 text-meta text-muted-foreground">No Worker reported a Learning score for this period. Scores come from each Worker’s Runtime; none is running and answering.</p>
+            <p className="-mt-2 text-meta text-muted-foreground">No Learning scores for this period. Scores need a running Worker.</p>
           )}
           {portfolio.error ? (
             <ErrorState title="The Worker portfolio could not be read." message={portfolio.error.message} onRetry={portfolio.refresh} />

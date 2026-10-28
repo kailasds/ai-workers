@@ -75,7 +75,7 @@ export function HeroCard({ data, onChoosePeriod, detailLink }: { data: Executive
           <EmptyState
             icon={CalendarSearch}
             title="No completed runs in this period"
-            description="Nothing finished in the window shown, so there is nothing to judge yet."
+            description="No runs finished in this period."
             action={data.window.key !== 'all' ? <Button variant="outline" onClick={onChoosePeriod}>Show all time</Button> : undefined}
           />
         </div>
@@ -102,7 +102,7 @@ export function HeroCard({ data, onChoosePeriod, detailLink }: { data: Executive
       )}
 
       <div className="grid border-t sm:grid-cols-3 sm:divide-x max-sm:divide-y">
-        <Figure label="Serving now" caption="Workers answering · snapshot" to="/workers?runtime=serving">
+        <Figure label="Serving now" caption="Workers live now" to="/workers?runtime=serving">
           <MeasuredValue metric={headlines.active_workers} format={formatCount} empty="Not reported" />
         </Figure>
         <Figure label="Reported model cost" caption={isObserved(econ.total_cost) ? `${econ.cost_coverage.measured_runs} of ${econ.completed_runs} runs reported · not a bill` : 'No run reported it'} to={detailLink('cost')}>

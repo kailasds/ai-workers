@@ -43,7 +43,7 @@ function coverageOf(w: PortfolioWorker, fleet: SentinelLearningFleet | null): Co
 
 const COVERAGE_WORDS: Record<Coverage, string> = {
   reporting: 'Sentinel reporting',
-  'no-sentinel': 'No governance deployed',
+  'no-sentinel': 'No Sentinel',
   unavailable: 'Did not report',
   'not-running': 'No Worker Runtime',
 }
@@ -68,7 +68,7 @@ function StopDialog({ worker, open, onClose }: { worker: PortfolioWorker; open: 
         {state === 'done' ? (
           <Alert>
             <AlertTitle className="text-item">Not stopped</AlertTitle>
-            <AlertDescription>{USE_MOCK ? 'This console runs on captured data and sends no requests, so no runtime was stopped and no decision was recorded.' : 'Stopping is wired in a later revision.'}</AlertDescription>
+            <AlertDescription>{USE_MOCK ? 'Stopping isn’t available in this demo. Nothing was changed.' : 'Coming soon.'}</AlertDescription>
           </Alert>
         ) : (
           <>
@@ -79,7 +79,7 @@ function StopDialog({ worker, open, onClose }: { worker: PortfolioWorker; open: 
             <div className="flex flex-col gap-1.5">
               <Label htmlFor={reasonId}>Reason</Label>
               <Textarea id={reasonId} rows={3} maxLength={500} value={reason} onChange={(e) => setReason(e.target.value)} aria-describedby={`${reasonId}-hint`} />
-              <p id={`${reasonId}-hint`} className="text-meta text-muted-foreground">Recorded with the decision so other operators can read why. Your permission is checked when you stop.</p>
+              <p id={`${reasonId}-hint`} className="text-meta text-muted-foreground">Saved with the decision so others can see why.</p>
             </div>
           </>
         )}
@@ -136,9 +136,9 @@ export function SentinelWorkersPage() {
       {portfolio.error ? (
         <ErrorState title="Workers could not be read." message={portfolio.error.message} onRetry={portfolio.refresh} />
       ) : !portfolio.data ? (
-        <LoadingRegion label="Reading oversight coverage…" className="flex flex-col gap-2">{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-14" />)}</LoadingRegion>
+        <LoadingRegion label="Loading…" className="flex flex-col gap-2">{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-14" />)}</LoadingRegion>
       ) : rows.length === 0 ? (
-        <EmptyState icon={ShieldOff} title={filter === 'review' ? 'No Workers need review' : 'No Workers in this view'} description={filter === 'running' ? 'No Worker is running, so there is nothing to oversee right now.' : 'Choose another view to see more Workers.'} />
+        <EmptyState icon={ShieldOff} title={filter === 'review' ? 'No Workers need review' : 'No Workers in this view'} description={filter === 'running' ? 'No Workers are running.' : 'Choose another view to see more Workers.'} />
       ) : (
         <Card className="gap-0 py-0">
           <ul className="divide-y">
@@ -178,12 +178,12 @@ export function SentinelWorkersPage() {
           <div className="flex flex-col gap-6">
             <FactList>
               <Fact label="Runtime coverage">{COVERAGE_WORDS[coverageOf(open, fleet.data ?? null)]}{live?.detail && <span className="block text-meta text-muted-foreground">{live.detail}</span>}</Fact>
-              <Fact label="Configured oversight">{open.sentinel.state === 'CONFIGURED' ? 'Composed with a Worker Sentinel' : 'Composed without one'}</Fact>
+              <Fact label="Configured oversight">{open.sentinel.state === 'CONFIGURED' ? 'Has a Worker Sentinel' : 'No Worker Sentinel'}</Fact>
               <Fact label="Recorded decisions">No Sentinel decision reported.</Fact>
               <Fact label="Platform policy">No bounds set</Fact>
             </FactList>
-            <p className="text-meta text-muted-foreground">Recorded, not applied. These decisions have not changed knowledge served to runs. Contradictions between memories are not checked yet.</p>
-            {open.runtime.serving === 0 && <p className="text-body text-muted-foreground">No runtime is serving, so there is nothing to stop.</p>}
+            <p className="text-meta text-muted-foreground">Recorded only. These decisions haven’t changed what the Worker uses.</p>
+            {open.runtime.serving === 0 && <p className="text-body text-muted-foreground">Not running.</p>}
           </div>
         )}
       </DetailSheet>

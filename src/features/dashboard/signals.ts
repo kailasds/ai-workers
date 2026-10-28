@@ -37,7 +37,7 @@ export function deriveSignals(d: ExecutiveDashboard, link: (view: string, extra?
     signals.push({
       id: 'not-met',
       tone: 'danger',
-      title: `${plural(notMet, 'run', 'runs')} did not meet the bar`,
+      title: `${plural(notMet, 'run', 'runs')} did not meet their Definition of Done`,
       detail: `${formatPercent(notMet / completed)} of completed runs`,
       action: { label: 'Review these runs', to: link('runs', { verdict: 'NOT_MET' }) },
     })
@@ -48,7 +48,7 @@ export function deriveSignals(d: ExecutiveDashboard, link: (view: string, extra?
       signals.push({
         id: `context-${context.key}`,
         tone: 'danger',
-        title: `0 of ${context.completed_runs} runs met the bar`,
+        title: `0 of ${context.completed_runs} runs met their Definition of Done`,
         detail: context.label,
         action: { label: 'Review these runs', to: link('runs', { context: context.key }) },
       })
@@ -73,7 +73,7 @@ export function deriveSignals(d: ExecutiveDashboard, link: (view: string, extra?
       id: 'criteria-unmeasured',
       tone: 'warning',
       title: `${plural(unmeasured.length, 'criterion', 'criteria')} never measured`,
-      detail: 'Not measured is not passing',
+      detail: 'Unmeasured criteria don’t count as passing',
       action: { label: 'See criteria', to: link('criteria') },
     })
   }
@@ -95,7 +95,7 @@ export function deriveSignals(d: ExecutiveDashboard, link: (view: string, extra?
       id: 'awaiting',
       tone: 'info',
       title: `${plural(awaiting, 'run is', 'runs are')} awaiting evidence`,
-      detail: 'Finished, not yet judged',
+      detail: 'Finished, waiting for a verdict',
       action: { label: 'Review these runs', to: link('runs', { verdict: 'NOT_ADJUDICABLE' }) },
     })
   }

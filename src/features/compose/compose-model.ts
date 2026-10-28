@@ -21,6 +21,8 @@ export interface ContextOption {
   key: string
   identity: string
   label: string
+  /** A few words on what this context delivers, for places where the identity is already shown. */
+  scope: string
   outcome: string
   harness: string
   includes: string
@@ -56,6 +58,7 @@ export const CONTEXTS: ContextOption[] = [
     key: 'qe-testcases-to-executed-scripts',
     identity: 'qe-test-script-generation',
     label: 'Test Automation Script Generation + Test Suite Execution + Reporting',
+    scope: 'Scripts, test run and report',
     outcome:
       'Produce a working automation script for every supplied test case, execute the suite against the deployed application, and report pass, fail or skipped per scenario with the evidence each verdict rests on.',
     harness: 'Quality Engineering Harness',
@@ -69,6 +72,7 @@ export const CONTEXTS: ContextOption[] = [
     key: 'tibco-bw-to-spring-boot-services',
     identity: 'integration-modernization',
     label: 'Converts Integration Service to Target Code',
+    scope: 'Code generation',
     outcome: MOD_OUTCOME,
     harness: 'Integration Modernisation Harness',
     includes: 'Service orchestration modernisation',
@@ -82,6 +86,7 @@ export const CONTEXTS: ContextOption[] = [
     key: 'tibco-bw-to-spring-boot-services-tests',
     identity: 'integration-modernization',
     label: 'Converts Integration Service to Unit Tested Target Code',
+    scope: 'Code + unit tests',
     outcome: MOD_OUTCOME,
     harness: 'Integration Modernisation Harness',
     includes: 'Service orchestration modernisation, with unit tests',
@@ -95,6 +100,7 @@ export const CONTEXTS: ContextOption[] = [
     key: 'tibco-bw-to-spring-boot-services-tests-traceability',
     identity: 'integration-modernization',
     label: 'Converts Integration Service to Traced Target Code',
+    scope: 'Code + unit tests + traceability',
     outcome: MOD_OUTCOME,
     harness: 'Integration Modernisation Harness',
     includes: 'Service orchestration modernisation, with unit tests and traceability',
@@ -153,14 +159,14 @@ export const STATIONS: { key: StationKey; label: string }[] = [
 ]
 
 export const CHECKPOINTS: { key: CheckpointKey; station: StationKey; title: string; decides: string; button: string; stage: string }[] = [
-  { key: 'bounded_context', station: 'role_identity', title: 'Bounded context', decides: 'The identity it is issued under and the one business boundary it works in.', button: 'Confirm bounded context', stage: 'identity' },
-  { key: 'worker_intent', station: 'worker_intent', title: 'Worker intent', decides: 'Outcome, procedure and Tools.', button: 'Confirm Worker intent', stage: 'models' },
+  { key: 'bounded_context', station: 'role_identity', title: 'Bounded context', decides: 'Who the Worker is and the scope it works in.', button: 'Confirm bounded context', stage: 'identity' },
+  { key: 'worker_intent', station: 'worker_intent', title: 'Worker intent', decides: 'What it delivers, how, and with which tools.', button: 'Confirm Worker intent', stage: 'models' },
   { key: 'skills', station: 'brain', title: 'Skills', decides: 'Instructions used during a run.', button: 'Confirm Skills', stage: 'capabilities' },
   { key: 'domain_language', station: 'brain', title: 'Domain Specific Language', decides: 'Business rules for this Worker.', button: 'Confirm domain language', stage: 'capabilities' },
-  { key: 'evals', station: 'brain', title: 'EVALs', decides: 'Checks bound to this work.', button: 'Confirm EVALs', stage: 'evaluations' },
+  { key: 'evals', station: 'brain', title: 'EVALs', decides: 'Checks run against its output.', button: 'Confirm EVALs', stage: 'evaluations' },
   { key: 'gbrain', station: 'brain', title: 'Memory and learning', decides: 'What is kept between runs.', button: 'Confirm memory and learning', stage: 'memory' },
-  { key: 'definition_of_done', station: 'definition_of_done', title: 'Definition of Done', decides: 'Every required criterion must be met.', button: 'Confirm Definition of Done', stage: 'definition_of_done' },
-  { key: 'autonomy', station: 'autonomy', title: 'Autonomy and Sentinel', decides: 'How far it may act, and what the Sentinel does.', button: 'Confirm autonomy', stage: 'governance' },
+  { key: 'definition_of_done', station: 'definition_of_done', title: 'Definition of Done', decides: 'What must pass before the work counts as done.', button: 'Confirm Definition of Done', stage: 'definition_of_done' },
+  { key: 'autonomy', station: 'autonomy', title: 'Autonomy and Sentinel', decides: 'How much it can do on its own, and how it’s monitored.', button: 'Confirm autonomy', stage: 'governance' },
 ]
 
 /** The six steps of the stepper: one per station. Declaration is the first half of step 1. */
@@ -169,7 +175,7 @@ export const STEPS: { key: StationKey; label: string; sub: string }[] = [
   { key: 'worker_intent', label: 'Worker intent', sub: 'Outcome · harness' },
   { key: 'brain', label: 'Worker Brain', sub: 'Skills · DSL · EVALs' },
   { key: 'definition_of_done', label: 'Definition of Done', sub: 'Release gates' },
-  { key: 'autonomy', label: 'Autonomy', sub: 'How far it acts' },
+  { key: 'autonomy', label: 'Autonomy', sub: 'Approval levels' },
   { key: 'package_deploy', label: 'Worker summary', sub: 'Review · build' },
 ]
 

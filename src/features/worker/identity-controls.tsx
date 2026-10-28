@@ -15,18 +15,18 @@ const COPY: Record<Action, { title: string; verb: string; consequence: string }>
   pause: {
     title: 'Pause identity',
     verb: 'Pause identity',
-    consequence: 'The Worker stops being issued new credentials until its identity is resumed. Credentials already issued stay valid until they expire.',
+    consequence: 'No new credentials are issued until you resume it. Existing credentials work until they expire.',
   },
   resume: {
     title: 'Resume identity',
     verb: 'Resume identity',
-    consequence: 'The Worker can be issued credentials again and authenticate within its recorded scope.',
+    consequence: 'The Worker can get credentials and sign in again.',
   },
   revoke: {
     title: 'Revoke identity',
     verb: 'Revoke identity',
     consequence:
-      'Revoking stops this Worker authenticating to anything. Every runtime it has loses access when its current credential expires, and the identity cannot be issued again.',
+      'The Worker loses all access once its current credentials expire. This can’t be undone.',
   },
 }
 
@@ -117,7 +117,7 @@ export function IdentityControls({ compositionId, workerName, state, onChanged }
                 <div className="flex flex-col gap-1.5">
                   <Label htmlFor={inputId}>Type the Worker’s name to confirm</Label>
                   <Input id={inputId} value={typed} onChange={(e) => setTyped(e.target.value)} autoComplete="off" placeholder={workerName} />
-                  <p className="text-meta text-muted-foreground">This only guards against the wrong Worker. Permission is checked by the platform.</p>
+                  <p className="text-meta text-muted-foreground">This makes sure you’ve picked the right Worker.</p>
                 </div>
               )}
               {error && (

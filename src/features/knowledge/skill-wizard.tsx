@@ -11,7 +11,7 @@ import { PageContainer } from '@/components/platform/page-container'
 import { PageHeader } from '@/components/platform/page-header'
 import { cn } from '@/lib/utils'
 
-const STEPS = ['What it is', 'The body', 'What it carries', 'How to judge it', 'Checks', 'Who may load it'] as const
+const STEPS = ['Basics', 'Content', 'Files', 'Evaluation', 'Checks', 'Access'] as const
 const KEY = /^[a-z0-9]+(-[a-z0-9]+)*$/
 const PATH = /^[A-Za-z0-9._/-]+$/
 
@@ -89,10 +89,10 @@ export function SkillWizard() {
             {step === 0 && (
               <>
                 <div className="grid gap-5 sm:grid-cols-2">
-                  <Field id="sk-name" label="Name" hint="A key that goes into a package and a path. Lowercase, hyphenated." error={name && !KEY.test(name) ? 'Lowercase letters and digits, joined by hyphens.' : null}>
+                  <Field id="sk-name" label="Name" hint="Used as the ID. Lowercase, with hyphens." error={name && !KEY.test(name) ? 'Lowercase letters and digits, joined by hyphens.' : null}>
                     <Input id="sk-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="tibco-fault-paths" disabled={Boolean(revising)} aria-describedby="sk-name-hint" />
                   </Field>
-                  <Field id="sk-title" label="Title" hint="What people read in lists.">
+                  <Field id="sk-title" label="Title" hint="Shown in lists.">
                     <Input id="sk-title" value={title} onChange={(e) => setTitle(e.target.value)} aria-describedby="sk-title-hint" />
                   </Field>
                 </div>
@@ -105,14 +105,14 @@ export function SkillWizard() {
               </>
             )}
             {step === 1 && (
-              <Field id="sk-body" label="The body (markdown)" hint={`${body.trim().length} characters · more than 40 needed. A generic body published to the registry every Worker reads would be followed, so there is no partial draft.`}>
+              <Field id="sk-body" label="Content (Markdown)" hint={`${body.trim().length} characters · more than 40 needed. A generic body published to the registry every Worker reads would be followed, so there is no partial draft.`}>
                 <Textarea id="sk-body" rows={14} value={body} onChange={(e) => setBody(e.target.value)} className="font-mono text-meta" aria-describedby="sk-body-hint" />
               </Field>
             )}
             {step === 2 && (
               <>
-                <p className="text-meta text-muted-foreground">Companion files: references/, templates/, rules/. A hand-written skill-card.md is kept as is.</p>
-                {files.length === 0 && <p className="text-body text-muted-foreground">No companion files. The body travels on its own.</p>}
+                <p className="text-meta text-muted-foreground">Optional extra files in references/, templates/ or rules/.</p>
+                {files.length === 0 && <p className="text-body text-muted-foreground">No extra files.</p>}
                 {files.map((f, i) => (
                   <div key={i} className="flex flex-col gap-2 rounded-xl border p-4">
                     <div className="flex gap-2">
@@ -134,7 +134,7 @@ export function SkillWizard() {
                 <Field id="sk-dims" label="Dimensions" hint={`${dims.length} declared · 3 to 6, one per line, tuned to this Skill.`} error={dims.length > 6 ? 'At most six dimensions.' : null}>
                   <Textarea id="sk-dims" rows={5} value={dimensions} onChange={(e) => setDimensions(e.target.value)} aria-describedby="sk-dims-hint" />
                 </Field>
-                <Field id="sk-fails" label="Hard fails" hint="What would make an answer wrong however well it reads? One per line.">
+                <Field id="sk-fails" label="Hard fails" hint="Anything that makes an answer wrong. One per line.">
                   <Textarea id="sk-fails" rows={3} value={hardFails} onChange={(e) => setHardFails(e.target.value)} aria-describedby="sk-fails-hint" />
                 </Field>
               </>
@@ -142,9 +142,9 @@ export function SkillWizard() {
             {step >= 4 && (
               <Alert className="border-warning/30 bg-warning/5">
                 <ShieldAlert className="text-warning" aria-hidden="true" />
-                <AlertTitle className="text-item">Checks cannot run in this console</AlertTitle>
+                <AlertTitle className="text-item">Checks aren’t available in this demo</AlertTitle>
                 <AlertDescription>
-                  Structure, contract, duplication and security checks run on the platform against the exact bytes that would be written, and publishing quotes that digest. This console runs on captured data, so the Skill cannot be checked or published from here. Your draft stays on this page.
+                  Structure, duplication and security checks run when you publish. Publishing isn’t available in this demo, but your draft stays on this page.
                 </AlertDescription>
               </Alert>
             )}

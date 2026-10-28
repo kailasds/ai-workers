@@ -38,7 +38,7 @@ export function WorkTypePage() {
     <PageContainer className="gap-8">
       <PageHeader
         crumbs={[{ label: 'Home', to: '/workers' }, { label: 'Compose' }]}
-        title="What kind of work?"
+        title="Choose a Worker type"
         actions={
           <Button asChild variant="outline">
             <Link to="/compose/drafts"><FolderOpen aria-hidden="true" />Saved drafts</Link>

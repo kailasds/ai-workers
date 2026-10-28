@@ -22,7 +22,7 @@ import { queueOf, type Queue } from '../registry/pipeline-model'
 
 function Contents({ d }: { d: Draft }) {
   const c = d.contents
-  if (!c) return <p className="text-body text-muted-foreground">Contents are known once every checkpoint is confirmed.</p>
+  if (!c) return <p className="text-body text-muted-foreground">Contents show once all checkpoints are confirmed.</p>
   return (
     <FactList>
       <Fact label="Skills">{c.skills}</Fact>
@@ -96,9 +96,9 @@ export function PackagingPage() {
       </InputGroup>
 
       {drafts.error ? (
-        <ErrorState title="Could not load Packaging." message="The packaging list could not be loaded. Check the console API, then try again." onRetry={drafts.refresh} />
+        <ErrorState title="Could not load Packaging." message="Couldn’t load packages. Try again." onRetry={drafts.refresh} />
       ) : !drafts.data ? (
-        <LoadingRegion label="Reading compositions…" className={GRID}>{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-80 rounded-xl bg-track" />)}</LoadingRegion>
+        <LoadingRegion label="Loading…" className={GRID}>{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-80 rounded-xl bg-track" />)}</LoadingRegion>
       ) : rows.length === 0 ? (
         needle ? <EmptyState icon={SearchX} title="No matches" action={<Button variant="outline" onClick={() => setQ('')}>Clear search</Button>} /> : <EmptyState icon={PackageOpen} title={queue === 'work' ? 'Nothing waiting to be packaged' : queue === 'packaged' ? 'No Packages waiting to deploy' : 'No packaged Worker is deployed'} />
       ) : (
@@ -197,7 +197,7 @@ export function PackagingPage() {
         </div>
       )}
 
-      <DetailSheet open={open !== null} onClose={() => setOpen(null)} title={open?.name} description={open?.package ? `Sealed Package · r${open.package.composition_revision}` : 'What a Package built now would contain'}>
+      <DetailSheet open={open !== null} onClose={() => setOpen(null)} title={open?.name} description={open?.package ? `Sealed Package · r${open.package.composition_revision}` : 'Package contents'}>
         {open && <Contents d={open} />}
       </DetailSheet>
     </div>

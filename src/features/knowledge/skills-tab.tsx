@@ -27,12 +27,12 @@ function SkillDetail({ skill }: { skill: KnowledgeSkill }) {
         <Fact label="Category">{human(skill.category)}</Fact>
         <Fact label="Version">{skill.version} · {skill.status}</Fact>
         <Fact label="Carried by">{skill.worker_count} {skill.worker_count === 1 ? 'Worker' : 'Workers'}</Fact>
-        <Fact label="Loadable by">{skill.assigned_agent_keys.length === 0 ? <span className="text-muted-foreground">No Agent yet: published, not loadable</span> : `${skill.assigned_agent_keys.length} Agents`}</Fact>
-        <Fact label="Provenance">{skill.provenance === 'internal' ? 'Internal' : 'External'} · {skill.license ?? 'Internal, no external licence'}</Fact>
+        <Fact label="Loadable by">{skill.assigned_agent_keys.length === 0 ? <span className="text-muted-foreground">Published, not loadable yet</span> : `${skill.assigned_agent_keys.length} Agents`}</Fact>
+        <Fact label="Provenance">{skill.provenance === 'internal' ? 'Internal' : 'External'} · {skill.license ?? 'Internal'}</Fact>
         {(skill.source_technology || skill.target_technology) && <Fact label="Converts">{skill.source_technology ?? '?'} → {skill.target_technology ?? '?'}</Fact>}
         {skill.tags.length > 0 && <Fact label="Tags">{skill.tags.join(', ')}</Fact>}
       </FactList>
-      <p className="rounded-lg bg-muted px-3 py-2 text-meta text-muted-foreground">The full SKILL.md and its companion files are read from the registry when opened. The offline capture holds the catalogue only.</p>
+      <p className="rounded-lg bg-muted px-3 py-2 text-meta text-muted-foreground">The full Skill content isn’t available in this demo.</p>
     </div>
   )
 }
@@ -57,11 +57,11 @@ export function SkillsTab({ library }: { library: SkillLibrary }) {
 
   return (
     <div className="flex flex-col gap-5">
-      {library.partial && <StatusBadge tone="warning">A source is missing: this catalogue is partial, not small</StatusBadge>}
+      {library.partial && <StatusBadge tone="warning">Some sources couldn’t be loaded, so this list is incomplete</StatusBadge>}
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
         <InputGroup className="lg:max-w-xs">
           <InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon>
-          <InputGroupInput type="search" value={q} onChange={(e) => { setQ(e.target.value); setShown(PAGE) }} placeholder="What are you looking for?" aria-label="Search Skills" />
+          <InputGroupInput type="search" value={q} onChange={(e) => { setQ(e.target.value); setShown(PAGE) }} placeholder="Search Skills" aria-label="Search Skills" />
         </InputGroup>
         <div className="no-scrollbar -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
           <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={group} onValueChange={(v) => { if (v) { setGroup(v); setShown(PAGE) } }} aria-label="Group" className="w-max">

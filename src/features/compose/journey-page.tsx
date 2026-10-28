@@ -109,7 +109,7 @@ export function JourneyPage() {
             <ErrorState title="Compose could not load." message="Reload the page; your saved drafts are kept." onRetry={draftRead.refresh} />
           )
         ) : (
-          <LoadingRegion label="Opening the Worker — restoring saved decisions…" className="flex flex-col gap-4">
+          <LoadingRegion label="Loading draft…" className="flex flex-col gap-4">
             <Skeleton className="h-8 w-80" />
             <Skeleton className="h-96 w-full" />
           </LoadingRegion>
@@ -170,14 +170,14 @@ export function JourneyPage() {
 
       <ComposeStepper states={stepStates} onSelect={goStation} />
 
-      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-5 lg:grid-cols-[minmax(0,1fr)_22rem] xl:grid-cols-[minmax(0,1fr)_24rem]">
+      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-5 lg:grid-cols-[22rem_minmax(0,1fr)] xl:grid-cols-[24rem_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-5">
           {current === 'summary' || !cp ? (
             <>
               <div className="rounded-xl border bg-card p-5 sm:p-8">
                 <p className="text-overline font-semibold text-primary-strong uppercase">Step {STEPS.length} of {STEPS.length}</p>
                 <h2 className="mt-2 text-section">{composed ? 'Worker composed' : 'Not composed yet'}</h2>
-                <p className="mt-1 text-body text-muted-foreground">{composed ? `Every checkpoint is confirmed and written to revision ${draft.revision}. Nothing is built yet.` : 'Confirm every checkpoint before packaging.'}</p>
+                <p className="mt-1 text-body text-muted-foreground">{composed ? `All checkpoints confirmed (revision ${draft.revision}). Ready to build.` : 'Confirm every checkpoint before packaging.'}</p>
                 <ul className="mt-6 grid gap-2 sm:grid-cols-2">
                   {CHECKPOINTS.map((c) => (
                     <li key={c.key}>
@@ -190,15 +190,15 @@ export function JourneyPage() {
                 </ul>
                 <div className="mt-6 border-t pt-6">
                   {draft.package ? (
-                    <p className="text-body">Packaged at revision {draft.package.composition_revision}. Deploying it is a separate decision in Packaging.</p>
+                    <p className="text-body">Packaged at revision {draft.package.composition_revision}. Deploy it from Packaging.</p>
                   ) : buildOp && (buildOp.state === 'RUNNING' || buildOp.state === 'QUEUED') ? (
                     <div className="flex flex-col gap-2" aria-live="polite">
                       <p className="text-item">Building Package · {buildOp.phase}</p>
                       <Progress value={buildOp.progress} aria-label={`Building Package ${buildOp.progress}%`} className="h-1.5" />
-                      <p className="text-meta text-muted-foreground">You can close this page. The build continues, and a notice appears when it finishes.</p>
+                      <p className="text-meta text-muted-foreground">You can leave this page. We’ll let you know when the build finishes.</p>
                     </div>
                   ) : (
-                    <p className="text-meta text-muted-foreground">Building seals a versioned, checksummed Package. Deploying it is a separate decision in Packaging.</p>
+                    <p className="text-meta text-muted-foreground">Building creates a versioned Package. You deploy it separately, from Packaging.</p>
                   )}
                 </div>
               </div>
@@ -264,21 +264,21 @@ export function JourneyPage() {
                       </ol>
                     </div>
                   ) : !proposal ? (
-                    catalogs.error ? <ErrorState title="The search finished but its result could not be read." message="Nothing can be confirmed until it is." onRetry={catalogs.refresh} /> : <Skeleton className="h-48 w-full" />
+                    catalogs.error ? <ErrorState title="Couldn’t load the result." message="Try again before confirming." onRetry={catalogs.refresh} /> : <Skeleton className="h-48 w-full" />
                   ) : (
                     <div className="flex flex-col gap-5">
                       {attention && issues.length > 0 && (
                         <Alert className="border-warning/30 bg-warning/5">
                           <TriangleAlert className="text-warning" aria-hidden="true" />
-                          <AlertTitle className="text-item">The platform reports this part incomplete</AlertTitle>
+                          <AlertTitle className="text-item">This part is incomplete</AlertTitle>
                           <AlertDescription>
                             <ul>{issues.map((i) => <li key={i.code}>{i.message}</li>)}</ul>
-                            <p className="mt-1">Edit this part to resolve it, then confirm. Stage editors are not part of this preview.</p>
+                            <p className="mt-1">Fix it, then confirm. Editing isn’t available in this preview.</p>
                           </AlertDescription>
                         </Alert>
                       )}
                       <CheckpointBody k={cp.key} draft={draft} p={proposal} />
-                      <p className="text-meta text-muted-foreground">{accepted ? 'Confirmed and written into the Worker.' : 'Proposed from the platform catalogue (offline mock). Nothing enters the Worker until it is confirmed.'}</p>
+                      <p className="text-meta text-muted-foreground">{accepted ? 'Confirmed.' : 'Suggested from the catalogue. Review it, then confirm to add it.'}</p>
                     </div>
                   )}
                   {saveError && (
@@ -322,13 +322,13 @@ export function JourneyPage() {
                     )}
                   </span>
                 </div>
-                {accepted && <p className="text-meta text-muted-foreground">Editing restarts this stage and every later one; checkpoints from here on are no longer confirmed.</p>}
+                {accepted && <p className="text-meta text-muted-foreground">Editing resets this step and every step after it.</p>}
               </div>
             </>
           )}
         </div>
 
-        <div className="min-w-0 lg:sticky lg:top-6">
+        <div className="min-w-0 lg:sticky lg:top-6 lg:order-first">
           <ComposingPanel draft={draft} proposal={proposal} current={current} settled={settled} onGo={go} />
         </div>
       </div>

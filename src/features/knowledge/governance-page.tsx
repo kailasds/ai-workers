@@ -4,9 +4,9 @@ import { SectionNav } from '@/components/platform/section-nav'
 import { EmptyState } from '@/components/platform/states'
 
 const VIEWS = {
-  coverage: { label: 'Coverage', what: 'Defined migration constructs and the admitted knowledge a Worker can retrieve for each. Candidates are counted separately until they are admitted.' },
-  inbox: { label: 'Candidate decisions', what: 'Review literal evidence before changing shared knowledge: promote, defer or reject each candidate. Publication still needs regression evidence.' },
-  packs: { label: 'Packs', what: 'Immutable published versions, their regression result and observed Worker use.' },
+  coverage: { label: 'Coverage', what: 'Migration constructs and the approved knowledge for each. Pending items are counted separately.' },
+  inbox: { label: 'Candidate decisions', what: 'Approve, defer or reject proposed knowledge changes. Publishing still needs passing regression tests.' },
+  packs: { label: 'Packs', what: 'Published versions, their test results and which Workers use them.' },
 } as const
 
 // Shared-knowledge governance. The offline capture holds none of its reads, so each view says
@@ -31,7 +31,7 @@ export function GovernancePage() {
           <>
             {VIEWS[key].what}
             <br />
-            The offline capture this console runs on does not include the governance reads, so nothing is shown rather than an empty list.
+            Governance data isn’t available in this demo.
           </>
         }
       />

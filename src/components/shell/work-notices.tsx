@@ -4,9 +4,9 @@ import { dismissOperation, useOperations } from '@/lib/operations'
 
 // P-22: background work keeps running when you leave its page; how it ended is always shown.
 const ENDED: Record<string, { word: string; detail: string }> = {
-  SUCCEEDED: { word: 'finished', detail: 'It finished while you were elsewhere.' },
-  FAILED: { word: 'failed', detail: 'It stopped before it finished.' },
-  CANCELLED: { word: 'cancelled', detail: 'It did not finish.' },
+  SUCCEEDED: { word: 'finished', detail: 'Finished in the background.' },
+  FAILED: { word: 'failed', detail: 'Cancelled.' },
+  CANCELLED: { word: 'cancelled', detail: 'Failed.' },
 }
 
 /** How background work ended: persistent and dismissible, never a toast, never steals focus. */

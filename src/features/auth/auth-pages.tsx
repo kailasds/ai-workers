@@ -23,7 +23,7 @@ function PublicFrame({ title, lead, children }: { title: string; lead: string; c
           </div>
           {children}
         </Card>
-        <p className="mt-6 text-center text-meta text-muted-foreground">Offline mock · no credentials leave this browser</p>
+        <p className="mt-6 text-center text-meta text-muted-foreground">Demo mode · nothing leaves this browser</p>
       </div>
     </main>
   )
@@ -65,7 +65,7 @@ export function LoginPage() {
         <Button type="submit" disabled={busy}>{busy && <Spinner />}Sign in</Button>
       </form>
       <Link to="/auth/forgot" className="text-meta underline underline-offset-4">Forgot your password?</Link>
-      <p className="border-t pt-4 text-meta text-muted-foreground">Protected platform access</p>
+      <p className="border-t pt-4 text-meta text-muted-foreground">Authorised users only</p>
     </PublicFrame>
   )
 }
@@ -77,7 +77,7 @@ export function ForgotPage() {
     <PublicFrame title="Reset your password" lead="We send a link to the address on the account. The link expires in one hour.">
       {sent ? (
         // Identical whether or not the address has an account.
-        <Alert role="status"><AlertTitle className="text-item">Check your email</AlertTitle><AlertDescription>If an account uses that address, a reset link is on its way.</AlertDescription></Alert>
+        <Alert role="status"><AlertTitle className="text-item">Check your email</AlertTitle><AlertDescription>If that email has an account, we’ve sent a reset link.</AlertDescription></Alert>
       ) : (
         <form onSubmit={(e) => { e.preventDefault(); setSent(true) }} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5"><Label htmlFor="email">Work email</Label><Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
@@ -105,8 +105,8 @@ export function SetPasswordPage({ mode }: { mode: 'invite' | 'reset' }) {
       ) : (
         <form onSubmit={(e) => { e.preventDefault(); if (strong && a === b) setDone(true) }} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5"><Label htmlFor="p1">New password</Label><Input id="p1" type="password" autoComplete="new-password" value={a} onChange={(e) => setA(e.target.value)} /></div>
-          <div className="flex flex-col gap-1.5"><Label htmlFor="p2">Repeat it</Label><Input id="p2" type="password" autoComplete="new-password" value={b} onChange={(e) => setB(e.target.value)} aria-invalid={b !== '' && a !== b} />{b !== '' && a !== b && <p className="text-meta text-destructive">The two passwords are not the same.</p>}</div>
-          <Button type="submit" disabled={!strong || a !== b}>{mode === 'invite' ? 'Set password and activate' : 'Set new password'}</Button>
+          <div className="flex flex-col gap-1.5"><Label htmlFor="p2">Confirm password</Label><Input id="p2" type="password" autoComplete="new-password" value={b} onChange={(e) => setB(e.target.value)} aria-invalid={b !== '' && a !== b} />{b !== '' && a !== b && <p className="text-meta text-destructive">Passwords don’t match.</p>}</div>
+          <Button type="submit" disabled={!strong || a !== b}>{mode === 'invite' ? 'Activate account' : 'Set new password'}</Button>
         </form>
       )}
       <Link to="/login" className="text-meta underline underline-offset-4">Back to sign in</Link>

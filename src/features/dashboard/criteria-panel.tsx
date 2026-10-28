@@ -31,9 +31,9 @@ export function CriteriaPanel({ criteria }: { criteria: DodCriterion[] }) {
 
   return (
     <div>
-      <p className="text-meta text-muted-foreground">Each criterion is judged on its own and never averaged into one score. Weakest first.</p>
+      <p className="text-meta text-muted-foreground">Each criterion is scored separately. Weakest first.</p>
       {criteria.length === 0 ? (
-        <EmptyState className="mt-4" icon={ListChecks} title="No criterion measurements recorded" description="Runs in this period did not report results against any Definition of Done criterion." />
+        <EmptyState className="mt-4" icon={ListChecks} title="No criterion measurements recorded" description="No run in this period reported Definition of Done results." />
       ) : (
         <>
           <ul className="mt-3 divide-y border-y">
@@ -45,7 +45,7 @@ export function CriteriaPanel({ criteria }: { criteria: DodCriterion[] }) {
                   <div className="min-w-0">
                     <p className="text-item">{c.label}</p>
                     <p className="text-meta text-muted-foreground">
-                      {c.gating ? 'Stops a release' : 'Observed only'} · {threshold(c)}
+                      {c.gating ? 'Blocks release' : 'Tracked only'} · {threshold(c)}
                     </p>
                   </div>
                   {measured ? (
