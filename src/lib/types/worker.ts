@@ -138,6 +138,10 @@ export interface WorkerBrain {
     requires_dod_met: boolean
     skill_changes: unknown[]
     held_back: { skill: string; kind: string; key: string; reason: string }[]
+    /** Kinds of learning that may be kept, and kinds that never are. Optional in the wire format. */
+    compoundable?: string[]
+    never_compound?: string[]
+    skill_authoring?: { may_extend?: string[]; never_changes?: string[]; new_skill_requires?: string | null; writes_registry_copy?: boolean } | null
   } | null
 }
 

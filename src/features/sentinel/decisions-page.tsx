@@ -72,34 +72,41 @@ export function SentinelDecisionsPage() {
         <ErrorState title="Decisions couldn’t be loaded." message={error.message} onRetry={refresh} />
       ) : !data ? (
         <LoadingRegion label="Loading decisions…" className="flex flex-col gap-2">{Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-14 bg-track" />)}</LoadingRegion>
-      ) : all.length === 0 ? (
-        <EmptyState icon={ScrollText} title="No platform decisions yet" description={`Nothing was decided in the last ${data.window_days} days, and the decision record has ${formatCount(data.chain.entries)} entries.${data.mode.acting ? '' : ' The Platform Sentinel isn’t applying decisions yet, so any it makes will show as recorded only.'}`} />
-      ) : shown.length === 0 ? (
-        <p className="flex flex-wrap items-center gap-2 rounded-block border border-dashed px-5 py-4 text-body text-muted-foreground">
-          No decisions match these filters.
-          {filtering && <Button variant="link" className="h-auto px-0" onClick={() => setParams({}, { replace: true })}>Clear filters</Button>}
-        </p>
       ) : (
         <>
-          <Card className="gap-0 py-0">
-            <p className="border-b px-5 py-2.5 text-meta text-muted-foreground">Last {data.window_days} days, newest first. “Applied” means the Worker confirmed it acted on the decision.</p>
-            <ul className="divide-y">
-              {paged.rows.map((d) => (
-                <li key={d.id}>
-                  <Link to={`/sentinel/decisions/${d.id}`} className="flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-3.5 outline-none hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset">
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-item">{d.headline}</span>
-                      <span className="block text-meta text-muted-foreground">{dimensionName(d.dimension)} · {cap(d.severity)}{d.scope ? ` · ${d.scope}` : ''}</span>
-                    </span>
-                    <Effect d={d} />
-                    <span className="text-meta text-muted-foreground"><Timestamp iso={d.at} /></span>
-                    <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </Card>
-          <Pager page={paged.page} pageSize={paged.size} total={paged.total} onPage={paged.setPage} pageSizes={PAGE_SIZES} onPageSize={paged.setSize} order="time" label="Decisions" />
+          <p className="text-meta text-muted-foreground">
+            Tamper check: {data.chain.verified === null ? 'not run yet' : data.chain.verified ? `passed for ${formatCount(data.chain.entries)} entries` : `failed at ${data.chain.broken_at ?? 'an unknown entry'}`}. A passed check means the record hasn’t been altered since it was written; it doesn’t prove each decision was right.
+          </p>
+          {all.length === 0 ? (
+            <EmptyState icon={ScrollText} title="No platform decisions yet" description={`Nothing was decided in the last ${data.window_days} days, and the decision record has ${formatCount(data.chain.entries)} entries.${data.mode.acting ? '' : ' The Platform Sentinel isn’t applying decisions yet, so any it makes will show as recorded only.'}`} />
+          ) : shown.length === 0 ? (
+            <p className="flex flex-wrap items-center gap-2 rounded-block border border-dashed px-5 py-4 text-body text-muted-foreground">
+              No decisions match these filters.
+              {filtering && <Button variant="link" className="h-auto px-0" onClick={() => setParams({}, { replace: true })}>Clear filters</Button>}
+            </p>
+          ) : (
+            <>
+              <Card className="gap-0 py-0">
+                <p className="border-b px-5 py-2.5 text-meta text-muted-foreground">Last {data.window_days} days, newest first. “Applied” means the Worker confirmed it acted on the decision.</p>
+                <ul className="divide-y">
+                  {paged.rows.map((d) => (
+                    <li key={d.id}>
+                      <Link to={`/sentinel/decisions/${d.id}`} className="flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-3.5 outline-none hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset">
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-item">{d.headline}</span>
+                          <span className="block text-meta text-muted-foreground">{dimensionName(d.dimension)} · {cap(d.severity)}{d.scope ? ` · ${d.scope}` : ''}</span>
+                        </span>
+                        <Effect d={d} />
+                        <span className="text-meta text-muted-foreground"><Timestamp iso={d.at} /></span>
+                        <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+              <Pager page={paged.page} pageSize={paged.size} total={paged.total} onPage={paged.setPage} pageSizes={PAGE_SIZES} onPageSize={paged.setSize} order="time" label="Decisions" />
+            </>
+          )}
         </>
       )}
     </SentinelLayout>

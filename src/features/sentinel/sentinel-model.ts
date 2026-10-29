@@ -26,7 +26,7 @@ export const SENTINEL_VIEWS = [
 
 /** Sharing between Workers moves through separate states; agreement is not delivery, and delivery is not use. */
 export const SHARING_STATES = [
-  { key: 'eligible', label: 'Ready for sharing review', meaning: 'Kept by a Worker’s Sentinel and fits the sharing rules.' },
+  { key: 'eligible', label: 'Ready for sharing review', meaning: 'Eligible: kept by a Worker’s Sentinel and fits the sharing rules.' },
   { key: 'proposed', label: 'Proposed', meaning: 'Offered to another Worker. Waiting for both Sentinels.' },
   { key: 'agreed', label: 'Agreed', meaning: 'Approved by both Workers’ Sentinels. Nothing has been sent yet.' },
   { key: 'delivered', label: 'Delivered', meaning: 'The receiving Worker has it.' },

@@ -88,6 +88,7 @@ User management (`/admin/people`, `/admin/groups`) appears only for administrato
 - **Worker page** (`/workers/:id`): tabs for Package, Versions and customers, Runs, Brain activity, Knowledge, Learning, Sentinel, Runtimes and Delivery. "Similar Workers" appears only on the Versions and customers tab.
 - **Learning** (`/learning`)
   - **Activity** is the default view: a newest-first feed of real learning events (memory records and items held while they gather evidence), filterable by Worker and type, with a detail panel for each.
+  - **Workers** is a searchable, sortable, paginated table of each Worker's learning (runs met, memory, items collecting evidence, Skill changes awaiting review). Each row opens `/learning/workers/:id`, which has Overview (what awaits review and a timeline of runs and learning), What it learned, What it was given, and Governance (its Worker Sentinel's real rules).
   - **Knowledge gained** keeps assigned, gained and platform knowledge apart, and shows gained knowledge by status: kept (not reported), gathering evidence, or recorded but not reviewed. It also covers knowledge health (retire, revoke, replace).
   - **Evolution** shows each identity's capability ladder and which Workers sit on each step; no proposals are recorded.
   - **Explore map** (`/learning/map`) is optional and draws only real links.
@@ -165,6 +166,7 @@ The design source of truth is `.claude/skills/frontend-kit/references/design.md`
 
 ## 8. Open items
 
+- **Tests:** `npm test` (vitest) covers the Learning and Sentinel models: event building and grouping, periods, and the Sentinel attention list.
 - **Pagination is client-side:** Learning and Sentinel lists use the shared `Pager` and `usePaged` (`src/hooks/use-paged.ts`), with page and page size in the URL. The reads they page over have no page or cursor parameters, so the console pages the complete loaded list. The portfolio API has a `next_cursor`, but the console reads it with `limit=200` in one call.
 - **Not connected in this console:**
   - Stop Worker: the dialog explains it; nothing is sent.

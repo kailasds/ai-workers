@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import { Activity, Brain, ChevronRight, CircleAlert, Hourglass, ScrollText, Sparkles, type LucideIcon } from 'lucide-react'
+import { Activity, Brain, ChevronRight, CircleAlert, Handshake, Hourglass, ScrollText, Sparkles, type LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -18,7 +18,7 @@ import { PAGE_SIZES, usePaged } from '@/hooks/use-paged'
 
 const ALL = '__all'
 
-const KIND_ICON: Record<EventKind, LucideIcon> = { memory: Brain, held: Hourglass, skill_change: Sparkles, decision: ScrollText }
+const KIND_ICON: Record<EventKind, LucideIcon> = { memory: Brain, held: Hourglass, skill_change: Sparkles, claim: Handshake, decision: ScrollText }
 
 function When({ when }: { when: LearningEvent['when'] }) {
   if (!when) return <span>Time not reported</span>
@@ -50,7 +50,6 @@ function EventRow({ e, onOpen }: { e: LearningEvent; onOpen: () => void }) {
         </span>
         <span className="hidden shrink-0 flex-col items-end gap-1.5 text-meta text-muted-foreground sm:flex">
           <span className="flex items-center gap-2">
-            {e.attention && <span className="font-medium text-warning">Needs a decision</span>}
             <StateBadge status={e.status} />
           </span>
           <When when={e.when} />

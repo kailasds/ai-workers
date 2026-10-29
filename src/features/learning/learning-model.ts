@@ -7,20 +7,22 @@
 // report is "not reported", and a Worker whose brain was not read is counted as not read.
 
 import type { PlatformSentinelOverview } from '@/lib/types/catalog'
-import type { BrainRead, PortfolioWorker } from '@/lib/types/worker'
+import type { BrainRead, PackageableComposition, PortfolioWorker } from '@/lib/types/worker'
 
 export const LEARNING_VIEWS = [
   { value: 'activity', label: 'Activity', to: '/learning' },
+  { value: 'workers', label: 'Workers', to: '/learning/workers' },
   { value: 'knowledge', label: 'Knowledge gained', to: '/learning/knowledge' },
   { value: 'evolution', label: 'Evolution', to: '/learning/evolution' },
 ]
 
-export type EventKind = 'memory' | 'held' | 'skill_change' | 'decision'
+export type EventKind = 'memory' | 'held' | 'skill_change' | 'claim' | 'decision'
 
 export const EVENT_KINDS: { value: EventKind; label: string }[] = [
   { value: 'memory', label: 'Memory recorded' },
   { value: 'held', label: 'Pattern noticed' },
   { value: 'skill_change', label: 'Skill change proposed' },
+  { value: 'claim', label: 'Agreed across runs' },
   { value: 'decision', label: 'Sentinel decision' },
 ]
 
@@ -28,12 +30,12 @@ export type Tone = 'neutral' | 'info' | 'warning' | 'success' | 'danger'
 
 /** One vocabulary for learning states, each with what it means in a sentence. */
 export const STATUSES = {
-  recorded: { label: 'Recorded', tone: 'neutral', meaning: 'Saved from a run. The Worker’s Sentinel hasn’t reported a review of it.' },
-  gathering: { label: 'Gathering evidence', tone: 'info', meaning: 'Noticed, but held back until enough runs agree. Not used yet.' },
-  proposed: { label: 'Proposed', tone: 'info', meaning: 'Suggested by the Worker. People decide whether to adopt it.' },
-  kept: { label: 'Kept', tone: 'success', meaning: 'The Worker’s Sentinel approved it, and the Worker now uses it.' },
-  applied: { label: 'Applied', tone: 'success', meaning: 'Confirmed by the Worker it was sent to.' },
-  recorded_decision: { label: 'Recorded, not applied', tone: 'neutral', meaning: 'Written down by the Platform Sentinel. No Worker has confirmed acting on it.' },
+  recorded: { label: 'Recorded', tone: 'neutral', meaning: 'Saved from a run. No governance review has been reported for it yet.' },
+  gathering: { label: 'Collecting evidence', tone: 'info', meaning: 'Noticed, but not ready for approval. It’s kept only if enough runs agree.' },
+  proposed: { label: 'Awaiting review', tone: 'warning', meaning: 'Suggested by the Worker. A person decides whether to adopt it; nothing changes until then.' },
+  kept: { label: 'Approved', tone: 'success', meaning: 'Approved by the Worker’s governance check for this Worker only. Not shared.' },
+  applied: { label: 'Applied', tone: 'success', meaning: 'The Worker confirmed it acted on the decision.' },
+  recorded_decision: { label: 'Recorded, no control applied', tone: 'neutral', meaning: 'Written down by the Platform Sentinel for monitoring. No Worker confirmed acting on it.' },
 } as const satisfies Record<string, { label: string; tone: Tone; meaning: string }>
 
 export type StatusKey = keyof typeof STATUSES
@@ -114,7 +116,7 @@ export function groupHeld(items: HeldItem[]) {
   return [...groups.values()]
 }
 
-export function buildEvents(workers: PortfolioWorker[], brains: BrainRead[], overview: PlatformSentinelOverview | null, skillTitle: (key: string) => string): LearningEvent[] {
+export function buildEvents(workers: PortfolioWorker[], brains: BrainRead[], overview: PlatformSentinelOverview | null, skillTitle: (key: string) => string, compositions: PackageableComposition[] = []): LearningEvent[] {
   const refs = workerRefs(workers)
   const events: LearningEvent[] = []
 
@@ -162,7 +164,9 @@ export function buildEvents(workers: PortfolioWorker[], brains: BrainRead[], ove
     })
   }
 
+  const counted = new Set(compositions.filter((c) => c.maturity.skill_changes > 0).map((c) => c.composition_id))
   for (const b of brains) {
+    if (counted.has(b.id)) continue
     const changes = (b.brain?.compounding?.skill_changes ?? []) as { skill?: string; claim?: string }[]
     changes.forEach((c, i) =>
       events.push({
@@ -179,6 +183,48 @@ export function buildEvents(workers: PortfolioWorker[], brains: BrainRead[], ove
         runsLink: `/workers/${b.id}?view=runs`,
       }),
     )
+  }
+
+  // Proposed Skill changes and agreed statements, counted per Worker on its composition. The
+  // source gives counts and the last run time, not the individual items.
+  for (const c of compositions) {
+    const m = c.maturity
+    const worker = refs.get(c.composition_id) ?? null
+    if (!worker) continue
+    if (m.skill_changes > 0) {
+      events.push({
+        id: `skill:${c.composition_id}`,
+        kind: 'skill_change',
+        status: 'proposed',
+        attention: true,
+        when: m.last_run_at ? { iso: m.last_run_at, kind: 'as_of' } : null,
+        worker,
+        title: `${m.skill_changes} Skill ${m.skill_changes === 1 ? 'change' : 'changes'} proposed`,
+        subject: 'Shared Skills are written by people',
+        source: 'Worker composition',
+        facts: [
+          { label: 'Proposed changes', value: String(m.skill_changes) },
+          { label: 'From runs', value: `${m.runs} (${m.runs_met} met the Definition of Done)` },
+          { label: 'Change details', value: 'Not included in this record' },
+        ],
+        runsLink: `/workers/${c.composition_id}?view=runs`,
+      })
+    }
+    if (m.claims > 0) {
+      events.push({
+        id: `claim:${c.composition_id}`,
+        kind: 'claim',
+        status: 'recorded',
+        attention: false,
+        when: m.last_run_at ? { iso: m.last_run_at, kind: 'as_of' } : null,
+        worker,
+        title: `${m.claims} ${m.claims === 1 ? 'statement' : 'statements'} agreed across runs`,
+        subject: '',
+        source: 'Worker composition',
+        facts: [{ label: 'Agreed statements', value: String(m.claims) }, { label: 'From runs', value: String(m.runs) }],
+        runsLink: `/workers/${c.composition_id}?view=runs`,
+      })
+    }
   }
 
   for (const d of overview?.stream ?? []) {

@@ -1,4 +1,4 @@
-import { Navigate, useParams } from 'react-router'
+import { Link, Navigate, useParams } from 'react-router'
 import { Gavel, Radar } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -45,6 +45,21 @@ export function SentinelPolicyPage() {
               </dl>
             </Card>
             <p className="text-meta text-muted-foreground">With nothing configured, no default is applied: each Worker runs on its own settings.</p>
+            <h3 className="mt-2 text-item font-semibold">Stops and restrictions in force</h3>
+            {data.in_force.length === 0 ? (
+              <p className="rounded-block border border-dashed px-5 py-3 text-body text-muted-foreground">None in force. Lifted ones stay in <Link to="/sentinel/decisions" className="text-primary-strong underline-offset-4 hover:underline">Decisions</Link>.</p>
+            ) : (
+              <Card className="gap-0 py-0">
+                <ul className="divide-y">
+                  {data.in_force.map((f) => (
+                    <li key={f.id} className="px-5 py-3">
+                      <p className="text-body">{f.title} <span className="text-meta text-muted-foreground">· {f.kind === 'stop' ? 'Stopped' : 'Restricted'} · {f.scope}</span></p>
+                      <p className="text-meta text-muted-foreground">{f.reason || 'Reason not reported'}{f.by ? ` · by ${f.by}` : ''}</p>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            )}
           </section>
           <section aria-labelledby="worker-title" className="flex flex-col gap-3">
             <div>
