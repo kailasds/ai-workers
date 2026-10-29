@@ -12,9 +12,11 @@ import customerCapture from '@/data/mock/customer-packages.json'
 import brainCapture from '@/data/mock/worker-brain-a9cb82d0.json'
 import dashboardCapture from '@/data/mock/dashboard-executive.json'
 import { ApiError } from '../client'
+import { mockRead } from './read'
 import { workerVersions } from '@/lib/worker-versions'
 import type { ExecutiveDashboard } from '@/lib/types/dashboard'
 import type {
+  BrainRead,
   CustomerPackage,
   IdentityState,
   PackageableComposition,
@@ -134,4 +136,17 @@ export async function mockAcknowledge(deliveryId: string): Promise<CustomerPacka
 /** MOCK: the delivery record a finished preparation leaves behind. */
 export function mockAddDelivery(pkg: CustomerPackage) {
   customer.unshift(clone(pkg))
+}
+
+/**
+ * Brain reads for several Workers. The capture holds one brain read; every other Worker is
+ * reported as not read, never as an empty brain.
+ */
+export async function mockBrains(ids: string[], scenario: string | null, signal?: AbortSignal): Promise<BrainRead[]> {
+  return mockRead(scenario, () => ids.map((id) => (brains[id] ? { id, state: 'ok' as const, brain: clone(brains[id]) } : { id, state: 'not_read' as const, brain: null })), signal)
+}
+
+/** The packageable compositions: per-Worker contents and learning maturity. */
+export async function mockCompositions(scenario: string | null, signal?: AbortSignal): Promise<PackageableComposition[]> {
+  return mockRead(scenario, () => (scenario === 'empty' ? [] : clone(packageable)), signal)
 }

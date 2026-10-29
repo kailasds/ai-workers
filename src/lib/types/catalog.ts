@@ -143,6 +143,38 @@ export interface SentinelMode {
   why: string | null
 }
 
+/** A stop, restriction, block, pause or directive the Platform Sentinel has in force. Optional fields may be absent from the source. */
+export interface SentinelInForce {
+  id: string
+  kind: string
+  title: string
+  scope: string
+  effect: string
+  since: string
+  reason: string
+  expires?: string | null
+  by?: string | null
+  workers?: number | null
+  applied?: number | null
+  lift_when?: string | null
+  decision_id?: string | null
+}
+
+/** One entry of the Platform Sentinel's decision stream. `applied` is true only once the Worker acknowledged it. */
+export interface SentinelDecision {
+  id: string
+  at: string
+  dimension: string
+  severity: string
+  headline: string
+  applied: boolean
+  mode?: 'shadow' | 'enforce' | null
+  scope?: string | null
+  workers?: number | null
+  reason?: string | null
+  decided_by?: string | null
+}
+
 export interface PlatformSentinelOverview {
   generated_at: string
   window_days: number
@@ -151,8 +183,8 @@ export interface PlatformSentinelOverview {
   coverage: { running: number; reporting: number; no_sentinel: number; unavailable: number; not_running: number; complete: boolean }
   chain: { verified: boolean | null; entries: number; broken_at: string | null; checked: number }
   dimensions: { key: string; mode: SentinelMode; built: boolean; built_by: string | null; open: SeverityCounts; last: { title: string; at: string } | null; counts_7d: SeverityCounts }[]
-  in_force: { id: string; kind: string; title: string; scope: string; effect: string; since: string; reason: string }[]
-  stream: { id: string; at: string; dimension: string; severity: string; headline: string; applied: boolean }[]
+  in_force: SentinelInForce[]
+  stream: SentinelDecision[]
   needs_review: number
 }
 

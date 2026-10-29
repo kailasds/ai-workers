@@ -86,6 +86,16 @@ User management (`/admin/people`, `/admin/groups`) appears only for administrato
   - Two lines on what the Worker produces.
   - Three KPI tiles: Runs, Memory, Outcome. On hover the card gets a primary border and tint.
 - **Worker page** (`/workers/:id`): tabs for Package, Versions and customers, Runs, Brain activity, Knowledge, Learning, Sentinel, Runtimes and Delivery. "Similar Workers" appears only on the Versions and customers tab.
+- **Learning** (`/learning`)
+  - **Activity** is the default view: a newest-first feed of real learning events (memory records and items held while they gather evidence), filterable by Worker and type, with a detail panel for each.
+  - **Knowledge gained** keeps assigned, gained and platform knowledge apart, and shows gained knowledge by status: kept (not reported), gathering evidence, or recorded but not reviewed. It also covers knowledge health (retire, revoke, replace).
+  - **Evolution** shows each identity's capability ladder and which Workers sit on each step; no proposals are recorded.
+  - **Explore map** (`/learning/map`) is optional and draws only real links.
+- **Platform Sentinel** (`/sentinel`)
+  - **Overview** leads with what needs attention, then stops and restrictions in force, sharing status, recent decisions, setup and what it checks.
+  - **Sharing** keeps the states eligible, proposed, agreed, delivered, used and suspended apart. Sharing isn't switched on yet.
+  - **Decisions** has filters and a detail page; **Workers** holds coverage and Stop Worker; **Policy** separates platform-wide controls from Worker-owned settings.
+  - Plan and data gaps are in `docs/learning-sentinel-plan.md`.
 - **Compose** (`/compose` → `/compose/new` → `/compose/guided/:id`)
   - Pick a Worker type, then define the Worker: identity (unavailable ones are shown greyed out with the reason), optional domain and geography, bounded context, and an optional Worker name.
   - "Assemble automatically" decides whether it pauses at all 8 checkpoints.
@@ -144,8 +154,26 @@ The design source of truth is `.claude/skills/frontend-kit/references/design.md`
 | `repo/` | An earlier copy of the redesign, kept for reference. |
 | `app/` | The legacy console UI. A product reference only, never a design reference. |
 
+### Brain counts (one meaning each)
+
+| Where | Counts |
+| --- | --- |
+| Knowledge tab | Skills in the library |
+| Learning tab and "Workers with learning" | Workers with memory records or items gathering evidence |
+| Sentinel tab and "Needs attention" | Items on the Sentinel Overview's attention list (monitoring gaps, stops and restrictions, pending reviews) |
+| Activity "All activity" | Activity rows; held items with the same Worker, Skill and state are one row |
+
 ## 8. Open items
 
+- **Pagination is client-side:** Learning and Sentinel lists use the shared `Pager` and `usePaged` (`src/hooks/use-paged.ts`), with page and page size in the URL. The reads they page over have no page or cursor parameters, so the console pages the complete loaded list. The portfolio API has a `next_cursor`, but the console reads it with `limit=200` in one call.
+- **Not connected in this console:**
+  - Stop Worker: the dialog explains it; nothing is sent.
+  - Approving, retiring, revoking or replacing learned knowledge.
+  - Editing platform policy.
+  - Evolution proposals.
+  - Sharing agreements.
+  - Per-decision evidence and affected Workers.
+- **Not in the offline snapshot:** brain reads for 49 of 50 Workers, and run IDs behind individual memory records.
 - **Package configuration page:** Build Package (end of Compose) should first open a configuration page. Its contents are still to be defined.
 - `src/features/packaging/packaging-page.tsx` sometimes shows as modified because of line-ending differences only.
 - `README.md` predates several of the changes in section 4 (it still describes a grouped Registry list and the navy panel on the right). This file reflects the current state.

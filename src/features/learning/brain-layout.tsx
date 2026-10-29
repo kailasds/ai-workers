@@ -1,37 +1,33 @@
-import { useLocation } from 'react-router'
 import { Brain, BrainCircuit, ShieldCheck } from 'lucide-react'
 import { HubLayout, Kpi, KpiBand } from '@/components/platform/hub'
 import { useResource } from '@/hooks/use-resource'
-import { getEvaluations, getSentinelOverview, getSkillLibrary } from '@/lib/api/catalog'
-import { getWorkerPortfolio } from '@/lib/api/workers'
+import { getEvaluations, getSkillLibrary } from '@/lib/api/catalog'
 import { formatCount } from '@/lib/format'
+import { useSentinel } from '@/features/sentinel/use-sentinel'
+import { useLearning } from './use-learning'
 
 // Brain is the second main menu: what Workers know (Knowledge), what they add by running
 // (Learning) and whether they can be trusted (Sentinel). Same shape as Home: one header, one band
 // of figures, then the three areas as tabs at their own URLs.
-
-function useBrainFigures() {
-  const { search } = useLocation()
-  const scenario = new URLSearchParams(search).get('mock')
-  const skills = useResource('k-skills', (signal) => getSkillLibrary({ signal }))
-  const evals = useResource('k-evals', (signal) => getEvaluations({ signal }))
-  const portfolio = useResource(`portfolio:${scenario}`, (signal) => getWorkerPortfolio({ signal, scenario }))
-  const sentinel = useResource('sentinel-overview', (signal) => getSentinelOverview({ signal }))
-  return { skills, evals, portfolio, sentinel }
-}
+//
+// Tab counts, each one documented quantity:
+//   Knowledge  Skills in the library
+//   Learning   Workers with any learning activity (memory records or items gathering evidence)
+//   Sentinel   items that need attention (the Sentinel Overview's list)
 
 export function BrainLayout() {
-  const f = useBrainFigures()
-  const workers = f.portfolio.data?.workers
-  const learning = workers?.filter((w) => w.learning.memories > 0)
-  const memories = workers?.reduce((n, w) => n + w.learning.memories, 0)
-  const o = f.sentinel.data
+  const skills = useResource('k-skills', (signal) => getSkillLibrary({ signal }))
+  const evals = useResource('k-evals', (signal) => getEvaluations({ signal }))
+  const l = useLearning()
+  const s = useSentinel()
+  const o = s.overview.data
+  const records = l.workers.reduce((n, w) => n + w.learning.memories, 0)
 
   const band = (
     <KpiBand title="Overview" columns={3}>
-      <Kpi label="Skills in the library" icon={Brain} hue="violet" value={f.skills.data?.skills.length} loading={!f.skills.data && !f.skills.error} failed={Boolean(f.skills.error && !f.skills.data)} to="/knowledge/skills" caption={f.evals.data ? `${formatCount(f.evals.data.evaluations.length)} EVAL Playbooks to hold them to` : 'Reusable instructions'} />
-      <Kpi label="Workers with memory" icon={BrainCircuit} hue="cyan" value={learning?.length} unit={workers ? `of ${formatCount(workers.length)}` : undefined} loading={!f.portfolio.data && !f.portfolio.error} failed={Boolean(f.portfolio.error && !f.portfolio.data)} to="/learning" caption={memories !== undefined ? `${formatCount(memories)} memory records from running` : 'Saved from their runs'} />
-      <Kpi label="Monitored by Sentinel" icon={ShieldCheck} hue="rose" value={o?.coverage.reporting} unit={o ? `of ${formatCount(o.coverage.running)} running` : undefined} loading={!o && !f.sentinel.error} failed={Boolean(f.sentinel.error && !o)} to="/sentinel" caption={o ? `${formatCount(o.needs_review)} need review · ${formatCount(o.in_force.length)} restrictions in force` : 'Across all Workers'} />
+      <Kpi label="Skills in the library" icon={Brain} hue="violet" value={skills.data?.skills.length} loading={!skills.data && !skills.error} failed={Boolean(skills.error && !skills.data)} to="/knowledge/skills" caption={evals.data ? `${formatCount(evals.data.evaluations.length)} EVAL Playbooks to hold them to` : 'Reusable instructions'} />
+      <Kpi label="Workers with learning" icon={BrainCircuit} hue="cyan" value={l.ready ? l.learningWorkers : undefined} unit={l.ready ? `of ${formatCount(l.workers.length)}` : undefined} loading={!l.ready && !l.error} failed={Boolean(l.error)} to="/learning" caption={l.ready ? `${formatCount(records)} memory records · ${formatCount(l.held.length)} items gathering evidence` : 'Memory and patterns from runs'} />
+      <Kpi label="Needs attention" icon={ShieldCheck} hue="rose" value={o ? s.attention.length : undefined} loading={!o && !s.overview.error} failed={Boolean(s.overview.error && !o)} to="/sentinel" caption={o ? `${formatCount(o.coverage.reporting)} of ${formatCount(o.coverage.running)} running Workers report to Sentinel` : 'Across all Workers'} />
     </KpiBand>
   )
 
@@ -41,9 +37,9 @@ export function BrainLayout() {
       band={band}
       tabsLabel="Brain"
       stages={[
-        { to: '/knowledge', label: 'Knowledge', icon: Brain, hue: 'violet', count: f.skills.data?.skills.length },
-        { to: '/learning', label: 'Learning', icon: BrainCircuit, hue: 'cyan', count: learning?.length },
-        { to: '/sentinel', label: 'Sentinel', icon: ShieldCheck, hue: 'rose', count: o?.needs_review },
+        { to: '/knowledge', label: 'Knowledge', icon: Brain, hue: 'violet', count: skills.data?.skills.length },
+        { to: '/learning', label: 'Learning', icon: BrainCircuit, hue: 'cyan', count: l.ready ? l.learningWorkers : undefined },
+        { to: '/sentinel', label: 'Sentinel', icon: ShieldCheck, hue: 'rose', count: o ? s.attention.length : undefined },
       ]}
     />
   )

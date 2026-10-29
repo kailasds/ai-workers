@@ -1,8 +1,9 @@
 import { apiGet, ApiError, USE_MOCK } from './client'
 import { workerVersions } from '@/lib/worker-versions'
-import { mockAcknowledge, mockAddDelivery, mockCustomerPackages, mockIdentityChange, mockPortfolio, mockRuntimeRecords, mockWorkspace } from './mock/workers'
+import { mockAcknowledge, mockAddDelivery, mockBrains, mockCompositions, mockCustomerPackages, mockIdentityChange, mockPortfolio, mockRuntimeRecords, mockWorkspace } from './mock/workers'
 import type { ExecutiveDashboard } from '@/lib/types/dashboard'
 import type {
+  BrainRead,
   CustomerPackage,
   IdentityState,
   PackageableComposition,
@@ -87,3 +88,22 @@ export async function acknowledgeDelivery(deliveryId: string): Promise<CustomerP
 }
 
 export { mockAddDelivery as recordPreparedDelivery }
+
+/** Brain reads for the given Workers, one request each; a failed read is reported as unavailable. */
+export async function getWorkerBrains(ids: string[], { signal, scenario }: Options = {}): Promise<BrainRead[]> {
+  if (USE_MOCK) return mockBrains(ids, scenario ?? null, signal)
+  return Promise.all(
+    ids.map((id) =>
+      apiGet<WorkerBrain>(`/compositions/${id}/brain`, signal)
+        .then((brain): BrainRead => ({ id, state: 'ok', brain }))
+        .catch((): BrainRead => ({ id, state: 'unavailable', brain: null })),
+    ),
+  )
+}
+
+/** Every composition with its contents (assigned knowledge) and learning maturity (what it gained). */
+export async function getCompositions({ signal, scenario }: Options = {}): Promise<PackageableComposition[]> {
+  if (USE_MOCK) return mockCompositions(scenario ?? null, signal)
+  const body = await apiGet<{ compositions: PackageableComposition[] }>('/compositions/packageable', signal)
+  return body.compositions
+}

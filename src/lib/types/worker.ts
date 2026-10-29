@@ -141,6 +141,13 @@ export interface WorkerBrain {
   } | null
 }
 
+/** One Worker's brain read: `not_read` when the source holds no read for it, `unavailable` when the read failed. */
+export interface BrainRead {
+  id: string
+  state: 'ok' | 'not_read' | 'unavailable'
+  brain: WorkerBrain | null
+}
+
 /** A completed run attributed to this Worker (from the run ledger, joined through its runtimes). */
 export interface WorkerRun {
   run_ref: string

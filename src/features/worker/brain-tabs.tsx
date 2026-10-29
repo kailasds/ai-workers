@@ -76,12 +76,17 @@ export function LearningTab({ ws }: { ws: WorkerWorkspace }) {
     <Card className="gap-4 p-5">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-section">What it has recorded</h2>
-        <Button asChild variant="secondary" size="sm">
-          <Link to={`/learning/workers/${w.composition_id}`}>
-            Open in Learning
-            <ArrowRight aria-hidden="true" />
-          </Link>
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="ghost" size="sm">
+            <Link to={`/learning/workers/${w.composition_id}`}>Learning items</Link>
+          </Button>
+          <Button asChild variant="secondary" size="sm">
+            <Link to={`/learning/workers/${w.composition_id}`}>
+              Open in Learning
+              <ArrowRight aria-hidden="true" />
+            </Link>
+          </Button>
+        </div>
       </div>
       {!m || m.memories === 0 ? (
         <EmptyState icon={BrainCircuit} title={m && m.runs > 0 ? `No memory records yet from ${m.runs} runs` : 'Nothing recorded yet'} />

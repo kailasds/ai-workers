@@ -18,7 +18,12 @@ const DraftsPage = named(() => import('@/features/compose/drafts-page'), 'Drafts
 const KnowledgePage = named(() => import('@/features/knowledge/knowledge-page'), 'KnowledgePage')
 const GovernancePage = named(() => import('@/features/knowledge/governance-page'), 'GovernancePage')
 const SkillWizard = named(() => import('@/features/knowledge/skill-wizard'), 'SkillWizard')
-const LearningPage = named(() => import('@/features/learning/learning-page'), 'LearningPage')
+const LearningActivityPage = named(() => import('@/features/learning/activity-page'), 'LearningActivityPage')
+const LearningWorkersPage = named(() => import('@/features/learning/workers-page'), 'LearningWorkersPage')
+const KnowledgeGainedPage = named(() => import('@/features/learning/knowledge-gained-page'), 'KnowledgeGainedPage')
+const EvolutionPage = named(() => import('@/features/learning/evolution-page'), 'EvolutionPage')
+const LearningMapPage = named(() => import('@/features/learning/learning-map-page'), 'LearningMapPage')
+const SentinelSharingPage = named(() => import('@/features/sentinel/sharing-page'), 'SentinelSharingPage')
 const WorkerLearningPage = named(() => import('@/features/learning/worker-learning-page'), 'WorkerLearningPage')
 const WorkerLearningSubpage = named(() => import('@/features/learning/worker-learning-page'), 'WorkerLearningSubpage')
 const SentinelOverviewPage = named(() => import('@/features/sentinel/overview-page'), 'SentinelOverviewPage')
@@ -85,8 +90,15 @@ function App() {
             {/* Brain: the same shape over Knowledge, Learning and Sentinel. Detail pages stand alone. */}
             <Route element={<BrainLayout />}>
               <Route path="knowledge/:view" element={<KnowledgeRouter />} />
-              <Route path="learning/*" element={<LearningPage />} />
+              <Route path="learning" element={<LearningActivityPage />} />
+              <Route path="learning/workers" element={<LearningWorkersPage />} />
+              <Route path="learning/knowledge" element={<KnowledgeGainedPage />} />
+              <Route path="learning/evolution" element={<EvolutionPage />} />
+              <Route path="learning/map" element={<LearningMapPage />} />
+              <Route path="learning/shared" element={<Navigate to="/sentinel/sharing" replace />} />
+              <Route path="learning/*" element={<Navigate to="/learning" replace />} />
               <Route path="sentinel" element={<SentinelOverviewPage />} />
+              <Route path="sentinel/sharing" element={<SentinelSharingPage />} />
               <Route path="sentinel/workers" element={<SentinelWorkersPage />} />
               <Route path="sentinel/decisions" element={<SentinelDecisionsPage />} />
               <Route path="sentinel/policy" element={<SentinelPolicyPage />} />

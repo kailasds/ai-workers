@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Fact, FactList } from '@/components/platform/fact-list'
 import { StatusBadge } from '@/components/platform/status-badge'
@@ -37,7 +38,10 @@ export function SentinelTab({ ws }: { ws: WorkerWorkspace }) {
             <Fact label="Last action">{s.last_action ?? <span className="text-muted-foreground">None reported</span>}</Fact>
             <Fact label="Observed"><Timestamp iso={s.observed_at} /></Fact>
           </FactList>
-          <p className="mt-4 text-meta text-muted-foreground">See Sentinel for decisions across all Workers.</p>
+          <p className="mt-4 text-meta text-muted-foreground">
+            This Worker’s Sentinel decides what it keeps. Reuse by other Workers, stops and restrictions are{' '}
+            <Link to="/sentinel" className="text-primary-strong underline-offset-4 hover:underline">Platform Sentinel</Link> decisions.
+          </p>
         </CardContent>
       </Card>
     </div>

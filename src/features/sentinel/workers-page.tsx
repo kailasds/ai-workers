@@ -1,39 +1,35 @@
-import { useId, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { ChevronRight, OctagonX, ShieldOff } from 'lucide-react'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Spinner } from '@/components/ui/spinner'
-import { Textarea } from '@/components/ui/textarea'
 import { DetailSheet } from '@/components/platform/detail-sheet'
 import { Fact, FactList } from '@/components/platform/fact-list'
-import { RuntimeStatusDot, runtimeStatus } from '@/components/platform/runtime-status'
+import { Pager } from '@/components/platform/pager'
 import { EmptyState, ErrorState, LoadingRegion } from '@/components/platform/states'
+import { StatusBadge } from '@/components/platform/status-badge'
+import { Timestamp } from '@/components/platform/timestamp'
+import { PAGE_SIZES, usePaged } from '@/hooks/use-paged'
 import { useResource } from '@/hooks/use-resource'
-import { getSentinelLearning } from '@/lib/api/catalog'
-import { USE_MOCK } from '@/lib/api/client'
+import { useScenario } from '@/hooks/use-scenario'
 import { getWorkerPortfolio } from '@/lib/api/workers'
+import { formatCount } from '@/lib/format'
 import type { SentinelLearningFleet } from '@/lib/types/catalog'
 import type { PortfolioWorker } from '@/lib/types/worker'
+import { workerRefs } from '@/features/learning/learning-model'
+import { WorkerName } from '@/features/learning/learning-layout'
 import { SentinelLayout } from './sentinel-layout'
+import { useSentinel } from './use-sentinel'
 
-const FILTERS = [
-  { value: 'running', label: 'All running' },
-  { value: 'review', label: 'Needs review' },
-  { value: 'reporting', label: 'Sentinel reporting' },
-  { value: 'no-sentinel', label: 'No Sentinel' },
-  { value: 'unavailable', label: 'Status unavailable' },
-  { value: 'not-running', label: 'Not running' },
-]
+type Coverage = 'reporting' | 'unavailable' | 'no-sentinel' | 'not-running'
 
-type Coverage = 'reporting' | 'no-sentinel' | 'unavailable' | 'not-running'
-
+/**
+ * Monitoring status, from facts only. A running Worker the fleet read doesn't list as answering
+ * is "not reporting" — never assumed healthy — and stays a concern until it reports.
+ */
 function coverageOf(w: PortfolioWorker, fleet: SentinelLearningFleet | null): Coverage {
   if (w.runtime.serving === 0) return 'not-running'
   if (w.sentinel.state !== 'CONFIGURED') return 'no-sentinel'
@@ -41,62 +37,41 @@ function coverageOf(w: PortfolioWorker, fleet: SentinelLearningFleet | null): Co
   return live && live.status === 'answering' ? 'reporting' : 'unavailable'
 }
 
-const COVERAGE_WORDS: Record<Coverage, string> = {
-  reporting: 'Sentinel reporting',
-  'no-sentinel': 'No Sentinel',
-  unavailable: 'Did not report',
-  'not-running': 'No Worker Runtime',
+const COVERAGE: Record<Coverage, { label: string; tone: 'success' | 'warning' | 'neutral'; meaning: string }> = {
+  reporting: { label: 'Reporting', tone: 'success', meaning: 'Running, and its Sentinel answers. Sentinel can see what it learns and does.' },
+  unavailable: { label: 'Running, not reporting', tone: 'warning', meaning: 'Running, but its Sentinel didn’t answer. Sentinel can’t see what it learns or does until it reports. Check the Worker’s runtime and its Sentinel settings.' },
+  'no-sentinel': { label: 'No Sentinel', tone: 'warning', meaning: 'Running without a Worker Sentinel, so nothing checks what it keeps from its runs.' },
+  'not-running': { label: 'Not running', tone: 'neutral', meaning: 'No runtime is serving, so there is nothing to monitor right now.' },
 }
 
-/** The one destructive governance action: typed name + reason, per ECS runtime, itself a recorded decision. */
+const FILTERS: { value: string; label: string; match: (c: Coverage) => boolean }[] = [
+  { value: 'running', label: 'All running', match: (c) => c !== 'not-running' },
+  { value: 'unavailable', label: 'Running, not reporting', match: (c) => c === 'unavailable' },
+  { value: 'no-sentinel', label: 'No Sentinel', match: (c) => c === 'no-sentinel' },
+  { value: 'reporting', label: 'Reporting', match: (c) => c === 'reporting' },
+  { value: 'not-running', label: 'Not running', match: (c) => c === 'not-running' },
+  { value: 'all', label: 'All Workers', match: () => true },
+]
+
+/**
+ * Stop Worker needs a stop request the console can send. It has none wired, so the dialog
+ * explains what stopping would do and why it isn't available here, instead of pretending.
+ */
 function StopDialog({ worker, open, onClose }: { worker: PortfolioWorker; open: boolean; onClose: () => void }) {
-  const [typed, setTyped] = useState('')
-  const [reason, setReason] = useState('')
-  const [state, setState] = useState<'idle' | 'sending' | 'done'>('idle')
-  const nameId = useId()
-  const reasonId = useId()
-  const ready = typed === worker.name && reason.trim().length > 0 && reason.length <= 500 && state === 'idle'
   return (
-    <Dialog open={open} onOpenChange={(o) => !o && state !== 'sending' && onClose()}>
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-section">Stop Worker</DialogTitle>
           <DialogDescription className="text-body">
-            <span className="font-medium text-foreground">{worker.name}</span>. Each serving ECS runtime is stopped by its own request, and each stop is recorded as a Platform Sentinel decision. A run in progress is interrupted.
+            Stopping <span className="font-medium text-foreground">{worker.name}</span> would stop each serving runtime and interrupt any run in progress. Each stop is recorded as a Platform Sentinel decision, with your typed confirmation and a reason.
           </DialogDescription>
         </DialogHeader>
-        {state === 'done' ? (
-          <Alert>
-            <AlertTitle className="text-item">Not stopped</AlertTitle>
-            <AlertDescription>{USE_MOCK ? 'Stopping isn’t available in this demo. Nothing was changed.' : 'Coming soon.'}</AlertDescription>
-          </Alert>
-        ) : (
-          <>
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor={nameId}>Type the Worker’s name to confirm</Label>
-              <Input id={nameId} value={typed} onChange={(e) => setTyped(e.target.value)} placeholder={worker.name} autoComplete="off" />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor={reasonId}>Reason</Label>
-              <Textarea id={reasonId} rows={3} maxLength={500} value={reason} onChange={(e) => setReason(e.target.value)} aria-describedby={`${reasonId}-hint`} />
-              <p id={`${reasonId}-hint`} className="text-meta text-muted-foreground">Saved with the decision so others can see why.</p>
-            </div>
-          </>
-        )}
+        <p className="rounded-block bg-muted p-3 text-meta text-muted-foreground">
+          Stopping isn’t connected in this console, so nothing can be stopped from here.
+        </p>
         <DialogFooter>
-          <DialogClose asChild><Button variant="outline" disabled={state === 'sending'}>{state === 'done' ? 'Close' : 'Cancel'}</Button></DialogClose>
-          {state !== 'done' && (
-            <Button
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              disabled={!ready}
-              onClick={() => {
-                setState('sending')
-                setTimeout(() => setState('done'), 900)
-              }}
-            >
-              {state === 'sending' && <Spinner />}Stop Worker
-            </Button>
-          )}
+          <DialogClose asChild><Button variant="outline">Close</Button></DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -105,85 +80,123 @@ function StopDialog({ worker, open, onClose }: { worker: PortfolioWorker; open: 
 
 export function SentinelWorkersPage() {
   const [params, setParams] = useSearchParams()
-  const filter = params.get('filter') ?? 'running'
-  const portfolio = useResource('portfolio', (signal) => getWorkerPortfolio({ signal }))
-  const fleet = useResource('sentinel-learning', (signal) => getSentinelLearning({ signal }))
+  const filter = FILTERS.find((f) => f.value === params.get('filter')) ?? FILTERS[0]
+  const context = params.get('context')
+  // A filter change returns to the first page; paging keeps the filters.
+  const set = (k: string, v: string | null) =>
+    setParams((p) => {
+      const n = new URLSearchParams(p)
+      if (v === null) n.delete(k)
+      else n.set(k, v)
+      n.delete('page')
+      return n
+    }, { replace: true, preventScrollReset: true })
+  const scenario = useScenario()
+  const portfolio = useResource(`portfolio:${scenario}`, (signal) => getWorkerPortfolio({ signal, scenario }))
+  const sentinel = useSentinel()
+  const fleet = sentinel.fleet.data ?? null
   const [open, setOpen] = useState<PortfolioWorker | null>(null)
   const [stopping, setStopping] = useState(false)
 
-  const rows = useMemo(() => {
-    const ws = portfolio.data?.workers ?? []
-    return ws.filter((w) => {
-      const c = coverageOf(w, fleet.data ?? null)
-      if (filter === 'running') return c !== 'not-running'
-      if (filter === 'review') return false
-      return c === filter
-    })
-  }, [portfolio.data, fleet.data, filter])
+  const workers = useMemo(() => portfolio.data?.workers ?? [], [portfolio.data])
+  const refs = useMemo(() => workerRefs(workers), [workers])
+  const coverage = useMemo(() => new Map(workers.map((w) => [w.composition_id, coverageOf(w, fleet)])), [workers, fleet])
+  const inContext = useMemo(() => workers.filter((w) => !context || w.bounded_context.key === context), [workers, context])
+  const count = (f: (typeof FILTERS)[number]) => inContext.filter((w) => f.match(coverage.get(w.composition_id)!)).length
+  const contexts = portfolio.data?.bounded_contexts ?? []
+  // Concerns first, then by name.
+  const order: Coverage[] = ['unavailable', 'no-sentinel', 'reporting', 'not-running']
+  const rows = inContext.filter((w) => filter.match(coverage.get(w.composition_id)!)).sort((a, b) => order.indexOf(coverage.get(a.composition_id)!) - order.indexOf(coverage.get(b.composition_id)!) || a.name.localeCompare(b.name) || a.composition_id.localeCompare(b.composition_id))
+  const paged = usePaged(rows)
 
-  const live = open ? fleet.data?.workers.find((x) => x.composition_id === open.composition_id) : undefined
+  const live = open ? fleet?.workers.find((x) => x.composition_id === open.composition_id) : undefined
+  const openCoverage = open ? coverage.get(open.composition_id)! : null
 
   return (
     <SentinelLayout
       view="workers"
+      source={portfolio.data ? { snapshotAt: portfolio.data.generated_at, updatedAt: portfolio.updatedAt, refreshFailed: Boolean(portfolio.error), onRetry: portfolio.refresh, partial: sentinel.fleet.error && !fleet ? 'Per-Worker reporting couldn’t be read; running Workers show as not reporting' : null } : undefined}
       utilities={
-        <Select value={filter} onValueChange={(v) => setParams(v === 'running' ? {} : { filter: v }, { replace: true })}>
-          <SelectTrigger className="w-48" aria-label="Show"><SelectValue /></SelectTrigger>
-          <SelectContent align="end">{FILTERS.map((f) => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}</SelectContent>
-        </Select>
+        portfolio.data && (
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Filter Workers">
+            <Select value={filter.value} onValueChange={(v) => set('filter', v === 'running' ? null : v)}>
+              <SelectTrigger className="w-56" aria-label="Monitoring status"><SelectValue /></SelectTrigger>
+              <SelectContent align="end">{FILTERS.map((f) => <SelectItem key={f.value} value={f.value}>{f.label} <span className="text-muted-foreground tabular-nums">{count(f)}</span></SelectItem>)}</SelectContent>
+            </Select>
+            <Select value={context ?? '__all'} onValueChange={(v) => set('context', v === '__all' ? null : v)}>
+              <SelectTrigger className="w-56" aria-label="Bounded context"><SelectValue /></SelectTrigger>
+              <SelectContent align="end"><SelectItem value="__all">All bounded contexts</SelectItem>{contexts.map((c) => <SelectItem key={c.key} value={c.key}>{c.label}</SelectItem>)}</SelectContent>
+            </Select>
+          </div>
+        )
       }
     >
-      {portfolio.error ? (
-        <ErrorState title="Workers could not be read." message={portfolio.error.message} onRetry={portfolio.refresh} />
+      {portfolio.error && !portfolio.data ? (
+        <ErrorState title="Workers couldn’t be loaded." message={portfolio.error.message} onRetry={portfolio.refresh} />
       ) : !portfolio.data ? (
-        <LoadingRegion label="Loading…" className="flex flex-col gap-2">{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-14" />)}</LoadingRegion>
+        <LoadingRegion label="Loading Workers…" className="flex flex-col gap-2">{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-14 bg-track" />)}</LoadingRegion>
       ) : rows.length === 0 ? (
-        <EmptyState icon={ShieldOff} title={filter === 'review' ? 'No Workers need review' : 'No Workers in this view'} description={filter === 'running' ? 'No Workers are running.' : 'Choose another view to see more Workers.'} />
+        filter.value === 'running' && !context ? (
+          <EmptyState icon={ShieldOff} title="No Workers are running" description="Sentinel monitors running Workers. None is running right now." />
+        ) : (
+          <p className="rounded-block border border-dashed px-5 py-4 text-body text-muted-foreground">No Workers match these filters.</p>
+        )
       ) : (
-        <Card className="gap-0 py-0">
-          <ul className="divide-y">
-            {rows.map((w) => {
-              const c = coverageOf(w, fleet.data ?? null)
-              return (
-                <li key={w.composition_id}>
-                  <button type="button" onClick={() => setOpen(w)} className="flex w-full items-center gap-4 px-5 py-3.5 text-left outline-none hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset">
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-item">{w.name}</span>
-                      <span className="mt-0.5 flex items-center gap-2 text-meta text-muted-foreground"><RuntimeStatusDot status={runtimeStatus(w.runtime)} /><span aria-hidden="true">·</span><span className="truncate">{w.bounded_context.label}</span></span>
-                    </span>
-                    <span className="hidden text-meta text-muted-foreground sm:inline">{COVERAGE_WORDS[c]}</span>
-                    <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-                  </button>
-                </li>
-              )
-            })}
-          </ul>
-        </Card>
+        <>
+          <Card className="gap-0 py-0">
+            <ul className="divide-y">
+              {paged.rows.map((w) => {
+                const c = COVERAGE[coverage.get(w.composition_id)!]
+                return (
+                  <li key={w.composition_id}>
+                    <button type="button" onClick={() => setOpen(w)} className="flex w-full items-center gap-4 px-5 py-3.5 text-left outline-none hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset">
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-item"><WorkerName worker={refs.get(w.composition_id) ?? null} link={false} /></span>
+                        <span className="block truncate text-meta text-muted-foreground">{w.bounded_context.label}</span>
+                      </span>
+                      <StatusBadge tone={c.tone}>{c.label}</StatusBadge>
+                      <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </Card>
+          <Pager page={paged.page} pageSize={paged.size} total={paged.total} onPage={paged.setPage} pageSizes={PAGE_SIZES} onPageSize={paged.setSize} label="Workers" />
+        </>
       )}
 
       <DetailSheet
         open={open !== null}
         onClose={() => setOpen(null)}
-        title={open?.name}
-        description={open ? `${open.composition_id.slice(0, 8)} · r${open.revision} · ${open.bounded_context.label}` : undefined}
+        title={open ? <WorkerName worker={refs.get(open.composition_id) ?? null} link={false} /> : ''}
+        description={open ? `r${open.revision} · ${open.bounded_context.label}` : undefined}
         width="lg"
         footer={open && (
           <>
-            <Button asChild variant="outline"><Link to={`/workers/${open.composition_id}?view=sentinel`}>View Sentinel settings</Link></Button>
-            {open.runtime.serving > 0 && <Button className="ml-auto bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => setStopping(true)}><OctagonX aria-hidden="true" />Stop Worker…</Button>}
+            <Button asChild variant="outline"><Link to={`/workers/${open.composition_id}?view=sentinel`}>Open Worker</Link></Button>
+            <Button asChild variant="ghost"><Link to={`/learning?worker=${open.composition_id}`}>Learning activity</Link></Button>
+            {open.runtime.serving > 0 && <Button variant="outline" className="ml-auto" onClick={() => setStopping(true)}><OctagonX aria-hidden="true" />Stop Worker…</Button>}
           </>
         )}
       >
-        {open && (
+        {open && openCoverage && (
           <div className="flex flex-col gap-6">
+            <div className="rounded-block bg-muted p-3">
+              <StatusBadge tone={COVERAGE[openCoverage].tone}>{COVERAGE[openCoverage].label}</StatusBadge>
+              <p className="mt-2 text-meta text-muted-foreground">{COVERAGE[openCoverage].meaning}</p>
+            </div>
             <FactList>
-              <Fact label="Runtime coverage">{COVERAGE_WORDS[coverageOf(open, fleet.data ?? null)]}{live?.detail && <span className="block text-meta text-muted-foreground">{live.detail}</span>}</Fact>
-              <Fact label="Configured oversight">{open.sentinel.state === 'CONFIGURED' ? 'Has a Worker Sentinel' : 'No Worker Sentinel'}</Fact>
-              <Fact label="Recorded decisions">No Sentinel decision reported.</Fact>
-              <Fact label="Platform policy">No bounds set</Fact>
+              {live?.detail && <Fact label="What it reported">{live.detail}</Fact>}
+              <Fact label="Last report"><Timestamp iso={open.sentinel.observed_at} /></Fact>
+              <Fact label="Worker Sentinel">{open.sentinel.state === 'CONFIGURED' ? 'Composed with one' : 'Composed without one'}</Fact>
+              <Fact label="Running">{open.runtime.serving > 0 ? `${formatCount(open.runtime.serving)} ${open.runtime.serving === 1 ? 'runtime' : 'runtimes'} serving` : 'No runtime serving'}</Fact>
+              <Fact label="Platform decisions">
+                {!sentinel.overview.data ? 'Not loaded' : sentinel.overview.data.stream.length === 0 ? `None in the last ${sentinel.overview.data.window_days} days` : 'The record doesn’t say which Workers each decision affected'}
+                <Link to="/sentinel/decisions" className="ml-2 text-meta text-primary-strong underline-offset-4 hover:underline">All decisions</Link>
+              </Fact>
+              <Fact label="Platform policy">None configured</Fact>
             </FactList>
-            <p className="text-meta text-muted-foreground">Recorded only. These decisions haven’t changed what the Worker uses.</p>
-            {open.runtime.serving === 0 && <p className="text-body text-muted-foreground">Not running.</p>}
           </div>
         )}
       </DetailSheet>

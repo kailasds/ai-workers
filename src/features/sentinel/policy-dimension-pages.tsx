@@ -3,26 +3,66 @@ import { Gavel, Radar } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Fact, FactList } from '@/components/platform/fact-list'
-import { EmptyState } from '@/components/platform/states'
-import { useResource } from '@/hooks/use-resource'
-import { getSentinelOverview } from '@/lib/api/catalog'
+import { EmptyState, ErrorState } from '@/components/platform/states'
 import { DIMENSIONS, openPhrase } from './sentinel-model'
 import { SentinelLayout } from './sentinel-layout'
+import { useSentinel } from './use-sentinel'
+
+// Settings each Worker owns, chosen when it is composed or deployed. Platform policy can only
+// make these stricter, never looser.
+const WORKER_OWNED = [
+  { label: 'Autonomy level', where: 'Set when the Worker is composed' },
+  { label: 'Worker Sentinel mode', where: 'Set when the Worker is composed' },
+  { label: 'Sharing its learning', where: 'Set in the Worker’s Sentinel settings' },
+  { label: 'Data sent to the platform', where: 'Set by the Worker’s owner' },
+  { label: 'Monthly spending limit', where: 'Set when the Worker is deployed' },
+]
 
 export function SentinelPolicyPage() {
-  const { data } = useResource('sentinel-overview', (signal) => getSentinelOverview({ signal }))
+  const sentinel = useSentinel()
+  const { data, error, refresh } = sentinel.overview
   return (
-    <SentinelLayout view="policy">
-      {!data ? (
-        <Skeleton className="h-48" />
+    <SentinelLayout view="policy" source={sentinel.source}>
+      {error && !data ? (
+        <ErrorState title="Platform policy couldn’t be loaded." message={error.message} onRetry={refresh} />
+      ) : !data ? (
+        <Skeleton className="h-48 bg-track" />
       ) : !data.viewer.admin ? (
         <EmptyState icon={Gavel} title="Platform policy is available to administrators" />
       ) : (
-        <Card className="gap-3 p-6">
-          <p className="text-overline text-muted-foreground uppercase">Platform policy · defaults</p>
-          <h2 className="text-section">No platform limits set</h2>
-          <p className="text-body text-muted-foreground">Platform policy can only tighten Worker settings, never loosen them. Read-only for now.</p>
-        </Card>
+        <div className="grid items-start gap-6 lg:grid-cols-2">
+          <section aria-labelledby="platform-title" className="flex flex-col gap-3">
+            <div>
+              <h2 id="platform-title" className="text-section">Platform-wide controls</h2>
+              <p className="text-meta text-muted-foreground">Limits that apply to every Worker. They can only tighten a Worker’s own settings.</p>
+            </div>
+            <Card className="gap-0 py-0">
+              <dl className="divide-y">
+                <div className="flex flex-wrap items-baseline justify-between gap-2 px-5 py-3"><dt className="text-meta text-muted-foreground">Status</dt><dd className="text-body">Not configured</dd></div>
+                <div className="flex flex-wrap items-baseline justify-between gap-2 px-5 py-3"><dt className="text-meta text-muted-foreground">Limits, managed values, directives</dt><dd className="text-body">None set</dd></div>
+                <div className="flex flex-wrap items-baseline justify-between gap-2 px-5 py-3"><dt className="text-meta text-muted-foreground">Revision</dt><dd className="text-body">None saved</dd></div>
+                <div className="flex flex-wrap items-baseline justify-between gap-2 px-5 py-3"><dt className="text-meta text-muted-foreground">Editing</dt><dd className="text-body">Read-only in this console</dd></div>
+              </dl>
+            </Card>
+            <p className="text-meta text-muted-foreground">With nothing configured, no default is applied: each Worker runs on its own settings.</p>
+          </section>
+          <section aria-labelledby="worker-title" className="flex flex-col gap-3">
+            <div>
+              <h2 id="worker-title" className="text-section">Owned by each Worker</h2>
+              <p className="text-meta text-muted-foreground">Open a Worker’s Sentinel tab to see its values.</p>
+            </div>
+            <Card className="gap-0 py-0">
+              <dl className="divide-y">
+                {WORKER_OWNED.map((w) => (
+                  <div key={w.label} className="flex flex-wrap items-baseline justify-between gap-2 px-5 py-3">
+                    <dt className="text-body">{w.label}</dt>
+                    <dd className="text-meta text-muted-foreground">{w.where}</dd>
+                  </div>
+                ))}
+              </dl>
+            </Card>
+          </section>
+        </div>
       )}
     </SentinelLayout>
   )
@@ -31,7 +71,7 @@ export function SentinelPolicyPage() {
 export function SentinelDimensionPage() {
   const { dimension = '' } = useParams()
   const d = DIMENSIONS.find((x) => x.key === dimension)
-  const { data } = useResource('sentinel-overview', (signal) => getSentinelOverview({ signal }))
+  const { data } = useSentinel().overview
   if (!d) return <Navigate to="/sentinel" replace />
   const dim = data?.dimensions.find((x) => x.key === d.key)
   return (
