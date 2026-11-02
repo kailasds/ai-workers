@@ -147,6 +147,6 @@ describe('derived counts', () => {
     const all = findings(s).map((f) => f.id)
     const dismissed = { ...s, dismissed: all }
     expect(attention(dismissed).every((a) => !a.dismissible)).toBe(true)
-    expect(attention(dismissed).some((a) => a.title === 'Stopped by an administrator')).toBe(true)
+    expect(attention(dismissed).some((a) => a.state === 'Awaiting review')).toBe(true)
   })
 })

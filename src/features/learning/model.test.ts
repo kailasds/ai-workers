@@ -23,8 +23,15 @@ describe('learning records', () => {
         }
   })
 
-  it('never claim facts or techniques the snapshot does not have', () => {
-    expect(ITEMS.filter((i) => i.category === 'facts' || i.category === 'techniques')).toHaveLength(0)
+  it('mark facts and techniques as demo content tied to the Worker’s own runs', () => {
+    const demo = ITEMS.filter((i) => i.category === 'facts' || i.category === 'techniques')
+    expect(demo.length).toBeGreaterThan(0)
+    expect(demo.every((i) => i.demo && i.evidence.length === 1 && i.when.iso === i.evidence[0].run?.at)).toBe(true)
+  })
+
+  it('relate the same demo lesson across Workers', () => {
+    const shared = ITEMS.find((i) => i.lesson && ITEMS.some((j) => j.lesson === i.lesson && j.workerId !== i.workerId))!
+    expect(related(shared).some((r) => r.relation === 'same_lesson' && r.item.lesson === shared.lesson)).toBe(true)
   })
 })
 
@@ -73,14 +80,22 @@ describe('Workers with new learning', () => {
     expect(patterns.length).toBeGreaterThan(0)
     expect(patterns.every((w) => w.fresh.length > 0 && w.fresh.every((i) => i.category === 'patterns'))).toBe(true)
     expect(patterns.reduce((n, w) => n + w.fresh.length, 0)).toBe(ITEMS.filter((i) => i.category === 'patterns').length)
-    expect(workersWithNew('all', { category: 'facts' })).toHaveLength(0)
+    expect(workersWithNew('all', { category: 'facts' }).length).toBeGreaterThan(0)
   })
 
   it('searches Worker names and learning, and sorts by count', () => {
     expect(workersWithNew('all', { q: 'functional equivalence' }).length).toBeGreaterThan(0)
     expect(workersWithNew('all', { q: 'zzz-no-match' })).toHaveLength(0)
     const byCount = workersWithNew('all', { sort: 'count' })
-    for (let i = 1; i < byCount.length; i++) expect(byCount[i - 1].fresh.length).toBeGreaterThanOrEqual(byCount[i].fresh.length)
+    for (let i = 1; i < byCount.length; i++) if (Boolean(byCount[i - 1].attention) === Boolean(byCount[i].attention)) expect(byCount[i - 1].fresh.length).toBeGreaterThanOrEqual(byCount[i].fresh.length)
+  })
+
+  it('puts Workers that need attention first', () => {
+    const rows = workersWithNew('all')
+    const first = rows.findIndex((w) => !w.attention)
+    expect(rows.filter((w) => w.attention).length).toBeGreaterThan(0)
+    expect(rows.slice(first).every((w) => !w.attention)).toBe(true)
+    expect(rows.find((w) => w.review > 0)?.attention).toContain('review')
   })
 })
 
@@ -90,7 +105,8 @@ describe('related learning', () => {
       for (const r of related(i)) {
         expect(ITEM_BY_ID.has(r.item.id)).toBe(true)
         expect(r.item.id).not.toBe(i.id)
-        if (r.relation === 'same_skill') expect(r.item.skill?.key).toBe(i.skill?.key)
+        if (r.relation === 'same_lesson') expect(r.item.lesson).toBe(i.lesson)
+        else if (r.relation === 'same_skill') expect(r.item.skill?.key).toBe(i.skill?.key)
         else expect(r.item.workerId).toBe(i.workerId)
       }
   })

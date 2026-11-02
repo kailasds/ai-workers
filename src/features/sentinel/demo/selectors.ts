@@ -3,7 +3,7 @@
 
 import { isResolved, formatOverride } from './engine'
 import { isServing, LEARNING_ITEMS_SENT, POOLS, RUNS, runsOf, workerLabel, WORKERS } from './platform'
-import type { Agreement, Decision, DemoState, Finding } from './types'
+import type { Agreement, Control, Decision, DemoState, Finding } from './types'
 
 export type Operational = 'running' | 'stopped' | 'not_running'
 
@@ -137,44 +137,74 @@ export interface Attention {
   title: string
   subject: string
   state: string
+  tone: 'warning' | 'danger' | 'info'
   why: string
+  /** A link (path or `?param=` that opens a drawer in place). */
   action: { label: string; to: string }
   /** Informational items can be dismissed; governance items can't. */
   dismissible: boolean
-  /** The findings a dismissal hides. */
+  /** The findings a dismissal hides; for a group, each Worker's own. */
   findingIds?: string[]
+  workers?: string[]
 }
 
+/**
+ * What a person should look at: reviews that wait on them, suspended and proposed sharing, and
+ * monitoring findings. Stops and blocks are controls in force, not attention; they are listed
+ * under Controls.
+ */
 export function attention(s: DemoState): Attention[] {
   const out: Attention[] = []
-  const stopped = WORKERS.filter((w) => s.workers[w.composition_id]?.status === 'stopped')
-  for (const w of stopped) {
-    const d = s.decisions.find((x) => x.id === s.workers[w.composition_id].stopDecisionId)
-    out.push({ key: `stop:${w.composition_id}`, priority: 1, title: 'Stopped by an administrator', subject: workerLabel(w.composition_id), state: 'Stopped', why: d ? `“${d.reason}” It can’t run until resumed.` : 'It can’t run until resumed.', action: { label: 'Review Worker', to: `?worker=${w.composition_id}` }, dismissible: false })
-  }
-  for (const d of awaitingReview(s)) out.push({ key: `review:${d.id}`, priority: 2, title: d.title, subject: d.workerIds.map(workerLabel).join(', '), state: 'Awaiting review', why: d.reason, action: { label: 'Review', to: `/sentinel/decisions/${d.id}` }, dismissible: false })
-  for (const a of s.agreements.filter((x) => x.status === 'suspended')) out.push({ key: `susp:${a.id}`, priority: 3, title: `Sharing suspended: ${a.item}`, subject: `${workerLabel(a.sourceId)} → ${workerLabel(a.targetId)}`, state: 'Suspended', why: a.reason ?? 'Reason not recorded.', action: { label: 'Open agreement', to: `/sentinel/sharing?agreement=${a.id}` }, dismissible: false })
+  for (const d of awaitingReview(s)) out.push({ key: `review:${d.id}`, priority: 1, title: d.title, subject: d.workerIds.map(workerLabel).join(', '), state: 'Awaiting review', tone: 'warning', why: d.reason, action: { label: 'Review', to: `/sentinel/decisions/${d.id}` }, dismissible: false })
+  for (const a of s.agreements.filter((x) => x.status === 'suspended')) out.push({ key: `susp:${a.id}`, priority: 2, title: `Sharing suspended: ${a.item}`, subject: `${workerLabel(a.sourceId)} → ${workerLabel(a.targetId)}`, state: 'Suspended', tone: 'warning', why: a.reason ?? 'Reason not recorded.', action: { label: 'Open agreement', to: `?agreement=${a.id}` }, dismissible: false })
   const proposed = s.agreements.filter((x) => x.status === 'proposed')
-  if (proposed.length === 1) out.push({ key: `prop:${proposed[0].id}`, priority: 4, title: `Sharing proposal waits for approval: ${proposed[0].item}`, subject: `${workerLabel(proposed[0].sourceId)} → ${workerLabel(proposed[0].targetId)}`, state: 'Proposed', why: 'Nothing is sent until it is approved.', action: { label: 'Open proposal', to: `/sentinel/sharing?agreement=${proposed[0].id}` }, dismissible: false })
-  else if (proposed.length > 1) out.push({ key: 'prop', priority: 4, title: `${proposed.length} sharing proposals wait for approval`, subject: proposed.map((a) => a.item).join(', '), state: 'Proposed', why: 'Nothing is sent until each is approved.', action: { label: 'See proposals', to: '/sentinel/sharing?stage=proposed' }, dismissible: false })
+  if (proposed.length === 1) out.push({ key: `prop:${proposed[0].id}`, priority: 3, title: `Sharing proposal: ${proposed[0].item}`, subject: `${workerLabel(proposed[0].sourceId)} → ${workerLabel(proposed[0].targetId)}`, state: 'Awaiting approval', tone: 'info', why: 'Nothing is sent until it is approved.', action: { label: 'Open proposal', to: `?agreement=${proposed[0].id}` }, dismissible: false })
+  else if (proposed.length > 1) out.push({ key: 'prop', priority: 3, title: `${proposed.length} sharing proposals`, subject: proposed.map((a) => a.item).join(', '), state: 'Awaiting approval', tone: 'info', why: 'Nothing is sent until each is approved.', action: { label: 'See proposals', to: '/sentinel/sharing?view=agreements&status=proposed' }, dismissible: false })
   // Monitoring findings: one item per kind, so a busy week doesn't bury the governance items.
   const open = findings(s).filter((x) => x.kind !== 'removal' && !s.dismissed.includes(x.id))
   for (const kind of ['contradiction', 'run_health', 'cost'] as const) {
     const of = open.filter((f) => f.kind === kind)
     if (!of.length) continue
+    const one = of.length === 1
     out.push({
       key: `find:${kind}`,
-      priority: 5,
-      title: of.length === 1 ? (of[0].title.toLowerCase().startsWith(FINDING_LABEL[kind].toLowerCase()) ? of[0].title : `${FINDING_LABEL[kind]}: ${of[0].title}`) : `${FINDING_LABEL[kind]}: ${of.length} Workers`,
-      subject: of.length === 1 ? workerLabel(of[0].workerId) : of.slice(0, 2).map((f) => workerLabel(f.workerId)).join(', ') + (of.length > 2 ? ` and ${of.length - 2} more` : ''),
+      priority: 4,
+      title: one ? (of[0].title.toLowerCase().startsWith(FINDING_LABEL[kind].toLowerCase()) ? of[0].title : `${FINDING_LABEL[kind]}: ${of[0].title}`) : `${FINDING_LABEL[kind]}: ${of.length} Workers`,
+      subject: one ? workerLabel(of[0].workerId) : of.slice(0, 2).map((f) => workerLabel(f.workerId)).join(', ') + (of.length > 2 ? ` and ${of.length - 2} more` : ''),
       state: of[0].source === 'snapshot' ? 'From snapshot runs' : 'Finding',
-      why: of.length === 1 ? of[0].detail : kind === 'cost' ? 'Average cost per run is above the limit that applies to each.' : kind === 'run_health' ? 'Half or more of their recorded runs missed the Definition of Done.' : 'Learning from different Workers disagrees.',
-      action: of.length === 1 ? { label: 'Review Worker', to: `?worker=${of[0].workerId}` } : { label: 'See findings', to: '/sentinel#monitoring' },
+      tone: 'info',
+      why: one ? of[0].detail : kind === 'cost' ? 'Average cost per run is above the limit that applies to each.' : kind === 'run_health' ? 'Half or more of their recorded runs missed the Definition of Done.' : 'Learning from different Workers disagrees.',
+      action: { label: one ? 'Open Worker' : 'Show Workers', to: `?worker=${of[0].workerId}` },
       dismissible: true,
       findingIds: of.map((f) => f.id),
+      workers: of.map((f) => f.workerId),
     })
   }
   return out.sort((a, b) => a.priority - b.priority)
+}
+
+// ── Controls ────────────────────────────────────────────────────────────────
+
+export const CONTROL_LABEL: Record<Control['kind'], string> = { admin_stop: 'Stopped by administrator', harness_block: 'Harness block', sharing_suspension: 'Sharing suspended', recording_only: 'Recording-only mode' }
+export const CONTROL_TONE: Record<Control['kind'], 'danger' | 'warning' | 'neutral'> = { admin_stop: 'danger', harness_block: 'danger', sharing_suspension: 'warning', recording_only: 'neutral' }
+/** What a control does to the Workers it covers, in a sentence. */
+export const CONTROL_EFFECT: Record<Control['kind'], string> = {
+  admin_stop: 'The Worker may not start new runs until it is resumed.',
+  harness_block: 'Runs on the blocked harness version are refused; other versions are unaffected.',
+  sharing_suspension: 'No further deliveries under the agreement. Items already delivered stay with the receiving Worker.',
+  recording_only: 'Sentinel decisions are written down but not applied.',
+}
+
+/** Who put a control in place: the authority on its decision, else the name recorded on it. */
+export function controlSource(s: DemoState, c: Control) {
+  const d = c.decisionId ? s.decisions.find((x) => x.id === c.decisionId) : null
+  return d ? AUTHORITY_LABEL[d.decidedBy.kind] : c.by
+}
+
+export function controlCounts(s: DemoState) {
+  const active = s.controls.filter((c) => c.active)
+  const of = (k: Control['kind']) => active.filter((c) => c.kind === k).length
+  return { active: active.length, stops: of('admin_stop'), harness: of('harness_block'), sharing: of('sharing_suspension'), mode: of('recording_only'), lifted: s.controls.length - active.length }
 }
 
 // ── Summary ─────────────────────────────────────────────────────────────────

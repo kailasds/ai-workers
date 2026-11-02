@@ -92,11 +92,14 @@ User management (`/admin/people`, `/admin/groups`) appears only for administrato
   - Drill-downs: a category (`/learning/categories/:category`), a Worker (`/learning/workers/:id`), a Worker's category (`/learning/workers/:id/:category`) and an item (`/learning/items/:id`) with what was learned, why, evidence runs, related learning and history. The period stays in the URL; an item's breadcrumb leads back to where the reader came from.
   - Records come from `src/features/learning/model.ts`, built only from the snapshot: one run experience per memory record (tied to its run), held-back patterns, agreed statements and Skill-change counts. Facts and techniques show "None yet" because the snapshot has none. Periods count back from the snapshot time.
 - **Platform Sentinel** (`/sentinel`): a frontend-only prototype. Its governance data is demo data, saved in this browser, and nothing it does is enforced. A notice at the top says so and has **Reset demo data**.
-  - **Overview**: what needs attention, most urgent first. Only informational findings can be dismissed, and dismissing never lifts a restriction. Then a summary with a period, the governance flow (each stage opens its records), monitoring findings and recent decisions.
-  - **Sharing**: agreements move Eligible → Proposed → Agreed → Delivered → Used. Suspended, rejected and revoked agreements are listed apart. Approve, reject, suspend, resume and revoke ask for a reason and are refused when they are not valid.
-  - **Decisions**: a searchable, filterable, paginated log with a detail page. Reviews and follow-ups add new linked decisions, so history never changes. **Verify chain** checks a demo hash chain, which is not real audit cryptography.
-  - **Policy**: the controls in force, editable platform defaults (validated, with impact shown before saving), Worker overrides and revision history.
-  - `?worker=<id>` and `?agreement=<id>` open drawers from any view. A Worker stopped here shows "Stopped by admin" on its Registry card and on its Worker page.
+  - Sentinel has its own header (title, last refreshed, **Refresh**, which re-reads the saved demo data) and five tabs. Each tab except Policies has its own summary band of figures, and each figure links to a filtered list.
+  - **Overview**: what needs attention (pending reviews, suspended sharing, proposals and monitoring findings; only findings can be dismissed), then the controls in force, the sharing stages and recent decisions. Stops are not attention items; they are listed as controls.
+  - **Controls** (`/sentinel/controls`): every stop, harness block, sharing suspension and the recording-only mode, filterable by type, state and Worker. **Stop a Worker…** opens the same confirmation as the Worker drawer. A control's drawer shows who applied it, why and when, its decisions, and the actions the data supports: resume a stopped Worker, resume a suspended agreement, or change the mode in Policies. A harness block can't be lifted here.
+  - **Sharing**: Worker-to-Worker agreements (filter by status, including "In force", and by pool) and Pool sharing (each pool's counts and the items eligible to be offered). The agreement drawer shows Proposed, Agreed, Delivered and Used in runs as separate stages. Approve, reject, suspend, resume and revoke ask for a reason and are refused when they are not valid.
+  - **Decision log**: the integrity status, filters (period counted back from the snapshot, decided by, effect, type, Worker, search) and a paginated table. A decision's page shows its summary, recorded reasoning, impact per Worker, evidence, rubric ("No rubric recorded"; the data has none), related decisions, and technical integrity folded away. Reviews and follow-ups add new linked decisions, so history never changes. The hash chain is a demo, not real audit cryptography.
+  - **Policies**: the status strip, editable platform defaults grouped as Enforcement, Sharing permissions and Operational limits (validated, with impact shown before saving), Worker-level overrides, and revision history.
+  - `?worker=<id>`, `?agreement=<id>` and `?control=<id>` open drawers from any view. A Worker stopped here shows "Stopped by admin" on its Registry card and on its Worker page.
+  - Not in the data, so not shown: autonomy promotions and demotions, receipt times, customers on receipts, and rubrics.
   - Code: `src/features/sentinel/demo/` has `types`, `platform` (real Worker records and runs), `engine` (pure, validated actions that each add a sealed decision), `seed` (deterministic), `selectors`, `integrity` and `store` (`useSyncExternalStore` plus localStorage key `aiw.sentinel-demo.v1`, with an in-memory fallback). Run health and cost findings come from the snapshot's real runs.
 - **Compose** (`/compose` → `/compose/new` → `/compose/guided/:id`)
   - Pick a Worker type, then define the Worker: identity (unavailable ones are shown greyed out with the reason), optional domain and geography, bounded context, and an optional Worker name.
@@ -162,7 +165,7 @@ The design source of truth is `.claude/skills/frontend-kit/references/design.md`
 | --- | --- |
 | Knowledge tab | Skills in the library |
 | Learning tab and "Workers with learning" | Workers with at least one learning item |
-| Sentinel tab and "Needs attention" | Items on the Sentinel Overview's attention list, from the demo governance data (stops, pending reviews, suspended agreements, proposals, findings) |
+| Sentinel tab and "Needs attention" | Items on the Sentinel Overview's attention list, from the demo governance data (pending reviews, suspended agreements, proposals, findings) |
 | Activity "All activity" | Activity rows; held items with the same Worker, Skill and state are one row |
 
 ## 8. Open items

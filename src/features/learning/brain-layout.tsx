@@ -1,11 +1,11 @@
 import { useLocation } from 'react-router'
-import { BookText, Brain, BrainCircuit, ClipboardCheck, FileCheck2, Gavel, Handshake, Hourglass, Lock, ShieldCheck, Sparkles, Users } from 'lucide-react'
+import { BookText, Brain, BrainCircuit, ClipboardCheck, FileCheck2, Hourglass, ShieldCheck, Sparkles, Users } from 'lucide-react'
 import { HubLayout, Kpi, KpiBand } from '@/components/platform/hub'
 import { useResource } from '@/hooks/use-resource'
 import { getDodRubrics, getDslDomains, getEvaluations, getSkillLibrary } from '@/lib/api/catalog'
 import { formatCount } from '@/lib/format'
 import { useDemo } from '@/features/sentinel/demo/store'
-import { attention, sharingCounts, summary } from '@/features/sentinel/demo/selectors'
+import { attention } from '@/features/sentinel/demo/selectors'
 import { ITEMS, inPeriod } from './model'
 
 // Brain is the second main menu: what Workers know (Knowledge), what they add by running
@@ -16,6 +16,8 @@ import { ITEMS, inPeriod } from './model'
 //   Knowledge  Skills in the library
 //   Learning   Workers with learning (any learning item in the snapshot)
 //   Sentinel   items that need attention (the Sentinel Overview's list, from the demo governance data)
+//
+// Sentinel carries its own figures under its own section tabs, so the hub shows no band for it.
 
 const LEARNING_WORKERS = new Set(ITEMS.map((i) => i.workerId)).size
 
@@ -50,25 +52,11 @@ function LearningBand() {
   )
 }
 
-function SentinelBand() {
-  const demo = useDemo()
-  const sum = summary(demo, null)
-  const share = sharingCounts(demo)
-  return (
-    <KpiBand title="Overview">
-      <Kpi label="Needs attention" icon={ShieldCheck} hue="rose" value={attention(demo).length} loading={false} failed={false} to="/sentinel#attention" caption={`${formatCount(sum.stopped)} stopped by an administrator`} />
-      <Kpi label="Decisions" icon={Gavel} hue="blue" value={sum.decisions} loading={false} failed={false} to="/sentinel/decisions" caption={`${formatCount(sum.applied)} applied · ${formatCount(sum.recorded)} recorded only · ${formatCount(sum.pending)} awaiting review`} />
-      <Kpi label="Sharing agreements" icon={Handshake} hue="teal" value={share.agreed + share.delivered + share.used} unit="approved" loading={false} failed={false} to="/sentinel/sharing" caption={`${formatCount(share.proposed)} proposed · ${formatCount(share.suspended)} suspended`} />
-      <Kpi label="Controls in force" icon={Lock} hue="amber" value={sum.controls} loading={false} failed={false} to="/sentinel/policy#controls" caption={`Mode: ${demo.policy.mode === 'enforce' ? 'enforce' : 'recording only'}`} />
-    </KpiBand>
-  )
-}
-
 export function BrainLayout() {
   const { pathname } = useLocation()
   const skills = useResource('k-skills', (signal) => getSkillLibrary({ signal }))
   const needs = attention(useDemo()).length
-  const band = pathname.startsWith('/learning') ? <LearningBand /> : pathname.startsWith('/sentinel') ? <SentinelBand /> : <KnowledgeBand />
+  const band = pathname.startsWith('/learning') ? <LearningBand /> : pathname.startsWith('/sentinel') ? null : <KnowledgeBand />
 
   return (
     <HubLayout

@@ -1,7 +1,7 @@
 import { createElement } from 'react'
 import { Link } from 'react-router'
 import { contextHue, contextIcon, HUE, Tag, workerTypeMeta } from '@/components/platform/hue'
-import { runtimeStatus, RuntimeStatusDot, type RuntimeStatus } from '@/components/platform/runtime-status'
+import { PRESENCE, runtimeStatus, RuntimeStatusDot } from '@/components/platform/runtime-status'
 import { useDemo } from '@/features/sentinel/demo/store'
 import { contextOf, identityOfContext } from '@/features/compose/compose-model'
 import { formatCount } from '@/lib/format'
@@ -14,16 +14,9 @@ const VERDICT_SHORT: Record<Verdict, string> = { MET: 'Met', NOT_MET: 'Not met',
 
 const VERDICT_TEXT: Record<Verdict, string> = { MET: 'text-success', NOT_MET: 'text-destructive', NOT_ADJUDICABLE: 'text-muted-foreground' }
 
-// Presence, the way a colleague shows as available or away: the dot on the avatar.
-const PRESENCE: Record<RuntimeStatus, string> = {
-  serving: 'bg-success',
-  attention: 'bg-warning',
-  stopped: 'bg-subtle-foreground',
-  none: 'bg-chip-neutral',
-}
 
 /** One figure as a tile: value over label, centred. On card hover the tile lifts to the card colour. */
-function Figure({ label, children }: { label: string; children: React.ReactNode }) {
+export function Figure({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex min-w-0 flex-col items-center gap-0.5 rounded-block bg-muted px-2 py-3 text-center group-hover:bg-card">
       {/* The label is read first; it shows under the value. */}

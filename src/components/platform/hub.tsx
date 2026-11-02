@@ -61,7 +61,7 @@ function readOpen() {
  * design.md §7.1: the navy identity panel, framing white inset cards. The screen's one navy mass.
  * It collapses to its title bar; the choice is remembered in this browser for every hub.
  */
-export function KpiBand({ title, columns = 4, children }: { title: string; columns?: 3 | 4; children: React.ReactNode }) {
+export function KpiBand({ title, columns = 4, children }: { title: string; columns?: 3 | 4 | 5; children: React.ReactNode }) {
   const [open, setOpen] = useState(readOpen)
   const toggle = () => {
     setOpen((o) => {
@@ -91,7 +91,7 @@ export function KpiBand({ title, columns = 4, children }: { title: string; colum
           </span>
         </button>
       </h2>
-      {open && <div id="glance-figures" className={cn('grid grid-cols-2 gap-2', columns === 3 ? 'lg:grid-cols-3' : 'xl:grid-cols-4')}>{children}</div>}
+      {open && <div id="glance-figures" className={cn('grid grid-cols-2 gap-2', columns === 3 ? 'lg:grid-cols-3' : columns === 5 ? 'lg:grid-cols-3 xl:grid-cols-5' : 'xl:grid-cols-4')}>{children}</div>}
     </section>
   )
 }

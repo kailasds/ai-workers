@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { PageContainer } from '@/components/platform/page-container'
 import { PageHeader, type Crumb } from '@/components/platform/page-header'
 import { EmptyState } from '@/components/platform/states'
-import { VerdictBadge } from '@/components/platform/status-badge'
+import { StatusBadge, VerdictBadge } from '@/components/platform/status-badge'
 import { Timestamp } from '@/components/platform/timestamp'
 import { formatCount, formatDuration, formatTokens, formatUsd } from '@/lib/format'
 import { cn } from '@/lib/utils'
@@ -35,7 +35,7 @@ function RunRow({ run, workerId }: { run: NonNullable<Evidence['run']>; workerId
 function EvidencePanel({ item }: { item: LearningItem }) {
   const runs = item.evidence.flatMap((e) => (e.run ? [e.run] : []))
   const notes = item.evidence.flatMap((e) => (e.note ? [e.note] : []))
-  const runsLabel = item.category === 'experiences' ? 'Source run' : item.category === 'patterns' ? 'Runs of this Worker' : 'Runs before the proposal'
+  const runsLabel = item.category === 'skill-changes' ? 'Runs before the proposal' : item.demo || item.category === 'experiences' ? 'Source run' : 'Runs of this Worker'
   return (
     <Panel id="evidence" title="Supporting evidence" icon={FileSearch} hue="teal" flush>
       {notes.length > 0 && (
@@ -83,7 +83,7 @@ export function LearningItemPage() {
 
   return (
     <PageContainer>
-      <PageHeader crumbs={crumbs} title={item.title} meta={<StateBadge state={item.state} />} actions={<Button asChild variant="outline"><Link to={`/workers/${item.workerId}`}>Open Worker</Link></Button>} />
+      <PageHeader crumbs={crumbs} title={item.title} meta={<div className="flex flex-wrap items-center gap-2"><StateBadge state={item.state} />{item.demo && <StatusBadge tone="neutral" icon={null}>Demo</StatusBadge>}</div>} actions={<Button asChild variant="outline"><Link to={`/workers/${item.workerId}`}>Open Worker</Link></Button>} />
 
       <FactStrip
         facts={[

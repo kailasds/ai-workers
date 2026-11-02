@@ -11,6 +11,7 @@ import brainA9 from '@/data/mock/worker-brain-a9cb82d0.json'
 import skills from '@/data/mock/knowledge-skills.json'
 import dashboard from '@/data/mock/dashboard-executive.json'
 import { contextOf } from '@/features/compose/compose-model'
+import { lessonsForRun } from './demo-lessons'
 import { RUNS, SNAPSHOT_AT, WORKER_BY_ID, WORKERS, workerLabel } from '@/features/sentinel/demo/platform'
 import type { PackageableComposition, WorkerBrain } from '@/lib/types/worker'
 
@@ -70,6 +71,10 @@ export interface LearningItem {
   skill?: { key: string; title: string }
   /** What happened to it so far, from the source; omitted when the source has no history. */
   history: { at: string | null; label: string }[]
+  /** Demo content, not from the snapshot (see demo-lessons.ts). */
+  demo?: boolean
+  /** The demo lesson it records; Workers sharing one are related. */
+  lesson?: string
 }
 
 const comps = (packageable as unknown as { compositions: PackageableComposition[] }).compositions
@@ -107,6 +112,8 @@ const runEvidence = (r: (typeof RUNS)[number]): Evidence => {
 
 function build(): LearningItem[] {
   const items: LearningItem[] = []
+  // How many demo lessons each Worker type has handed out so far, so they rotate evenly.
+  const seq = new Map<string, number>()
   for (const w of WORKERS) {
     const id = w.composition_id
     const m = COMP.get(id)?.maturity
@@ -131,6 +138,35 @@ function build(): LearningItem[] {
           history: [{ at: r.at, label: 'Recorded from the run' }],
         })
       }
+
+      // Demo lessons: facts, techniques and patterns attached to this Worker's real runs.
+      runs.forEach((r, i) => {
+        const n = seq.get(w.worker_type) ?? 0
+        const lessons = lessonsForRun(w.worker_type, i, n)
+        seq.set(w.worker_type, n + lessons.length)
+        for (const l of lessons) {
+          const state: StateKey = l.category === 'facts' ? 'recorded' : l.category === 'techniques' && r.verdict === 'MET' ? 'agreed' : 'gathering'
+          items.push({
+            id: `demo-${l.key}-${r.ref}`,
+            workerId: id,
+            category: l.category,
+            state,
+            title: l.title,
+            summary: l.summary,
+            why: l.why,
+            when: { iso: r.at, kind: 'at' },
+            details: [
+              { label: 'Kind', value: CATEGORY[l.category].one },
+              { label: 'From a run that', value: VERDICT_WORDS[r.verdict] },
+            ],
+            evidence: [runEvidence(r)],
+            source: 'Demo content',
+            history: [{ at: r.at, label: state === 'agreed' ? 'Recorded and kept after the run met the Definition of Done' : 'Recorded from the run' }],
+            demo: true,
+            lesson: l.key,
+          })
+        }
+      })
     }
 
     // Patterns agreed across runs: the source gives the statement, its kind and how many runs.
@@ -252,7 +288,14 @@ export interface WorkerLearning {
   total: number
   fresh: LearningItem[]
   latest: LearningItem | null
+  /** Skill changes this Worker proposed that wait for a person, whatever the period. */
+  review: number
+  /** Why it needs a person, if it does: changes awaiting review or a runtime problem. */
+  attention: string | null
 }
+
+/** Proposed Skill changes awaiting review, counted from the records. */
+const reviewOf = (items: LearningItem[]) => items.filter((i) => i.state === 'proposed').reduce((n, i) => n + Number(i.details.find((d) => d.label === 'Proposed changes')?.value ?? 1), 0)
 
 export const domainOfWorker = (workerId: string) => COMP.get(workerId)?.contents?.business_domain_key || null
 
@@ -272,11 +315,13 @@ export function learningWorkers(period: PeriodKey): WorkerLearning[] {
   return WORKERS.map((w) => {
     const all = itemsOf(w.composition_id)
     const fresh = all.filter((i) => inPeriod(i, period))
-    return { workerId: w.composition_id, name: workerLabel(w.composition_id), scope: scopeOf(w.composition_id), type: w.worker_type, domain: domainOfWorker(w.composition_id), total: all.length, fresh, latest: fresh[0] ?? null }
+    const review = reviewOf(all)
+    const attention = w.runtime.attention > 0 ? 'A runtime reports a problem' : review > 0 ? `${review} Skill ${review === 1 ? 'change awaits' : 'changes await'} review` : null
+    return { workerId: w.composition_id, name: workerLabel(w.composition_id), scope: scopeOf(w.composition_id), type: w.worker_type, domain: domainOfWorker(w.composition_id), total: all.length, fresh, latest: fresh[0] ?? null, review, attention }
   }).filter((r) => r.fresh.length > 0)
 }
 
-/** Workers with learning in the period, filtered, most recent first (or most items first). */
+/** Workers with learning in the period, filtered. Those needing attention come first, then most recent (or most items). */
 export function workersWithNew(period: PeriodKey, { q = '', sort = 'recent', type = null, domain = null, category = null }: WorkerFilters = {}): WorkerLearning[] {
   const needle = q.trim().toLowerCase()
   const rows = learningWorkers(period)
@@ -289,7 +334,7 @@ export function workersWithNew(period: PeriodKey, { q = '', sort = 'recent', typ
     .filter((r) => !type || r.type === type)
     .filter((r) => !domain || (domain === 'none' ? r.domain === null : r.domain === domain))
   const matched = needle ? rows.filter((r) => `${r.name} ${r.scope} ${r.fresh.map((i) => i.title).join(' ')}`.toLowerCase().includes(needle)) : rows
-  return matched.sort((a, b) => (sort === 'count' ? b.fresh.length - a.fresh.length : 0) || b.latest!.when.iso.localeCompare(a.latest!.when.iso) || a.name.localeCompare(b.name))
+  return matched.sort((a, b) => Number(Boolean(b.attention)) - Number(Boolean(a.attention)) || (sort === 'count' ? b.fresh.length - a.fresh.length : 0) || b.latest!.when.iso.localeCompare(a.latest!.when.iso) || a.name.localeCompare(b.name))
 }
 
 /** Workers that contributed to a category, with how many items each. */
@@ -299,8 +344,9 @@ export function contributors(items: LearningItem[]) {
   return [...by].map(([workerId, count]) => ({ workerId, name: workerLabel(workerId), scope: scopeOf(workerId), count })).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
 }
 
-export type Relation = 'same_skill' | 'same_worker'
+export type Relation = 'same_lesson' | 'same_skill' | 'same_worker'
 export const RELATION_LABEL: Record<Relation, string> = {
+  same_lesson: 'Also learned by another Worker',
   same_skill: 'About the same Skill',
   same_worker: 'Also learned by this Worker',
 }
@@ -308,6 +354,7 @@ export const RELATION_LABEL: Record<Relation, string> = {
 /** Related items, by explicit links only: the same Skill (any Worker), then the same Worker. */
 export function related(item: LearningItem, limit = 6): { item: LearningItem; relation: Relation }[] {
   const out: { item: LearningItem; relation: Relation }[] = []
+  if (item.lesson) for (const i of ITEMS) if (i.lesson === item.lesson && i.workerId !== item.workerId && !out.some((o) => o.item.workerId === i.workerId)) out.push({ item: i, relation: 'same_lesson' })
   if (item.skill) for (const i of ITEMS) if (i.id !== item.id && i.skill?.key === item.skill.key) out.push({ item: i, relation: 'same_skill' })
   for (const i of itemsOf(item.workerId)) if (i.id !== item.id && !out.some((o) => o.item.id === i.id) && i.category !== 'experiences') out.push({ item: i, relation: 'same_worker' })
   return out.slice(0, limit)

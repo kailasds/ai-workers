@@ -1,12 +1,13 @@
-import { useState } from 'react'
+import { createElement, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import { BarChart3, ChevronRight, LayoutGrid, List, Search, SearchX, Sparkles, Users } from 'lucide-react'
+import { BarChart3, ChevronRight, LayoutGrid, List, Search, SearchX, Sparkles, TriangleAlert, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { HUE, workerTypeMeta } from '@/components/platform/hue'
+import { contextHue, contextIcon, HUE, Tag, workerTypeMeta } from '@/components/platform/hue'
 import { Pager } from '@/components/platform/pager'
+import { PRESENCE, runtimeStatus, RuntimeStatusDot } from '@/components/platform/runtime-status'
 import { IconTile, Panel } from '@/components/platform/panel'
 import { EmptyState } from '@/components/platform/states'
 import { Timestamp } from '@/components/platform/timestamp'
@@ -14,8 +15,11 @@ import { PAGE_SIZES, usePaged } from '@/hooks/use-paged'
 import { formatCount } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { domainLabel } from '@/lib/vocabulary'
+import { identityOfContext } from '@/features/compose/compose-model'
+import { Figure } from '@/features/registry/worker-tiles'
+import { useDemo } from '@/features/sentinel/demo/store'
 import { CATEGORY_LOOK } from './look'
-import { CATEGORIES, distribution, isCategory, ITEMS, learningWorkers, PERIODS, workersWithNew, type CategoryKey, type WorkerLearning } from './model'
+import { CATEGORIES, distribution, isCategory, ITEMS, learningWorkers, PERIODS, WORKER_BY_ID_SAFE, workersWithNew, type CategoryKey, type WorkerLearning } from './model'
 import { usePeriod, withPeriod } from './nav'
 import { CategoryBars, PeriodSelect } from './ui'
 
@@ -50,24 +54,54 @@ function WorkerRow({ w, to }: { w: WorkerLearning; to: string }) {
   )
 }
 
-/** A Worker as a tile: who it is, how much is new, and how the new learning splits by category. */
+/**
+ * A Worker as a card, in the Registry card's style: its type and state, its identity, how its new
+ * learning splits by category, and three figures. Workers needing attention are
+ * outlined in amber and listed first.
+ */
 function WorkerTile({ w, to }: { w: WorkerLearning; to: string }) {
-  const type = workerTypeMeta(w.type)
+  const worker = WORKER_BY_ID_SAFE(w.workerId)!
+  const hue = contextHue(worker.bounded_context.key)
+  const type = workerTypeMeta(worker.worker_type)
+  const identity = identityOfContext(worker.bounded_context.key)
+  const ContextIcon = contextIcon(worker.bounded_context.key)
+  const status = runtimeStatus(worker.runtime)
+  const stopped = useDemo().workers[w.workerId]?.status === 'stopped'
   const split = distribution(w.fresh).filter((c) => c.count > 0)
   return (
-    <Link to={to} className={cn('flex h-full flex-col gap-4 rounded-xl border bg-card p-4 hover:border-primary/50 hover:bg-primary-soft/30', FOCUS)}>
-      <div className="flex items-start gap-3">
-        <IconTile icon={type.icon} hue={type.hue} />
-        <div className="min-w-0 flex-1">
-          <p className="line-clamp-2 text-item" title={w.name}>{w.name}</p>
-          <p className="truncate text-meta text-muted-foreground">{w.scope}</p>
-        </div>
-        <span className="shrink-0 text-right">
-          <span className="block text-section leading-none tabular-nums">{formatCount(w.fresh.length)}</span>
-          <span className="text-meta text-muted-foreground">new</span>
+    <Link
+      to={to}
+      className={cn(
+        'group flex h-full flex-col gap-4 rounded-xl border bg-card p-5 text-card-foreground outline-none hover:border-primary/50 hover:bg-primary-soft/40 focus-visible:ring-3 focus-visible:ring-ring/50',
+        w.attention && 'border-warning/40',
+      )}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <Tag hue={type.hue} icon={type.icon} className="min-w-0">{type.short}</Tag>
+        <span className="flex shrink-0 items-center gap-1.5 rounded-full border bg-card px-2.5 py-1">
+          {w.attention ? (
+            <span className="inline-flex items-center gap-1.5 text-meta font-medium whitespace-nowrap text-warning" title={w.attention}><TriangleAlert className="size-3.5" aria-hidden="true" />Needs attention</span>
+          ) : stopped ? (
+            <span className="inline-flex items-center gap-1.5 text-meta font-medium whitespace-nowrap text-destructive"><span aria-hidden="true" className="size-2 rounded-full bg-destructive" />Stopped by admin</span>
+          ) : (
+            <RuntimeStatusDot status={status} />
+          )}
         </span>
       </div>
-      <div className="mt-auto flex flex-col gap-2">
+
+      <div className="flex items-center gap-3">
+        <span className="relative shrink-0">
+          <span aria-hidden="true" className={cn('grid size-11 place-items-center rounded-full ring-4 [&>svg]:size-5', HUE[hue].solid, HUE[hue].ring)}>
+            {createElement(ContextIcon)}
+          </span>
+          <span aria-hidden="true" className={cn('absolute -right-0.5 -bottom-0.5 size-3.5 rounded-full ring-2 ring-card', PRESENCE[status])} />
+        </span>
+        <div className="min-w-0 flex-1">
+          <h3 className="truncate text-section" title={identity ? `${identity.label} · ${worker.name}` : worker.name}>{identity?.label ?? worker.name}</h3>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2 border-t pt-4">
         <div role="img" aria-label={split.map((c) => `${c.count} ${c.label.toLowerCase()}`).join(', ')} className="flex h-2 gap-0.5 overflow-hidden rounded-full bg-track">
           {split.map((c) => <span key={c.key} className={HUE[CATEGORY_LOOK[c.key].hue].solid} style={{ flexGrow: c.count, flexBasis: 0 }} />)}
         </div>
@@ -84,6 +118,12 @@ function WorkerTile({ w, to }: { w: WorkerLearning; to: string }) {
           })}
         </ul>
       </div>
+
+      <dl className="mt-auto grid grid-cols-3 gap-2">
+        <Figure label="New">{formatCount(w.fresh.length)}</Figure>
+        <Figure label="Learning">{formatCount(w.total)}</Figure>
+        <Figure label="To review"><span className={w.review > 0 ? 'text-warning' : 'text-muted-foreground'}>{w.review > 0 ? formatCount(w.review) : 'None'}</span></Figure>
+      </dl>
     </Link>
   )
 }
@@ -106,7 +146,8 @@ export function LearningPage() {
   const types = [...new Set(all.map((w) => w.type))].sort()
   const domains = [...new Set(all.map((w) => w.domain).filter((d): d is string => Boolean(d)))].sort()
   const noDomain = all.some((w) => w.domain === null)
-  const kinds = CATEGORIES.filter((c) => all.some((w) => w.fresh.some((i) => i.category === c.key)))
+  // Every type of learning is listed, with how much of it is new in the period.
+  const kinds = CATEGORIES.map((c) => ({ ...c, count: all.reduce((n, w) => n + w.fresh.filter((i) => i.category === c.key).length, 0) }))
   const rows = workersWithNew(period, { q, type, domain, category })
   const paged = usePaged(rows, { prefix: 'w', defaultSize: view === 'tiles' ? TILE_SIZES[0] : 10, sizes: view === 'tiles' ? TILE_SIZES : PAGE_SIZES })
   const periodLabel = PERIODS.find((p) => p.value === period)!.label.toLowerCase()
@@ -133,7 +174,7 @@ export function LearningPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <Panel id="so-far" title="Learning so far" icon={BarChart3} hue="cyan" count={ITEMS.length} flush>
+      <Panel id="so-far" title="Learning so far" icon={BarChart3} hue="cyan" count={ITEMS.length} flush collapsible>
         <CategoryBars rows={distribution(ITEMS)} hrefFor={(k) => withPeriod(`/learning/categories/${k}`, period)} label="Learning items by category, across all Workers" />
       </Panel>
 
@@ -176,7 +217,7 @@ export function LearningPage() {
               <SelectTrigger className="w-44 bg-card" aria-label="Type of learning"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value={ANY}>All learning types</SelectItem>
-                {kinds.map((c) => <SelectItem key={c.key} value={c.key}>{c.label}</SelectItem>)}
+                {kinds.map((c) => <SelectItem key={c.key} value={c.key}>{c.label} ({formatCount(c.count)})</SelectItem>)}
               </SelectContent>
             </Select>
             <PeriodSelect value={period} onChange={setPeriod} />
@@ -188,12 +229,17 @@ export function LearningPage() {
             className="m-5"
             icon={SearchX}
             title={filtered ? 'No Worker matches these filters' : `No Worker learned anything in the ${periodLabel}`}
-            action={filtered ? <Button variant="outline" onClick={clear}>Clear filters</Button> : period !== 'all' ? <Button variant="outline" onClick={() => setPeriod('all')}>Show all learning</Button> : undefined}
+            action={
+              <div className="flex flex-wrap justify-center gap-2">
+                {period !== 'all' && <Button variant="outline" onClick={() => setPeriod('all')}>Show all learning</Button>}
+                {filtered && <Button variant="ghost" onClick={clear}>Clear filters</Button>}
+              </div>
+            }
           />
         ) : (
           <>
             {view === 'tiles' ? (
-              <ul aria-label="Workers with new learning" className="grid gap-3 p-5 md:grid-cols-2 2xl:grid-cols-3">
+              <ul aria-label="Workers with new learning" className="grid gap-4 p-5 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                 {paged.rows.map((w) => <li key={w.workerId}><WorkerTile w={w} to={to(w)} /></li>)}
               </ul>
             ) : (

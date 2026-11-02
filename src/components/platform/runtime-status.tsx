@@ -29,3 +29,11 @@ export function RuntimeStatusDot({ status, className, showLabel = true }: { stat
     </span>
   )
 }
+
+// Presence, the way a colleague shows as available or away: the dot on the avatar.
+export const PRESENCE: Record<RuntimeStatus, string> = {
+  serving: 'bg-success',
+  attention: 'bg-warning',
+  stopped: 'bg-subtle-foreground',
+  none: 'bg-chip-neutral',
+}

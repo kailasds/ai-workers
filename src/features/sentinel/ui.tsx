@@ -9,8 +9,9 @@ import { StatusBadge } from '@/components/platform/status-badge'
 import { cn } from '@/lib/utils'
 import type { Result } from './demo/engine'
 import { workerLabel } from './demo/platform'
-import { OPERATIONAL_LABEL, OUTCOME_LABEL, type Operational } from './demo/selectors'
-import type { AgreementStatus, Outcome } from './demo/types'
+import { withParam } from './specs'
+import { CONTROL_LABEL, CONTROL_TONE, OPERATIONAL_LABEL, OUTCOME_LABEL, type Operational } from './demo/selectors'
+import type { AgreementStatus, Control, Outcome } from './demo/types'
 
 // Shared Sentinel building blocks: one status vocabulary, one way to confirm a consequential
 // action, and one way to open a Worker or agreement from anywhere.
@@ -27,13 +28,23 @@ export const AgreementPill = ({ status }: { status: AgreementStatus }) => <Statu
 const OP_TONE: Record<Operational, Tone> = { running: 'success', stopped: 'danger', not_running: 'neutral' }
 export const OperationalPill = ({ op }: { op: Operational }) => <StatusBadge tone={OP_TONE[op]}>{OPERATIONAL_LABEL[op]}</StatusBadge>
 
+export const ControlPill = ({ kind }: { kind: Control['kind'] }) => <StatusBadge tone={CONTROL_TONE[kind]}>{CONTROL_LABEL[kind]}</StatusBadge>
+
+/** Opens a control's drawer from anywhere in Sentinel. */
+export function ControlLink({ id, children, className }: { id: string; children: React.ReactNode; className?: string }) {
+  const [params] = useSearchParams()
+  return (
+    <Link to={withParam(params, 'control', id)} preventScrollReset className={cn('rounded-sm underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring', className)}>
+      {children}
+    </Link>
+  )
+}
+
 /** Opens the Worker governance drawer, keeping the current page and filters. */
 export function WorkerLink({ id, className }: { id: string; className?: string }) {
   const [params] = useSearchParams()
-  const next = new URLSearchParams(params)
-  next.set('worker', id)
   return (
-    <Link to={{ search: next.toString() }} preventScrollReset className={cn('rounded-sm underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring', className)}>
+    <Link to={withParam(params, 'worker', id)} preventScrollReset className={cn('rounded-sm underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring', className)}>
       {workerLabel(id)}
     </Link>
   )
@@ -42,10 +53,8 @@ export function WorkerLink({ id, className }: { id: string; className?: string }
 /** Opens the agreement drawer from anywhere in Sentinel. */
 export function AgreementLink({ id, children, className }: { id: string; children: React.ReactNode; className?: string }) {
   const [params] = useSearchParams()
-  const next = new URLSearchParams(params)
-  next.set('agreement', id)
   return (
-    <Link to={{ search: next.toString() }} preventScrollReset className={cn('rounded-sm underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring', className)}>
+    <Link to={withParam(params, 'agreement', id)} preventScrollReset className={cn('rounded-sm underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring', className)}>
       {children}
     </Link>
   )

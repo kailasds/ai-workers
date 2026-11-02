@@ -27,6 +27,7 @@ const SentinelOverviewPage = named(() => import('@/features/sentinel/overview-pa
 const SentinelDecisionsPage = named(() => import('@/features/sentinel/decisions-page'), 'SentinelDecisionsPage')
 const SentinelDecisionPage = named(() => import('@/features/sentinel/decisions-page'), 'SentinelDecisionPage')
 const SentinelPolicyPage = named(() => import('@/features/sentinel/policy-page'), 'SentinelPolicyPage')
+const SentinelControlsPage = named(() => import('@/features/sentinel/controls-page'), 'SentinelControlsPage')
 const PackagingPage = named(() => import('@/features/packaging/packaging-page'), 'PackagingPage')
 const DeliveryPage = named(() => import('@/features/delivery/delivery-page'), 'DeliveryPage')
 const DeliveryWizard = named(() => import('@/features/delivery/delivery-wizard'), 'DeliveryWizard')
@@ -89,6 +90,7 @@ function App() {
               <Route path="learning/workers" element={<Navigate to="/learning#new" replace />} />
               <Route path="learning/shared" element={<Navigate to="/sentinel/sharing" replace />} />
               <Route path="sentinel" element={<SentinelOverviewPage />} />
+              <Route path="sentinel/controls" element={<SentinelControlsPage />} />
               <Route path="sentinel/sharing" element={<SentinelSharingPage />} />
               <Route path="sentinel/workers" element={<Navigate to="/sentinel" replace />} />
               <Route path="sentinel/decisions" element={<SentinelDecisionsPage />} />

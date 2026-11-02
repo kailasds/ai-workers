@@ -1,28 +1,32 @@
 import { useState } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router'
-import { ChevronDown, ChevronRight, Search, ShieldCheck } from 'lucide-react'
+import { Link, useLocation, useParams, useSearchParams } from 'react-router'
+import { ChevronDown, ChevronRight, FileSearch, Fingerprint, Lightbulb, Search, ShieldCheck, ShieldX, Users } from 'lucide-react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { CopyValue } from '@/components/platform/copy-value'
 import { Fact, FactList } from '@/components/platform/fact-list'
 import { Pager } from '@/components/platform/pager'
+import { Details, Panel } from '@/components/platform/panel'
 import { StatusBadge } from '@/components/platform/status-badge'
 import { Timestamp } from '@/components/platform/timestamp'
 import { PAGE_SIZES, usePaged } from '@/hooks/use-paged'
 import { isResolved } from './demo/engine'
-import { verifyChain, type ChainResult } from './demo/integrity'
-import { WORKERS, workerLabel } from './demo/platform'
+import type { ChainResult } from './demo/integrity'
+import { SNAPSHOT_AT, WORKERS, workerLabel } from './demo/platform'
 import { actions, useDemo } from './demo/store'
 import { AUTHORITY_LABEL, OUTCOME_LABEL, TYPE_LABEL } from './demo/selectors'
-import type { Decision } from './demo/types'
-import { SentinelLayout } from './sentinel-layout'
-import { ActionDialog, AgreementLink, OutcomePill, Section, WorkerLink, type ActionSpec } from './ui'
+import type { Decision, DemoState } from './demo/types'
+import { SentinelLayout, SentinelPage } from './sentinel-layout'
+import { useChain } from './specs'
+import { ActionDialog, AgreementLink, OutcomePill, WorkerLink, type ActionSpec } from './ui'
 
 const ALL = '__all'
+// Periods count back from the snapshot, like Learning, so the seeded record stays in range.
 const PERIODS = [{ value: '7', days: 7, label: 'Last 7 days' }, { value: '30', days: 30, label: 'Last 30 days' }]
+const LINK = 'rounded-sm text-primary-strong underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring'
 
 const CHAIN_WORDS: Record<ChainResult['state'], { label: string; tone: 'success' | 'danger' | 'warning' | 'neutral' }> = {
   verified: { label: 'Verified', tone: 'success' },
@@ -31,34 +35,32 @@ const CHAIN_WORDS: Record<ChainResult['state'], { label: string; tone: 'success'
   not_available: { label: 'Not available', tone: 'neutral' },
 }
 
-/** The integrity check, run on request against this browser's demo records. */
+const reviewed = (s: DemoState, d: Decision) => d.outcome === 'pending' && isResolved(s, d.id)
+const StatusOf = ({ s, d }: { s: DemoState; d: Decision }) => (reviewed(s, d) ? <StatusBadge tone="neutral">Reviewed</StatusBadge> : <OutcomePill outcome={d.outcome} />)
+
+/** Whether the record can be trusted: every decision links to the one before and none was altered. */
 function IntegrityBar() {
-  const s = useDemo()
-  const [result, setResult] = useState<{ r: ChainResult; at: string; count: number } | null>(null)
-  const stale = result && result.count !== s.decisions.length
+  const chain = useChain()
+  const [checkedAt, setCheckedAt] = useState(() => new Date().toISOString())
+  const ok = chain.state === 'verified'
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-block border bg-card px-4 py-3">
-      <ShieldCheck className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-      <div className="min-w-0 flex-1 text-meta">
-        {result ? (
-          <p aria-live="polite">
-            <StatusBadge tone={CHAIN_WORDS[result.r.state].tone}>{CHAIN_WORDS[result.r.state].label}</StatusBadge>{' '}
-            {result.r.state === 'verified' ? `All ${result.r.checked} decisions link up and none was altered.` : result.r.failedAt ? `The chain breaks at ${result.r.failedAt}.` : ''} Checked <Timestamp iso={result.at} />{stale ? ' · new decisions since; check again' : ''}.
-          </p>
-        ) : (
-          <p>Integrity chain not checked yet</p>
-        )}
-      </div>
-      <Button variant="outline" size="sm" onClick={() => setResult({ r: verifyChain(s.decisions), at: new Date().toISOString(), count: s.decisions.length })}>Verify chain</Button>
+    <div id="integrity" className="flex scroll-mt-24 flex-wrap items-center gap-3 rounded-xl border bg-card px-5 py-3">
+      {ok ? <ShieldCheck className="size-5 shrink-0 text-success" aria-hidden="true" /> : <ShieldX className="size-5 shrink-0 text-destructive" aria-hidden="true" />}
+      <p className="min-w-0 flex-1 text-body" aria-live="polite">
+        <StatusBadge tone={CHAIN_WORDS[chain.state].tone}>Record {CHAIN_WORDS[chain.state].label.toLowerCase()}</StatusBadge>{' '}
+        <span className="text-meta text-muted-foreground">
+          {ok ? `${chain.checked} decisions, none altered` : chain.failedAt ? `Breaks at ${chain.failedAt}` : 'Some decisions carry no integrity data'} · checked <Timestamp iso={checkedAt} />
+        </span>
+      </p>
+      <Button variant="outline" size="sm" onClick={() => { setCheckedAt(new Date().toISOString()); toast.success(ok ? 'Record verified' : 'Record check failed') }}>Check again</Button>
     </div>
   )
 }
 
-/** Searchable, filterable decision history. Filters live in the URL; changing one returns to page 1. */
+/** The governance audit trail: searchable, filterable, newest first. Filters live in the URL. */
 export function SentinelDecisionsPage() {
   const s = useDemo()
-  // Periods count back from when the page opened.
-  const [now] = useState(() => Date.now())
+  const location = useLocation()
   const [params, setParams] = useSearchParams()
   const get = (k: string) => params.get(k)
   const set = (k: string, v: string | null) =>
@@ -71,19 +73,20 @@ export function SentinelDecisionsPage() {
     }, { replace: true, preventScrollReset: true })
   const q = (get('q') ?? '').trim().toLowerCase()
   const period = PERIODS.find((p) => p.value === get('period'))
-  const since = period ? new Date(now - period.days * 86_400_000).toISOString() : null
+  const since = period ? new Date(new Date(SNAPSHOT_AT).getTime() - period.days * 86_400_000).toISOString() : null
   const filtered = s.decisions
     .filter((d) => !since || d.at >= since)
     .filter((d) => !get('by') || d.decidedBy.kind === get('by'))
     .filter((d) => !get('type') || d.type === get('type'))
     .filter((d) => !get('outcome') || (get('outcome') === 'pending' ? d.outcome === 'pending' && !isResolved(s, d.id) : d.outcome === get('outcome')))
     .filter((d) => !get('worker') || d.workerIds.includes(get('worker')!))
-    .filter((d) => !q || [d.title, d.id, d.reason, ...d.workerIds.map(workerLabel)].some((x) => x.toLowerCase().includes(q)))
+    .filter((d) => !q || [d.title, d.id, d.reason, d.summary, ...d.workerIds.map(workerLabel)].some((x) => x.toLowerCase().includes(q)))
     .sort((a, b) => (get('sort') === 'oldest' ? a.seq - b.seq : b.seq - a.seq))
   const paged = usePaged(filtered)
   const filtering = ['q', 'period', 'by', 'type', 'outcome', 'worker'].some((k) => get(k))
   const workerOptions = WORKERS.filter((w) => s.decisions.some((d) => d.workerIds.includes(w.composition_id))).map((w) => w.composition_id).sort((a, b) => workerLabel(a).localeCompare(workerLabel(b)))
   const types = [...new Set(s.decisions.map((d) => d.type))]
+  const from = { from: location.pathname + location.search }
 
   return (
     <SentinelLayout view="decisions">
@@ -91,7 +94,7 @@ export function SentinelDecisionsPage() {
       <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filter decisions">
         <InputGroup className="w-full sm:w-64">
           <InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon>
-          <InputGroupInput type="search" value={get('q') ?? ''} onChange={(e) => set('q', e.target.value)} placeholder="Search decisions" aria-label="Search by title, id, reason or Worker" />
+          <InputGroupInput type="search" value={get('q') ?? ''} onChange={(e) => set('q', e.target.value)} placeholder="Worker or decision" aria-label="Search by Worker, decision, reason or id" />
         </InputGroup>
         <Select value={get('period') ?? ALL} onValueChange={(v) => set('period', v)}>
           <SelectTrigger className="w-36" aria-label="Period"><SelectValue /></SelectTrigger>
@@ -99,15 +102,15 @@ export function SentinelDecisionsPage() {
         </Select>
         <Select value={get('by') ?? ALL} onValueChange={(v) => set('by', v)}>
           <SelectTrigger className="w-44" aria-label="Decided by"><SelectValue /></SelectTrigger>
-          <SelectContent><SelectItem value={ALL}>Anyone</SelectItem>{Object.entries(AUTHORITY_LABEL).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}</SelectContent>
+          <SelectContent><SelectItem value={ALL}>Decided by anyone</SelectItem>{Object.entries(AUTHORITY_LABEL).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}</SelectContent>
+        </Select>
+        <Select value={get('outcome') ?? ALL} onValueChange={(v) => set('outcome', v)}>
+          <SelectTrigger className="w-48" aria-label="Effect"><SelectValue /></SelectTrigger>
+          <SelectContent><SelectItem value={ALL}>Any effect</SelectItem>{(Object.keys(OUTCOME_LABEL) as Decision['outcome'][]).map((o) => <SelectItem key={o} value={o}>{OUTCOME_LABEL[o]}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={get('type') ?? ALL} onValueChange={(v) => set('type', v)}>
           <SelectTrigger className="w-44" aria-label="Decision type"><SelectValue /></SelectTrigger>
           <SelectContent><SelectItem value={ALL}>All types</SelectItem>{types.map((t) => <SelectItem key={t} value={t}>{TYPE_LABEL[t]}</SelectItem>)}</SelectContent>
-        </Select>
-        <Select value={get('outcome') ?? ALL} onValueChange={(v) => set('outcome', v)}>
-          <SelectTrigger className="w-48" aria-label="Outcome"><SelectValue /></SelectTrigger>
-          <SelectContent><SelectItem value={ALL}>Any outcome</SelectItem>{(Object.keys(OUTCOME_LABEL) as Decision['outcome'][]).map((o) => <SelectItem key={o} value={o}>{OUTCOME_LABEL[o]}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={get('worker') ?? ALL} onValueChange={(v) => set('worker', v)}>
           <SelectTrigger className="w-52" aria-label="Worker"><SelectValue /></SelectTrigger>
@@ -120,57 +123,85 @@ export function SentinelDecisionsPage() {
         {filtering && <Button variant="ghost" onClick={() => setParams({}, { replace: true })}>Clear filters</Button>}
       </div>
 
-      {filtered.length === 0 ? (
-        <p className="rounded-block border border-dashed px-5 py-4 text-body text-muted-foreground">{filtering ? 'No decisions match these filters.' : 'No decisions recorded yet.'}</p>
-      ) : (
-        <>
-          <Card className="gap-0 overflow-x-auto py-0">
+      <Panel id="log" flush>
+        {filtered.length === 0 ? (
+          <p className="px-5 py-4 text-body text-muted-foreground">{filtering ? 'No decisions match these filters.' : 'No decisions recorded yet.'}</p>
+        ) : (
+          <div className="relative overflow-x-auto">
             <table className="w-full text-left text-body">
               <caption className="sr-only">Decision log</caption>
               <thead className="border-b bg-muted/40 text-meta text-muted-foreground">
                 <tr>
-                  <th scope="col" className="px-4 py-2.5 font-medium">When</th>
+                  <th scope="col" className="px-5 py-2.5 font-medium">When</th>
                   <th scope="col" className="px-4 py-2.5 font-medium">Decision</th>
                   <th scope="col" className="hidden px-4 py-2.5 font-medium md:table-cell">Decided by</th>
-                  <th scope="col" className="px-4 py-2.5 font-medium">Outcome</th>
+                  <th scope="col" className="hidden px-4 py-2.5 font-medium lg:table-cell">Workers</th>
+                  <th scope="col" className="px-4 py-2.5 font-medium">Status</th>
                   <th scope="col" className="px-2 py-2.5"><span className="sr-only">Open</span></th>
                 </tr>
               </thead>
               <tbody className="divide-y">
                 {paged.rows.map((d) => (
                   <tr key={d.id} className="hover:bg-muted/40">
-                    <td className="px-4 py-2.5 text-meta whitespace-nowrap"><Timestamp iso={d.at} /><span className="block font-mono text-muted-foreground">{d.id}</span></td>
-                    <td className="px-4 py-2.5">
-                      <Link to={`/sentinel/decisions/${d.id}`} className="rounded-sm font-medium outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring">{d.title}</Link>
-                      <span className="block text-meta text-muted-foreground">{TYPE_LABEL[d.type]} · {d.effect}{d.workerIds.length ? ` · ${d.workerIds.length === 1 ? workerLabel(d.workerIds[0]) : `${d.workerIds.length} Workers`}` : ''}</span>
+                    <td className="px-5 py-3 text-meta whitespace-nowrap"><Timestamp iso={d.at} /><span className="block font-mono text-muted-foreground">{d.id}</span></td>
+                    <td className="px-4 py-3">
+                      <Link to={`/sentinel/decisions/${d.id}`} state={from} className="rounded-sm font-medium underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring">{d.title}</Link>
+                      <span className="block text-meta text-muted-foreground">{TYPE_LABEL[d.type]}</span>
                     </td>
-                    <td className="hidden px-4 py-2.5 text-meta md:table-cell">{AUTHORITY_LABEL[d.decidedBy.kind]}</td>
-                    <td className="px-4 py-2.5">{d.outcome === 'pending' && isResolved(s, d.id) ? <StatusBadge tone="neutral">Reviewed</StatusBadge> : <OutcomePill outcome={d.outcome} />}</td>
-                    <td className="px-2 py-2.5"><Link to={`/sentinel/decisions/${d.id}`} aria-label={`Open ${d.id}`} className="grid size-8 place-items-center rounded-md outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"><ChevronRight className="size-4" aria-hidden="true" /></Link></td>
+                    <td className="hidden px-4 py-3 text-meta md:table-cell">{AUTHORITY_LABEL[d.decidedBy.kind]}</td>
+                    <td className="hidden max-w-56 truncate px-4 py-3 text-meta lg:table-cell">{d.workerIds.length === 0 ? <span className="text-muted-foreground">Platform-wide</span> : d.workerIds.length === 1 ? workerLabel(d.workerIds[0]) : `${d.workerIds.length} Workers`}</td>
+                    <td className="px-4 py-3"><StatusOf s={s} d={d} /></td>
+                    <td className="px-2 py-3"><Link to={`/sentinel/decisions/${d.id}`} state={from} aria-label={`Open ${d.id}`} className="grid size-8 place-items-center rounded-md outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"><ChevronRight className="size-4" aria-hidden="true" /></Link></td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </Card>
-          <Pager page={paged.page} pageSize={paged.size} total={paged.total} onPage={paged.setPage} pageSizes={PAGE_SIZES} onPageSize={paged.setSize} order={get('sort') === 'oldest' ? 'ranked' : 'time'} label="Decisions" />
-        </>
-      )}
+          </div>
+        )}
+      </Panel>
+      {filtered.length > 0 && <Pager page={paged.page} pageSize={paged.size} total={paged.total} onPage={paged.setPage} pageSizes={PAGE_SIZES} onPageSize={paged.setSize} order={get('sort') === 'oldest' ? 'ranked' : 'time'} label="Decisions" />}
     </SentinelLayout>
   )
 }
 
-const RECEIPT: Record<Decision['receipts'][number]['status'], string> = { confirmed: 'Confirmed by the Worker', awaiting: 'Waiting for the Worker (not running)', not_needed: 'Nothing to confirm' }
+const RECEIPT: Record<Decision['receipts'][number]['status'], { label: string; tone: 'success' | 'warning' | 'neutral' }> = {
+  confirmed: { label: 'Confirmed', tone: 'success' },
+  awaiting: { label: 'Waiting', tone: 'warning' },
+  not_needed: { label: 'Nothing to confirm', tone: 'neutral' },
+}
 
-/** One decision: summary, what happened, why, result, affected Workers, evidence, integrity, follow-ups. */
+const APPLIED: Record<Decision['outcome'], string> = {
+  applied: 'Yes (simulated)',
+  recorded: 'No, recorded only',
+  pending: 'Not yet',
+  requested: 'Requested',
+  blocked: 'No, blocked',
+  failed: 'No, failed',
+}
+
+function receiptSummary(d: Decision) {
+  const need = d.receipts.filter((r) => r.status !== 'not_needed')
+  if (d.receipts.length === 0) return 'No Worker affected'
+  if (need.length === 0) return 'Nothing to confirm'
+  return `${need.filter((r) => r.status === 'confirmed').length} of ${need.length} confirmed`
+}
+
+/**
+ * One decision, read top to bottom: what was decided and its status, why, who it touched, the
+ * evidence, then the integrity record folded away for audit.
+ */
 export function SentinelDecisionPage() {
   const { decisionId = '' } = useParams()
+  const location = useLocation()
   const s = useDemo()
+  const chain = useChain()
   const [spec, setSpec] = useState<ActionSpec | null>(null)
   const d = s.decisions.find((x) => x.id === decisionId)
-  const chain = d ? verifyChain(s.decisions).each[d.id] : null
-  const related = d ? s.decisions.filter((x) => x.relatedTo === d.id) : []
+  const linkState = chain.each[decisionId] ?? 'not_available'
+  const followers = d ? s.decisions.filter((x) => x.relatedTo === d.id) : []
   const parent = d?.relatedTo ? s.decisions.find((x) => x.id === d.relatedTo) : null
   const agreement = d?.agreementId ? s.agreements.find((a) => a.id === d.agreementId) : null
+  const back = (location.state as { from?: string } | null)?.from ?? '/sentinel/decisions'
 
   const followUps: React.ReactNode[] = []
   if (d && d.outcome === 'pending' && !isResolved(s, d.id)) {
@@ -183,98 +214,122 @@ export function SentinelDecisionPage() {
     followUps.push(<Button key="resume" onClick={() => setSpec({ title: `Resume ${workerLabel(wid)}`, consequences: ['The stop is lifted; the Worker may run again.', 'A new “Resume” decision is recorded, linked to this one.'], confirmLabel: 'Resume Worker', run: (r) => actions.resumeWorker(wid, r), done: 'Worker resumed' })}>Resume Worker…</Button>)
   }
   if (d?.type === 'suspend' && agreement?.status === 'suspended' && agreement.decisionIds.at(-1) === d.id) {
-    followUps.push(<Button key="rs" variant="outline" asChild><Link to={`?agreement=${agreement.id}`}>Open agreement to resume</Link></Button>)
+    followUps.push(<Button key="rs" variant="outline" asChild><Link to={`?agreement=${agreement.id}`} state={location.state} preventScrollReset>Open agreement to resume</Link></Button>)
   }
+  const evidenceCount = d ? d.evidence.headlines.length + d.evidence.runs.length + d.evidence.refs.length : 0
 
   return (
-    <SentinelLayout view="" title={d?.title ?? 'Decision not found'} crumbs={[{ label: 'Sentinel', to: '/sentinel' }, { label: 'Decisions', to: '/sentinel/decisions' }, { label: d?.id ?? decisionId }]}>
+    <SentinelPage title={d?.title ?? 'Decision not found'} crumbs={[{ label: 'Sentinel', to: '/sentinel' }, { label: 'Decision log', to: back }, { label: d?.id ?? decisionId }]}>
       {!d ? (
-        <p className="rounded-block border border-dashed px-5 py-4 text-body text-muted-foreground">No decision with this id is in the demo record. <Link to="/sentinel/decisions" className="text-primary-strong underline-offset-4 hover:underline">All decisions</Link></p>
+        <p className="rounded-block border border-dashed px-5 py-4 text-body text-muted-foreground">No decision with this id is in the demo record. <Link to="/sentinel/decisions" className={LINK}>Decision log</Link></p>
       ) : (
-        <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
-          <div className="flex min-w-0 flex-col gap-6">
-            <Section id="happened" title="What happened"><p className="text-body">{d.summary}</p></Section>
-            <Section id="why" title="Why">
-              <p className="text-body">{d.reason || 'No reason recorded.'}</p>
-              {d.conditions.length > 0 && <ul className="list-disc pl-5 text-meta text-muted-foreground">{d.conditions.map((c) => <li key={c}>{c}</li>)}</ul>}
-            </Section>
-            <Section id="result" title="Result">
-              <p className="text-body">{d.effect}</p>
-              <p className="text-meta text-muted-foreground">
-                {d.outcome === 'applied' && 'Applied in this simulation. Not enforced on a platform.'}
-                {d.outcome === 'recorded' && 'Recorded for monitoring. Sentinel is in recording-only mode, so no control was applied.'}
-                {d.outcome === 'pending' && (isResolved(s, d.id) ? 'Reviewed — see the follow-up decision.' : 'Waits for a person to review it. Nothing changes until then.')}
-                {d.outcome === 'requested' && 'Requested; it takes effect once the Worker acts on it.'}
-                {(d.outcome === 'blocked' || d.outcome === 'failed') && 'This did not take effect.'}
-              </p>
-            </Section>
-            <Section id="affected" title={`Affected Workers (${d.receipts.length})`}>
-              {d.receipts.length === 0 ? <p className="text-meta text-muted-foreground">Platform-wide; no single Worker.</p> : (
-                <Card className="gap-0 py-0">
-                  <ul className="divide-y">
-                    {d.receipts.map((r) => (
-                      <li key={r.workerId} className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 text-body">
-                        <WorkerLink id={r.workerId} />
-                        <span className="text-meta text-muted-foreground">{RECEIPT[r.status]}{r.customer ? ` · ${r.customer}` : ''} · <Link to={`/sentinel/decisions?worker=${r.workerId}`} className="text-primary-strong underline-offset-4 hover:underline">its decisions</Link></span>
-                      </li>
-                    ))}
-                  </ul>
-                </Card>
-              )}
-            </Section>
-            <Section id="evidence" title="Evidence">
-              {d.evidence.headlines.length + d.evidence.runs.length + d.evidence.refs.length === 0 ? <p className="text-meta text-muted-foreground">No evidence was recorded with this decision.</p> : (
-                <FactList>
-                  {d.evidence.headlines.length > 0 && <Fact label="Headlines"><ul className="list-disc pl-4">{d.evidence.headlines.map((h) => <li key={h}>{h}</li>)}</ul></Fact>}
-                  {d.evidence.runs.length > 0 && <Fact label="Runs"><ul>{d.evidence.runs.map((r) => <li key={r} className="font-mono text-meta">{r}</li>)}</ul></Fact>}
-                  {d.evidence.refs.length > 0 && <Fact label="References"><ul>{d.evidence.refs.map((r) => <li key={r} className="font-mono text-meta">{r}</li>)}</ul></Fact>}
-                </FactList>
-              )}
-            </Section>
-            <Collapsible className="rounded-block border">
-              <CollapsibleTrigger className="group flex w-full items-center justify-between gap-2 px-4 py-3 text-left text-item outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                Integrity details
-                <span className="flex items-center gap-2 text-meta text-muted-foreground">{chain ? CHAIN_WORDS[chain].label : 'Not available'}<ChevronDown className="size-4 transition-transform group-data-[state=open]:rotate-180" aria-hidden="true" /></span>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="border-t px-4 py-3">
-                {d.integrity ? (
-                  <FactList>
-                    <Fact label="Hash"><CopyValue value={d.integrity.hash} display={d.integrity.hash} label="hash" /></Fact>
-                    <Fact label="Previous hash">{d.integrity.prev ? <CopyValue value={d.integrity.prev} display={d.integrity.prev} label="previous hash" /> : 'None (first decision)'}</Fact>
-                    <Fact label="Policy hash"><CopyValue value={d.integrity.policyHash} display={d.integrity.policyHash} label="policy hash" /></Fact>
-                    <Fact label="Inputs">{d.integrity.inputs.length ? d.integrity.inputs.join(', ') : 'None'}</Fact>
-                    <Fact label="Chain">{chain ? CHAIN_WORDS[chain].label : 'Not available'} · demo hash over this browser’s records</Fact>
-                  </FactList>
-                ) : <p className="text-meta text-muted-foreground">No integrity data recorded for this decision.</p>}
-              </CollapsibleContent>
-            </Collapsible>
-          </div>
+        <div className="flex flex-col gap-5">
+          <section aria-label="Decision summary" className="rounded-xl border bg-card p-5">
+            <div className="flex flex-wrap items-center gap-2">
+              <StatusOf s={s} d={d} />
+              <span className="text-meta text-muted-foreground">{TYPE_LABEL[d.type]}</span>
+            </div>
+            <p className="mt-3 text-body">{d.summary}</p>
+            <div className="mt-5 border-t pt-5">
+              <Details
+                rows={[
+                  { label: 'Decided by', value: <>{AUTHORITY_LABEL[d.decidedBy.kind]}{d.decidedBy.name !== AUTHORITY_LABEL[d.decidedBy.kind] && <span className="block text-meta text-muted-foreground">{d.decidedBy.name}</span>}</> },
+                  { label: 'When', value: <Timestamp iso={d.at} /> },
+                  { label: 'Affected Workers', value: d.workerIds.length === 0 ? 'Platform-wide' : d.workerIds.map((w, i) => <span key={w}>{i > 0 && ', '}<WorkerLink id={w} /></span>) },
+                  { label: 'Applied', value: reviewed(s, d) ? 'Reviewed' : APPLIED[d.outcome] },
+                  { label: 'Worker receipt', value: receiptSummary(d) },
+                  { label: 'Decision ID', value: <CopyValue value={d.id} display={d.id} label="decision id" /> },
+                  ...(agreement ? [{ label: 'Agreement', value: <AgreementLink id={agreement.id} className="text-primary-strong">{agreement.item}</AgreementLink> }] : []),
+                ]}
+              />
+            </div>
+            {followUps.length > 0 && <div className="mt-5 flex flex-wrap gap-2 border-t pt-5">{followUps}</div>}
+          </section>
 
-          <aside className="flex flex-col gap-4 lg:sticky lg:top-6">
-            <Card className="gap-0 p-5">
-              <FactList>
-                <Fact label="Outcome">{d.outcome === 'pending' && isResolved(s, d.id) ? <StatusBadge tone="neutral">Reviewed</StatusBadge> : <OutcomePill outcome={d.outcome} />}</Fact>
-                <Fact label="Type">{TYPE_LABEL[d.type]}</Fact>
-                <Fact label="Decided by">{d.decidedBy.name}</Fact>
-                <Fact label="When"><Timestamp iso={d.at} /></Fact>
-                <Fact label="Decision ID"><CopyValue value={d.id} display={d.id} label="decision id" /></Fact>
-                {agreement && <Fact label="Agreement"><AgreementLink id={agreement.id}>{agreement.item}</AgreementLink></Fact>}
-              </FactList>
-              {followUps.length > 0 && <div className="mt-4 flex flex-wrap gap-2 border-t pt-4">{followUps}</div>}
-            </Card>
-            {(parent || related.length > 0) && (
-              <Card className="gap-2 p-5">
-                <p className="text-item font-semibold">Related decisions</p>
-                <ul className="flex flex-col gap-1 text-body">
-                  {parent && <li>Follows <Link to={`/sentinel/decisions/${parent.id}`} className="text-primary-strong underline-offset-4 hover:underline">{parent.title}</Link></li>}
-                  {related.map((r) => <li key={r.id}>Followed by <Link to={`/sentinel/decisions/${r.id}`} className="text-primary-strong underline-offset-4 hover:underline">{r.title}</Link></li>)}
-                </ul>
-              </Card>
+          <div className={parent || followers.length > 0 ? 'grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_20rem]' : 'flex flex-col gap-5'}>
+            <div className="flex min-w-0 flex-col gap-5">
+              <Panel id="reasoning" title="Reasoning" icon={Lightbulb} hue="amber">
+                <dl className="flex flex-col gap-4">
+                  <div><dt className="text-meta text-muted-foreground">Why</dt><dd className="mt-0.5 text-body">{d.reason || 'No reason recorded.'}</dd></div>
+                  <div><dt className="text-meta text-muted-foreground">Outcome</dt><dd className="mt-0.5 text-body">{d.effect}</dd></div>
+                  {d.conditions.length > 0 && (
+                    <div>
+                      <dt className="text-meta text-muted-foreground">Conditions</dt>
+                      <dd className="mt-0.5 text-body"><ul className="list-disc pl-5">{d.conditions.map((c) => <li key={c}>{c}</li>)}</ul></dd>
+                    </div>
+                  )}
+                </dl>
+              </Panel>
+
+              <Panel id="impact" title="Impact" icon={Users} hue="blue" count={d.receipts.length} flush>
+                {d.receipts.length === 0 ? <p className="px-5 py-4 text-body text-muted-foreground">Platform-wide; no single Worker.</p> : (
+                  <div className="relative overflow-x-auto">
+                    <table className="w-full text-left text-body">
+                      <caption className="sr-only">Affected Workers</caption>
+                      <thead className="border-b bg-muted/40 text-meta text-muted-foreground">
+                        <tr>
+                          <th scope="col" className="px-5 py-2.5 font-medium">Worker</th>
+                          <th scope="col" className="px-4 py-2.5 font-medium">Receipt</th>
+                          <th scope="col" className="px-4 py-2.5"><span className="sr-only">History</span></th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y">
+                        {d.receipts.map((r) => (
+                          <tr key={r.workerId}>
+                            <td className="min-w-48 px-5 py-3"><WorkerLink id={r.workerId} className="font-medium" />{r.customer && <span className="block text-meta text-muted-foreground">{r.customer}</span>}</td>
+                            <td className="px-4 py-3"><StatusBadge tone={RECEIPT[r.status].tone}>{RECEIPT[r.status].label}</StatusBadge></td>
+                            <td className="px-4 py-3 text-right text-meta"><Link to={`/sentinel/decisions?worker=${r.workerId}`} className={LINK}>Its decisions</Link></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </Panel>
+
+              <Panel id="evidence" title="Evidence" icon={FileSearch} hue="teal" count={evidenceCount}>
+                {evidenceCount === 0 ? <p className="text-body text-muted-foreground">No evidence was recorded with this decision.</p> : (
+                  <FactList>
+                    {d.evidence.headlines.length > 0 && <Fact label="Recorded headline">{d.evidence.headlines.length === 1 ? d.evidence.headlines[0] : <ul className="list-disc pl-4">{d.evidence.headlines.map((h) => <li key={h}>{h}</li>)}</ul>}</Fact>}
+                    {d.evidence.runs.length > 0 && <Fact label="Supporting runs"><ul>{d.evidence.runs.map((r) => <li key={r} className="font-mono text-meta">{r}</li>)}</ul></Fact>}
+                    {d.evidence.refs.length > 0 && <Fact label="Related evidence"><ul>{d.evidence.refs.map((r) => <li key={r} className="font-mono text-meta">{r}</li>)}</ul></Fact>}
+                  </FactList>
+                )}
+              </Panel>
+
+              <Collapsible className="rounded-xl border bg-card">
+                <CollapsibleTrigger className="group flex w-full items-center justify-between gap-2 rounded-xl px-5 py-3.5 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                  <span className="flex items-center gap-3 text-item"><Fingerprint className="size-5 text-muted-foreground" aria-hidden="true" />Technical integrity</span>
+                  <span className="flex items-center gap-2 text-meta text-muted-foreground"><StatusBadge tone={CHAIN_WORDS[linkState].tone}>{CHAIN_WORDS[linkState].label}</StatusBadge><ChevronDown className="size-4 transition-transform group-data-[state=open]:rotate-180" aria-hidden="true" /></span>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="border-t px-5 py-4">
+                  {d.integrity ? (
+                    <FactList>
+                      <Fact label="Hash"><CopyValue value={d.integrity.hash} display={d.integrity.hash} label="hash" /></Fact>
+                      <Fact label="Previous hash">{d.integrity.prev ? <CopyValue value={d.integrity.prev} display={d.integrity.prev} label="previous hash" /> : 'None (first decision)'}</Fact>
+                      <Fact label="Policy hash"><CopyValue value={d.integrity.policyHash} display={d.integrity.policyHash} label="policy hash" /></Fact>
+                      <Fact label="Inputs">{d.integrity.inputs.length ? <ul>{d.integrity.inputs.map((i) => <li key={i} className="font-mono text-meta">{i}</li>)}</ul> : 'None'}</Fact>
+                      <Fact label="Chain">{CHAIN_WORDS[linkState].label} · {chain.checked} decisions checked</Fact>
+                    </FactList>
+                  ) : <p className="text-meta text-muted-foreground">No integrity data recorded for this decision.</p>}
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
+
+            {(parent || followers.length > 0) && (
+              <aside className="xl:sticky xl:top-6">
+                <Panel id="related" title="Related decisions" icon={ShieldCheck} hue="blue" count={(parent ? 1 : 0) + followers.length}>
+                  <ul className="flex flex-col gap-3 text-body">
+                    {parent && <li><span className="text-meta text-muted-foreground">Follows</span><Link to={`/sentinel/decisions/${parent.id}`} state={location.state} className={`block ${LINK}`}>{parent.title}</Link></li>}
+                    {followers.map((r) => <li key={r.id}><span className="text-meta text-muted-foreground">Followed by</span><Link to={`/sentinel/decisions/${r.id}`} state={location.state} className={`block ${LINK}`}>{r.title}</Link></li>)}
+                  </ul>
+                </Panel>
+              </aside>
             )}
-          </aside>
+          </div>
         </div>
       )}
       <ActionDialog spec={spec} onClose={() => setSpec(null)} />
-    </SentinelLayout>
+    </SentinelPage>
   )
 }

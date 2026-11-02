@@ -1,4 +1,5 @@
-import type { LucideIcon } from 'lucide-react'
+import { useState } from 'react'
+import { ChevronDown, type LucideIcon } from 'lucide-react'
 import { HUE, type Hue } from '@/components/platform/hue'
 import { formatCount } from '@/lib/format'
 import { cn } from '@/lib/utils'
@@ -14,25 +15,59 @@ export function IconTile({ icon: Icon, hue, size = 'md' }: { icon: LucideIcon; h
   )
 }
 
+const storeKey = (id: string) => `panel-open:${id}`
+function readOpen(id: string) {
+  try {
+    return localStorage.getItem(storeKey(id)) !== 'false'
+  } catch {
+    return true
+  }
+}
+
 /**
  * A section as one card: an icon, title and count in the header, then the body. Without a title
  * (when a tab already names it) the card holds the body alone. `flush` bodies hold their own rows
- * edge to edge.
+ * edge to edge. A `collapsible` panel folds to its header (the whole header toggles it); the
+ * choice is remembered in this browser.
  */
-export function Panel({ id, title, icon, hue = 'blue', count, aside, flush, children, className }: { id: string; title?: string; icon?: LucideIcon; hue?: Hue; count?: number; aside?: React.ReactNode; flush?: boolean; children: React.ReactNode; className?: string }) {
+export function Panel({ id, title, icon, hue = 'blue', count, aside, flush, collapsible, children, className }: { id: string; title?: string; icon?: LucideIcon; hue?: Hue; count?: number; aside?: React.ReactNode; flush?: boolean; collapsible?: boolean; children: React.ReactNode; className?: string }) {
+  const [open, setOpen] = useState(() => !collapsible || readOpen(id))
+  const toggle = () =>
+    setOpen((o) => {
+      try {
+        localStorage.setItem(storeKey(id), String(!o))
+      } catch {
+        /* storage unavailable: the choice lasts this visit only */
+      }
+      return !o
+    })
+  const heading = (
+    <>
+      {icon && <IconTile icon={icon} hue={hue} size="sm" />}
+      <span className="flex min-w-0 flex-1 items-center gap-2 text-item">
+        {title}
+        {count !== undefined && <span className="rounded-full bg-chip-neutral px-2 py-0.5 text-meta font-medium tabular-nums">{formatCount(count)}</span>}
+      </span>
+    </>
+  )
   return (
     <section id={id} aria-labelledby={title ? `${id}-title` : undefined} className={cn('scroll-mt-24 overflow-hidden rounded-xl border bg-card', className)}>
       {title && (
-        <header className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b px-5 py-3.5">
-          {icon && <IconTile icon={icon} hue={hue} size="sm" />}
-          <h2 id={`${id}-title`} className="flex min-w-0 flex-1 items-center gap-2 text-item">
-            {title}
-            {count !== undefined && <span className="rounded-full bg-chip-neutral px-2 py-0.5 text-meta font-medium tabular-nums">{formatCount(count)}</span>}
-          </h2>
-          {aside && <div className="flex flex-wrap items-center gap-2">{aside}</div>}
+        <header className={cn('flex flex-wrap items-center gap-x-3 gap-y-2 px-5 py-3.5', open && 'border-b', collapsible && 'p-0')}>
+          {collapsible ? (
+            <h2 id={`${id}-title`} className="min-w-0 flex-1">
+              <button type="button" onClick={toggle} aria-expanded={open} aria-controls={`${id}-body`} className="flex w-full cursor-pointer items-center gap-3 px-5 py-3.5 text-left outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset">
+                {heading}
+                <ChevronDown className={cn('size-4 shrink-0 text-muted-foreground transition-transform', open && 'rotate-180')} aria-hidden="true" />
+              </button>
+            </h2>
+          ) : (
+            <h2 id={`${id}-title`} className="flex min-w-0 flex-1 items-center gap-3">{heading}</h2>
+          )}
+          {aside && <div className={cn('flex flex-wrap items-center gap-2', collapsible && 'pr-5')}>{aside}</div>}
         </header>
       )}
-      <div className={flush ? undefined : 'p-5'}>{children}</div>
+      {open && <div id={`${id}-body`} className={flush ? undefined : 'p-5'}>{children}</div>}
     </section>
   )
 }
