@@ -75,19 +75,22 @@ export function KpiBand({ title, columns = 4, children }: { title: string; colum
   }
   return (
     <section aria-labelledby="glance-title" className="rounded-xl bg-identity p-2 text-identity-foreground">
-      <div className={cn('flex items-center justify-between gap-4 pl-3', open && 'pb-2')}>
-        <h2 id="glance-title" className="text-section">{title}</h2>
+      {/* The whole title bar toggles the figures, not just the Show/Hide label. */}
+      <h2 id="glance-title" className={cn('text-section', open && 'pb-2')}>
         <button
           type="button"
           onClick={toggle}
           aria-expanded={open}
           aria-controls="glance-figures"
-          className="inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-meta font-medium text-identity-foreground/90 outline-none hover:bg-primary-foreground/10 focus-visible:ring-3 focus-visible:ring-primary-foreground/60"
+          className="group flex w-full cursor-pointer items-center justify-between gap-4 rounded-lg py-1.5 pr-3 pl-3 text-left outline-none hover:bg-primary-foreground/10 focus-visible:ring-3 focus-visible:ring-primary-foreground/60"
         >
-          {open ? 'Hide' : 'Show'}
-          <ChevronDown className={cn('size-4', open && 'rotate-180')} aria-hidden="true" />
+          {title}
+          <span className="inline-flex items-center gap-1.5 text-meta font-medium text-identity-foreground/90">
+            {open ? 'Hide' : 'Show'}
+            <ChevronDown className={cn('size-4', open && 'rotate-180')} aria-hidden="true" />
+          </span>
         </button>
-      </div>
+      </h2>
       {open && <div id="glance-figures" className={cn('grid grid-cols-2 gap-2', columns === 3 ? 'lg:grid-cols-3' : 'xl:grid-cols-4')}>{children}</div>}
     </section>
   )

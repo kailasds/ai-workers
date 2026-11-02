@@ -9,12 +9,12 @@ export const PAGE_SIZES = [10, 20, 50]
  * The page is clamped to the last valid one, so a smaller list or a larger page size never
  * leaves the reader on an empty page; filters reset it by removing `${prefix}page`.
  */
-export function usePaged<T>(items: T[], { prefix = '', defaultSize = 20 }: { prefix?: string; defaultSize?: number } = {}) {
+export function usePaged<T>(items: T[], { prefix = '', defaultSize = 20, sizes = PAGE_SIZES }: { prefix?: string; defaultSize?: number; sizes?: number[] } = {}) {
   const [params, setParams] = useSearchParams()
   const pageKey = `${prefix}page`
   const sizeKey = `${prefix}size`
   const rawSize = Number(params.get(sizeKey))
-  const size = PAGE_SIZES.includes(rawSize) ? rawSize : defaultSize
+  const size = sizes.includes(rawSize) ? rawSize : defaultSize
   const pages = Math.max(1, Math.ceil(items.length / size))
   const page = Math.min(Math.max(1, Number(params.get(pageKey)) || 1), pages)
 

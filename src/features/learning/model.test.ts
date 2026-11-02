@@ -57,6 +57,25 @@ describe('Workers with new learning', () => {
     expect(asOf.every((i) => inPeriod(i, 'all'))).toBe(true)
   })
 
+  it('filters by Worker type and business domain', () => {
+    const all = workersWithNew('all')
+    const qe = workersWithNew('all', { type: 'quality-engineering' })
+    expect(qe.length).toBeGreaterThan(0)
+    expect(qe.every((w) => w.type === 'quality-engineering')).toBe(true)
+    expect(qe.length + workersWithNew('all', { type: 'modernization' }).length).toBe(all.length)
+    const domains = [...new Set(all.map((w) => w.domain))]
+    const byDomain = domains.reduce((n, d) => n + workersWithNew('all', { domain: d ?? 'none' }).length, 0)
+    expect(byDomain).toBe(all.length)
+  })
+
+  it('filters by type of learning and counts only that type', () => {
+    const patterns = workersWithNew('all', { category: 'patterns' })
+    expect(patterns.length).toBeGreaterThan(0)
+    expect(patterns.every((w) => w.fresh.length > 0 && w.fresh.every((i) => i.category === 'patterns'))).toBe(true)
+    expect(patterns.reduce((n, w) => n + w.fresh.length, 0)).toBe(ITEMS.filter((i) => i.category === 'patterns').length)
+    expect(workersWithNew('all', { category: 'facts' })).toHaveLength(0)
+  })
+
   it('searches Worker names and learning, and sorts by count', () => {
     expect(workersWithNew('all', { q: 'functional equivalence' }).length).toBeGreaterThan(0)
     expect(workersWithNew('all', { q: 'zzz-no-match' })).toHaveLength(0)

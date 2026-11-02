@@ -245,19 +245,49 @@ export interface WorkerLearning {
   workerId: string
   name: string
   scope: string
+  /** Worker type key (quality-engineering, modernization). */
+  type: string
+  /** Business domain key from the composition; null when none was chosen. */
+  domain: string | null
   total: number
   fresh: LearningItem[]
   latest: LearningItem | null
 }
 
-/** Workers with learning in the period, most recent first (or most items first). */
-export function workersWithNew(period: PeriodKey, { q = '', sort = 'recent' }: { q?: string; sort?: 'recent' | 'count' } = {}): WorkerLearning[] {
-  const needle = q.trim().toLowerCase()
-  const rows = WORKERS.map((w) => {
+export const domainOfWorker = (workerId: string) => COMP.get(workerId)?.contents?.business_domain_key || null
+
+export interface WorkerFilters {
+  q?: string
+  sort?: 'recent' | 'count'
+  /** Worker type key; null or undefined for any. */
+  type?: string | null
+  /** Business domain key, 'none' for Workers without one; null or undefined for any. */
+  domain?: string | null
+  /** Type of learning: keeps Workers with new learning of this category, counting only that. */
+  category?: CategoryKey | null
+}
+
+/** Workers with learning in the period, before search and filters. */
+export function learningWorkers(period: PeriodKey): WorkerLearning[] {
+  return WORKERS.map((w) => {
     const all = itemsOf(w.composition_id)
     const fresh = all.filter((i) => inPeriod(i, period))
-    return { workerId: w.composition_id, name: workerLabel(w.composition_id), scope: scopeOf(w.composition_id), total: all.length, fresh, latest: fresh[0] ?? null }
+    return { workerId: w.composition_id, name: workerLabel(w.composition_id), scope: scopeOf(w.composition_id), type: w.worker_type, domain: domainOfWorker(w.composition_id), total: all.length, fresh, latest: fresh[0] ?? null }
   }).filter((r) => r.fresh.length > 0)
+}
+
+/** Workers with learning in the period, filtered, most recent first (or most items first). */
+export function workersWithNew(period: PeriodKey, { q = '', sort = 'recent', type = null, domain = null, category = null }: WorkerFilters = {}): WorkerLearning[] {
+  const needle = q.trim().toLowerCase()
+  const rows = learningWorkers(period)
+    .map((r) => {
+      if (!category) return r
+      const fresh = r.fresh.filter((i) => i.category === category)
+      return { ...r, fresh, latest: fresh[0] ?? null }
+    })
+    .filter((r) => r.fresh.length > 0)
+    .filter((r) => !type || r.type === type)
+    .filter((r) => !domain || (domain === 'none' ? r.domain === null : r.domain === domain))
   const matched = needle ? rows.filter((r) => `${r.name} ${r.scope} ${r.fresh.map((i) => i.title).join(' ')}`.toLowerCase().includes(needle)) : rows
   return matched.sort((a, b) => (sort === 'count' ? b.fresh.length - a.fresh.length : 0) || b.latest!.when.iso.localeCompare(a.latest!.when.iso) || a.name.localeCompare(b.name))
 }

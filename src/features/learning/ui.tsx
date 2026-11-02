@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { ChevronRight, type LucideIcon } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { HUE, type Hue } from '@/components/platform/hue'
+import { HUE } from '@/components/platform/hue'
+import { IconTile } from '@/components/platform/panel'
 import { Pager } from '@/components/platform/pager'
 import { StatusBadge } from '@/components/platform/status-badge'
 import { Timestamp } from '@/components/platform/timestamp'
@@ -26,14 +27,6 @@ export interface From {
 }
 
 
-export function IconTile({ icon: Icon, hue, size = 'md' }: { icon: LucideIcon; hue: Hue; size?: 'sm' | 'md' }) {
-  return (
-    <span aria-hidden="true" className={cn('grid shrink-0 place-items-center rounded-block', HUE[hue].soft, HUE[hue].text, size === 'sm' ? 'size-8 [&>svg]:size-4' : 'size-9 [&>svg]:size-[18px]')}>
-      <Icon />
-    </span>
-  )
-}
-
 export function PeriodSelect({ value, onChange }: { value: PeriodKey; onChange: (p: PeriodKey) => void }) {
   return (
     <Select value={value} onValueChange={(v) => onChange(v as PeriodKey)}>
@@ -48,56 +41,7 @@ export function StateBadge({ state }: { state: StateKey }) {
   return <span title={s.meaning}><StatusBadge tone={s.tone} icon={s.tone === 'neutral' ? null : undefined}>{s.label}</StatusBadge></span>
 }
 
-/**
- * A section as one card: an icon and title in the header, a count when it lists things, then the
- * body. `flush` bodies hold their own rows edge to edge.
- */
-export function Panel({ id, title, icon, hue = 'blue', count, aside, flush, children, className }: { id: string; title: string; icon: LucideIcon; hue?: Hue; count?: number; aside?: React.ReactNode; flush?: boolean; children: React.ReactNode; className?: string }) {
-  return (
-    <section id={id} aria-labelledby={`${id}-title`} className={cn('scroll-mt-24 overflow-hidden rounded-xl border bg-card', className)}>
-      <header className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b px-5 py-3.5">
-        <IconTile icon={icon} hue={hue} size="sm" />
-        <h2 id={`${id}-title`} className="flex min-w-0 flex-1 items-center gap-2 text-item">
-          {title}
-          {count !== undefined && <span className="rounded-full bg-chip-neutral px-2 py-0.5 text-meta font-medium tabular-nums">{formatCount(count)}</span>}
-        </h2>
-        {aside && <div className="flex flex-wrap items-center gap-2">{aside}</div>}
-      </header>
-      <div className={flush ? undefined : 'p-5'}>{children}</div>
-    </section>
-  )
-}
 
-/** Key facts in one strip: icon, label, value. */
-export function FactStrip({ facts }: { facts: { icon: LucideIcon; label: string; value: React.ReactNode }[] }) {
-  return (
-    <dl className={cn('grid grid-cols-1 divide-y rounded-xl border bg-card sm:grid-cols-2 sm:divide-y-0', facts.length >= 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3', 'lg:divide-x')}>
-      {facts.map((f) => (
-        <div key={f.label} className="flex items-center gap-3 px-5 py-4">
-          <f.icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-          <div className="min-w-0">
-            <dt className="text-meta text-muted-foreground">{f.label}</dt>
-            <dd className="truncate text-item">{f.value}</dd>
-          </div>
-        </div>
-      ))}
-    </dl>
-  )
-}
-
-/** Label and value pairs in two columns. */
-export function Details({ rows }: { rows: { label: string; value: React.ReactNode }[] }) {
-  return (
-    <dl className="grid gap-x-6 gap-y-4 sm:grid-cols-2">
-      {rows.map((r) => (
-        <div key={r.label} className="min-w-0">
-          <dt className="text-meta text-muted-foreground">{r.label}</dt>
-          <dd className="mt-0.5 text-body">{r.value}</dd>
-        </div>
-      ))}
-    </dl>
-  )
-}
 
 /**
  * Learning so far: one row per category with its icon, count and a bar scaled to the largest.

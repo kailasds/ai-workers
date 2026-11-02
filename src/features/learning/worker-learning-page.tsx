@@ -8,7 +8,8 @@ import { EmptyState } from '@/components/platform/states'
 import { Timestamp } from '@/components/platform/timestamp'
 import { formatCount } from '@/lib/format'
 import { distribution, inPeriod, itemsOf, PERIODS, WORKER_BY_ID_SAFE, workerLabel, workerScope } from './model'
-import { CategoryBars, FactStrip, ItemList, Panel, PeriodSelect } from './ui'
+import { FactStrip, Panel } from '@/components/platform/panel'
+import { CategoryBars, ItemList, PeriodSelect } from './ui'
 import { useFrom, usePeriod, withPeriod } from './nav'
 
 /**

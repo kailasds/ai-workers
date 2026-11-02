@@ -1,12 +1,13 @@
 import { Link, useNavigate, useParams } from 'react-router'
-import { ChevronLeft, DatabaseZap } from 'lucide-react'
+import { Boxes, ChevronLeft, DatabaseZap, Grid3x3, Inbox } from 'lucide-react'
 import { SectionNav } from '@/components/platform/section-nav'
+import { Panel } from '@/components/platform/panel'
 import { EmptyState } from '@/components/platform/states'
 
 const VIEWS = {
-  coverage: { label: 'Coverage', what: 'Migration constructs and the approved knowledge for each. Pending items are counted separately.' },
-  inbox: { label: 'Candidate decisions', what: 'Approve, defer or reject proposed knowledge changes. Publishing still needs passing regression tests.' },
-  packs: { label: 'Packs', what: 'Published versions, their test results and which Workers use them.' },
+  coverage: { label: 'Coverage', icon: Grid3x3 },
+  inbox: { label: 'Candidate decisions', icon: Inbox },
+  packs: { label: 'Packs', icon: Boxes },
 } as const
 
 // Shared-knowledge governance. The offline capture holds none of its reads, so each view says
@@ -24,17 +25,9 @@ export function GovernancePage() {
         <h2 className="mt-1 text-section">Knowledge governance</h2>
       </div>
       <SectionNav variant="pills" value={key} onChange={(v) => navigate(`/knowledge/${v}`)} items={Object.entries(VIEWS).map(([value, v]) => ({ value, label: v.label }))} />
-      <EmptyState
-        icon={DatabaseZap}
-        title="Knowledge source unavailable"
-        description={
-          <>
-            {VIEWS[key].what}
-            <br />
-            Governance data isn’t available in this demo.
-          </>
-        }
-      />
+      <Panel id={`governance-${key}`} title={VIEWS[key].label} icon={VIEWS[key].icon} hue="violet">
+        <EmptyState icon={DatabaseZap} title="Not available in this demo" />
+      </Panel>
     </div>
   )
 }

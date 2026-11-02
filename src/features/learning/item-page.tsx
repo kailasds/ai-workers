@@ -9,7 +9,8 @@ import { Timestamp } from '@/components/platform/timestamp'
 import { formatCount, formatDuration, formatTokens, formatUsd } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { CATEGORY, ITEM_BY_ID, related, RELATION_LABEL, workerLabel, type Evidence, type LearningItem } from './model'
-import { Details, EmptyRow, FactStrip, IconTile, LINK, Panel, ShowMore, StateBadge, type From } from './ui'
+import { Details, FactStrip, IconTile, Panel } from '@/components/platform/panel'
+import { EmptyRow, LINK, ShowMore, StateBadge, type From } from './ui'
 import { CATEGORY_LOOK } from './look'
 
 function RunRow({ run, workerId }: { run: NonNullable<Evidence['run']>; workerId: string }) {

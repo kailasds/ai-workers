@@ -1,17 +1,16 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router'
-import { PencilLine, Search, SearchX } from 'lucide-react'
+import { Bot, Brain, ClipboardCheck, PencilLine, Search, SearchX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { DetailSheet } from '@/components/platform/detail-sheet'
-import { Fact, FactList } from '@/components/platform/fact-list'
+import { Details, IconTile, Panel } from '@/components/platform/panel'
 import { EmptyState } from '@/components/platform/states'
 import { StatusBadge } from '@/components/platform/status-badge'
 import type { KnowledgeSkill, SkillLibrary } from '@/lib/types/catalog'
-import { LibraryRow, ShowMore } from './list-parts'
+import { LibraryRow, ShowMore, Toolbar } from './list-parts'
 
 const ALL = '__all'
 const PAGE = 20
@@ -21,18 +20,20 @@ function SkillDetail({ skill }: { skill: KnowledgeSkill }) {
   return (
     <div className="flex flex-col gap-6">
       <p className="text-body">{skill.description}</p>
-      <FactList>
-        <Fact label="Key"><span className="font-mono text-meta">{skill.name}</span></Fact>
-        <Fact label="Kind">{skill.skill_type === 'definition_of_done' ? 'Definition of Done Skill: defines what done means' : 'Capability: how to do the work'}</Fact>
-        <Fact label="Category">{human(skill.category)}</Fact>
-        <Fact label="Version">{skill.version} · {skill.status}</Fact>
-        <Fact label="Carried by">{skill.worker_count} {skill.worker_count === 1 ? 'Worker' : 'Workers'}</Fact>
-        <Fact label="Loadable by">{skill.assigned_agent_keys.length === 0 ? <span className="text-muted-foreground">Published, not loadable yet</span> : `${skill.assigned_agent_keys.length} Agents`}</Fact>
-        <Fact label="Provenance">{skill.provenance === 'internal' ? 'Internal' : 'External'} · {skill.license ?? 'Internal'}</Fact>
-        {(skill.source_technology || skill.target_technology) && <Fact label="Converts">{skill.source_technology ?? '?'} → {skill.target_technology ?? '?'}</Fact>}
-        {skill.tags.length > 0 && <Fact label="Tags">{skill.tags.join(', ')}</Fact>}
-      </FactList>
-      <p className="rounded-lg bg-muted px-3 py-2 text-meta text-muted-foreground">The full Skill content isn’t available in this demo.</p>
+      <Details
+        rows={[
+          { label: 'Kind', value: skill.skill_type === 'definition_of_done' ? 'Definition of Done' : 'Capability' },
+          { label: 'Category', value: human(skill.category) },
+          { label: 'Version', value: `${skill.version} · ${skill.status}` },
+          { label: 'Carried by', value: `${skill.worker_count} ${skill.worker_count === 1 ? 'Worker' : 'Workers'}` },
+          { label: 'Loadable by', value: skill.assigned_agent_keys.length === 0 ? 'Not loadable yet' : `${skill.assigned_agent_keys.length} Agents` },
+          { label: 'Provenance', value: `${skill.provenance === 'internal' ? 'Internal' : 'External'} · ${skill.license ?? 'Internal'}` },
+          ...(skill.source_technology || skill.target_technology ? [{ label: 'Converts', value: `${skill.source_technology ?? '?'} → ${skill.target_technology ?? '?'}` }] : []),
+          ...(skill.tags.length > 0 ? [{ label: 'Tags', value: skill.tags.join(', ') }] : []),
+          { label: 'Key', value: <span className="font-mono text-meta break-all">{skill.name}</span> },
+        ]}
+      />
+      <p className="rounded-lg bg-muted px-3 py-2 text-meta text-muted-foreground">Full Skill content isn’t available in this demo.</p>
     </div>
   )
 }
@@ -53,59 +54,60 @@ export function SkillsTab({ library }: { library: SkillLibrary }) {
       .sort((a, b) => b.worker_count - a.worker_count || a.title.localeCompare(b.title))
   }, [library, group, category, q])
   const ungrouped = library.skills.filter((s) => !s.grouped).length
-  const groupInfo = library.groups.find((g) => g.key === group)
 
   return (
     <div className="flex flex-col gap-5">
       {library.partial && <StatusBadge tone="warning">Some sources couldn’t be loaded, so this list is incomplete</StatusBadge>}
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-        <InputGroup className="lg:max-w-xs">
-          <InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon>
-          <InputGroupInput type="search" value={q} onChange={(e) => { setQ(e.target.value); setShown(PAGE) }} placeholder="Search Skills" aria-label="Search Skills" />
-        </InputGroup>
-        <div className="no-scrollbar -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-          <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={group} onValueChange={(v) => { if (v) { setGroup(v); setShown(PAGE) } }} aria-label="Group" className="w-max">
-            <ToggleGroupItem value={ALL}>All <span className="text-muted-foreground tabular-nums">{library.skills.length}</span></ToggleGroupItem>
-            {library.groups.map((g) => (
-              <ToggleGroupItem key={g.key} value={g.key}>{g.label} <span className="text-muted-foreground tabular-nums">{g.total - g.ungrouped}</span></ToggleGroupItem>
-            ))}
-            {ungrouped > 0 && <ToggleGroupItem value="ungrouped">Unmapped <span className="text-muted-foreground tabular-nums">{ungrouped}</span></ToggleGroupItem>}
-          </ToggleGroup>
-        </div>
-        <Select value={category} onValueChange={(v) => { setCategory(v); setShown(PAGE) }}>
-          <SelectTrigger className="w-full lg:ml-auto lg:w-52" aria-label="Category"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value={ALL}>Every category</SelectItem>
-            {library.categories.map((c) => <SelectItem key={c} value={c}>{human(c)}</SelectItem>)}
-          </SelectContent>
-        </Select>
-      </div>
-      {groupInfo && <p className="-mt-2 text-meta text-muted-foreground">{groupInfo.summary}</p>}
+      <Panel id="skills" flush>
+        <Toolbar>
+          <InputGroup className="lg:max-w-xs">
+            <InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon>
+            <InputGroupInput type="search" value={q} onChange={(e) => { setQ(e.target.value); setShown(PAGE) }} placeholder="Search Skills" aria-label="Search Skills" />
+          </InputGroup>
+          <div className="no-scrollbar -mx-5 overflow-x-auto px-5 lg:mx-0 lg:px-0">
+            <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={group} onValueChange={(v) => { if (v) { setGroup(v); setShown(PAGE) } }} aria-label="Group" className="w-max bg-card">
+              <ToggleGroupItem value={ALL}>All <span className="text-muted-foreground tabular-nums">{library.skills.length}</span></ToggleGroupItem>
+              {library.groups.map((g) => (
+                <ToggleGroupItem key={g.key} value={g.key}>{g.label} <span className="text-muted-foreground tabular-nums">{g.total - g.ungrouped}</span></ToggleGroupItem>
+              ))}
+              {ungrouped > 0 && <ToggleGroupItem value="ungrouped">Unmapped <span className="text-muted-foreground tabular-nums">{ungrouped}</span></ToggleGroupItem>}
+            </ToggleGroup>
+          </div>
+          <Select value={category} onValueChange={(v) => { setCategory(v); setShown(PAGE) }}>
+            <SelectTrigger className="w-full bg-card lg:ml-auto lg:w-52" aria-label="Category"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ALL}>Every category</SelectItem>
+              {library.categories.map((c) => <SelectItem key={c} value={c}>{human(c)}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </Toolbar>
 
-      {matching.length === 0 ? (
-        <EmptyState icon={SearchX} title="Nothing matches that" description="Try fewer words, or another group or category." action={<Button variant="outline" onClick={() => { setQ(''); setGroup(ALL); setCategory(ALL) }}>Clear filters</Button>} />
-      ) : (
-        <Card className="gap-0 py-0">
-          <ul className="divide-y">
-            {matching.slice(0, shown).map((s) => (
-              <LibraryRow
-                key={s.name}
-                label={`Open ${s.title}`}
-                onOpen={() => setOpen(s)}
-                title={s.title}
-                meta={`${human(s.category)} · v${s.version}${s.skill_type === 'definition_of_done' ? ' · Definition of Done' : ''}`}
-                aside={
-                  <>
-                    {s.assigned_agent_keys.length === 0 && <StatusBadge tone="neutral" icon={null}>Not yet loadable</StatusBadge>}
-                    <span className="w-24 text-right text-meta text-muted-foreground tabular-nums">{s.worker_count === 0 ? 'No Workers' : `${s.worker_count} ${s.worker_count === 1 ? 'Worker' : 'Workers'}`}</span>
-                  </>
-                }
-              />
-            ))}
-          </ul>
-          <ShowMore shown={Math.min(shown, matching.length)} total={matching.length} onMore={() => setShown((n) => n + PAGE)} />
-        </Card>
-      )}
+        {matching.length === 0 ? (
+          <EmptyState className="m-5" icon={SearchX} title="Nothing matches that" action={<Button variant="outline" onClick={() => { setQ(''); setGroup(ALL); setCategory(ALL) }}>Clear filters</Button>} />
+        ) : (
+          <>
+            <ul className="divide-y">
+              {matching.slice(0, shown).map((s) => (
+                <LibraryRow
+                  key={s.name}
+                  label={`Open ${s.title}`}
+                  onOpen={() => setOpen(s)}
+                  icon={s.skill_type === 'definition_of_done' ? <IconTile icon={ClipboardCheck} hue="amber" /> : <IconTile icon={Brain} hue="violet" />}
+                  title={s.title}
+                  meta={`${human(s.category)} · v${s.version}${s.skill_type === 'definition_of_done' ? ' · Definition of Done' : ''}`}
+                  aside={
+                    <>
+                      {s.assigned_agent_keys.length === 0 && <StatusBadge tone="neutral" icon={null}>Not yet loadable</StatusBadge>}
+                      <span className="inline-flex w-28 items-center justify-end gap-1.5 text-meta text-muted-foreground tabular-nums"><Bot className="size-3.5" aria-hidden="true" />{s.worker_count === 0 ? 'No Workers' : `${s.worker_count} ${s.worker_count === 1 ? 'Worker' : 'Workers'}`}</span>
+                    </>
+                  }
+                />
+              ))}
+            </ul>
+            <ShowMore shown={Math.min(shown, matching.length)} total={matching.length} onMore={() => setShown((n) => n + PAGE)} />
+          </>
+        )}
+      </Panel>
 
       <DetailSheet
         open={open !== null}

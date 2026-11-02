@@ -1,3 +1,4 @@
+import type { LucideIcon } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
@@ -20,6 +21,7 @@ export interface SectionItem {
   value: string
   label: string
   count?: number | null
+  icon?: LucideIcon
 }
 
 /**
@@ -48,6 +50,7 @@ export function SectionNav({ items, value, onChange, label = 'Section', variant 
         <TabsList variant={variant === 'pills' ? 'default' : 'line'} className={variant === 'pills' ? PILL_TABS_LIST : LINE_TABS_LIST} aria-label={label}>
           {items.map((i) => (
             <TabsTrigger key={i.value} value={i.value} className={variant === 'pills' ? PILL_TAB : LINE_TAB}>
+              {i.icon && <i.icon aria-hidden="true" />}
               {i.label}
               <TabCount n={i.count} />
             </TabsTrigger>

@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { Card } from '@/components/ui/card'
+import { Code, Eye, Gauge, ShieldCheck, Sparkles, Wrench, type LucideIcon } from 'lucide-react'
 import { DetailSheet } from '@/components/platform/detail-sheet'
-import { Fact, FactList } from '@/components/platform/fact-list'
+import { Details, IconTile, Panel } from '@/components/platform/panel'
 import { StatusBadge } from '@/components/platform/status-badge'
 import type { DodRubric } from '@/lib/types/catalog'
-import { GroupHeader, LibraryRow } from './list-parts'
+import { LibraryRow } from './list-parts'
 
 export const METHOD: Record<string, string> = {
   llm_judge: 'Judged by a model',
@@ -12,6 +12,7 @@ export const METHOD: Record<string, string> = {
   code_skill: 'Decided by code',
   external_tool: 'Measured by an external tool',
 }
+const METHOD_ICON: Record<string, LucideIcon> = { llm_judge: Sparkles, harness_metric: Gauge, code_skill: Code, external_tool: Wrench }
 const AVAILABILITY: Record<string, string> = {
   AVAILABLE: 'Measurable',
   REQUIRES_TOOL: 'Needs a tool',
@@ -26,6 +27,7 @@ export function DodTab({ rubrics }: { rubrics: DodRubric[] }) {
   const row = (r: DodRubric) => (
     <LibraryRow
       key={r.criterion_key}
+      icon={<IconTile icon={METHOD_ICON[r.method] ?? Gauge} hue={r.gating_by_default ? 'amber' : 'blue'} />}
       label={`Open ${r.display_name}`}
       onOpen={() => setOpen(r)}
       title={r.display_name}
@@ -36,28 +38,30 @@ export function DodTab({ rubrics }: { rubrics: DodRubric[] }) {
 
   return (
     <>
-      <Card className="gap-0 overflow-hidden py-0">
-        <section aria-label="Release gates">
-          <GroupHeader label="Release gates · block release" count={gating.length} />
+      <div className="flex flex-col gap-6">
+        <Panel id="gates" title="Release gates" icon={ShieldCheck} hue="amber" count={gating.length} flush>
           <ul className="divide-y">{gating.map(row)}</ul>
-        </section>
-        <section aria-label="Tracked only">
-          <GroupHeader label="Tracked only" count={observed.length} />
+        </Panel>
+        <Panel id="tracked" title="Tracked only" icon={Eye} hue="blue" count={observed.length} flush>
           <ul className="divide-y">{observed.map(row)}</ul>
-        </section>
-      </Card>
+        </Panel>
+      </div>
       <DetailSheet open={open !== null} onClose={() => setOpen(null)} title={open?.display_name} description={open ? METHOD[open.method] ?? open.method : undefined} width="2xl">
         {open && (
           <div className="flex flex-col gap-6">
             {open.computation?.summary && <p className="text-body">{open.computation.summary}</p>}
-            <FactList>
-              <Fact label="Reported as"><span className="font-mono text-meta">{open.criterion_key}</span></Fact>
-              <Fact label="Passes at">{open.default_threshold ?? 'No required threshold'}</Fact>
-              <Fact label="Release">{open.gating_by_default ? 'Release gate: blocks release' : 'Tracked only'}</Fact>
-              <Fact label="Measurable">{AVAILABILITY[open.availability] ?? open.availability}{open.availability_detail ? <span className="block text-meta text-muted-foreground">{open.availability_detail}</span> : null}</Fact>
-              {open.skill_ref && <Fact label="Measured by"><span className="font-mono text-meta break-all">{open.skill_ref}</span></Fact>}
-              {open.aliases.length > 0 && <Fact label="Also called">{open.aliases.join(', ')}</Fact>}
-            </FactList>
+            <div className="border-t pt-6">
+              <Details
+                rows={[
+                  { label: 'Passes at', value: open.default_threshold ?? 'No required threshold' },
+                  { label: 'Release', value: open.gating_by_default ? 'Release gate' : 'Tracked only' },
+                  { label: 'Measurable', value: AVAILABILITY[open.availability] ?? open.availability },
+                  { label: 'Reported as', value: <span className="font-mono text-meta break-all">{open.criterion_key}</span> },
+                  ...(open.skill_ref ? [{ label: 'Measured by', value: <span className="font-mono text-meta break-all">{open.skill_ref}</span> }] : []),
+                  ...(open.aliases.length > 0 ? [{ label: 'Also called', value: open.aliases.join(', ') }] : []),
+                ]}
+              />
+            </div>
             {open.computation && open.computation.steps.length > 0 && (
               <section>
                 <h3 className="text-item">How it’s calculated</h3>

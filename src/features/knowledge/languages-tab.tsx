@@ -1,12 +1,11 @@
 import { useMemo, useState } from 'react'
-import { Languages } from 'lucide-react'
-import { Card } from '@/components/ui/card'
+import { BookText, Landmark, Languages } from 'lucide-react'
 import { DetailSheet } from '@/components/platform/detail-sheet'
-import { Fact, FactList } from '@/components/platform/fact-list'
+import { Details, IconTile, Panel } from '@/components/platform/panel'
 import { EmptyState } from '@/components/platform/states'
 import { StatusBadge } from '@/components/platform/status-badge'
 import type { DslDomain } from '@/lib/types/catalog'
-import { GroupHeader, LibraryRow } from './list-parts'
+import { LibraryRow } from './list-parts'
 
 const STAT_LABELS: Record<string, string> = {
   entities: 'Entities',
@@ -38,44 +37,48 @@ export function LanguagesTab({ domains }: { domains: DslDomain[] }) {
 
   return (
     <>
-      <Card className="gap-0 overflow-hidden py-0">
+      <div className="flex flex-col gap-6">
         {groups.map(([area, items]) => (
-          <section key={area} aria-label={area}>
-            <GroupHeader label={area} count={items.length} />
+          <Panel key={area} id={`area-${area.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} title={area} icon={Landmark} hue="blue" count={items.length} flush>
             <ul className="divide-y">
               {items.map((d) => (
                 <LibraryRow
                   key={d.domain_id}
                   label={`Open ${d.name}`}
                   onOpen={() => setOpen(d)}
+                  icon={<IconTile icon={BookText} hue="blue" />}
                   title={d.name}
                   meta={`${d.path.split(' > ').slice(1, -1).join(' › ') || d.path} · ${d.lines_of_business.length ? d.lines_of_business.join(', ') : 'All lines of business'}`}
-                  aside={d.plugin_slug ? <span className="text-meta text-muted-foreground">Available to Workers</span> : <StatusBadge tone="neutral" icon={null}>Not yet available to Workers</StatusBadge>}
+                  aside={d.plugin_slug ? <StatusBadge tone="success">Available to Workers</StatusBadge> : <StatusBadge tone="neutral" icon={null}>Not yet available</StatusBadge>}
                 />
               ))}
             </ul>
-          </section>
+          </Panel>
         ))}
-      </Card>
+      </div>
       <DetailSheet open={open !== null} onClose={() => setOpen(null)} title={open?.name} description={open?.path} width="lg">
         {open && (
           <div className="flex flex-col gap-6">
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
+            <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {Object.entries(open.statistics).filter(([, v]) => v > 0).map(([k, v]) => (
-                <div key={k}>
+                <div key={k} className="rounded-block bg-muted px-3 py-2.5">
                   <dt className="text-meta text-muted-foreground">{STAT_LABELS[k] ?? k}</dt>
                   <dd className="text-xl font-semibold tabular-nums">{v}</dd>
                 </div>
               ))}
             </dl>
-            <FactList>
-              <Fact label="Version">{open.version}</Fact>
-              <Fact label="Market">{open.market ?? 'Not stated'}</Fact>
-              <Fact label="Industry">{open.industry ?? 'Not stated'}</Fact>
-              <Fact label="Lines of business">{open.lines_of_business.length ? open.lines_of_business.join(', ') : 'All lines of business'}</Fact>
-              <Fact label="Workers can use it">{open.plugin_slug ? `Yes · ${open.plugin_slug}` : 'Not yet'}</Fact>
-            </FactList>
-            <p className="rounded-lg bg-muted px-3 py-2 text-meta text-muted-foreground">The full rule graph isn’t available in this demo.</p>
+            <div className="border-t pt-6">
+              <Details
+                rows={[
+                  { label: 'Version', value: open.version },
+                  { label: 'Market', value: open.market ?? 'Not stated' },
+                  { label: 'Industry', value: open.industry ?? 'Not stated' },
+                  { label: 'Lines of business', value: open.lines_of_business.length ? open.lines_of_business.join(', ') : 'All' },
+                  { label: 'Workers can use it', value: open.plugin_slug ? `Yes · ${open.plugin_slug}` : 'Not yet' },
+                ]}
+              />
+            </div>
+            <p className="rounded-lg bg-muted px-3 py-2 text-meta text-muted-foreground">Full rule graph isn’t available in this demo.</p>
           </div>
         )}
       </DetailSheet>

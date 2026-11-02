@@ -1,5 +1,5 @@
 import { Link, Navigate, useNavigate, useParams } from 'react-router'
-import { Cpu, PencilLine, Scale } from 'lucide-react'
+import { BookText, Brain, ClipboardCheck, Cpu, FileCheck2, PencilLine, Scale } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { SectionNav } from '@/components/platform/section-nav'
@@ -38,11 +38,11 @@ export function KnowledgePage() {
           value={current}
           onChange={(v) => navigate(`/knowledge/${v}`)}
           items={[
-            { value: 'skills', label: 'Skills', count: skills.data?.skills.length },
-            { value: 'languages', label: 'Domain languages', count: dsl.data?.domains.length },
-            { value: 'evals', label: 'EVAL Playbooks', count: evals.data?.evaluations.length },
-            { value: 'dod', label: 'Definition of Done', count: dod.data?.rubrics.length },
-            { value: 'models', label: 'SLM Farm' },
+            { value: 'skills', label: 'Skills', icon: Brain, count: skills.data?.skills.length },
+            { value: 'languages', label: 'Domain languages', icon: BookText, count: dsl.data?.domains.length },
+            { value: 'evals', label: 'EVAL Playbooks', icon: FileCheck2, count: evals.data?.evaluations.length },
+            { value: 'dod', label: 'Definition of Done', icon: ClipboardCheck, count: dod.data?.rubrics.length },
+            { value: 'models', label: 'SLM Farm', icon: Cpu },
           ]}
         />
         <div className="flex items-center gap-2">
