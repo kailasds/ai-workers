@@ -4,12 +4,15 @@ import { Fact, FactList } from '@/components/platform/fact-list'
 import { StatusBadge } from '@/components/platform/status-badge'
 import { Timestamp } from '@/components/platform/timestamp'
 import type { WorkerWorkspace } from '@/lib/types/worker'
+import { useDemo } from '@/features/sentinel/demo/store'
 
 // Configured vs running are two facts, side by side so they are never read as one.
 export function SentinelTab({ ws }: { ws: WorkerWorkspace }) {
   const s = ws.worker.sentinel
   const configured = s.state === 'CONFIGURED'
-  const running = s.worker_runtime === 'WORKER_RUNTIME'
+  // A stop in Platform Sentinel (demo governance data) means it isn't running, whatever the runtime said.
+  const gov = useDemo().workers[ws.worker.composition_id]
+  const running = s.worker_runtime === 'WORKER_RUNTIME' && gov?.status !== 'stopped'
   return (
     <div className="grid items-start gap-6 lg:grid-cols-2">
       <Card className="gap-0 py-0 [--card-spacing:--spacing(5)]">
@@ -32,6 +35,10 @@ export function SentinelTab({ ws }: { ws: WorkerWorkspace }) {
         </CardHeader>
         <CardContent className="py-5">
           <FactList>
+            <Fact label="Platform Sentinel">
+              {gov?.status === 'stopped' ? <StatusBadge tone="danger">Stopped by administrator</StatusBadge> : <span className="text-muted-foreground">Not stopped</span>}
+              <span className="block text-meta text-muted-foreground">Demo governance data · <Link to={`/sentinel?worker=${ws.worker.composition_id}`} className="text-primary-strong underline-offset-4 hover:underline">governance details</Link></span>
+            </Fact>
             <Fact label="Reporting">
               {running ? <StatusBadge tone="neutral" icon={null}>From its Worker Runtime</StatusBadge> : <span className="text-muted-foreground">Not running</span>}
             </Fact>

@@ -165,7 +165,6 @@ export function PersonPage() {
           </fieldset>
           <fieldset className="flex flex-col gap-4">
             <legend className="mb-1 text-section">What they can do</legend>
-            <p className="text-meta text-muted-foreground">Ticked items come from the role or a group. Only your changes are saved.</p>
             {[...new Set(FEATURES.map((f) => f.group))].map((group) => (
               <div key={group}>
                 <p className="text-overline text-muted-foreground uppercase">{group}</p>

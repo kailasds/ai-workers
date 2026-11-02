@@ -197,9 +197,7 @@ export function JourneyPage() {
                       <Progress value={buildOp.progress} aria-label={`Building Package ${buildOp.progress}%`} className="h-1.5" />
                       <p className="text-meta text-muted-foreground">You can leave this page. We’ll let you know when the build finishes.</p>
                     </div>
-                  ) : (
-                    <p className="text-meta text-muted-foreground">Building creates a versioned Package. You deploy it separately, from Packaging.</p>
-                  )}
+                  ) : null}
                 </div>
               </div>
               <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">

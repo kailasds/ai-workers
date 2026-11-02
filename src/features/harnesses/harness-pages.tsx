@@ -205,7 +205,6 @@ export function CertifyPage() {
           })}
         </ul>
       </Card>
-      <p className="text-meta text-muted-foreground">This guide is for reference only. Compose shows whether a version is certified, but doesn’t block uncertified ones yet.</p>
     </Layout>
   )
 }
@@ -254,7 +253,6 @@ export function ConformanceReportPage() {
             <Fact label="Checked">{h.conformance?.checked_at ? formatDay(h.conformance.checked_at) : 'Not reported'}</Fact>
             <Fact label="Report"><span className="font-mono text-meta">{reportId}</span></Fact>
           </FactList>
-          <p className="mt-5 text-meta text-muted-foreground">Full check results are in the report document. Only the summary is available here.</p>
         </Card>
       )}
     </Layout>

@@ -2,6 +2,7 @@ import { createElement } from 'react'
 import { Link } from 'react-router'
 import { contextHue, contextIcon, HUE, Tag, workerTypeMeta } from '@/components/platform/hue'
 import { runtimeStatus, RuntimeStatusDot, type RuntimeStatus } from '@/components/platform/runtime-status'
+import { useDemo } from '@/features/sentinel/demo/store'
 import { contextOf, identityOfContext } from '@/features/compose/compose-model'
 import { formatCount } from '@/lib/format'
 import { cn } from '@/lib/utils'
@@ -45,6 +46,8 @@ export function WorkerCard({ worker, isNew, from }: { worker: PortfolioWorker; i
   // The identity is the title, so the tag says what this Worker delivers rather than repeating it.
   const scope = contextOf(worker.bounded_context.key)?.scope ?? worker.bounded_context.label
   const status = runtimeStatus(worker.runtime)
+  // A stop in Platform Sentinel overrides the runtime reading, so the card never shows it as running.
+  const stopped = useDemo().workers[worker.composition_id]?.status === 'stopped'
   const o = worker.last_outcome
   const ran = o.verdict && o.runs > 0
   const ContextIcon = contextIcon(worker.bounded_context.key)
@@ -60,7 +63,11 @@ export function WorkerCard({ worker, isNew, from }: { worker: PortfolioWorker; i
       <div className="flex items-start justify-between gap-3">
         <Tag hue={type.hue} icon={type.icon} className="min-w-0">{type.short}</Tag>
         <span className="flex shrink-0 items-center gap-1.5 rounded-full border bg-card px-2.5 py-1">
-          <RuntimeStatusDot status={status} />
+          {stopped ? (
+            <span className="inline-flex items-center gap-1.5 text-meta font-medium whitespace-nowrap text-destructive" title="Stopped in Platform Sentinel (demo governance data)"><span aria-hidden="true" className="size-2 rounded-full bg-destructive" />Stopped by admin</span>
+          ) : (
+            <RuntimeStatusDot status={status} />
+          )}
         </span>
       </div>
 

@@ -26,14 +26,13 @@ const NONE = '__none'
 
 // The earlier form: three numbered decisions, all visible; later ones wait (dimmed) until the
 // one before is made, so the whole shape of the declaration is readable up front.
-function Step({ n, title, hint, active, children }: { n: number; title: string; hint?: string; active: boolean; children: React.ReactNode }) {
+function Step({ n, title, active, children }: { n: number; title: string; active: boolean; children: React.ReactNode }) {
   return (
     <section aria-labelledby={`step-${n}`} className={cn('flex flex-col gap-4', !active && 'opacity-50')}>
       <div className="flex items-baseline gap-3">
         <span className="grid size-6 shrink-0 place-items-center rounded-full bg-primary text-meta font-semibold text-primary-foreground tabular-nums" aria-hidden="true">{n}</span>
         <div>
           <h3 id={`step-${n}`} className="text-item font-semibold">{title}</h3>
-          {hint && <p className="text-meta text-muted-foreground">{hint}</p>}
         </div>
       </div>
       <div className="sm:pl-9">{children}</div>
@@ -169,7 +168,7 @@ export function DeclarationPage() {
             )}
 
             <div className="mt-8 flex flex-col gap-10">
-              <Step n={1} title="Basics" hint="Identity, plus an optional business domain and geography." active>
+              <Step n={1} title="Basics" active>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="flex flex-col gap-1.5 sm:col-span-2">
                     <Label htmlFor="identity">Identity</Label>
@@ -191,7 +190,6 @@ export function DeclarationPage() {
                         {BUSINESS_DOMAINS.map((d) => <SelectItem key={d.key} value={d.key}>{d.label}</SelectItem>)}
                       </SelectContent>
                     </Select>
-                    <p className="text-meta text-muted-foreground">Sets which Skills, languages and EVALs are included.</p>
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <Label htmlFor="geography">Geography <span className="font-normal text-muted-foreground">· optional</span></Label>
@@ -209,7 +207,7 @@ export function DeclarationPage() {
                 </div>
               </Step>
 
-              <Step n={2} title="Scope" hint="What the Worker produces, and what’s out of scope." active={Boolean(identity)}>
+              <Step n={2} title="Scope" active={Boolean(identity)}>
                 {!identity ? (
                   <p className="text-body text-muted-foreground">Choose an identity first.</p>
                 ) : contexts.length === 0 ? (
@@ -267,7 +265,7 @@ export function DeclarationPage() {
                         <div className="flex flex-col gap-1.5 sm:max-w-md">
                           <Label htmlFor="name">Worker name <span className="font-normal text-muted-foreground">· optional</span></Label>
                           <Input id="name" value={name} maxLength={120} onChange={(e) => setName(e.target.value)} placeholder="e.g. Claims integration – Payments" aria-invalid={nameInvalid} aria-describedby="name-hint" />
-                          <p id="name-hint" className={cn('text-meta', nameInvalid ? 'text-destructive' : 'text-muted-foreground')}>{nameInvalid ? 'A name has at least 2 characters.' : 'Shown wherever the Worker is listed.'}</p>
+                          {nameInvalid && <p id="name-hint" className="text-meta text-destructive">A name has at least 2 characters.</p>}
                         </div>
                         <label htmlFor="auto" className={cn('flex cursor-pointer gap-3 rounded-xl border p-4', auto && 'border-primary bg-primary-soft')}>
                           <Checkbox id="auto" checked={auto} onCheckedChange={(v) => setAuto(v === true)} className="mt-0.5" />

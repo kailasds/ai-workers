@@ -18,20 +18,15 @@ const DraftsPage = named(() => import('@/features/compose/drafts-page'), 'Drafts
 const KnowledgePage = named(() => import('@/features/knowledge/knowledge-page'), 'KnowledgePage')
 const GovernancePage = named(() => import('@/features/knowledge/governance-page'), 'GovernancePage')
 const SkillWizard = named(() => import('@/features/knowledge/skill-wizard'), 'SkillWizard')
-const LearningActivityPage = named(() => import('@/features/learning/activity-page'), 'LearningActivityPage')
-const LearningWorkersPage = named(() => import('@/features/learning/workers-page'), 'LearningWorkersPage')
-const KnowledgeGainedPage = named(() => import('@/features/learning/knowledge-gained-page'), 'KnowledgeGainedPage')
-const EvolutionPage = named(() => import('@/features/learning/evolution-page'), 'EvolutionPage')
-const LearningMapPage = named(() => import('@/features/learning/learning-map-page'), 'LearningMapPage')
 const SentinelSharingPage = named(() => import('@/features/sentinel/sharing-page'), 'SentinelSharingPage')
+const LearningPage = named(() => import('@/features/learning/learning-page'), 'LearningPage')
+const LearningCategoryPage = named(() => import('@/features/learning/category-page'), 'CategoryPage')
+const LearningItemPage = named(() => import('@/features/learning/item-page'), 'LearningItemPage')
 const WorkerLearningPage = named(() => import('@/features/learning/worker-learning-page'), 'WorkerLearningPage')
-const WorkerLearningSubpage = named(() => import('@/features/learning/worker-learning-page'), 'WorkerLearningSubpage')
 const SentinelOverviewPage = named(() => import('@/features/sentinel/overview-page'), 'SentinelOverviewPage')
-const SentinelWorkersPage = named(() => import('@/features/sentinel/workers-page'), 'SentinelWorkersPage')
 const SentinelDecisionsPage = named(() => import('@/features/sentinel/decisions-page'), 'SentinelDecisionsPage')
 const SentinelDecisionPage = named(() => import('@/features/sentinel/decisions-page'), 'SentinelDecisionPage')
-const SentinelPolicyPage = named(() => import('@/features/sentinel/policy-dimension-pages'), 'SentinelPolicyPage')
-const SentinelDimensionPage = named(() => import('@/features/sentinel/policy-dimension-pages'), 'SentinelDimensionPage')
+const SentinelPolicyPage = named(() => import('@/features/sentinel/policy-page'), 'SentinelPolicyPage')
 const PackagingPage = named(() => import('@/features/packaging/packaging-page'), 'PackagingPage')
 const DeliveryPage = named(() => import('@/features/delivery/delivery-page'), 'DeliveryPage')
 const DeliveryWizard = named(() => import('@/features/delivery/delivery-wizard'), 'DeliveryWizard')
@@ -90,16 +85,12 @@ function App() {
             {/* Brain: the same shape over Knowledge, Learning and Sentinel. Detail pages stand alone. */}
             <Route element={<BrainLayout />}>
               <Route path="knowledge/:view" element={<KnowledgeRouter />} />
-              <Route path="learning" element={<LearningActivityPage />} />
-              <Route path="learning/workers" element={<LearningWorkersPage />} />
-              <Route path="learning/knowledge" element={<KnowledgeGainedPage />} />
-              <Route path="learning/evolution" element={<EvolutionPage />} />
-              <Route path="learning/map" element={<LearningMapPage />} />
+              <Route path="learning" element={<LearningPage />} />
+              <Route path="learning/workers" element={<Navigate to="/learning#new" replace />} />
               <Route path="learning/shared" element={<Navigate to="/sentinel/sharing" replace />} />
-              <Route path="learning/*" element={<Navigate to="/learning" replace />} />
               <Route path="sentinel" element={<SentinelOverviewPage />} />
               <Route path="sentinel/sharing" element={<SentinelSharingPage />} />
-              <Route path="sentinel/workers" element={<SentinelWorkersPage />} />
+              <Route path="sentinel/workers" element={<Navigate to="/sentinel" replace />} />
               <Route path="sentinel/decisions" element={<SentinelDecisionsPage />} />
               <Route path="sentinel/policy" element={<SentinelPolicyPage />} />
             </Route>
@@ -121,10 +112,14 @@ function App() {
             <Route path="knowledge" element={<Navigate to="/knowledge/skills" replace />} />
             <Route path="knowledge/brains" element={<Navigate to="/learning" replace />} />
             <Route path="knowledge/capture" element={<SkillWizard />} />
+            {/* Learning drill-downs stand alone, each with a breadcrumb back. */}
+            <Route path="learning/categories/:category" element={<LearningCategoryPage />} />
+            <Route path="learning/items/:itemId" element={<LearningItemPage />} />
             <Route path="learning/workers/:id" element={<WorkerLearningPage />} />
-            <Route path="learning/workers/:id/:sub/*" element={<WorkerLearningSubpage />} />
+            <Route path="learning/workers/:id/:category" element={<LearningCategoryPage />} />
+            <Route path="learning/*" element={<Navigate to="/learning" replace />} />
             <Route path="sentinel/decisions/:decisionId" element={<SentinelDecisionPage />} />
-            <Route path="sentinel/:dimension" element={<SentinelDimensionPage />} />
+            <Route path="sentinel/:dimension" element={<Navigate to="/sentinel/policy" replace />} />
             <Route path="harnesses" element={<HarnessCataloguePage />} />
             <Route path="harnesses/certify" element={<CertifyPage />} />
             <Route path="harnesses/conformance" element={<ConformancePage />} />

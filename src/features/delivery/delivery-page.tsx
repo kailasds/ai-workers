@@ -86,7 +86,6 @@ function PreparedDetail({ pkg, onChanged }: { pkg: CustomerPackage; onChanged: (
         <Fact label="Learning callback">{pkg.callback.configured === 'DISABLED' ? 'Disabled' : 'Enabled'} · {pkg.callback.observed === 'NOT_OBSERVED' ? 'Not observed' : pkg.callback.observed}</Fact>
         <Fact label="Source">{pkg.source.state === 'PUBLISHED' ? <>Published{pkg.source.tag ? <span className="block font-mono text-meta break-all text-muted-foreground">{pkg.source.tag}</span> : null}</> : pkg.source.state.replace(/_/g, ' ').toLowerCase()}</Fact>
       </FactList>
-      <p className="text-meta text-muted-foreground">We can’t see the customer’s runtime from here. Prepared, shared or acknowledged doesn’t mean deployed.</p>
     </div>
   )
 }

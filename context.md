@@ -68,7 +68,7 @@ Compose (type → identity → bounded context → 8 checkpoints → Worker summ
 
 The sidebar has three main menus:
 
-- **Home** (`/workers`): the Worker pipeline, with tabs for **Workers**, **Packaging** and **Customer delivery**, plus an Overview band of key figures. Compose (`/compose`) and the Outcomes dashboard (`/dashboard`) are reached from here.
+- **Home** (`/workers`): the Worker pipeline, with tabs for **Workers**, **Packaging** and **Customer delivery**, each with its own Overview band of key figures directly under the tabs (Brain's Knowledge, Learning and Sentinel tabs work the same way). Compose (`/compose`) and the Outcomes dashboard (`/dashboard`) are reached from here.
 - **Brain** (`/knowledge`, `/learning`, `/sentinel`): what Workers know (Skills, domain languages, EVALs, Definition of Done), what they have learned, and Sentinel oversight.
 - **Harnesses** (`/harnesses`): the harness catalogue, certification guide, conformance reports and SDK reference.
 
@@ -86,17 +86,18 @@ User management (`/admin/people`, `/admin/groups`) appears only for administrato
   - Two lines on what the Worker produces.
   - Three KPI tiles: Runs, Memory, Outcome. On hover the card gets a primary border and tint.
 - **Worker page** (`/workers/:id`): tabs for Package, Versions and customers, Runs, Brain activity, Knowledge, Learning, Sentinel, Runtimes and Delivery. "Similar Workers" appears only on the Versions and customers tab.
-- **Learning** (`/learning`)
-  - **Activity** is the default view: a newest-first feed of real learning events (memory records and items held while they gather evidence), filterable by Worker and type, with a detail panel for each.
-  - **Workers** is a searchable, sortable, paginated table of each Worker's learning (runs met, memory, items collecting evidence, Skill changes awaiting review). Each row opens `/learning/workers/:id`, which has Overview (what awaits review and a timeline of runs and learning), What it learned, What it was given, and Governance (its Worker Sentinel's real rules).
-  - **Knowledge gained** keeps assigned, gained and platform knowledge apart, and shows gained knowledge by status: kept (not reported), gathering evidence, or recorded but not reviewed. It also covers knowledge health (retire, revoke, replace).
-  - **Evolution** shows each identity's capability ladder and which Workers sit on each step; no proposals are recorded.
-  - **Explore map** (`/learning/map`) is optional and draws only real links.
-- **Platform Sentinel** (`/sentinel`)
-  - **Overview** leads with what needs attention, then stops and restrictions in force, sharing status, recent decisions, setup and what it checks.
-  - **Sharing** keeps the states eligible, proposed, agreed, delivered, used and suspended apart. Sharing isn't switched on yet.
-  - **Decisions** has filters and a detail page; **Workers** holds coverage and Stop Worker; **Policy** separates platform-wide controls from Worker-owned settings.
-  - Plan and data gaps are in `docs/learning-sentinel-plan.md`.
+- **Learning** (`/learning`): what the platform has learned, then which Workers learned something new.
+  - One taxonomy for the platform and each Worker: Run experiences, Facts, Techniques (the memory engine's three memory types), Patterns (noticed or agreed across runs) and Skill changes (proposed; a person decides).
+  - The landing page shows **Learning so far** (a count per category; each item has one category, so the counts add up) and **Workers with new learning** (period, search, sort).
+  - Drill-downs: a category (`/learning/categories/:category`), a Worker (`/learning/workers/:id`), a Worker's category (`/learning/workers/:id/:category`) and an item (`/learning/items/:id`) with what was learned, why, evidence runs, related learning and history. The period stays in the URL; an item's breadcrumb leads back to where the reader came from.
+  - Records come from `src/features/learning/model.ts`, built only from the snapshot: one run experience per memory record (tied to its run), held-back patterns, agreed statements and Skill-change counts. Facts and techniques show "None yet" because the snapshot has none. Periods count back from the snapshot time.
+- **Platform Sentinel** (`/sentinel`): a frontend-only prototype. Its governance data is demo data, saved in this browser, and nothing it does is enforced. A notice at the top says so and has **Reset demo data**.
+  - **Overview**: what needs attention, most urgent first. Only informational findings can be dismissed, and dismissing never lifts a restriction. Then a summary with a period, the governance flow (each stage opens its records), monitoring findings and recent decisions.
+  - **Sharing**: agreements move Eligible → Proposed → Agreed → Delivered → Used. Suspended, rejected and revoked agreements are listed apart. Approve, reject, suspend, resume and revoke ask for a reason and are refused when they are not valid.
+  - **Decisions**: a searchable, filterable, paginated log with a detail page. Reviews and follow-ups add new linked decisions, so history never changes. **Verify chain** checks a demo hash chain, which is not real audit cryptography.
+  - **Policy**: the controls in force, editable platform defaults (validated, with impact shown before saving), Worker overrides and revision history.
+  - `?worker=<id>` and `?agreement=<id>` open drawers from any view. A Worker stopped here shows "Stopped by admin" on its Registry card and on its Worker page.
+  - Code: `src/features/sentinel/demo/` has `types`, `platform` (real Worker records and runs), `engine` (pure, validated actions that each add a sealed decision), `seed` (deterministic), `selectors`, `integrity` and `store` (`useSyncExternalStore` plus localStorage key `aiw.sentinel-demo.v1`, with an in-memory fallback). Run health and cost findings come from the snapshot's real runs.
 - **Compose** (`/compose` → `/compose/new` → `/compose/guided/:id`)
   - Pick a Worker type, then define the Worker: identity (unavailable ones are shown greyed out with the reason), optional domain and geography, bounded context, and an optional Worker name.
   - "Assemble automatically" decides whether it pauses at all 8 checkpoints.
@@ -160,13 +161,13 @@ The design source of truth is `.claude/skills/frontend-kit/references/design.md`
 | Where | Counts |
 | --- | --- |
 | Knowledge tab | Skills in the library |
-| Learning tab and "Workers with learning" | Workers with memory records or items gathering evidence |
-| Sentinel tab and "Needs attention" | Items on the Sentinel Overview's attention list (monitoring gaps, stops and restrictions, pending reviews) |
+| Learning tab and "Workers with learning" | Workers with at least one learning item |
+| Sentinel tab and "Needs attention" | Items on the Sentinel Overview's attention list, from the demo governance data (stops, pending reviews, suspended agreements, proposals, findings) |
 | Activity "All activity" | Activity rows; held items with the same Worker, Skill and state are one row |
 
 ## 8. Open items
 
-- **Tests:** `npm test` (vitest) covers the Learning and Sentinel models: event building and grouping, periods, and the Sentinel attention list.
+- **Tests:** `npm test` (vitest) covers the Learning model (record consistency with the Registry, evidence links, totals, periods, search, related learning) and the Sentinel demo: seed determinism, valid and invalid transitions, decision creation and chain verification, policy validation and impact, derived counts, and persistence and reset.
 - **Pagination is client-side:** Learning and Sentinel lists use the shared `Pager` and `usePaged` (`src/hooks/use-paged.ts`), with page and page size in the URL. The reads they page over have no page or cursor parameters, so the console pages the complete loaded list. The portfolio API has a `next_cursor`, but the console reads it with `limit=200` in one call.
 - **Not connected in this console:**
   - Stop Worker: the dialog explains it; nothing is sent.

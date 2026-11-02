@@ -54,7 +54,6 @@ export function ContextsPanel({ data, detailLink }: { data: ExecutiveDashboard; 
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-meta text-muted-foreground">Same period for all. Averages only use runs that reported data.</p>
         <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={cut} onValueChange={(v) => v && setCut(v as Cut)} aria-label="Group by">
           <ToggleGroupItem value="contexts">Bounded context</ToggleGroupItem>
           <ToggleGroupItem value="identities">Worker identity</ToggleGroupItem>

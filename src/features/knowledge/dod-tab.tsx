@@ -36,7 +36,6 @@ export function DodTab({ rubrics }: { rubrics: DodRubric[] }) {
 
   return (
     <>
-      <p className="mb-4 text-meta text-muted-foreground">What a Worker must pass before its work counts as done. A narrower scope can tighten a gate but not loosen it.</p>
       <Card className="gap-0 overflow-hidden py-0">
         <section aria-label="Release gates">
           <GroupHeader label="Release gates · block release" count={gating.length} />

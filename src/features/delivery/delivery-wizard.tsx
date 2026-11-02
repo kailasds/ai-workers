@@ -157,7 +157,6 @@ export function DeliveryWizard() {
           <CardContent className="flex flex-col gap-5 p-6">
             {step === 0 && (
               <>
-                <p className="text-meta text-muted-foreground">You can leave out Skills. Languages, EVALs and the Definition of Done are always included.</p>
                 <section>
                   <h3 className="text-item">Skills</h3>
                   <ul className="mt-2 flex flex-col gap-2">
@@ -186,7 +185,6 @@ export function DeliveryWizard() {
             )}
             {step === 1 && (
               <>
-                <p className="text-meta text-muted-foreground">Learning is sent alongside the Package as separate files.</p>
                 {!m || m.runs === 0 ? <p className="text-body text-muted-foreground">This Worker hasn’t run yet, so there’s no learning to send.</p> : null}
                 <ul className="flex flex-col gap-2">
                   {learning.map((l) => (
@@ -212,7 +210,6 @@ export function DeliveryWizard() {
                   <ChoiceCard id="img-sep" value="SEPARATE" selected={images === 'SEPARATE'} title="Separate download" detail="The package stays small." />
                   <ChoiceCard id="img-bun" value="BUNDLED" selected={images === 'BUNDLED'} title="Single file" detail="Much larger download." />
                 </RadioGroup>
-                <p className="text-meta text-muted-foreground">The run folder (compose file, README and settings) is always included.</p>
               </>
             )}
             {step === 3 && (

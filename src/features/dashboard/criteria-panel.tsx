@@ -31,7 +31,6 @@ export function CriteriaPanel({ criteria }: { criteria: DodCriterion[] }) {
 
   return (
     <div>
-      <p className="text-meta text-muted-foreground">Each criterion is scored separately. Weakest first.</p>
       {criteria.length === 0 ? (
         <EmptyState className="mt-4" icon={ListChecks} title="No criterion measurements recorded" description="No run in this period reported Definition of Done results." />
       ) : (

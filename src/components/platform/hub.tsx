@@ -8,11 +8,12 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { formatCount } from '@/lib/format'
 import { cn } from '@/lib/utils'
 
-// A hub is a main menu's page (Home, Learning): one header, one navy band of figures, then its
-// areas as stage tabs. Each area keeps its own URL, so every old link still lands in the right tab.
+// A hub is a main menu's page (Home, Brain): one header, its areas as stage tabs, then the
+// selected area's own band of figures and its content. Each area keeps its own URL, so every old
+// link still lands in the right tab.
 
-/** A figure on a white inset card: label, one stat, one caption. Unknown is never 0. */
-export function Kpi({ label, icon: Icon, hue, value, unit, caption, to, children, loading, failed }: { label: string; icon: LucideIcon; hue: Hue; value: number | null | undefined; unit?: string; caption: React.ReactNode; to?: string; children?: React.ReactNode; loading: boolean; failed: boolean }) {
+/** A figure on a white inset card: label, one stat, an optional caption of figures. Unknown is never 0. */
+export function Kpi({ label, icon: Icon, hue, value, unit, caption, to, children, loading, failed }: { label: string; icon: LucideIcon; hue: Hue; value: number | null | undefined; unit?: string; caption?: React.ReactNode; to?: string; children?: React.ReactNode; loading: boolean; failed: boolean }) {
   const body = (
     <>
       <p className="flex items-center gap-2.5 text-meta font-medium text-muted-foreground">
@@ -33,7 +34,7 @@ export function Kpi({ label, icon: Icon, hue, value, unit, caption, to, children
         )}
       </div>
       {children && <div className="mt-3">{children}</div>}
-      <p className="mt-2 text-meta text-muted-foreground">{caption}</p>
+      {caption && <p className="mt-2 text-meta text-muted-foreground">{caption}</p>}
     </>
   )
   const cell = 'group relative block min-w-0 rounded-block bg-card p-4 text-card-foreground sm:p-5'
@@ -137,7 +138,7 @@ export function StageTabs({ label, stages }: { label: string; stages: Stage[] })
   )
 }
 
-/** Header, figures and tabs, then the current area. The tabs stay put while an area loads. */
+/** Header and tabs, then the selected area's figures and content. The tabs stay put while an area loads. */
 export function HubLayout({ title, action, band, tabsLabel, stages }: { title: string; action?: React.ReactNode; band: React.ReactNode; tabsLabel: string; stages: Stage[] }) {
   return (
     <PageContainer>
@@ -146,10 +147,9 @@ export function HubLayout({ title, action, band, tabsLabel, stages }: { title: s
         {action && <div className="shrink-0 self-start sm:self-auto">{action}</div>}
       </header>
 
-      {band}
-
       <div className="flex flex-col gap-6">
         <StageTabs label={tabsLabel} stages={stages} />
+        {band}
         <Suspense
           fallback={
             <LoadingRegion label="Loading…" className="flex flex-col gap-3">
