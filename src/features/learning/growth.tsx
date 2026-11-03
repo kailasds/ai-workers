@@ -107,52 +107,55 @@ export function EvolutionPanel({ workerId, revision }: { workerId: string; revis
         <Stage icon={GitCommitHorizontal} label="Revision" value={`r${revision}`} />
       </div>
 
-      {e.runs.length > 0 && (
-        <div className="mt-6">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <p className="text-item">Runs <span className="text-meta font-normal text-muted-foreground">· bar height is what each run taught it</span></p>
-            <ul className="flex flex-wrap gap-3 text-meta text-muted-foreground" aria-label="Legend">
-              {Object.values(VERDICT).map((v) => <li key={v.label} className="inline-flex items-center gap-1.5"><v.icon className={cn('size-3.5', v.text)} aria-hidden="true" />{v.label}</li>)}
-            </ul>
-          </div>
-          <div className="relative mt-3">
-            <div className="flex h-16 items-end gap-0.5 border-b" role="list" aria-label="Runs, oldest first">
-              {e.runs.map((r, i) => (
-                <span
-                  key={r.ref}
-                  role="listitem"
-                  tabIndex={0}
-                  aria-label={`${new Date(r.at).toLocaleDateString('en-GB')}: ${VERDICT[r.verdict].label}, ${r.learned} learned`}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
-                  onFocus={() => setHover(i)}
-                  onBlur={() => setHover(null)}
-                  className="flex h-full min-w-1 flex-1 cursor-default items-end outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <span className={cn('w-full rounded-t-[4px]', VERDICT[r.verdict].bar, hover !== null && hover !== i && 'opacity-50')} style={{ height: `${Math.max(12, (r.learned / max) * 100)}%` }} />
-                </span>
-              ))}
+      {/* Runs on the left; the effect figures stacked in a column on the right. */}
+      <div className={cn('mt-6 grid gap-6 empty:hidden', e.runs.length > 0 && e.effect && 'lg:grid-cols-[minmax(0,1fr)_minmax(0,20rem)]')}>
+        {e.runs.length > 0 && (
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-item">Runs <span className="text-meta font-normal text-muted-foreground">· bar height is what each run taught it</span></p>
+              <ul className="flex flex-wrap gap-3 text-meta text-muted-foreground" aria-label="Legend">
+                {Object.values(VERDICT).map((v) => <li key={v.label} className="inline-flex items-center gap-1.5"><v.icon className={cn('size-3.5', v.text)} aria-hidden="true" />{v.label}</li>)}
+              </ul>
             </div>
-            {h && (
-              <div className="pointer-events-none absolute bottom-full z-10 mb-2 -translate-x-1/2 rounded-lg border bg-popover px-3 py-2 text-meta whitespace-nowrap shadow-md" style={{ left: `${((hover! + 0.5) / e.runs.length) * 100}%` }}>
-                <p className="font-medium"><Timestamp iso={h.at} /></p>
-                <p className="text-muted-foreground">{VERDICT[h.verdict].label} · {formatCount(h.learned)} learned{h.cost !== null ? ` · ${formatUsd(h.cost)}` : ''}</p>
+            <div className="relative mt-3">
+              <div className="flex h-20 items-end gap-0.5 border-b" role="list" aria-label="Runs, oldest first">
+                {e.runs.map((r, i) => (
+                  <span
+                    key={r.ref}
+                    role="listitem"
+                    tabIndex={0}
+                    aria-label={`${new Date(r.at).toLocaleDateString('en-GB')}: ${VERDICT[r.verdict].label}, ${r.learned} learned`}
+                    onMouseEnter={() => setHover(i)}
+                    onMouseLeave={() => setHover(null)}
+                    onFocus={() => setHover(i)}
+                    onBlur={() => setHover(null)}
+                    className="flex h-full min-w-1 flex-1 cursor-default items-end outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <span className={cn('w-full rounded-t-[4px]', VERDICT[r.verdict].bar, hover !== null && hover !== i && 'opacity-50')} style={{ height: `${Math.max(12, (r.learned / max) * 100)}%` }} />
+                  </span>
+                ))}
               </div>
-            )}
-            <div className="mt-1 flex justify-between text-meta text-muted-foreground"><Timestamp iso={e.runs[0].at} /><Timestamp iso={e.runs.at(-1)!.at} /></div>
+              {h && (
+                <div className="pointer-events-none absolute bottom-full z-10 mb-2 -translate-x-1/2 rounded-lg border bg-popover px-3 py-2 text-meta whitespace-nowrap shadow-md" style={{ left: `${((hover! + 0.5) / e.runs.length) * 100}%` }}>
+                  <p className="font-medium"><Timestamp iso={h.at} /></p>
+                  <p className="text-muted-foreground">{VERDICT[h.verdict].label} · {formatCount(h.learned)} learned{h.cost !== null ? ` · ${formatUsd(h.cost)}` : ''}</p>
+                </div>
+              )}
+              <div className="mt-1 flex justify-between text-meta text-muted-foreground"><Timestamp iso={e.runs[0].at} /><Timestamp iso={e.runs.at(-1)!.at} /></div>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {e.effect && (
-        <div className="mt-6">
-          <p className="text-item">Effect <span className="text-meta font-normal text-muted-foreground">· earlier runs → recent runs</span></p>
-          <div className="mt-3 grid gap-2 md:grid-cols-2">
-            <Change label="Definition of Done met" from={pct(e.effect.met[0])} to={pct(e.effect.met[1])} better={e.effect.met[1] === e.effect.met[0] ? null : e.effect.met[1] > e.effect.met[0]} />
-            {e.effect.cost[0] !== null && e.effect.cost[1] !== null && <Change label="Cost per run" from={formatUsd(e.effect.cost[0])} to={formatUsd(e.effect.cost[1])} better={e.effect.cost[1] === e.effect.cost[0] ? null : e.effect.cost[1] < e.effect.cost[0]} />}
+        {e.effect && (
+          <div className="min-w-0">
+            <p className="text-item">Effect <span className="text-meta font-normal text-muted-foreground">· earlier runs → recent runs</span></p>
+            <div className="mt-3 grid gap-2">
+              <Change label="Definition of Done met" from={pct(e.effect.met[0])} to={pct(e.effect.met[1])} better={e.effect.met[1] === e.effect.met[0] ? null : e.effect.met[1] > e.effect.met[0]} />
+              {e.effect.cost[0] !== null && e.effect.cost[1] !== null && <Change label="Cost per run" from={formatUsd(e.effect.cost[0])} to={formatUsd(e.effect.cost[1])} better={e.effect.cost[1] === e.effect.cost[0] ? null : e.effect.cost[1] < e.effect.cost[0]} />}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </Panel>
   )
 }

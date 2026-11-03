@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router'
-import { Bot, BrainCircuit, CircleCheck, ClipboardCheck, Package, PackageCheck, PackageOpen, Plus, Rocket, Send, TriangleAlert } from 'lucide-react'
+import { UserRound, BrainCircuit, CircleCheck, ClipboardCheck, Package, PackageCheck, PackageOpen, Plus, Rocket, Send, TriangleAlert } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { HubLayout, Kpi, KpiBand } from '@/components/platform/hub'
 import { VerdictBar } from '@/components/platform/verdict-meter'
@@ -45,7 +45,7 @@ function WorkersBand({ p }: { p: Pipeline }) {
   const dod = o?.definition_of_done
   return (
     <KpiBand title="Overview">
-      <Kpi label="Workers" icon={Bot} hue="blue" value={totals?.workers} loading={pending(p.portfolio)} failed={failedRead(p.portfolio)} caption={totals ? <><span className="text-foreground">{formatCount(totals.serving)} serving</span> · {formatCount(totals.attention)} need attention</> : undefined}>
+      <Kpi label="Workers" icon={UserRound} hue="blue" value={totals?.workers} loading={pending(p.portfolio)} failed={failedRead(p.portfolio)} caption={totals ? <><span className="text-foreground">{formatCount(totals.serving)} serving</span> · {formatCount(totals.attention)} need attention</> : undefined}>
         {totals && totals.workers > 0 && (
           <div role="img" aria-label={`${totals.serving} of ${totals.workers} serving`} className="flex h-1.5 gap-px overflow-hidden rounded-full bg-track">
             <span className="bg-brand" style={{ flexGrow: totals.serving, flexBasis: 0 }} />
@@ -104,7 +104,7 @@ export function RegistryLayout() {
       band={pathname.startsWith('/packaging') ? <PackagingBand p={p} /> : pathname.startsWith('/customer-delivery') ? <DeliveryBand p={p} /> : <WorkersBand p={p} />}
       tabsLabel="Home"
       stages={[
-        { to: '/workers', label: 'Workers', icon: Bot, hue: 'blue', count: p.portfolio.data?.totals.workers },
+        { to: '/workers', label: 'Workers', icon: UserRound, hue: 'blue', count: p.portfolio.data?.totals.workers },
         { to: '/packaging', label: 'Packaging', icon: Package, hue: 'amber', count: p.toPackage },
         { to: '/customer-delivery', label: 'Customer delivery', icon: Send, hue: 'teal', count: p.toPrepare },
       ]}

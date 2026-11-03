@@ -1,7 +1,7 @@
 import { createElement } from 'react'
 import { Link } from 'react-router'
 import { contextHue, contextIcon, HUE, Tag, workerTypeMeta } from '@/components/platform/hue'
-import { WorkerGlyph } from '@/components/platform/worker-glyph'
+import { UserRound } from 'lucide-react'
 import { PRESENCE, runtimeStatus, RuntimeStatusDot } from '@/components/platform/runtime-status'
 import { useDemo } from '@/features/sentinel/demo/store'
 import { contextOf, identityOfContext } from '@/features/compose/compose-model'
@@ -68,7 +68,7 @@ export function WorkerCard({ worker, isNew, from }: { worker: PortfolioWorker; i
       <div className="flex items-center gap-3">
         <span className="relative shrink-0">
           <span aria-hidden="true" className={cn('grid size-11 place-items-center rounded-full ring-4 [&>svg]:size-5', HUE[hue].solid, HUE[hue].ring)}>
-            <WorkerGlyph />
+            <UserRound />
           </span>
           <span aria-hidden="true" className={cn('absolute -right-0.5 -bottom-0.5 size-3.5 rounded-full ring-2 ring-card', PRESENCE[status])} />
         </span>

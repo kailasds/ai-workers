@@ -1,5 +1,5 @@
 import { Link, useLocation, useParams } from 'react-router'
-import { Bot, CalendarClock, ChevronRight, Database, FileSearch, History, Lightbulb, Link2, MessageCircleQuestion, PlayCircle, SearchX } from 'lucide-react'
+import { UserRound, CalendarClock, ChevronRight, Database, FileSearch, History, Lightbulb, Link2, MessageCircleQuestion, PlayCircle, SearchX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PageContainer } from '@/components/platform/page-container'
 import { Paged } from '@/components/platform/section-pager'
@@ -89,7 +89,7 @@ export function LearningItemPage() {
 
       <FactStrip
         facts={[
-          { icon: Bot, label: 'Worker', value: <Link to={workerTo} className={LINK} title={workerLabel(item.workerId)}>{workerLabel(item.workerId)}</Link> },
+          { icon: UserRound, label: 'Worker', value: <Link to={workerTo} className={LINK} title={workerLabel(item.workerId)}>{workerLabel(item.workerId)}</Link> },
           { icon: look.icon, label: 'Category', value: <Link to={`/learning/categories/${item.category}`} className={LINK}>{cat.label}</Link> },
           { icon: CalendarClock, label: item.when.kind === 'as_of' ? 'As of' : 'Recorded', value: <Timestamp iso={item.when.iso} /> },
           { icon: FileSearch, label: 'Evidence', value: runs.length ? `${formatCount(runs.length)} ${runs.length === 1 ? 'run' : 'runs'} · ${formatCount(runs.filter((r) => r.verdict === 'MET').length)} met` : 'No run named' },

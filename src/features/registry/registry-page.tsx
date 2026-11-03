@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { Link, Navigate, useLocation } from 'react-router'
-import { Bot, Plus, RefreshCw, Search, SearchX, SlidersHorizontal } from 'lucide-react'
+import { UserRound, Plus, RefreshCw, Search, SearchX, SlidersHorizontal } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -105,7 +105,7 @@ export function RegistryPage() {
             <TileSkeleton />
           ) : workers.length === 0 ? (
             <EmptyState
-              icon={Bot}
+              icon={UserRound}
               title="No Workers have been composed yet"
               description="A Worker appears here once it is composed."
               action={<Button asChild><Link to="/compose"><Plus aria-hidden="true" />Compose a Worker</Link></Button>}

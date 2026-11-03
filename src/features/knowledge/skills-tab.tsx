@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router'
-import { Bot, Brain, ClipboardCheck, PencilLine, Search, SearchX } from 'lucide-react'
+import { UserRound, Brain, ClipboardCheck, PencilLine, Search, SearchX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -97,7 +97,7 @@ export function SkillsTab({ library }: { library: SkillLibrary }) {
                   aside={
                     <>
                       {s.assigned_agent_keys.length === 0 && <StatusBadge tone="neutral" icon={null}>Not yet loadable</StatusBadge>}
-                      <span className="inline-flex w-28 items-center justify-end gap-1.5 text-meta text-muted-foreground tabular-nums"><Bot className="size-3.5" aria-hidden="true" />{s.worker_count === 0 ? 'No Workers' : `${s.worker_count} ${s.worker_count === 1 ? 'Worker' : 'Workers'}`}</span>
+                      <span className="inline-flex w-28 items-center justify-end gap-1.5 text-meta text-muted-foreground tabular-nums"><UserRound className="size-3.5" aria-hidden="true" />{s.worker_count === 0 ? 'No Workers' : `${s.worker_count} ${s.worker_count === 1 ? 'Worker' : 'Workers'}`}</span>
                     </>
                   }
                 />

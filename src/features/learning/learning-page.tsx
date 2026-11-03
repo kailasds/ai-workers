@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import { BarChart3, ChevronRight, LayoutGrid, List, Search, SearchX, Sparkles, TriangleAlert, Users } from 'lucide-react'
+import { BarChart3, ChevronRight, LayoutGrid, List, Search, SearchX, Sparkles, TriangleAlert, UserRound, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { contextHue, HUE, Tag, workerTypeMeta } from '@/components/platform/hue'
-import { WorkerGlyph } from '@/components/platform/worker-glyph'
 import { SECTION_SIZE, useTilePage } from '@/components/platform/section-pager'
 import { Pager } from '@/components/platform/pager'
 import { PRESENCE, runtimeStatus, RuntimeStatusDot } from '@/components/platform/runtime-status'
@@ -92,7 +91,7 @@ function WorkerTile({ w, to }: { w: WorkerLearning; to: string }) {
       <div className="flex items-center gap-3">
         <span className="relative shrink-0">
           <span aria-hidden="true" className={cn('grid size-11 place-items-center rounded-full ring-4 [&>svg]:size-5', HUE[hue].solid, HUE[hue].ring)}>
-            <WorkerGlyph />
+            <UserRound />
           </span>
           <span aria-hidden="true" className={cn('absolute -right-0.5 -bottom-0.5 size-3.5 rounded-full ring-2 ring-card', PRESENCE[status])} />
         </span>

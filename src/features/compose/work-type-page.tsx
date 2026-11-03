@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { ArrowRight, Bot, FolderOpen, Fingerprint, Workflow, type LucideIcon } from 'lucide-react'
+import { ArrowRight, UserRound, FolderOpen, Fingerprint, Workflow, type LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { HUE, workerTypeMeta, type Hue } from '@/components/platform/hue'
@@ -84,7 +84,7 @@ export function WorkTypePage() {
                     <dl className="mt-auto grid grid-cols-3 gap-1.5">
                       <Figure icon={Fingerprint} hue={meta.hue} label="Identities" value={identities} />
                       <Figure icon={Workflow} hue={meta.hue} label="Contexts" value={t.bounded_context_count} />
-                      <Figure icon={Bot} hue={meta.hue} label="Workers" value={n === undefined ? <span className="text-muted-foreground">–</span> : formatCount(n)} />
+                      <Figure icon={UserRound} hue={meta.hue} label="Workers" value={n === undefined ? <span className="text-muted-foreground">–</span> : formatCount(n)} />
                     </dl>
                     {available ? (
                       <span aria-hidden="true" className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-primary text-item text-primary-foreground group-hover:bg-primary-hover">
