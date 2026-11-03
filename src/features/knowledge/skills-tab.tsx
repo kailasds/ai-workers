@@ -6,14 +6,14 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { DetailSheet } from '@/components/platform/detail-sheet'
+import { Paged } from '@/components/platform/section-pager'
 import { Details, IconTile, Panel } from '@/components/platform/panel'
 import { EmptyState } from '@/components/platform/states'
 import { StatusBadge } from '@/components/platform/status-badge'
 import type { KnowledgeSkill, SkillLibrary } from '@/lib/types/catalog'
-import { LibraryRow, ShowMore, Toolbar } from './list-parts'
+import { LibraryRow, Toolbar } from './list-parts'
 
 const ALL = '__all'
-const PAGE = 20
 const human = (key: string) => key.replace(/[_-]+/g, ' ').replace(/^\w/, (c) => c.toUpperCase())
 
 function SkillDetail({ skill }: { skill: KnowledgeSkill }) {
@@ -42,7 +42,6 @@ export function SkillsTab({ library }: { library: SkillLibrary }) {
   const [group, setGroup] = useState<string>(ALL)
   const [category, setCategory] = useState<string>(ALL)
   const [q, setQ] = useState('')
-  const [shown, setShown] = useState(PAGE)
   const [open, setOpen] = useState<KnowledgeSkill | null>(null)
 
   const matching = useMemo(() => {
@@ -62,10 +61,10 @@ export function SkillsTab({ library }: { library: SkillLibrary }) {
         <Toolbar>
           <InputGroup className="lg:max-w-xs">
             <InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon>
-            <InputGroupInput type="search" value={q} onChange={(e) => { setQ(e.target.value); setShown(PAGE) }} placeholder="Search Skills" aria-label="Search Skills" />
+            <InputGroupInput type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search Skills" aria-label="Search Skills" />
           </InputGroup>
           <div className="no-scrollbar -mx-5 overflow-x-auto px-5 lg:mx-0 lg:px-0">
-            <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={group} onValueChange={(v) => { if (v) { setGroup(v); setShown(PAGE) } }} aria-label="Group" className="w-max bg-card">
+            <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={group} onValueChange={(v) => { if (v) { setGroup(v) } }} aria-label="Group" className="w-max bg-card">
               <ToggleGroupItem value={ALL}>All <span className="text-muted-foreground tabular-nums">{library.skills.length}</span></ToggleGroupItem>
               {library.groups.map((g) => (
                 <ToggleGroupItem key={g.key} value={g.key}>{g.label} <span className="text-muted-foreground tabular-nums">{g.total - g.ungrouped}</span></ToggleGroupItem>
@@ -73,7 +72,7 @@ export function SkillsTab({ library }: { library: SkillLibrary }) {
               {ungrouped > 0 && <ToggleGroupItem value="ungrouped">Unmapped <span className="text-muted-foreground tabular-nums">{ungrouped}</span></ToggleGroupItem>}
             </ToggleGroup>
           </div>
-          <Select value={category} onValueChange={(v) => { setCategory(v); setShown(PAGE) }}>
+          <Select value={category} onValueChange={setCategory}>
             <SelectTrigger className="w-full bg-card lg:ml-auto lg:w-52" aria-label="Category"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value={ALL}>Every category</SelectItem>
@@ -85,9 +84,9 @@ export function SkillsTab({ library }: { library: SkillLibrary }) {
         {matching.length === 0 ? (
           <EmptyState className="m-5" icon={SearchX} title="Nothing matches that" action={<Button variant="outline" onClick={() => { setQ(''); setGroup(ALL); setCategory(ALL) }}>Clear filters</Button>} />
         ) : (
-          <>
+          <Paged key={[group, category, q].join('|')} rows={matching} label="Skills">{(page) => (
             <ul className="divide-y">
-              {matching.slice(0, shown).map((s) => (
+              {page.map((s) => (
                 <LibraryRow
                   key={s.name}
                   label={`Open ${s.title}`}
@@ -104,8 +103,7 @@ export function SkillsTab({ library }: { library: SkillLibrary }) {
                 />
               ))}
             </ul>
-            <ShowMore shown={Math.min(shown, matching.length)} total={matching.length} onMore={() => setShown((n) => n + PAGE)} />
-          </>
+          )}</Paged>
         )}
       </Panel>
 

@@ -1,12 +1,13 @@
-import { createElement, useState } from 'react'
+import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { BarChart3, ChevronRight, LayoutGrid, List, Search, SearchX, Sparkles, TriangleAlert, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { contextHue, contextIcon, HUE, Tag, workerTypeMeta } from '@/components/platform/hue'
-import { SECTION_SIZE } from '@/components/platform/section-pager'
+import { contextHue, HUE, Tag, workerTypeMeta } from '@/components/platform/hue'
+import { WorkerGlyph } from '@/components/platform/worker-glyph'
+import { SECTION_SIZE, useTilePage } from '@/components/platform/section-pager'
 import { Pager } from '@/components/platform/pager'
 import { PRESENCE, runtimeStatus, RuntimeStatusDot } from '@/components/platform/runtime-status'
 import { IconTile, Panel } from '@/components/platform/panel'
@@ -64,7 +65,6 @@ function WorkerTile({ w, to }: { w: WorkerLearning; to: string }) {
   const hue = contextHue(worker.bounded_context.key)
   const type = workerTypeMeta(worker.worker_type)
   const identity = identityOfContext(worker.bounded_context.key)
-  const ContextIcon = contextIcon(worker.bounded_context.key)
   const status = runtimeStatus(worker.runtime)
   const stopped = useDemo().workers[w.workerId]?.status === 'stopped'
   const split = distribution(w.fresh).filter((c) => c.count > 0)
@@ -92,7 +92,7 @@ function WorkerTile({ w, to }: { w: WorkerLearning; to: string }) {
       <div className="flex items-center gap-3">
         <span className="relative shrink-0">
           <span aria-hidden="true" className={cn('grid size-11 place-items-center rounded-full ring-4 [&>svg]:size-5', HUE[hue].solid, HUE[hue].ring)}>
-            {createElement(ContextIcon)}
+            <WorkerGlyph />
           </span>
           <span aria-hidden="true" className={cn('absolute -right-0.5 -bottom-0.5 size-3.5 rounded-full ring-2 ring-card', PRESENCE[status])} />
         </span>
@@ -152,7 +152,9 @@ export function LearningPage() {
   // Every type of learning is listed, with how much of it is new in the period.
   const kinds = CATEGORIES.map((c) => ({ ...c, count: all.reduce((n, w) => n + w.fresh.filter((i) => i.category === c.key).length, 0) }))
   const rows = workersWithNew(period, { q, type, domain, category })
-  const paged = usePaged(rows, { prefix: 'w', defaultSize: SECTION_SIZE, sizes: [SECTION_SIZE] })
+  const tilePage = useTilePage()
+  const pageSize = view === 'tiles' ? tilePage : SECTION_SIZE
+  const paged = usePaged(rows, { prefix: 'w', defaultSize: pageSize, sizes: [pageSize] })
   const periodLabel = PERIODS.find((p) => p.value === period)!.label.toLowerCase()
   const filtered = Boolean(q || type || domain || category)
   const write = (changes: Record<string, string | null>) =>
@@ -250,7 +252,7 @@ export function LearningPage() {
                 {paged.rows.map((w) => <li key={w.workerId}><WorkerRow w={w} to={to(w)} /></li>)}
               </ul>
             )}
-            {rows.length > SECTION_SIZE && (
+            {rows.length > pageSize && (
               <div className="border-t px-5 py-3">
                 <Pager page={paged.page} pageSize={paged.size} total={paged.total} onPage={paged.setPage} label="Workers with new learning" />
               </div>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Code, Eye, Gauge, ShieldCheck, Sparkles, Wrench, type LucideIcon } from 'lucide-react'
 import { DetailSheet } from '@/components/platform/detail-sheet'
+import { Paged } from '@/components/platform/section-pager'
 import { Details, IconTile, Panel } from '@/components/platform/panel'
 import { StatusBadge } from '@/components/platform/status-badge'
 import type { DodRubric } from '@/lib/types/catalog'
@@ -40,10 +41,10 @@ export function DodTab({ rubrics }: { rubrics: DodRubric[] }) {
     <>
       <div className="flex flex-col gap-6">
         <Panel id="gates" title="Release gates" icon={ShieldCheck} hue="amber" count={gating.length} flush>
-          <ul className="divide-y">{gating.map(row)}</ul>
+          <Paged rows={gating} label="Release gates">{(page) => <ul className="divide-y">{page.map(row)}</ul>}</Paged>
         </Panel>
         <Panel id="tracked" title="Tracked only" icon={Eye} hue="blue" count={observed.length} flush>
-          <ul className="divide-y">{observed.map(row)}</ul>
+          <Paged rows={observed} label="Tracked only">{(page) => <ul className="divide-y">{page.map(row)}</ul>}</Paged>
         </Panel>
       </div>
       <DetailSheet open={open !== null} onClose={() => setOpen(null)} title={open?.display_name} description={open ? METHOD[open.method] ?? open.method : undefined} width="2xl">

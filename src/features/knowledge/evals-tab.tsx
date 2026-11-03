@@ -4,22 +4,21 @@ import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { DetailSheet } from '@/components/platform/detail-sheet'
+import { Paged } from '@/components/platform/section-pager'
 import { Details, IconTile, Panel } from '@/components/platform/panel'
 import { EmptyState } from '@/components/platform/states'
 import { StatusBadge } from '@/components/platform/status-badge'
 import { formatPercent } from '@/lib/format'
 import type { Evaluation } from '@/lib/types/catalog'
-import { LibraryRow, ShowMore, Toolbar } from './list-parts'
+import { LibraryRow, Toolbar } from './list-parts'
 
 const ALL = '__all'
-const PAGE = 20
 const human = (key: string) => key.replace(/[_-]+/g, ' ').replace(/^\w/, (c) => c.toUpperCase())
 
 export function EvalsTab({ evals }: { evals: Evaluation[] }) {
   const [category, setCategory] = useState(ALL)
   const [gate, setGate] = useState<'all' | 'gate' | 'measured'>('all')
   const [q, setQ] = useState('')
-  const [shown, setShown] = useState(PAGE)
   const [open, setOpen] = useState<Evaluation | null>(null)
 
   const categories = useMemo(() => {
@@ -41,10 +40,10 @@ export function EvalsTab({ evals }: { evals: Evaluation[] }) {
         <Toolbar>
           <InputGroup className="lg:max-w-xs">
             <InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon>
-            <InputGroupInput type="search" value={q} onChange={(e) => { setQ(e.target.value); setShown(PAGE) }} placeholder="Search EVALs" aria-label="Search EVALs" />
+            <InputGroupInput type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search EVALs" aria-label="Search EVALs" />
           </InputGroup>
           <div className="no-scrollbar -mx-5 overflow-x-auto px-5 lg:mx-0 lg:px-0">
-            <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={category} onValueChange={(v) => { if (v) { setCategory(v); setShown(PAGE) } }} aria-label="Measured as" className="w-max bg-card">
+            <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={category} onValueChange={(v) => { if (v) { setCategory(v) } }} aria-label="Measured as" className="w-max bg-card">
               <ToggleGroupItem value={ALL}>All <span className="text-muted-foreground tabular-nums">{evals.length}</span></ToggleGroupItem>
               {categories.slice(0, 5).map(([c, n]) => <ToggleGroupItem key={c} value={c}>{human(c)} <span className="text-muted-foreground tabular-nums">{n}</span></ToggleGroupItem>)}
             </ToggleGroup>
@@ -59,9 +58,9 @@ export function EvalsTab({ evals }: { evals: Evaluation[] }) {
         {matching.length === 0 ? (
           <EmptyState className="m-5" icon={SearchX} title="Nothing matches that" action={<Button variant="outline" onClick={() => { setQ(''); setCategory(ALL); setGate('all') }}>Clear filters</Button>} />
         ) : (
-          <>
+          <Paged key={[category, gate, q].join('|')} rows={matching} label="EVALs">{(page) => (
             <ul className="divide-y">
-              {matching.slice(0, shown).map((e) => (
+              {page.map((e) => (
                 <LibraryRow
                   key={e.id}
                   label={`Open ${e.name}`}
@@ -78,8 +77,7 @@ export function EvalsTab({ evals }: { evals: Evaluation[] }) {
                 />
               ))}
             </ul>
-            <ShowMore shown={Math.min(shown, matching.length)} total={matching.length} onMore={() => setShown((n) => n + PAGE)} />
-          </>
+          )}</Paged>
         )}
       </Panel>
 

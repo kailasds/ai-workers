@@ -1,6 +1,8 @@
 import { Link, Navigate, useNavigate, useParams } from 'react-router'
-import { Archive, Bot, ChevronRight, Sparkles, Users } from 'lucide-react'
+import { Archive, ChevronRight, Sparkles, Users } from 'lucide-react'
 import { PageContainer } from '@/components/platform/page-container'
+import { contextHue } from '@/components/platform/hue'
+import { WorkerGlyph } from '@/components/platform/worker-glyph'
 import { Paged } from '@/components/platform/section-pager'
 import { PageHeader, type Crumb } from '@/components/platform/page-header'
 import { SectionNav } from '@/components/platform/section-nav'
@@ -77,7 +79,7 @@ export function CategoryPage() {
                   {page.map((w) => (
                     <li key={w.workerId}>
                       <Link to={withPeriod(`/learning/workers/${w.workerId}/${key}`, period)} className="flex items-center gap-3 px-5 py-3.5 outline-none hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset">
-                        <IconTile icon={Bot} hue="blue" size="sm" />
+                        <IconTile icon={WorkerGlyph} hue={contextHue(WORKER_BY_ID_SAFE(w.workerId)?.bounded_context.key)} size="sm" />
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-item">{w.name}</span>
                           <span className="block truncate text-meta text-muted-foreground">{workerScope(w.workerId)}</span>

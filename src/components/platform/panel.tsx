@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 // Sections as cards: an icon and title in the header, a count when they list things, then the
 // body. Shared by Brain's areas so Knowledge and Learning read the same way.
 
-export function IconTile({ icon: Icon, hue, size = 'md' }: { icon: LucideIcon; hue: Hue; size?: 'sm' | 'md' }) {
+export function IconTile({ icon: Icon, hue, size = 'md' }: { icon: LucideIcon | React.ComponentType; hue: Hue; size?: 'sm' | 'md' }) {
   return (
     <span aria-hidden="true" className={cn('grid shrink-0 place-items-center rounded-block', HUE[hue].soft, HUE[hue].text, size === 'sm' ? 'size-8 [&>svg]:size-4' : 'size-9 [&>svg]:size-[18px]')}>
       <Icon />

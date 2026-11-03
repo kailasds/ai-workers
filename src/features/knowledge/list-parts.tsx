@@ -1,5 +1,4 @@
 import { ChevronRight } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 
 /** One row of a library list: an icon, the title and its facts. The whole row opens the item. */
 export function LibraryRow({ icon, title, meta, aside, onOpen, label }: { icon?: React.ReactNode; title: React.ReactNode; meta?: React.ReactNode; aside?: React.ReactNode; onOpen: () => void; label: string }) {
@@ -26,15 +25,4 @@ export function LibraryRow({ icon, title, meta, aside, onOpen, label }: { icon?:
 /** Search and filters, as a tinted strip under a panel's header. */
 export function Toolbar({ children }: { children: React.ReactNode }) {
   return <div className="flex flex-col gap-3 border-b bg-muted/30 px-5 py-3 lg:flex-row lg:items-center">{children}</div>
-}
-
-/** Progressive disclosure for long lists: a page of items and a quiet "Show more". */
-export function ShowMore({ shown, total, onMore }: { shown: number; total: number; onMore: () => void }) {
-  if (shown >= total) return null
-  return (
-    <div className="flex items-center justify-between gap-3 border-t px-5 py-3">
-      <span className="text-meta text-muted-foreground tabular-nums">Showing {shown} of {total}</span>
-      <Button variant="ghost" size="sm" onClick={onMore}>Show more</Button>
-    </div>
-  )
 }

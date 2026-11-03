@@ -1,9 +1,24 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { cn } from '@/lib/utils'
 import { Pager } from './pager'
 
 /** No section shows fewer than this many records per page, nor more unless it has room to spare. */
-export const SECTION_SIZE = 5
+export const SECTION_SIZE = 10
+
+// Tile grids use `md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4`; these follow the same breakpoints.
+const COLUMN_QUERIES: [string, number][] = [['(min-width: 96rem)', 4], ['(min-width: 80rem)', 3], ['(min-width: 48rem)', 2]]
+const columnsNow = () => COLUMN_QUERIES.find(([q]) => window.matchMedia(q).matches)?.[1] ?? 1
+const onColumns = (cb: () => void) => {
+  const lists = COLUMN_QUERIES.map(([q]) => window.matchMedia(q))
+  for (const l of lists) l.addEventListener('change', cb)
+  return () => { for (const l of lists) l.removeEventListener('change', cb) }
+}
+
+/** Tiles per page for a tile grid: three full rows at its current column count, or five in one column. */
+export function useTilePage() {
+  const cols = useSyncExternalStore(onColumns, columnsNow, () => 1)
+  return cols === 1 ? SECTION_SIZE : cols * 3
+}
 
 /**
  * A section's records, five at a time, with a pager below once there are more. The page is

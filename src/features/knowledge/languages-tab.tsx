@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { BookText, Landmark, Languages } from 'lucide-react'
 import { DetailSheet } from '@/components/platform/detail-sheet'
+import { Paged } from '@/components/platform/section-pager'
 import { Details, IconTile, Panel } from '@/components/platform/panel'
 import { EmptyState } from '@/components/platform/states'
 import { StatusBadge } from '@/components/platform/status-badge'
@@ -40,8 +41,8 @@ export function LanguagesTab({ domains }: { domains: DslDomain[] }) {
       <div className="flex flex-col gap-6">
         {groups.map(([area, items]) => (
           <Panel key={area} id={`area-${area.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} title={area} icon={Landmark} hue="blue" count={items.length} flush>
-            <ul className="divide-y">
-              {items.map((d) => (
+            <Paged rows={items} label={area}>{(page) => <ul className="divide-y">
+              {page.map((d) => (
                 <LibraryRow
                   key={d.domain_id}
                   label={`Open ${d.name}`}
@@ -52,7 +53,7 @@ export function LanguagesTab({ domains }: { domains: DslDomain[] }) {
                   aside={d.plugin_slug ? <StatusBadge tone="success">Available to Workers</StatusBadge> : <StatusBadge tone="neutral" icon={null}>Not yet available</StatusBadge>}
                 />
               ))}
-            </ul>
+            </ul>}</Paged>
           </Panel>
         ))}
       </div>
