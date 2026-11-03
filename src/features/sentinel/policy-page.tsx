@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { IconTile, Panel } from '@/components/platform/panel'
+import { Paged } from '@/components/platform/section-pager'
 import { StatusBadge } from '@/components/platform/status-badge'
 import { Timestamp } from '@/components/platform/timestamp'
 import { cn } from '@/lib/utils'
@@ -192,8 +193,8 @@ export function SentinelPolicyPage() {
           </div>
         )}
         {s.overrides.length === 0 ? <p className="px-5 py-4 text-body text-muted-foreground">Every Worker follows the platform defaults.</p> : (
-          <ul className="divide-y">
-            {s.overrides.map((o) => (
+          <Paged rows={s.overrides} label="Worker overrides">{(page) => <ul className="divide-y">
+            {page.map((o) => (
               <li key={`${o.workerId}:${o.field}`} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3.5">
                 <IconTile icon={ICON[o.field]} hue="violet" size="sm" />
                 <div className="min-w-0 flex-1">
@@ -210,7 +211,7 @@ export function SentinelPolicyPage() {
                 </Button>
               </li>
             ))}
-          </ul>
+          </ul>}</Paged>
         )}
       </Panel>
 
@@ -221,8 +222,8 @@ export function SentinelPolicyPage() {
           <ChevronDown className="size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" aria-hidden="true" />
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <ol className="divide-y border-t">
-            {[...s.revisions].reverse().map((r, i) => (
+          <Paged rows={[...s.revisions].reverse()} label="Revisions" order="time">{(page, offset) => <ol className="divide-y border-t">
+            {page.map((r, j) => { const i = offset + j; return (
               <li key={r.rev} className="flex flex-col gap-2 px-5 py-4">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                   <span className="text-item">Revision {r.rev}</span>
@@ -239,8 +240,8 @@ export function SentinelPolicyPage() {
                   ))}
                 </ul>
               </li>
-            ))}
-          </ol>
+            ) })}
+          </ol>}</Paged>
         </CollapsibleContent>
       </Collapsible>
       <ActionDialog spec={spec} onClose={() => setSpec(null)} />

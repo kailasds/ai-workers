@@ -1,13 +1,13 @@
 import { Link, Navigate, useNavigate, useParams } from 'react-router'
-import { Archive, Bot, CalendarClock, ChevronRight, Sparkles, Users } from 'lucide-react'
+import { Archive, Bot, ChevronRight, Sparkles, Users } from 'lucide-react'
 import { PageContainer } from '@/components/platform/page-container'
+import { Paged } from '@/components/platform/section-pager'
 import { PageHeader, type Crumb } from '@/components/platform/page-header'
 import { SectionNav } from '@/components/platform/section-nav'
 import { EmptyState } from '@/components/platform/states'
-import { Timestamp } from '@/components/platform/timestamp'
 import { formatCount } from '@/lib/format'
 import { CATEGORIES, CATEGORY, contributors, inPeriod, isCategory, ITEMS, itemsOf, PERIODS, WORKER_BY_ID_SAFE, workerLabel, workerScope } from './model'
-import { FactStrip, IconTile, Panel } from '@/components/platform/panel'
+import { IconTile, Panel } from '@/components/platform/panel'
 import { ItemList, PeriodSelect } from './ui'
 import { CATEGORY_LOOK } from './look'
 import { useFrom, usePeriod, withPeriod } from './nav'
@@ -59,13 +59,6 @@ export function CategoryPage() {
         <EmptyState icon={look.icon} title={`No ${cat.label.toLowerCase()} recorded yet`} />
       ) : (
         <>
-          <FactStrip
-            facts={[
-              { icon: look.icon, label: cat.label, value: formatCount(items.length) },
-              period === 'all' ? { icon: CalendarClock, label: 'Latest', value: <Timestamp iso={items[0].when.iso} /> } : { icon: Sparkles, label: `New in the ${periodLabel.toLowerCase()}`, value: formatCount(fresh.length) },
-              id ? { icon: Archive, label: 'Recorded earlier', value: formatCount(earlier.length) } : { icon: Users, label: 'Contributing Workers', value: formatCount(who.length) },
-            ]}
-          />
           <div className={id ? 'flex flex-col gap-6' : 'grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]'}>
             <div className="flex min-w-0 flex-col gap-6">
               <Panel id="fresh" title={period === 'all' ? `All ${cat.label.toLowerCase()}` : `New in the ${periodLabel.toLowerCase()}`} icon={Sparkles} hue="violet" count={fresh.length} flush>
@@ -79,9 +72,9 @@ export function CategoryPage() {
             </div>
 
             {!id && (
-              <Panel id="contributors" title="Contributing Workers" icon={Users} hue="teal" count={who.length} flush>
-                <ul className="divide-y">
-                  {who.map((w) => (
+              <Panel id="contributors" title="Contributing Workers" icon={Users} hue="teal" count={who.length} flush fill className="lg:self-stretch">
+                <Paged rows={who} label="Contributing Workers" fill>{(page) => <ul className="divide-y">
+                  {page.map((w) => (
                     <li key={w.workerId}>
                       <Link to={withPeriod(`/learning/workers/${w.workerId}/${key}`, period)} className="flex items-center gap-3 px-5 py-3.5 outline-none hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset">
                         <IconTile icon={Bot} hue="blue" size="sm" />
@@ -94,7 +87,7 @@ export function CategoryPage() {
                       </Link>
                     </li>
                   ))}
-                </ul>
+                </ul>}</Paged>
               </Panel>
             )}
           </div>

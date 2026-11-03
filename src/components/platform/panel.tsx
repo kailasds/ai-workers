@@ -30,7 +30,7 @@ function readOpen(id: string) {
  * edge to edge. A `collapsible` panel folds to its header (the whole header toggles it); the
  * choice is remembered in this browser.
  */
-export function Panel({ id, title, icon, hue = 'blue', count, aside, flush, collapsible, children, className }: { id: string; title?: string; icon?: LucideIcon; hue?: Hue; count?: number; aside?: React.ReactNode; flush?: boolean; collapsible?: boolean; children: React.ReactNode; className?: string }) {
+export function Panel({ id, title, icon, hue = 'blue', count, aside, flush, collapsible, fill, children, className }: { id: string; title?: string; icon?: LucideIcon; hue?: Hue; count?: number; aside?: React.ReactNode; flush?: boolean; collapsible?: boolean; /** The body takes the panel's full height, for a `Paged fill` list. */ fill?: boolean; children: React.ReactNode; className?: string }) {
   const [open, setOpen] = useState(() => !collapsible || readOpen(id))
   const toggle = () =>
     setOpen((o) => {
@@ -51,7 +51,7 @@ export function Panel({ id, title, icon, hue = 'blue', count, aside, flush, coll
     </>
   )
   return (
-    <section id={id} aria-labelledby={title ? `${id}-title` : undefined} className={cn('scroll-mt-24 overflow-hidden rounded-xl border bg-card', className)}>
+    <section id={id} aria-labelledby={title ? `${id}-title` : undefined} className={cn('scroll-mt-24 overflow-hidden rounded-xl border bg-card', fill && 'flex flex-col', className)}>
       {title && (
         <header className={cn('flex flex-wrap items-center gap-x-3 gap-y-2 px-5 py-3.5', open && 'border-b', collapsible && 'p-0')}>
           {collapsible ? (
@@ -67,7 +67,7 @@ export function Panel({ id, title, icon, hue = 'blue', count, aside, flush, coll
           {aside && <div className={cn('flex flex-wrap items-center gap-2', collapsible && 'pr-5')}>{aside}</div>}
         </header>
       )}
-      {open && <div id={`${id}-body`} className={flush ? undefined : 'p-5'}>{children}</div>}
+      {open && <div id={`${id}-body`} className={cn(!flush && 'p-5', fill && 'flex min-h-0 flex-1 flex-col')}>{children}</div>}
     </section>
   )
 }

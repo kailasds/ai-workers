@@ -1,14 +1,13 @@
-import { useState } from 'react'
 import { Link } from 'react-router'
 import { ChevronRight, type LucideIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { HUE } from '@/components/platform/hue'
+import { Paged, SECTION_SIZE } from '@/components/platform/section-pager'
 import { IconTile } from '@/components/platform/panel'
 import { Pager } from '@/components/platform/pager'
 import { StatusBadge } from '@/components/platform/status-badge'
 import { Timestamp } from '@/components/platform/timestamp'
-import { PAGE_SIZES, usePaged } from '@/hooks/use-paged'
+import { usePaged } from '@/hooks/use-paged'
 import { CATEGORY_LOOK } from './look'
 import { formatCount } from '@/lib/format'
 import { cn } from '@/lib/utils'
@@ -100,36 +99,25 @@ export function EmptyRow({ children }: { children: React.ReactNode }) {
 
 /** A paged list of learning items, edge to edge inside a flush panel. */
 export function ItemList({ items, from, prefix, label, showWorker = true, empty }: { items: LearningItem[]; from: From; prefix: string; label: string; showWorker?: boolean; empty: React.ReactNode }) {
-  const paged = usePaged(items, { prefix, defaultSize: 10 })
+  const paged = usePaged(items, { prefix, defaultSize: SECTION_SIZE, sizes: [SECTION_SIZE] })
   if (items.length === 0) return <EmptyRow>{empty}</EmptyRow>
   return (
     <>
       <ul aria-label={label} className="divide-y">
         {paged.rows.map((i) => <li key={i.id}><ItemRow item={i} from={from} showWorker={showWorker} /></li>)}
       </ul>
-      {items.length > 10 && (
+      {items.length > SECTION_SIZE && (
         <div className="border-t px-5 py-3">
-          <Pager page={paged.page} pageSize={paged.size} total={paged.total} onPage={paged.setPage} order="time" label={label} pageSizes={PAGE_SIZES} onPageSize={paged.setSize} />
+          <Pager page={paged.page} pageSize={paged.size} total={paged.total} onPage={paged.setPage} order="time" label={label} />
         </div>
       )}
     </>
   )
 }
 
-/** The first few rows, with the rest one click away. */
-export function ShowMore<T>({ rows, first = 5, render }: { rows: T[]; first?: number; render: (row: T) => React.ReactNode }) {
-  const [all, setAll] = useState(false)
-  const shown = all ? rows : rows.slice(0, first)
-  return (
-    <>
-      <ul className="divide-y">{shown.map(render)}</ul>
-      {rows.length > first && (
-        <div className="border-t px-5 py-2">
-          <Button variant="ghost" size="sm" onClick={() => setAll((a) => !a)}>{all ? 'Show fewer' : `Show all ${formatCount(rows.length)}`}</Button>
-        </div>
-      )}
-    </>
-  )
+/** Rows of a flush panel, five at a time. */
+export function PagedRows<T>({ rows, label, render }: { rows: T[]; label: string; render: (row: T) => React.ReactNode }) {
+  return <Paged rows={rows} label={label}>{(page) => <ul className="divide-y">{page.map(render)}</ul>}</Paged>
 }
 
 

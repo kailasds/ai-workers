@@ -2,6 +2,7 @@ import { Link, useLocation, useParams } from 'react-router'
 import { Bot, CalendarClock, ChevronRight, Database, FileSearch, History, Lightbulb, Link2, MessageCircleQuestion, PlayCircle, SearchX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PageContainer } from '@/components/platform/page-container'
+import { Paged } from '@/components/platform/section-pager'
 import { PageHeader, type Crumb } from '@/components/platform/page-header'
 import { EmptyState } from '@/components/platform/states'
 import { StatusBadge, VerdictBadge } from '@/components/platform/status-badge'
@@ -10,7 +11,7 @@ import { formatCount, formatDuration, formatTokens, formatUsd } from '@/lib/form
 import { cn } from '@/lib/utils'
 import { CATEGORY, ITEM_BY_ID, related, RELATION_LABEL, workerLabel, type Evidence, type LearningItem } from './model'
 import { Details, FactStrip, IconTile, Panel } from '@/components/platform/panel'
-import { EmptyRow, LINK, ShowMore, StateBadge, type From } from './ui'
+import { EmptyRow, LINK, PagedRows, StateBadge, type From } from './ui'
 import { CATEGORY_LOOK } from './look'
 import { JourneyPanel } from './growth'
 
@@ -47,7 +48,7 @@ function EvidencePanel({ item }: { item: LearningItem }) {
       {runs.length > 0 && (
         <>
           <p className="bg-muted/40 px-5 py-2 text-meta font-medium text-muted-foreground">{runsLabel} · {formatCount(runs.length)}</p>
-          <ShowMore rows={runs} render={(r) => <RunRow key={r.ref} run={r} workerId={item.workerId} />} />
+          <PagedRows rows={runs} label={runsLabel} render={(r) => <RunRow key={r.ref} run={r} workerId={item.workerId} />} />
         </>
       )}
       {runs.length === 0 && notes.length === 0 && <EmptyRow>No evidence recorded</EmptyRow>}
@@ -112,8 +113,8 @@ export function LearningItemPage() {
 
           {item.history.length > 0 && (
             <Panel id="history" title="History" icon={History} hue="amber">
-              <ol className="flex flex-col gap-4">
-                {item.history.map((h, i) => (
+              <Paged rows={item.history} label="History" order="time" className="mt-4 border-t pt-4">{(page, offset) => <ol className="flex flex-col gap-4">
+                {page.map((h, j) => { const i = offset + j; return (
                   <li key={h.label} className="relative flex gap-3">
                     <span aria-hidden="true" className="flex flex-col items-center">
                       <span className="mt-1.5 size-2.5 rounded-full bg-primary" />
@@ -124,19 +125,19 @@ export function LearningItemPage() {
                       <span className="block text-meta text-muted-foreground"><Timestamp iso={h.at} /></span>
                     </span>
                   </li>
-                ))}
-              </ol>
+                ) })}
+              </ol>}</Paged>
             </Panel>
           )}
         </div>
 
-        <aside className="flex flex-col gap-6">
-          <Panel id="related" title="Related learning" icon={Link2} hue="cyan" count={rel.length} flush>
+        <aside className="flex flex-col gap-6 lg:self-stretch">
+          <Panel id="related" title="Related learning" icon={Link2} hue="cyan" count={rel.length} flush fill className="flex-1">
             {rel.length === 0 ? (
               <EmptyRow>None linked</EmptyRow>
             ) : (
-              <ul className="divide-y">
-                {rel.map(({ item: r, relation }) => (
+              <Paged rows={rel} label="Related learning" fill>{(page) => <ul className="divide-y">
+                {page.map(({ item: r, relation }) => (
                   <li key={r.id}>
                     <Link to={`/learning/items/${r.id}`} state={{ from: self }} className="flex items-start gap-3 px-5 py-3.5 outline-none hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset">
                       <IconTile icon={CATEGORY_LOOK[r.category].icon} hue={CATEGORY_LOOK[r.category].hue} size="sm" />
@@ -148,7 +149,7 @@ export function LearningItemPage() {
                     </Link>
                   </li>
                 ))}
-              </ul>
+              </ul>}</Paged>
             )}
           </Panel>
 

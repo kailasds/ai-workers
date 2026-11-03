@@ -7,12 +7,13 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { CopyValue } from '@/components/platform/copy-value'
+import { SECTION_SIZE } from '@/components/platform/section-pager'
 import { Fact, FactList } from '@/components/platform/fact-list'
 import { Pager } from '@/components/platform/pager'
 import { Details, Panel } from '@/components/platform/panel'
 import { StatusBadge } from '@/components/platform/status-badge'
 import { Timestamp } from '@/components/platform/timestamp'
-import { PAGE_SIZES, usePaged } from '@/hooks/use-paged'
+import { usePaged } from '@/hooks/use-paged'
 import { isResolved } from './demo/engine'
 import type { ChainResult } from './demo/integrity'
 import { SNAPSHOT_AT, WORKERS, workerLabel } from './demo/platform'
@@ -82,7 +83,7 @@ export function SentinelDecisionsPage() {
     .filter((d) => !get('worker') || d.workerIds.includes(get('worker')!))
     .filter((d) => !q || [d.title, d.id, d.reason, d.summary, ...d.workerIds.map(workerLabel)].some((x) => x.toLowerCase().includes(q)))
     .sort((a, b) => (get('sort') === 'oldest' ? a.seq - b.seq : b.seq - a.seq))
-  const paged = usePaged(filtered)
+  const paged = usePaged(filtered, { defaultSize: SECTION_SIZE, sizes: [SECTION_SIZE] })
   const filtering = ['q', 'period', 'by', 'type', 'outcome', 'worker'].some((k) => get(k))
   const workerOptions = WORKERS.filter((w) => s.decisions.some((d) => d.workerIds.includes(w.composition_id))).map((w) => w.composition_id).sort((a, b) => workerLabel(a).localeCompare(workerLabel(b)))
   const types = [...new Set(s.decisions.map((d) => d.type))]
@@ -159,7 +160,7 @@ export function SentinelDecisionsPage() {
           </div>
         )}
       </Panel>
-      {filtered.length > 0 && <Pager page={paged.page} pageSize={paged.size} total={paged.total} onPage={paged.setPage} pageSizes={PAGE_SIZES} onPageSize={paged.setSize} order={get('sort') === 'oldest' ? 'ranked' : 'time'} label="Decisions" />}
+      {filtered.length > 0 && <Pager page={paged.page} pageSize={paged.size} total={paged.total} onPage={paged.setPage} order={get('sort') === 'oldest' ? 'ranked' : 'time'} label="Decisions" />}
     </SentinelLayout>
   )
 }

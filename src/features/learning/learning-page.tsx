@@ -6,12 +6,13 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { contextHue, contextIcon, HUE, Tag, workerTypeMeta } from '@/components/platform/hue'
+import { SECTION_SIZE } from '@/components/platform/section-pager'
 import { Pager } from '@/components/platform/pager'
 import { PRESENCE, runtimeStatus, RuntimeStatusDot } from '@/components/platform/runtime-status'
 import { IconTile, Panel } from '@/components/platform/panel'
 import { EmptyState } from '@/components/platform/states'
 import { Timestamp } from '@/components/platform/timestamp'
-import { PAGE_SIZES, usePaged } from '@/hooks/use-paged'
+import { usePaged } from '@/hooks/use-paged'
 import { formatCount } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { domainLabel } from '@/lib/vocabulary'
@@ -25,7 +26,6 @@ import { CategoryBars, PeriodSelect } from './ui'
 
 const FOCUS = 'outline-none focus-visible:ring-2 focus-visible:ring-ring'
 const ANY = 'any'
-const TILE_SIZES = [12, 24, 48]
 
 function WorkerRow({ w, to }: { w: WorkerLearning; to: string }) {
   const type = workerTypeMeta(w.type)
@@ -152,7 +152,7 @@ export function LearningPage() {
   // Every type of learning is listed, with how much of it is new in the period.
   const kinds = CATEGORIES.map((c) => ({ ...c, count: all.reduce((n, w) => n + w.fresh.filter((i) => i.category === c.key).length, 0) }))
   const rows = workersWithNew(period, { q, type, domain, category })
-  const paged = usePaged(rows, { prefix: 'w', defaultSize: view === 'tiles' ? TILE_SIZES[0] : 10, sizes: view === 'tiles' ? TILE_SIZES : PAGE_SIZES })
+  const paged = usePaged(rows, { prefix: 'w', defaultSize: SECTION_SIZE, sizes: [SECTION_SIZE] })
   const periodLabel = PERIODS.find((p) => p.value === period)!.label.toLowerCase()
   const filtered = Boolean(q || type || domain || category)
   const write = (changes: Record<string, string | null>) =>
@@ -250,9 +250,9 @@ export function LearningPage() {
                 {paged.rows.map((w) => <li key={w.workerId}><WorkerRow w={w} to={to(w)} /></li>)}
               </ul>
             )}
-            {rows.length > Math.min(...(view === 'tiles' ? TILE_SIZES : PAGE_SIZES)) && (
+            {rows.length > SECTION_SIZE && (
               <div className="border-t px-5 py-3">
-                <Pager page={paged.page} pageSize={paged.size} total={paged.total} onPage={paged.setPage} label="Workers with new learning" pageSizes={view === 'tiles' ? TILE_SIZES : PAGE_SIZES} onPageSize={paged.setSize} />
+                <Pager page={paged.page} pageSize={paged.size} total={paged.total} onPage={paged.setPage} label="Workers with new learning" />
               </div>
             )}
           </>

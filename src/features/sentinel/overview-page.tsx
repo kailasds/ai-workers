@@ -3,6 +3,7 @@ import { ArrowRight, BellRing, ChevronDown, ChevronRight, Gavel, Handshake, Lock
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Panel } from '@/components/platform/panel'
+import { Paged, SECTION_SIZE } from '@/components/platform/section-pager'
 import { StatusBadge } from '@/components/platform/status-badge'
 import { Timestamp } from '@/components/platform/timestamp'
 import { formatCount } from '@/lib/format'
@@ -68,7 +69,7 @@ export function SentinelOverviewPage() {
   const items = attention(s)
   const share = sharingCounts(s)
   const controls = s.controls.filter((c) => c.active).sort((a, b) => SEVERITY[CONTROL_TONE[a.kind]] - SEVERITY[CONTROL_TONE[b.kind]] || b.since.localeCompare(a.since))
-  const recent = [...s.decisions].sort((a, b) => b.at.localeCompare(a.at) || b.seq - a.seq).slice(0, 6)
+  const recent = [...s.decisions].sort((a, b) => b.at.localeCompare(a.at) || b.seq - a.seq).slice(0, SECTION_SIZE)
   const stages = [
     { label: 'Eligible', n: share.eligible, to: '/sentinel/sharing?view=pools#eligible' },
     { label: 'Proposed', n: share.proposed, to: '/sentinel/sharing?view=agreements&stage=proposed' },
@@ -83,15 +84,15 @@ export function SentinelOverviewPage() {
         {items.length === 0 ? (
           <p className="flex items-center gap-2 px-5 py-4 text-body text-muted-foreground"><ShieldCheck className="size-4" aria-hidden="true" />Nothing needs attention.</p>
         ) : (
-          <ul className="divide-y">{items.map((a) => <AttentionRow key={a.key} a={a} />)}</ul>
+          <Paged rows={items} label="Needs attention">{(page) => <ul className="divide-y">{page.map((a) => <AttentionRow key={a.key} a={a} />)}</ul>}</Paged>
         )}
       </Panel>
 
       <div className="grid items-start gap-5 lg:grid-cols-2">
         <Panel id="controls" title="Controls in force" icon={Lock} hue="rose" count={controls.length} flush aside={<Link to="/sentinel/controls" className={MORE}>All controls<ArrowRight className="size-3.5" aria-hidden="true" /></Link>}>
           {controls.length === 0 ? <p className="px-5 py-4 text-body text-muted-foreground">No controls are in force.</p> : (
-            <ul className="divide-y">
-              {controls.slice(0, 5).map((c) => (
+            <Paged rows={controls} label="Controls in force">{(page) => <ul className="divide-y">
+              {page.map((c) => (
                 <li key={c.id}>
                   <Link to={withParam(params, 'control', c.id)} preventScrollReset className={cn('flex items-center gap-3 px-5 py-3', ROW_LINK)}>
                     <span className="min-w-0 flex-1">
@@ -103,9 +104,8 @@ export function SentinelOverviewPage() {
                   </Link>
                 </li>
               ))}
-            </ul>
+            </ul>}</Paged>
           )}
-          {controls.length > 5 && <p className="border-t px-5 py-2.5 text-meta text-muted-foreground">{formatCount(controls.length - 5)} more under Controls</p>}
         </Panel>
 
         <Panel id="sharing" title="Knowledge sharing" icon={Handshake} hue="teal" flush aside={<Link to="/sentinel/sharing" className={MORE}>Open Sharing<ArrowRight className="size-3.5" aria-hidden="true" /></Link>}>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { ArrowRight, Check, OctagonX, Play } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Paged } from '@/components/platform/section-pager'
 import { DetailSheet } from '@/components/platform/detail-sheet'
 import { Fact, FactList } from '@/components/platform/fact-list'
 import { StatusBadge } from '@/components/platform/status-badge'
@@ -79,35 +80,35 @@ export function WorkerSheet() {
 
           <SubHead>Controls in force</SubHead>
           {controls.length === 0 ? <p className="text-meta text-muted-foreground">None.</p> : (
-            <ul className="divide-y rounded-block border">{controls.map((c) => <li key={c.id} className="px-3 py-2.5 text-body"><ControlLink id={c.id}>{c.title}</ControlLink><span className="block text-meta text-muted-foreground">{c.reason} · since <Timestamp iso={c.since} />{c.decisionId && <> · <Link to={`/sentinel/decisions/${c.decisionId}`} className={LINK}>{c.decisionId}</Link></>}</span></li>)}</ul>
+            <Paged rows={controls} label="Controls in force" className="mt-2">{(page) => <ul className="divide-y rounded-block border">{page.map((c) => <li key={c.id} className="px-3 py-2.5 text-body"><ControlLink id={c.id}>{c.title}</ControlLink><span className="block text-meta text-muted-foreground">{c.reason} · since <Timestamp iso={c.since} />{c.decisionId && <> · <Link to={`/sentinel/decisions/${c.decisionId}`} className={LINK}>{c.decisionId}</Link></>}</span></li>)}</ul>}</Paged>
           )}
 
           <SubHead>Own settings</SubHead>
           {own.length === 0 ? <p className="text-meta text-muted-foreground">None</p> : (
-            <ul className="divide-y rounded-block border">{own.map((o) => <li key={o.field} className="flex flex-wrap justify-between gap-2 px-3 py-2.5 text-body">{OVERRIDE_LABELS[o.field]}<span>{overrideText(o.field, o.value)}</span></li>)}</ul>
+            <Paged rows={own} label="Own settings" className="mt-2">{(page) => <ul className="divide-y rounded-block border">{page.map((o) => <li key={o.field} className="flex flex-wrap justify-between gap-2 px-3 py-2.5 text-body">{OVERRIDE_LABELS[o.field]}<span>{overrideText(o.field, o.value)}</span></li>)}</ul>}</Paged>
           )}
 
           <SubHead>Sharing agreements</SubHead>
           {agreements.length === 0 ? <p className="text-meta text-muted-foreground">None.</p> : (
-            <ul className="divide-y rounded-block border">
-              {agreements.map((a) => (
+            <Paged rows={agreements} label="Sharing agreements" order="time" className="mt-2">{(page) => <ul className="divide-y rounded-block border">
+              {page.map((a) => (
                 <li key={a.id} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5">
                   <span className="min-w-0 text-body"><AgreementLink id={a.id}>{a.item}</AgreementLink><span className="block text-meta text-muted-foreground">{a.sourceId === id ? `Gives to ${workerLabel(a.targetId)}` : `Receives from ${workerLabel(a.sourceId)}`}</span></span>
                   <AgreementPill status={a.status} />
                 </li>
               ))}
-            </ul>
+            </ul>}</Paged>
           )}
 
           <SubHead>Monitoring findings</SubHead>
           {found.length === 0 ? <p className="text-meta text-muted-foreground">None.</p> : (
-            <ul className="divide-y rounded-block border">{found.map((f) => <li key={f.id} className="px-3 py-2.5 text-body">{FINDING_LABEL[f.kind]}: {f.title}<span className="block text-meta text-muted-foreground">{f.period}</span></li>)}</ul>
+            <Paged rows={found} label="Monitoring findings" className="mt-2">{(page) => <ul className="divide-y rounded-block border">{page.map((f) => <li key={f.id} className="px-3 py-2.5 text-body">{FINDING_LABEL[f.kind]}: {f.title}<span className="block text-meta text-muted-foreground">{f.period}</span></li>)}</ul>}</Paged>
           )}
 
           <SubHead>Recent decisions</SubHead>
           {decisions.length === 0 ? <p className="text-meta text-muted-foreground">None.</p> : (
-            <ul className="divide-y rounded-block border">
-              {decisions.map((d) => (
+            <Paged rows={decisions} label="Recent decisions" order="time" className="mt-2">{(page) => <ul className="divide-y rounded-block border">
+              {page.map((d) => (
                 <li key={d.id}>
                   <Link to={`/sentinel/decisions/${d.id}`} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 outline-none hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring">
                     <span className="min-w-0 text-body">{d.title}<span className="block text-meta text-muted-foreground"><Timestamp iso={d.at} /></span></span>
@@ -115,7 +116,7 @@ export function WorkerSheet() {
                   </Link>
                 </li>
               ))}
-            </ul>
+            </ul>}</Paged>
           )}
           <Link to={`/sentinel/decisions?worker=${id}`} className={`mt-2 inline-flex items-center gap-1 text-meta ${LINK}`}>All decisions for this Worker<ArrowRight className="size-3.5" aria-hidden="true" /></Link>
         </div>
@@ -170,8 +171,8 @@ export function AgreementSheet() {
             <Fact label="Last activity"><Timestamp iso={a.updatedAt} /></Fact>
           </FactList>
           <SubHead>History</SubHead>
-          <ol className="divide-y rounded-block border">
-            {history.map((d) => (
+          <Paged rows={history} label="History" order="time" className="mt-2">{(page) => <ol className="divide-y rounded-block border">
+            {page.map((d) => (
               <li key={d!.id}>
                 <Link to={`/sentinel/decisions/${d!.id}`} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 outline-none hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring">
                   <span className="min-w-0 text-body">{d!.title}<span className="block text-meta text-muted-foreground"><Timestamp iso={d!.at} /> · {d!.decidedBy.name}</span></span>
@@ -179,7 +180,7 @@ export function AgreementSheet() {
                 </Link>
               </li>
             ))}
-          </ol>
+          </ol>}</Paged>
         </div>
       )}
       <ActionDialog spec={spec} onClose={() => setSpec(null)} />
@@ -273,8 +274,8 @@ export function ControlSheet() {
           {c.active && c.kind === 'sharing_suspension' && blocker && <p className="mt-4 text-meta text-warning">Can’t resume yet: {blocker}</p>}
           <SubHead>Decision history</SubHead>
           {history.length === 0 ? <p className="text-meta text-muted-foreground">No decision recorded with this control.</p> : (
-            <ol className="divide-y rounded-block border">
-              {history.map((d) => (
+            <Paged rows={history} label="Decision history" order="time" className="mt-2">{(page) => <ol className="divide-y rounded-block border">
+              {page.map((d) => (
                 <li key={d.id}>
                   <Link to={`/sentinel/decisions/${d.id}`} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 outline-none hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring">
                     <span className="min-w-0 text-body">{d.title}<span className="block text-meta text-muted-foreground"><Timestamp iso={d.at} /> · {d.decidedBy.name}</span></span>
@@ -282,7 +283,7 @@ export function ControlSheet() {
                   </Link>
                 </li>
               ))}
-            </ol>
+            </ol>}</Paged>
           )}
           {wid && c.workerIds.length === 1 && <Link to={`/sentinel/controls?worker=${wid}&state=all`} className={`mt-2 inline-flex items-center gap-1 text-meta ${LINK}`}>All controls for this Worker<ArrowRight className="size-3.5" aria-hidden="true" /></Link>}
         </div>

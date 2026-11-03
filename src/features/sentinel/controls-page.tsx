@@ -7,6 +7,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Panel } from '@/components/platform/panel'
+import { Paged } from '@/components/platform/section-pager'
 import { StatusBadge } from '@/components/platform/status-badge'
 import { Timestamp } from '@/components/platform/timestamp'
 import { WORKERS, workerLabel } from './demo/platform'
@@ -101,7 +102,7 @@ export function SentinelControlsPage() {
         {rows.length === 0 ? (
           <p className="px-5 py-4 text-body text-muted-foreground">{filtering ? 'No controls match these filters.' : 'No controls are in force.'}</p>
         ) : (
-          <div className="relative overflow-x-auto">
+          <Paged key={[state, kind, worker, q].join('|')} rows={rows} label="Controls">{(page) => <div className="relative overflow-x-auto">
             <table className="w-full text-left text-body">
               <caption className="sr-only">Controls</caption>
               <thead className="border-b bg-muted/40 text-meta text-muted-foreground">
@@ -115,7 +116,7 @@ export function SentinelControlsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {rows.map((c) => (
+                {page.map((c) => (
                   <tr key={c.id} className="hover:bg-muted/40">
                     <td className="px-5 py-3">
                       <ControlPill kind={c.kind} />
@@ -130,7 +131,7 @@ export function SentinelControlsPage() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </div>}</Paged>
         )}
       </Panel>
 

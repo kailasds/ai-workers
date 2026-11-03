@@ -4,10 +4,11 @@ import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Pager } from '@/components/platform/pager'
+import { Paged, SECTION_SIZE } from '@/components/platform/section-pager'
 import { Panel } from '@/components/platform/panel'
 import { SectionNav } from '@/components/platform/section-nav'
 import { Timestamp } from '@/components/platform/timestamp'
-import { PAGE_SIZES, usePaged } from '@/hooks/use-paged'
+import { usePaged } from '@/hooks/use-paged'
 import { formatCount } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { useDemo } from './demo/store'
@@ -38,7 +39,7 @@ function PoolsView({ onPool }: { onPool: (key: string) => void }) {
   return (
     <>
       <Panel id="pools" title="Worker pools" icon={Users} hue="teal" count={stats.length} flush>
-        <div className="relative overflow-x-auto">
+        <Paged rows={stats} label="Worker pools">{(page) => <div className="relative overflow-x-auto">
           <table className="w-full text-left text-body">
             <caption className="sr-only">Sharing by Worker pool</caption>
             <thead className="border-b bg-muted/40 text-meta text-muted-foreground">
@@ -54,7 +55,7 @@ function PoolsView({ onPool }: { onPool: (key: string) => void }) {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {stats.map((p) => (
+              {page.map((p) => (
                 <tr key={p.key} className="hover:bg-muted/40">
                   <td className="px-5 py-3">
                     <button type="button" onClick={() => onPool(p.key)} className="rounded-sm text-left font-medium underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring">{p.label}</button>
@@ -71,19 +72,19 @@ function PoolsView({ onPool }: { onPool: (key: string) => void }) {
               ))}
             </tbody>
           </table>
-        </div>
+        </div>}</Paged>
       </Panel>
 
       <Panel id="eligible" title="Eligible, not offered yet" icon={Inbox} hue="blue" count={s.eligible.length} flush>
         {s.eligible.length === 0 ? <p className="px-5 py-4 text-body text-muted-foreground">No items are waiting to be offered.</p> : (
-          <ul className="divide-y">
-            {[...s.eligible].sort((a, b) => b.since.localeCompare(a.since)).map((e) => (
+          <Paged rows={[...s.eligible].sort((a, b) => b.since.localeCompare(a.since))} label="Eligible items" order="time">{(page) => <ul className="divide-y">
+            {page.map((e) => (
               <li key={e.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-3">
                 <span className="min-w-0 flex-1 text-body">{e.title}<span className="block text-meta text-muted-foreground"><WorkerLink id={e.sourceId} /></span></span>
                 <span className="text-meta text-muted-foreground"><Timestamp iso={e.since} /></span>
               </li>
             ))}
-          </ul>
+          </ul>}</Paged>
         )}
       </Panel>
     </>
@@ -114,7 +115,7 @@ export function SentinelSharingPage() {
   const rows = s.agreements
     .filter((a) => (!pool || a.pool === pool) && matchesStage(a, stage) && (!needle || [workerLabel(a.sourceId), workerLabel(a.targetId), a.item, a.scope].some((x) => x.toLowerCase().includes(needle))))
     .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
-  const paged = usePaged(rows)
+  const paged = usePaged(rows, { defaultSize: SECTION_SIZE, sizes: [SECTION_SIZE] })
   const filtering = Boolean(stage || pool || q)
 
   return (
@@ -189,7 +190,7 @@ export function SentinelSharingPage() {
               </div>
             )}
           </Panel>
-          {rows.length > 0 && <Pager page={paged.page} pageSize={paged.size} total={paged.total} onPage={paged.setPage} pageSizes={PAGE_SIZES} onPageSize={paged.setSize} label="Agreements" />}
+          {rows.length > 0 && <Pager page={paged.page} pageSize={paged.size} total={paged.total} onPage={paged.setPage} label="Agreements" />}
         </>
       )}
     </SentinelLayout>
