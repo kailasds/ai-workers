@@ -12,6 +12,7 @@ import { CATEGORY, ITEM_BY_ID, related, RELATION_LABEL, workerLabel, type Eviden
 import { Details, FactStrip, IconTile, Panel } from '@/components/platform/panel'
 import { EmptyRow, LINK, ShowMore, StateBadge, type From } from './ui'
 import { CATEGORY_LOOK } from './look'
+import { JourneyPanel } from './growth'
 
 function RunRow({ run, workerId }: { run: NonNullable<Evidence['run']>; workerId: string }) {
   return (
@@ -100,6 +101,8 @@ export function LearningItemPage() {
             <p className="text-body">{item.summary}</p>
             {item.details.length > 0 && <div className="mt-5 border-t pt-5"><Details rows={item.details} /></div>}
           </Panel>
+
+          <JourneyPanel item={item} />
 
           <Panel id="why" title="Why it was recorded" icon={MessageCircleQuestion} hue="violet">
             <p className="text-body">{item.why}</p>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, type LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { HUE } from '@/components/platform/hue'
@@ -132,3 +132,30 @@ export function ShowMore<T>({ rows, first = 5, render }: { rows: T[]; first?: nu
   )
 }
 
+
+/**
+ * Types of learning as a compact segmented control, small enough to sit in a panel header: icon,
+ * short label, count. Counts of zero stay visible so the split reads at a glance.
+ */
+export function TypeTabs({ value, onChange, options, label }: { value: string; onChange: (v: string) => void; options: { value: string; label: string; icon: LucideIcon; count: number }[]; label: string }) {
+  return (
+    <div role="group" aria-label={label} className="flex flex-wrap gap-0.5 rounded-lg bg-muted p-0.5">
+      {options.map((o) => {
+        const on = o.value === value
+        return (
+          <button
+            key={o.value}
+            type="button"
+            aria-pressed={on}
+            onClick={() => onChange(o.value)}
+            className={cn('inline-flex h-7 items-center gap-1.5 rounded-md px-2.5 text-meta font-medium whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-ring', on ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground')}
+          >
+            <o.icon className="size-3.5" aria-hidden="true" />
+            {o.label}
+            <span className={cn('tabular-nums', on ? 'text-primary-strong' : o.count === 0 && 'opacity-60')}>{formatCount(o.count)}</span>
+          </button>
+        )
+      })}
+    </div>
+  )
+}

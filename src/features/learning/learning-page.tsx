@@ -101,11 +101,14 @@ function WorkerTile({ w, to }: { w: WorkerLearning; to: string }) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 border-t pt-4">
-        <div role="img" aria-label={split.map((c) => `${c.count} ${c.label.toLowerCase()}`).join(', ')} className="flex h-2 gap-0.5 overflow-hidden rounded-full bg-track">
-          {split.map((c) => <span key={c.key} className={HUE[CATEGORY_LOOK[c.key].hue].solid} style={{ flexGrow: c.count, flexBasis: 0 }} />)}
+      {/* The split by category; its legend shows on hovering the bar. Screen readers get it from the label. */}
+      <div className="relative border-t pt-4">
+        <div role="img" aria-label={split.map((c) => `${c.count} ${c.label.toLowerCase()}`).join(', ')} className="peer -my-1.5 cursor-default py-1.5">
+          <div className="flex h-2 gap-0.5 overflow-hidden rounded-full bg-track">
+            {split.map((c) => <span key={c.key} className={HUE[CATEGORY_LOOK[c.key].hue].solid} style={{ flexGrow: c.count, flexBasis: 0 }} />)}
+          </div>
         </div>
-        <ul className="flex flex-wrap gap-x-3 gap-y-1 text-meta text-muted-foreground">
+        <ul aria-hidden="true" className="pointer-events-none invisible absolute top-full left-0 z-20 mt-2 flex flex-col gap-1.5 rounded-lg border bg-popover px-3 py-2.5 text-meta text-muted-foreground opacity-0 shadow-md transition-opacity peer-hover:visible peer-hover:opacity-100">
           {split.map((c) => {
             const Icon = CATEGORY_LOOK[c.key].icon
             return (
