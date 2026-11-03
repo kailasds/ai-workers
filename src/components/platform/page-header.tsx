@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 import { ChevronRight, type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { BackButton } from './back-button'
 
 export interface Crumb {
   label: string
@@ -9,6 +10,7 @@ export interface Crumb {
 
 // P-01: where am I, what is this, what can I do. Breadcrumb only on sub-pages; one title;
 // at most one scope sentence; utilities (freshness, refresh, period) before the task actions.
+// Sub-pages (those with crumbs) lead the title with a back button; landing pages have none.
 export function PageHeader({
   title,
   icon: Icon,
@@ -55,7 +57,10 @@ export function PageHeader({
             </ol>
           </nav>
         )}
-        <h1 className="text-page">{title}</h1>
+        <div className="flex items-center gap-3">
+          {crumbs && crumbs.length > 0 && <BackButton fallback={crumbs.findLast((c) => c.to)?.to} />}
+          <h1 className="min-w-0 text-page">{title}</h1>
+        </div>
         {meta && <div className="mt-2">{meta}</div>}
         </div>
       </div>

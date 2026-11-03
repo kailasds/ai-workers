@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { Link, useLocation, useParams, useSearchParams } from 'react-router'
-import { ChevronDown, ChevronRight, FileSearch, Fingerprint, Lightbulb, Search, ShieldCheck, ShieldX, Users } from 'lucide-react'
+import { ChevronDown, ChevronRight, FileSearch, Fingerprint, Lightbulb, Search, ShieldCheck, ShieldX, SlidersHorizontal, Users } from 'lucide-react'
 import { toast } from 'sonner'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import { Label } from '@/components/ui/label'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { CopyValue } from '@/components/platform/copy-value'
 import { SECTION_SIZE } from '@/components/platform/section-pager'
@@ -85,6 +88,8 @@ export function SentinelDecisionsPage() {
     .sort((a, b) => (get('sort') === 'oldest' ? a.seq - b.seq : b.seq - a.seq))
   const paged = usePaged(filtered, { defaultSize: SECTION_SIZE, sizes: [SECTION_SIZE] })
   const filtering = ['q', 'period', 'by', 'type', 'outcome', 'worker'].some((k) => get(k))
+  // The Filters button counts what is set inside it; the search stays outside.
+  const active = ['period', 'by', 'outcome', 'type', 'worker', 'sort'].filter((k) => get(k)).length
   const workerOptions = WORKERS.filter((w) => s.decisions.some((d) => d.workerIds.includes(w.composition_id))).map((w) => w.composition_id).sort((a, b) => workerLabel(a).localeCompare(workerLabel(b)))
   const types = [...new Set(s.decisions.map((d) => d.type))]
   const from = { from: location.pathname + location.search }
@@ -97,31 +102,60 @@ export function SentinelDecisionsPage() {
           <InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon>
           <InputGroupInput type="search" value={get('q') ?? ''} onChange={(e) => set('q', e.target.value)} placeholder="Worker or decision" aria-label="Search by Worker, decision, reason or id" />
         </InputGroup>
-        <Select value={get('period') ?? ALL} onValueChange={(v) => set('period', v)}>
-          <SelectTrigger className="w-36" aria-label="Period"><SelectValue /></SelectTrigger>
-          <SelectContent><SelectItem value={ALL}>All time</SelectItem>{PERIODS.map((p) => <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>)}</SelectContent>
-        </Select>
-        <Select value={get('by') ?? ALL} onValueChange={(v) => set('by', v)}>
-          <SelectTrigger className="w-44" aria-label="Decided by"><SelectValue /></SelectTrigger>
-          <SelectContent><SelectItem value={ALL}>Decided by anyone</SelectItem>{Object.entries(AUTHORITY_LABEL).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}</SelectContent>
-        </Select>
-        <Select value={get('outcome') ?? ALL} onValueChange={(v) => set('outcome', v)}>
-          <SelectTrigger className="w-48" aria-label="Effect"><SelectValue /></SelectTrigger>
-          <SelectContent><SelectItem value={ALL}>Any effect</SelectItem>{(Object.keys(OUTCOME_LABEL) as Decision['outcome'][]).map((o) => <SelectItem key={o} value={o}>{OUTCOME_LABEL[o]}</SelectItem>)}</SelectContent>
-        </Select>
-        <Select value={get('type') ?? ALL} onValueChange={(v) => set('type', v)}>
-          <SelectTrigger className="w-44" aria-label="Decision type"><SelectValue /></SelectTrigger>
-          <SelectContent><SelectItem value={ALL}>All types</SelectItem>{types.map((t) => <SelectItem key={t} value={t}>{TYPE_LABEL[t]}</SelectItem>)}</SelectContent>
-        </Select>
-        <Select value={get('worker') ?? ALL} onValueChange={(v) => set('worker', v)}>
-          <SelectTrigger className="w-52" aria-label="Worker"><SelectValue /></SelectTrigger>
-          <SelectContent><SelectItem value={ALL}>All Workers</SelectItem>{workerOptions.map((id) => <SelectItem key={id} value={id}>{workerLabel(id)}</SelectItem>)}</SelectContent>
-        </Select>
-        <Select value={get('sort') ?? 'newest'} onValueChange={(v) => set('sort', v === 'newest' ? null : v)}>
-          <SelectTrigger className="w-36" aria-label="Sort"><SelectValue /></SelectTrigger>
-          <SelectContent><SelectItem value="newest">Newest first</SelectItem><SelectItem value="oldest">Oldest first</SelectItem></SelectContent>
-        </Select>
-        {filtering && <Button variant="ghost" onClick={() => setParams({}, { replace: true })}>Clear filters</Button>}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="shrink-0">
+              <SlidersHorizontal aria-hidden="true" />
+              Filters
+              {active > 0 && <Badge className="h-4 min-w-4 rounded-full px-1 tabular-nums">{active}</Badge>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="start" className="flex w-80 flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="d-period">Period</Label>
+              <Select value={get('period') ?? ALL} onValueChange={(v) => set('period', v)}>
+                <SelectTrigger id="d-period" className="w-full"><SelectValue /></SelectTrigger>
+                <SelectContent><SelectItem value={ALL}>All time</SelectItem>{PERIODS.map((p) => <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="d-by">Decided by</Label>
+              <Select value={get('by') ?? ALL} onValueChange={(v) => set('by', v)}>
+                <SelectTrigger id="d-by" className="w-full"><SelectValue /></SelectTrigger>
+                <SelectContent><SelectItem value={ALL}>Anyone</SelectItem>{Object.entries(AUTHORITY_LABEL).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="d-outcome">Effect</Label>
+              <Select value={get('outcome') ?? ALL} onValueChange={(v) => set('outcome', v)}>
+                <SelectTrigger id="d-outcome" className="w-full"><SelectValue /></SelectTrigger>
+                <SelectContent><SelectItem value={ALL}>Any effect</SelectItem>{(Object.keys(OUTCOME_LABEL) as Decision['outcome'][]).map((o) => <SelectItem key={o} value={o}>{OUTCOME_LABEL[o]}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="d-type">Decision type</Label>
+              <Select value={get('type') ?? ALL} onValueChange={(v) => set('type', v)}>
+                <SelectTrigger id="d-type" className="w-full"><SelectValue /></SelectTrigger>
+                <SelectContent><SelectItem value={ALL}>All types</SelectItem>{types.map((t) => <SelectItem key={t} value={t}>{TYPE_LABEL[t]}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="d-worker">Worker</Label>
+              <Select value={get('worker') ?? ALL} onValueChange={(v) => set('worker', v)}>
+                <SelectTrigger id="d-worker" className="w-full"><SelectValue /></SelectTrigger>
+                <SelectContent><SelectItem value={ALL}>All Workers</SelectItem>{workerOptions.map((id) => <SelectItem key={id} value={id}>{workerLabel(id)}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="d-sort">Order</Label>
+              <Select value={get('sort') ?? 'newest'} onValueChange={(v) => set('sort', v === 'newest' ? null : v)}>
+                <SelectTrigger id="d-sort" className="w-full"><SelectValue /></SelectTrigger>
+                <SelectContent><SelectItem value="newest">Newest first</SelectItem><SelectItem value="oldest">Oldest first</SelectItem></SelectContent>
+              </Select>
+            </div>
+            {active > 0 && <Button variant="ghost" className="self-start" onClick={() => setParams((p) => { const n = new URLSearchParams(); if (p.get('q')) n.set('q', p.get('q')!); return n }, { replace: true })}>Clear filters</Button>}
+          </PopoverContent>
+        </Popover>
       </div>
 
       <Panel id="log" flush>
