@@ -62,11 +62,11 @@ export function CategoryPage() {
           <div className={id ? 'flex flex-col gap-6' : 'grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]'}>
             <div className="flex min-w-0 flex-col gap-6">
               <Panel id="fresh" title={period === 'all' ? `All ${cat.label.toLowerCase()}` : `New in the ${periodLabel.toLowerCase()}`} icon={Sparkles} hue="violet" count={fresh.length} flush>
-                <ItemList items={fresh} prefix="n" label={`New ${cat.label.toLowerCase()}`} showWorker={!id} from={{ label: cat.label, to: withPeriod(`${base}/${key}`, period) }} empty={`Nothing new in the ${periodLabel.toLowerCase()}`} />
+                <ItemList items={fresh} prefix="n" label={`New ${cat.label.toLowerCase()}`} showWorker={!id} empty={`Nothing new in the ${periodLabel.toLowerCase()}`} />
               </Panel>
               {period !== 'all' && (
                 <Panel id="earlier" title="Recorded earlier" icon={Archive} hue="blue" count={earlier.length} flush>
-                  <ItemList items={earlier} prefix="e" label={`Earlier ${cat.label.toLowerCase()}`} showWorker={!id} from={{ label: cat.label, to: withPeriod(`${base}/${key}`, period) }} empty="Nothing earlier" />
+                  <ItemList items={earlier} prefix="e" label={`Earlier ${cat.label.toLowerCase()}`} showWorker={!id} empty="Nothing earlier" />
                 </Panel>
               )}
             </div>

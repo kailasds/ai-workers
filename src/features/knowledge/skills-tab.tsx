@@ -1,73 +1,21 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router'
-import { ArrowRightLeft, Bot, Brain, ClipboardCheck, Code2, FileCheck2, FolderTree, GitBranch, KeyRound, Layers, PencilLine, SearchX, ShieldCheck, Tags, TriangleAlert, UserRound, Wrench } from 'lucide-react'
+import { Brain, ClipboardCheck, Code2, FolderTree, Layers, SearchX, ShieldCheck, TriangleAlert, UserRound, Wrench } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { DetailSheet } from '@/components/platform/detail-sheet'
 import { Paged } from '@/components/platform/section-pager'
 import { IconTile, Panel } from '@/components/platform/panel'
 import { EmptyState } from '@/components/platform/states'
 import { StatusBadge } from '@/components/platform/status-badge'
 import { TabBar } from '@/components/platform/tab-bar'
-import type { KnowledgeSkill, SkillLibrary } from '@/lib/types/catalog'
-import { ALL, DemoNote, FactGrid, FiltersButton, human, LIBRARY_PAGE, LibraryRow, Mono, SearchBox, SheetHero, SheetSection } from './list-parts'
+import type { SkillLibrary } from '@/lib/types/catalog'
+import { ALL, FiltersButton, human, LIBRARY_PAGE, LibraryRow, SearchBox } from './list-parts'
+import { isDod, knowledgeItemTo, workers } from './item-views'
 
 const GROUP_ICON: Record<string, typeof Brain> = { engineering: Code2, security: ShieldCheck, compliance: ClipboardCheck, domain: FolderTree }
-const isDod = (s: KnowledgeSkill) => s.skill_type === 'definition_of_done'
-const workers = (n: number) => (n === 0 ? 'No Workers' : `${n} ${n === 1 ? 'Worker' : 'Workers'}`)
-
-function SkillDetail({ skill }: { skill: KnowledgeSkill }) {
-  const loadable = skill.assigned_agent_keys.length > 0
-  return (
-    <>
-      <SheetHero
-        icon={isDod(skill) ? ClipboardCheck : Brain}
-        hue={isDod(skill) ? 'amber' : 'violet'}
-        text={skill.description}
-        badges={
-          <>
-            <StatusBadge tone={['live', 'active', 'published'].includes(skill.status.toLowerCase()) ? 'success' : 'neutral'}>v{skill.version} · {human(skill.status)}</StatusBadge>
-            {!loadable && <StatusBadge tone="warning">Not yet loadable</StatusBadge>}
-          </>
-        }
-      />
-      <FactGrid
-        facts={[
-          { icon: Layers, label: 'Kind', value: isDod(skill) ? 'Definition of Done' : 'Capability' },
-          { icon: FolderTree, label: 'Category', value: human(skill.category) },
-          { icon: UserRound, label: 'Carried by', value: workers(skill.worker_count) },
-          { icon: Bot, label: 'Loadable by', value: loadable ? `${skill.assigned_agent_keys.length} Agents` : 'Not loadable yet' },
-          { icon: GitBranch, label: 'Provenance', value: [skill.provenance === 'internal' ? 'Internal' : 'External', skill.license].filter((x, i, a) => x && a.indexOf(x) === i).join(' · ') },
-          ...(skill.source_technology || skill.target_technology ? [{ icon: ArrowRightLeft, label: 'Converts', value: `${skill.source_technology ?? '?'} → ${skill.target_technology ?? '?'}` }] : []),
-        ]}
-      />
-      {skill.tags.length > 0 && (
-        <SheetSection icon={Tags} title="Tags">
-          <div className="flex flex-wrap gap-2">{skill.tags.map((t) => <span key={t} className="rounded-full bg-chip-neutral px-2.5 py-0.5 text-meta">{t}</span>)}</div>
-        </SheetSection>
-      )}
-      {skill.recommended_evaluation_ids.length > 0 && (
-        <SheetSection icon={FileCheck2} title="Checked by EVALs">
-          <ul className="divide-y rounded-block border">
-            {skill.recommended_evaluation_ids.slice(0, 5).map((id) => (
-              <li key={id} className="flex items-center gap-3 px-4 py-2.5"><FileCheck2 className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" /><Mono>{id}</Mono></li>
-            ))}
-          </ul>
-        </SheetSection>
-      )}
-      <SheetSection icon={KeyRound} title="Key">
-        <Mono>{skill.name}</Mono>
-      </SheetSection>
-      <DemoNote>Full Skill content isn’t available in this demo.</DemoNote>
-    </>
-  )
-}
-
 export function SkillsTab({ library }: { library: SkillLibrary }) {
   const [group, setGroup] = useState<string>(ALL)
   const [category, setCategory] = useState<string>(ALL)
   const [loadable, setLoadable] = useState<string>(ALL)
   const [q, setQ] = useState('')
-  const [open, setOpen] = useState<KnowledgeSkill | null>(null)
   const clear = () => { setQ(''); setCategory(ALL); setLoadable(ALL) }
 
   const matching = useMemo(() => {
@@ -123,7 +71,7 @@ export function SkillsTab({ library }: { library: SkillLibrary }) {
                 <LibraryRow
                   key={s.name}
                   label={`Open ${s.title}`}
-                  onOpen={() => setOpen(s)}
+                  to={knowledgeItemTo('skills', s.name)}
                   icon={<IconTile icon={isDod(s) ? ClipboardCheck : Brain} hue={isDod(s) ? 'amber' : 'violet'} size="sm" />}
                   title={s.title}
                   aside={<><UserRound className="size-3.5" aria-hidden="true" />{workers(s.worker_count)}</>}
@@ -134,20 +82,6 @@ export function SkillsTab({ library }: { library: SkillLibrary }) {
         )}
       </Panel>
 
-      <DetailSheet
-        open={open !== null}
-        onClose={() => setOpen(null)}
-        title={open?.title}
-        description={open ? human(open.category) : undefined}
-        width="2xl"
-        footer={open && (
-          <Button asChild variant="outline" className="ml-auto">
-            <Link to={`/knowledge/capture?revise=${open.name}`}><PencilLine aria-hidden="true" />Revise this Skill</Link>
-          </Button>
-        )}
-      >
-        {open && <SkillDetail skill={open} />}
-      </DetailSheet>
     </>
   )
 }

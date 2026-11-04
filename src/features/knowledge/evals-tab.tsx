@@ -1,15 +1,14 @@
 import { useMemo, useState } from 'react'
-import { FileCheck2, FolderTree, Gauge, GitCommitVertical, KeyRound, Layers, SearchX, ShieldCheck, Target } from 'lucide-react'
+import { FileCheck2, Gauge, Layers, SearchX, ShieldCheck, Target } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { DetailSheet } from '@/components/platform/detail-sheet'
 import { Paged } from '@/components/platform/section-pager'
 import { IconTile, Panel } from '@/components/platform/panel'
 import { EmptyState } from '@/components/platform/states'
-import { StatusBadge } from '@/components/platform/status-badge'
 import { TabBar } from '@/components/platform/tab-bar'
 import { formatPercent } from '@/lib/format'
 import type { Evaluation } from '@/lib/types/catalog'
-import { ALL, FactGrid, FiltersButton, human, LIBRARY_PAGE, LibraryRow, Mono, SearchBox, SheetHero } from './list-parts'
+import { ALL, FiltersButton, human, LIBRARY_PAGE, LibraryRow, SearchBox } from './list-parts'
+import { knowledgeItemTo } from './item-views'
 
 type Gate = 'all' | 'gate' | 'measured'
 
@@ -17,7 +16,6 @@ export function EvalsTab({ evals }: { evals: Evaluation[] }) {
   const [category, setCategory] = useState(ALL)
   const [gate, setGate] = useState<Gate>('all')
   const [q, setQ] = useState('')
-  const [open, setOpen] = useState<Evaluation | null>(null)
 
   const categories = useMemo(() => {
     const counts = new Map<string, number>()
@@ -67,7 +65,7 @@ export function EvalsTab({ evals }: { evals: Evaluation[] }) {
                 <LibraryRow
                   key={e.id}
                   label={`Open ${e.name}`}
-                  onOpen={() => setOpen(e)}
+                  to={knowledgeItemTo('evals', e.id)}
                   icon={e.hard_gate ? <IconTile icon={ShieldCheck} hue="amber" size="sm" /> : <IconTile icon={Gauge} hue="teal" size="sm" />}
                   title={e.name}
                   aside={e.pass_threshold !== null ? <><Target className="size-3.5" aria-hidden="true" />{formatPercent(e.pass_threshold)}</> : undefined}
@@ -78,26 +76,6 @@ export function EvalsTab({ evals }: { evals: Evaluation[] }) {
         )}
       </Panel>
 
-      <DetailSheet open={open !== null} onClose={() => setOpen(null)} title={open?.name} description={open ? human(open.category) : undefined} width="2xl">
-        {open && (
-          <>
-            <SheetHero
-              icon={open.hard_gate ? ShieldCheck : Gauge}
-              hue={open.hard_gate ? 'amber' : 'teal'}
-              text={open.description?.trim() || 'No description.'}
-              badges={<StatusBadge tone={open.hard_gate ? 'warning' : 'neutral'} icon={null}>{open.hard_gate ? 'Required gate' : 'Measured check'}</StatusBadge>}
-            />
-            <FactGrid
-              facts={[
-                { icon: Target, label: 'Passes at', value: open.pass_threshold !== null ? formatPercent(open.pass_threshold) : 'No threshold' },
-                { icon: FolderTree, label: 'Measured as', value: human(open.category) },
-                { icon: GitCommitVertical, label: 'Version', value: `v${open.version}` },
-                { icon: KeyRound, label: 'Key', value: <Mono>{open.id}</Mono> },
-              ]}
-            />
-          </>
-        )}
-      </DetailSheet>
     </>
   )
 }

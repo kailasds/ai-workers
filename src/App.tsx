@@ -17,6 +17,7 @@ const JourneyPage = named(() => import('@/features/compose/journey-page'), 'Jour
 const DraftsPage = named(() => import('@/features/compose/drafts-page'), 'DraftsPage')
 const KnowledgePage = named(() => import('@/features/knowledge/knowledge-page'), 'KnowledgePage')
 const GovernancePage = named(() => import('@/features/knowledge/governance-page'), 'GovernancePage')
+const KnowledgeItemPage = named(() => import('@/features/knowledge/knowledge-item-page'), 'KnowledgeItemPage')
 const SkillWizard = named(() => import('@/features/knowledge/skill-wizard'), 'SkillWizard')
 const SentinelSharingPage = named(() => import('@/features/sentinel/sharing-page'), 'SentinelSharingPage')
 const LearningPage = named(() => import('@/features/learning/learning-page'), 'LearningPage')
@@ -114,6 +115,7 @@ function App() {
             <Route path="knowledge" element={<Navigate to="/knowledge/skills" replace />} />
             <Route path="knowledge/brains" element={<Navigate to="/learning" replace />} />
             <Route path="knowledge/capture" element={<SkillWizard />} />
+            <Route path="knowledge/:view/:itemId" element={<KnowledgeItemPage />} />
             {/* Learning drill-downs stand alone, each with a breadcrumb back. */}
             <Route path="learning/categories/:category" element={<LearningCategoryPage />} />
             <Route path="learning/items/:itemId" element={<LearningItemPage />} />

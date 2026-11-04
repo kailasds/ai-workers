@@ -11,7 +11,7 @@ import { CATEGORY_LOOK } from './look'
 import { useReviews } from './reviews'
 import { formatCount } from '@/lib/format'
 import { cn } from '@/lib/utils'
-import { PERIODS, STATES, workerLabel, type CategoryKey, type LearningItem, type PeriodKey, type StateKey } from './model'
+import { CATEGORY, PERIODS, STATES, workerLabel, type CategoryKey, type LearningItem, type PeriodKey, type StateKey } from './model'
 
 // The pieces every Learning screen shares, so the platform and a Worker read the same way:
 // only the scope of the records changes.
@@ -69,17 +69,30 @@ export function CategoryBars({ rows, hrefFor, label }: { rows: { key: CategoryKe
   )
 }
 
+/** A learning item's details page. */
+export const itemTo = (id: string) => `/learning/items/${id}`
+
+/** Where a row on the current screen came from, so the item page's breadcrumb leads back. */
+function useFrom(item: LearningItem): From | undefined {
+  const { pathname, search } = useLocation()
+  const to = pathname + search
+  const cat = pathname.match(/^\/learning\/categories\/([^/]+)/)?.[1]
+  if (cat && cat in CATEGORY) return { label: CATEGORY[cat as CategoryKey].label, to }
+  if (pathname.startsWith('/learning/workers/')) return { label: workerLabel(item.workerId), to }
+  return undefined
+}
+
 /**
  * One learning item as a row: category icon, title, a line on what it is, and where it stands.
- * It opens the item's page; the page's way back leads to the list it was opened from.
+ * It opens the item's details page.
  */
-export function ItemRow({ item, showWorker = true, from }: { item: LearningItem; showWorker?: boolean; from?: From }) {
-  const { pathname, search, hash } = useLocation()
+export function ItemRow({ item, showWorker = true }: { item: LearningItem; showWorker?: boolean }) {
   const look = CATEGORY_LOOK[item.category]
+  const from = useFrom(item)
   const reviews = useReviews()
   const pending = item.state === 'proposed' && !reviews[item.id]
   return (
-    <Link to={`/learning/items/${item.id}`} state={{ from: { label: from?.label ?? 'Learning', to: from?.to ?? `${pathname}${search}${hash}` } }} title={item.summary} className={cn('flex items-center gap-3 px-5 py-3', ROW, pending && 'bg-destructive/5')}>
+    <Link to={itemTo(item.id)} state={from ? { from } : undefined} title={item.summary} className={cn('flex items-center gap-3 px-5 py-3', ROW, pending && 'bg-destructive/5')}>
       <IconTile icon={look.icon} hue={pending ? 'rose' : look.hue} size="sm" />
       <span className="min-w-0 flex-1 truncate text-body">{item.title}</span>
       {showWorker && <span className="hidden max-w-56 truncate text-meta text-muted-foreground md:block" title={workerLabel(item.workerId)}>{workerLabel(item.workerId)}</span>}
@@ -94,13 +107,13 @@ export function EmptyRow({ children }: { children: React.ReactNode }) {
 }
 
 /** A paged list of learning items, edge to edge inside a flush panel. */
-export function ItemList({ items, prefix, label, showWorker = true, empty, pageSize = SECTION_SIZE, from }: { items: LearningItem[]; prefix: string; label: string; showWorker?: boolean; empty: React.ReactNode; pageSize?: number; from?: From }) {
+export function ItemList({ items, prefix, label, showWorker = true, empty, pageSize = SECTION_SIZE }: { items: LearningItem[]; prefix: string; label: string; showWorker?: boolean; empty: React.ReactNode; pageSize?: number }) {
   const paged = usePaged(items, { prefix, defaultSize: pageSize, sizes: [pageSize] })
   if (items.length === 0) return <EmptyRow>{empty}</EmptyRow>
   return (
     <>
       <ul aria-label={label} className="divide-y">
-        {paged.rows.map((i) => <li key={i.id}><ItemRow item={i} showWorker={showWorker} from={from} /></li>)}
+        {paged.rows.map((i) => <li key={i.id}><ItemRow item={i} showWorker={showWorker} /></li>)}
       </ul>
       {items.length > pageSize && (
         <div className="border-t px-5 py-3">

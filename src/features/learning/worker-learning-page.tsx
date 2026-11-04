@@ -15,7 +15,7 @@ import { domainOfWorker, inPeriod, itemsOf, PERIODS, WORKER_BY_ID_SAFE, workerLa
 import { inStage, LIFECYCLE } from './journey'
 import { EvolutionPanel } from './growth'
 import { KindTabs, StageTabs, useStage } from './lifecycle'
-import { ItemList, PeriodSelect } from './ui'
+import { ItemList, PeriodSelect, itemTo } from './ui'
 import { pendingChanges, useReviews } from './reviews'
 import { usePeriod, withPeriod } from './nav'
 
@@ -89,7 +89,7 @@ export function WorkerLearningPage() {
             facts={[`${formatCount(items.length)} learning items`, ...LIFECYCLE.map((st) => `${formatCount(inStage(items, st.key).length)} ${st.label.toLowerCase()}`), `revision ${worker.revision}`]}
             action={
               pending.length ? (
-                <Button asChild className="px-5"><Link to={`/learning/items/${pending[0].id}`} state={{ from: { label: workerLabel(id), to: withPeriod(`/learning/workers/${id}`, period) } }}><Hourglass aria-hidden="true" />Review Skill changes</Link></Button>
+                <Button asChild className="px-5"><Link to={itemTo(pending[0].id)} state={{ from: { label: workerLabel(id), to: `/learning/workers/${id}` } }}><Hourglass aria-hidden="true" />Review Skill changes</Link></Button>
               ) : (
                 <Button asChild variant="outline" className="bg-card px-5"><Link to={`/workers/${id}?view=runs`}>Open its runs</Link></Button>
               )
@@ -99,7 +99,7 @@ export function WorkerLearningPage() {
           <Panel id="new" flush>
             <StageTabs items={items.filter(isNew)} value={stage} onChange={setStage} withAll pending={pending} />
             {stage === 'knowledge' && <div className="border-b px-5 py-2.5"><KindTabs items={allFresh} stage={stage} kind={kind} onChange={setKind} /></div>}
-            <ItemList key={`${stage}|${kind}|${period}`} items={fresh} prefix="n" label="New learning" showWorker={false} from={{ label: workerLabel(id), to: withPeriod(`/learning/workers/${id}`, period) }} empty={<>Nothing new{stage || kind ? ' here' : ''} in the {periodLabel}.{period !== 'all' && <> <button type="button" className="text-primary-strong underline-offset-4 hover:underline" onClick={() => setPeriod('all')}>Show all learning</button></>}</>} />
+            <ItemList key={`${stage}|${kind}|${period}`} items={fresh} prefix="n" label="New learning" showWorker={false} empty={<>Nothing new{stage || kind ? ' here' : ''} in the {periodLabel}.{period !== 'all' && <> <button type="button" className="text-primary-strong underline-offset-4 hover:underline" onClick={() => setPeriod('all')}>Show all learning</button></>}</>} />
           </Panel>
 
           {earlier.length > 0 && (
@@ -112,7 +112,7 @@ export function WorkerLearningPage() {
               flush
               aside={<Button variant="ghost" size="sm" onClick={() => setShowEarlier((v) => !v)} aria-expanded={showEarlier} aria-controls="earlier-list">{showEarlier ? 'Hide' : 'Show'}<ChevronDown className={showEarlier ? 'rotate-180' : undefined} aria-hidden="true" /></Button>}
             >
-              {showEarlier && <div id="earlier-list"><ItemList key={`${stage}|${kind}|${period}`} items={earlier} prefix="e" label="Previously recorded learning" showWorker={false} from={{ label: workerLabel(id), to: withPeriod(`/learning/workers/${id}`, period) }} empty="Nothing earlier." /></div>}
+              {showEarlier && <div id="earlier-list"><ItemList key={`${stage}|${kind}|${period}`} items={earlier} prefix="e" label="Previously recorded learning" showWorker={false} empty="Nothing earlier." /></div>}
             </Panel>
           )}
 

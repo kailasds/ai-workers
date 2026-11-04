@@ -27,7 +27,7 @@ import { pendingChanges, useReviews } from './reviews'
 import { KindTabs, StageTabs, useStage } from './lifecycle'
 import { CATEGORIES, inPeriod, isCategory, ITEMS, itemsOf, learningWorkers, PERIODS, WORKER_BY_ID_SAFE, workersWithNew, type CategoryKey, type WorkerLearning } from './model'
 import { usePeriod, withPeriod } from './nav'
-import { ItemList, PeriodSelect } from './ui'
+import { ItemList, PeriodSelect, itemTo } from './ui'
 
 const FOCUS = 'outline-none focus-visible:ring-2 focus-visible:ring-ring'
 const ANY = 'any'
@@ -148,14 +148,12 @@ function StageExplorer({ period, onAll }: { period: (typeof PERIODS)[number]['va
 // Learning's summary: the one thing to do (review Skill changes) or what is new in the period,
 // its figures, and the period itself. Counted from the learning snapshot and the demo reviews.
 function LearningBanner({ period, periodLabel, onPeriod }: { period: (typeof PERIODS)[number]['value']; periodLabel: string; onPeriod: (p: (typeof PERIODS)[number]['value']) => void }) {
-  const [params] = useSearchParams()
   const reviews = useReviews()
   const pending = ITEMS.filter((i) => i.state === 'proposed' && !reviews[i.id])
   const changes = pendingChanges(pending, reviews)
   const fresh = ITEMS.filter((i) => inPeriod(i, period))
   const freshWorkers = new Set(fresh.map((i) => i.workerId)).size
-  // Review opens the first Skill change waiting for a person, on its own page.
-  const reviewTo = pending[0] ? `/learning/items/${pending[0].id}` : '/learning'
+  const reviewTo = pending[0] ? itemTo(pending[0].id) : '/learning'
   return (
     <SummaryBanner
       hue="cyan"
@@ -171,7 +169,7 @@ function LearningBanner({ period, periodLabel, onPeriod }: { period: (typeof PER
       action={
         <>
           <PeriodSelect value={period} onChange={onPeriod} />
-          {pending.length > 0 && <Button asChild className="px-5"><Link to={reviewTo} state={{ from: { label: 'Learning', to: `/learning?${params.toString()}` } }}><Hourglass aria-hidden="true" />Review Skill changes</Link></Button>}
+          {pending.length > 0 && <Button asChild className="px-5"><Link to={reviewTo}><Hourglass aria-hidden="true" />Review Skill changes</Link></Button>}
         </>
       }
     />
