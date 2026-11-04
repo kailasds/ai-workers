@@ -1,14 +1,14 @@
-import { Link } from 'react-router'
-import { ChevronRight, type LucideIcon } from 'lucide-react'
+import { Link, useSearchParams } from 'react-router'
+import { ChevronRight, Hourglass, type LucideIcon } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { HUE } from '@/components/platform/hue'
 import { Paged, SECTION_SIZE } from '@/components/platform/section-pager'
 import { IconTile } from '@/components/platform/panel'
 import { Pager } from '@/components/platform/pager'
 import { StatusBadge } from '@/components/platform/status-badge'
-import { Timestamp } from '@/components/platform/timestamp'
 import { usePaged } from '@/hooks/use-paged'
 import { CATEGORY_LOOK } from './look'
+import { useReviews } from './reviews'
 import { formatCount } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { PERIODS, STATES, workerLabel, type CategoryKey, type LearningItem, type PeriodKey, type StateKey } from './model'
@@ -69,26 +69,30 @@ export function CategoryBars({ rows, hrefFor, label }: { rows: { key: CategoryKe
   )
 }
 
-/** One learning item as a row: category icon, title, a line on what it is, and where it stands. */
-export function ItemRow({ item, from, showWorker = true }: { item: LearningItem; from: From; showWorker?: boolean }) {
+/** The current URL with a learning item open in the side panel. */
+export function withItem(params: URLSearchParams, id: string) {
+  const n = new URLSearchParams(params)
+  n.set('item', id)
+  return { search: n.toString() }
+}
+
+/**
+ * One learning item as a row: category icon, title, a line on what it is, and where it stands.
+ * It opens the item in the side panel, so the reader keeps their place.
+ */
+export function ItemRow({ item, showWorker = true }: { item: LearningItem; showWorker?: boolean }) {
+  const [params] = useSearchParams()
   const look = CATEGORY_LOOK[item.category]
-  const runs = item.evidence.filter((e) => e.run).length
+  const open = params.get('item') === item.id
+  const reviews = useReviews()
+  const pending = item.state === 'proposed' && !reviews[item.id]
   return (
-    <Link to={`/learning/items/${item.id}`} state={{ from }} className={cn('flex items-start gap-4 px-5 py-4', ROW)}>
-      <IconTile icon={look.icon} hue={look.hue} />
-      <div className="min-w-0 flex-1">
-        <p className="text-item">{item.title}</p>
-        <p className="mt-0.5 line-clamp-1 text-meta text-muted-foreground">{item.summary}</p>
-        {showWorker && <p className="mt-2 truncate text-meta text-foreground">{workerLabel(item.workerId)}</p>}
-        <p className={cn('flex flex-wrap items-center gap-x-2 gap-y-1 text-meta text-muted-foreground', showWorker ? 'mt-0.5' : 'mt-2')}>
-          <span>{item.when.kind === 'as_of' ? 'As of ' : ''}<Timestamp iso={item.when.iso} /></span>
-          {runs > 0 && <><span aria-hidden="true">·</span><span>{runs === 1 ? '1 run' : `${runs} runs`}</span></>}
-        </p>
-      </div>
-      <div className="flex shrink-0 items-center gap-2 self-center">
-        <StateBadge state={item.state} />
-        <ChevronRight className="size-4 text-muted-foreground" aria-hidden="true" />
-      </div>
+    <Link to={withItem(params, item.id)} preventScrollReset aria-current={open ? 'true' : undefined} title={item.summary} className={cn('flex items-center gap-3 px-5 py-3', ROW, pending && 'bg-destructive/5', open && 'bg-primary-soft/50')}>
+      <IconTile icon={look.icon} hue={pending ? 'rose' : look.hue} size="sm" />
+      <span className="min-w-0 flex-1 truncate text-body">{item.title}</span>
+      {showWorker && <span className="hidden max-w-56 truncate text-meta text-muted-foreground md:block" title={workerLabel(item.workerId)}>{workerLabel(item.workerId)}</span>}
+      {pending && <span className="inline-flex shrink-0 items-center gap-1 text-meta font-medium text-destructive"><Hourglass className="size-3.5" aria-hidden="true" />Review</span>}
+      <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
     </Link>
   )
 }
@@ -98,15 +102,15 @@ export function EmptyRow({ children }: { children: React.ReactNode }) {
 }
 
 /** A paged list of learning items, edge to edge inside a flush panel. */
-export function ItemList({ items, from, prefix, label, showWorker = true, empty }: { items: LearningItem[]; from: From; prefix: string; label: string; showWorker?: boolean; empty: React.ReactNode }) {
-  const paged = usePaged(items, { prefix, defaultSize: SECTION_SIZE, sizes: [SECTION_SIZE] })
+export function ItemList({ items, prefix, label, showWorker = true, empty, pageSize = SECTION_SIZE }: { items: LearningItem[]; prefix: string; label: string; showWorker?: boolean; empty: React.ReactNode; pageSize?: number }) {
+  const paged = usePaged(items, { prefix, defaultSize: pageSize, sizes: [pageSize] })
   if (items.length === 0) return <EmptyRow>{empty}</EmptyRow>
   return (
     <>
       <ul aria-label={label} className="divide-y">
-        {paged.rows.map((i) => <li key={i.id}><ItemRow item={i} from={from} showWorker={showWorker} /></li>)}
+        {paged.rows.map((i) => <li key={i.id}><ItemRow item={i} showWorker={showWorker} /></li>)}
       </ul>
-      {items.length > SECTION_SIZE && (
+      {items.length > pageSize && (
         <div className="border-t px-5 py-3">
           <Pager page={paged.page} pageSize={paged.size} total={paged.total} onPage={paged.setPage} order="time" label={label} />
         </div>

@@ -1,7 +1,7 @@
 import { createElement } from 'react'
 import { Link } from 'react-router'
 import { contextHue, contextIcon, HUE, Tag, workerTypeMeta } from '@/components/platform/hue'
-import { UserRound } from 'lucide-react'
+import { UserRound, type LucideIcon } from 'lucide-react'
 import { PRESENCE, runtimeStatus, RuntimeStatusDot } from '@/components/platform/runtime-status'
 import { useDemo } from '@/features/sentinel/demo/store'
 import { contextOf, identityOfContext } from '@/features/compose/compose-model'
@@ -17,12 +17,12 @@ const VERDICT_TEXT: Record<Verdict, string> = { MET: 'text-success', NOT_MET: 't
 
 
 /** One figure as a tile: value over label, centred. On card hover the tile lifts to the card colour. */
-export function Figure({ label, children }: { label: string; children: React.ReactNode }) {
+export function Figure({ label, icon: Icon, children }: { label: string; icon?: LucideIcon; children: React.ReactNode }) {
   return (
     <div className="flex min-w-0 flex-col items-center gap-0.5 rounded-block bg-muted px-2 py-3 text-center group-hover:bg-card">
       {/* The label is read first; it shows under the value. */}
       <dt className="order-last truncate text-meta text-muted-foreground">{label}</dt>
-      <dd className="max-w-full truncate text-item tabular-nums">{children}</dd>
+      <dd className="flex max-w-full items-center gap-1.5 truncate text-item tabular-nums">{Icon && <Icon className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />}{children}</dd>
     </div>
   )
 }

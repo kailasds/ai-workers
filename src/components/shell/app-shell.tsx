@@ -4,6 +4,7 @@ import { PageContainer } from '@/components/platform/page-container'
 import { LoadingRegion } from '@/components/platform/states'
 import { Skeleton } from '@/components/ui/skeleton'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { WorkNotices } from './work-notices'
 import { AppSidebar } from './app-sidebar'
@@ -54,6 +55,7 @@ export function AppShell() {
         <WorkNotices />
         <CommandMenu open={commandOpen} onOpenChange={setCommandOpen} features={MOCK_SESSION.features} />
         <StarterGuide open={guide.open} onClose={guide.close} />
+        <Toaster position="bottom-right" />
       </SidebarProvider>
     </TooltipProvider>
   )

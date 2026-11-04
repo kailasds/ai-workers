@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowRight, Brain, Check, ChevronRight, CircleCheck, CircleDashed, CircleX, Database, GitCommitHorizontal, PencilRuler, Route, TrendingDown, TrendingUp, type LucideIcon } from 'lucide-react'
+import { ArrowRight, Brain, Check, CircleCheck, CircleDashed, CircleX, Database, PencilRuler, Route, TrendingDown, TrendingUp, type LucideIcon } from 'lucide-react'
 import { IconTile, Panel } from '@/components/platform/panel'
 import { Timestamp } from '@/components/platform/timestamp'
 import { formatCount, formatUsd } from '@/lib/format'
@@ -57,18 +57,6 @@ const VERDICT = {
   NOT_ADJUDICABLE: { label: 'Not judged', bar: 'bg-muted-foreground/40', icon: CircleDashed, text: 'text-muted-foreground' },
 } as const
 
-function Stage({ icon, label, value, note }: { icon: LucideIcon; label: string; value: string; note?: string }) {
-  return (
-    <div className="flex min-w-0 flex-1 items-center gap-3 rounded-lg bg-muted/50 px-4 py-3">
-      <IconTile icon={icon} hue="violet" size="sm" />
-      <div className="min-w-0">
-        <p className="truncate text-meta text-muted-foreground">{label}</p>
-        <p className="text-item tabular-nums">{value}{note && <span className="ml-1.5 text-meta font-normal text-warning">{note}</span>}</p>
-      </div>
-    </div>
-  )
-}
-
 const pct = (n: number) => `${Math.round(n * 100)}%`
 
 function Change({ label, from, to, better }: { label: string; from: string; to: string; better: boolean | null }) {
@@ -87,28 +75,18 @@ function Change({ label, from, to, better }: { label: string; from: string; to: 
 }
 
 /**
- * How a Worker grows: what its learning has become (memory, knowledge, Skill changes, revision),
- * each run with what it left behind, and how its recent runs compare with its earlier ones.
+ * How a Worker grows: each run with what it left behind, and how its recent runs compare with its
+ * earlier ones. What its learning has become is the lifecycle above it.
  */
-export function EvolutionPanel({ workerId, revision }: { workerId: string; revision: number }) {
+export function EvolutionPanel({ workerId }: { workerId: string }) {
   const e = evolution(workerId)
   const [hover, setHover] = useState<number | null>(null)
   const max = Math.max(1, ...e.runs.map((r) => r.learned))
   const h = hover === null ? null : e.runs[hover]
   return (
     <Panel id="evolution" title="Evolution" icon={TrendingUp} hue="violet" collapsible>
-      <div className="flex flex-col items-stretch gap-2 lg:flex-row lg:items-center">
-        <Stage icon={Database} label="Memory" value={formatCount(e.memory)} />
-        <ChevronRight className="hidden size-4 shrink-0 text-muted-foreground lg:block" aria-hidden="true" />
-        <Stage icon={Brain} label="Knowledge" value={formatCount(e.knowledge)} />
-        <ChevronRight className="hidden size-4 shrink-0 text-muted-foreground lg:block" aria-hidden="true" />
-        <Stage icon={PencilRuler} label="Skill changes" value={formatCount(e.skillChanges)} note={e.skillChanges ? 'to review' : undefined} />
-        <ChevronRight className="hidden size-4 shrink-0 text-muted-foreground lg:block" aria-hidden="true" />
-        <Stage icon={GitCommitHorizontal} label="Revision" value={`r${revision}`} />
-      </div>
-
       {/* Runs on the left; the effect figures stacked in a column on the right. */}
-      <div className={cn('mt-6 grid gap-6 empty:hidden', e.runs.length > 0 && e.effect && 'lg:grid-cols-[minmax(0,1fr)_minmax(0,20rem)]')}>
+      <div className={cn('grid gap-6 empty:hidden', e.runs.length > 0 && e.effect && 'lg:grid-cols-[minmax(0,1fr)_minmax(0,20rem)]')}>
         {e.runs.length > 0 && (
           <div className="min-w-0">
             <div className="flex flex-wrap items-center justify-between gap-2">

@@ -1,17 +1,19 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import { BarChart3, ChevronRight, LayoutGrid, List, Search, SearchX, Sparkles, TriangleAlert, UserRound, Users } from 'lucide-react'
+import { BrainCircuit, ChevronRight, Hourglass, LayoutGrid, List, Search, SearchX, SlidersHorizontal, Sparkles, TriangleAlert, UserRound, Users } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import { Label } from '@/components/ui/label'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { contextHue, HUE, Tag, workerTypeMeta } from '@/components/platform/hue'
 import { SECTION_SIZE, useTilePage } from '@/components/platform/section-pager'
 import { Pager } from '@/components/platform/pager'
 import { PRESENCE, runtimeStatus, RuntimeStatusDot } from '@/components/platform/runtime-status'
-import { IconTile, Panel } from '@/components/platform/panel'
+import { Panel } from '@/components/platform/panel'
 import { EmptyState } from '@/components/platform/states'
-import { Timestamp } from '@/components/platform/timestamp'
 import { usePaged } from '@/hooks/use-paged'
 import { formatCount } from '@/lib/format'
 import { cn } from '@/lib/utils'
@@ -19,37 +21,29 @@ import { domainLabel } from '@/lib/vocabulary'
 import { identityOfContext } from '@/features/compose/compose-model'
 import { Figure } from '@/features/registry/worker-tiles'
 import { useDemo } from '@/features/sentinel/demo/store'
-import { CATEGORY_LOOK } from './look'
-import { CATEGORIES, distribution, isCategory, ITEMS, learningWorkers, PERIODS, WORKER_BY_ID_SAFE, workersWithNew, type CategoryKey, type WorkerLearning } from './model'
+import { inStage, LIFECYCLE } from './journey'
+import { ItemSheet } from './item-sheet'
+import { pendingChanges, useReviews } from './reviews'
+import { KindTabs, StageTabs, useStage } from './lifecycle'
+import { CATEGORIES, inPeriod, isCategory, ITEMS, itemsOf, learningWorkers, PERIODS, WORKER_BY_ID_SAFE, workersWithNew, type CategoryKey, type WorkerLearning } from './model'
 import { usePeriod, withPeriod } from './nav'
-import { CategoryBars, PeriodSelect } from './ui'
+import { ItemList, PeriodSelect } from './ui'
 
 const FOCUS = 'outline-none focus-visible:ring-2 focus-visible:ring-ring'
 const ANY = 'any'
 
+/** A Worker in one line: who it is, then what is new and what waits for review. */
 function WorkerRow({ w, to }: { w: WorkerLearning; to: string }) {
-  const type = workerTypeMeta(w.type)
+  const review = pendingChanges(itemsOf(w.workerId), useReviews())
+  const worker = WORKER_BY_ID_SAFE(w.workerId)!
+  const hue = contextHue(worker.bounded_context.key)
   return (
-    <Link to={to} className={cn('flex items-start gap-4 px-5 py-4 hover:bg-muted/50 focus-visible:ring-inset', FOCUS)}>
-      <IconTile icon={type.icon} hue={type.hue} />
-      <div className="min-w-0 flex-1">
-        <p className="text-item">{w.name}</p>
-        <p className="truncate text-meta text-muted-foreground">{w.scope}</p>
-        {w.latest && (
-          <p className="mt-2 flex min-w-0 items-center gap-2 text-meta">
-            <Sparkles className="size-3.5 shrink-0 text-hue-violet" aria-hidden="true" />
-            <span className="truncate">{w.latest.title}</span>
-            <span className="shrink-0 text-muted-foreground">· <Timestamp iso={w.latest.when.iso} /></span>
-          </p>
-        )}
-      </div>
-      <div className="flex shrink-0 items-center gap-3 self-center">
-        <span className="text-right">
-          <span className="block text-item tabular-nums">{formatCount(w.fresh.length)}</span>
-          <span className="block text-meta text-muted-foreground">new</span>
-        </span>
-        <ChevronRight className="size-4 text-muted-foreground" aria-hidden="true" />
-      </div>
+    <Link to={to} className={cn('flex items-center gap-4 px-5 py-3 hover:bg-muted/50 focus-visible:ring-inset', FOCUS)}>
+      <span aria-hidden="true" className={cn('grid size-8 shrink-0 place-items-center rounded-full [&>svg]:size-4', HUE[hue].solid)}><UserRound /></span>
+      <span className="min-w-0 flex-1 truncate text-item" title={w.name}>{w.name}</span>
+      {review > 0 && <span className="inline-flex items-center gap-1 text-meta text-warning tabular-nums" title="Skill changes to review"><Hourglass className="size-3.5" aria-hidden="true" />{formatCount(review)}</span>}
+      <span className="inline-flex items-center gap-1 text-meta tabular-nums" title="New learning"><Sparkles className="size-3.5 text-hue-violet" aria-hidden="true" />{formatCount(w.fresh.length)}</span>
+      <ChevronRight className="size-4 text-muted-foreground" aria-hidden="true" />
     </Link>
   )
 }
@@ -60,32 +54,35 @@ function WorkerRow({ w, to }: { w: WorkerLearning; to: string }) {
  * outlined in amber and listed first.
  */
 function WorkerTile({ w, to }: { w: WorkerLearning; to: string }) {
+  const review = pendingChanges(itemsOf(w.workerId), useReviews())
   const worker = WORKER_BY_ID_SAFE(w.workerId)!
   const hue = contextHue(worker.bounded_context.key)
   const type = workerTypeMeta(worker.worker_type)
   const identity = identityOfContext(worker.bounded_context.key)
   const status = runtimeStatus(worker.runtime)
   const stopped = useDemo().workers[w.workerId]?.status === 'stopped'
-  const split = distribution(w.fresh).filter((c) => c.count > 0)
+  const attention = worker.runtime.attention > 0 ? 'A runtime reports a problem' : review > 0 ? `${review} Skill ${review === 1 ? 'change awaits' : 'changes await'} review` : null
   return (
     <Link
       to={to}
       className={cn(
         'group flex h-full flex-col gap-4 rounded-xl border bg-card p-5 text-card-foreground outline-none hover:border-primary/50 hover:bg-primary-soft/40 focus-visible:ring-3 focus-visible:ring-ring/50',
-        w.attention && 'border-warning/40',
+        attention && 'border-destructive/50 shadow-[0_0_0_3px_color-mix(in_oklab,var(--destructive)_10%,transparent)]',
       )}
     >
       <div className="flex items-start justify-between gap-3">
         <Tag hue={type.hue} icon={type.icon} className="min-w-0">{type.short}</Tag>
+        {attention ? (
+          <span role="img" aria-label={attention} title={attention} className="grid size-7 shrink-0 place-items-center rounded-full bg-destructive/10 text-destructive"><TriangleAlert className="size-4" aria-hidden="true" /></span>
+        ) : (
         <span className="flex shrink-0 items-center gap-1.5 rounded-full border bg-card px-2.5 py-1">
-          {w.attention ? (
-            <span className="inline-flex items-center gap-1.5 text-meta font-medium whitespace-nowrap text-warning" title={w.attention}><TriangleAlert className="size-3.5" aria-hidden="true" />Needs attention</span>
-          ) : stopped ? (
+          {stopped ? (
             <span className="inline-flex items-center gap-1.5 text-meta font-medium whitespace-nowrap text-destructive"><span aria-hidden="true" className="size-2 rounded-full bg-destructive" />Stopped by admin</span>
           ) : (
             <RuntimeStatusDot status={status} />
           )}
         </span>
+        )}
       </div>
 
       <div className="flex items-center gap-3">
@@ -100,47 +97,59 @@ function WorkerTile({ w, to }: { w: WorkerLearning; to: string }) {
         </div>
       </div>
 
-      {/* The split by category; its legend shows on hovering the bar. Screen readers get it from the label. */}
-      <div className="relative border-t pt-4">
-        <div role="img" aria-label={split.map((c) => `${c.count} ${c.label.toLowerCase()}`).join(', ')} className="peer -my-1.5 cursor-default py-1.5">
-          <div className="flex h-2 gap-0.5 overflow-hidden rounded-full bg-track">
-            {split.map((c) => <span key={c.key} className={HUE[CATEGORY_LOOK[c.key].hue].solid} style={{ flexGrow: c.count, flexBasis: 0 }} />)}
-          </div>
-        </div>
-        <ul aria-hidden="true" className="pointer-events-none invisible absolute top-full left-0 z-20 mt-2 flex flex-col gap-1.5 rounded-lg border bg-popover px-3 py-2.5 text-meta text-muted-foreground opacity-0 shadow-md transition-opacity peer-hover:visible peer-hover:opacity-100">
-          {split.map((c) => {
-            const Icon = CATEGORY_LOOK[c.key].icon
-            return (
-              <li key={c.key} className="inline-flex items-center gap-1">
-                <Icon className={cn('size-3.5', HUE[CATEGORY_LOOK[c.key].hue].text)} aria-hidden="true" />
-                <span className="text-foreground tabular-nums">{formatCount(c.count)}</span>
-                <span>{c.label}</span>
-              </li>
-            )
-          })}
-        </ul>
-      </div>
-
-      <dl className="mt-auto grid grid-cols-3 gap-2">
-        <Figure label="New">{formatCount(w.fresh.length)}</Figure>
-        <Figure label="Learning">{formatCount(w.total)}</Figure>
-        <Figure label="To review"><span className={w.review > 0 ? 'text-warning' : 'text-muted-foreground'}>{w.review > 0 ? formatCount(w.review) : 'None'}</span></Figure>
+      <dl className="mt-auto grid grid-cols-3 gap-2 border-t pt-4">
+        <Figure label="New" icon={Sparkles}>{formatCount(w.fresh.length)}</Figure>
+        <Figure label="Learning" icon={BrainCircuit}>{formatCount(w.total)}</Figure>
+        <Figure label="To review" icon={Hourglass}><span className={review > 0 ? 'text-destructive' : 'text-muted-foreground'}>{review > 0 ? formatCount(review) : 'None'}</span></Figure>
       </dl>
     </Link>
   )
 }
 
+const EXPLORER_SIZE = 5
+
 /**
- * Learning, platform first: what every Worker has learned so far, by category, and which Workers
- * learned something in the period, as a list or tiles. Both lead into the same category, Worker
- * and item screens.
+ * The lifecycle stages as tabs on top of their records, in one card. Knowledge adds category
+ * tabs; a record opens in the side panel. Five at a time.
+ */
+function StageExplorer({ period, onAll }: { period: (typeof PERIODS)[number]['value']; onAll: () => void }) {
+  const reviews = useReviews()
+  // Proposed Skill changes nobody has reviewed: listed whatever the period, ahead of the rest.
+  const pending = ITEMS.filter((i) => i.state === 'proposed' && !reviews[i.id])
+  const { stage, kind, setStage, setKind } = useStage(pending.length ? 'skill-changes' : 'knowledge')
+  const st = LIFECYCLE.find((s) => s.key === stage) ?? null
+  const fresh = [...pending, ...ITEMS.filter((i) => inPeriod(i, period) && !pending.includes(i))]
+  const ofStage = st ? inStage(fresh, st.key) : fresh
+  const shown = kind ? ofStage.filter((i) => i.category === kind) : ofStage
+  const periodLabel = PERIODS.find((p) => p.value === period)!.label.toLowerCase()
+  const kinds = <KindTabs items={ofStage} stage={stage} kind={kind} onChange={setKind} />
+  return (
+    <Panel id="stage" flush>
+      <StageTabs items={fresh} value={stage} onChange={setStage} pending={pending} />
+      {st?.categories.length !== 1 && <div className="border-b px-5 py-2.5">{kinds}</div>}
+      <ItemList
+        key={`${stage}|${kind}|${period}`}
+        items={shown}
+        prefix="s"
+        label={st?.label ?? 'All learning'}
+        pageSize={EXPLORER_SIZE}
+        empty={<>Nothing here in the {periodLabel}.{period !== 'all' && <> <button type="button" className="text-primary-strong underline-offset-4 hover:underline" onClick={onAll}>Show all learning</button></>}</>}
+      />
+    </Panel>
+  )
+}
+
+/**
+ * Learning, as a lifecycle: run experiences become knowledge when enough runs agree, and
+ * knowledge may become a Skill change a person approves. Choosing a stage shows its records;
+ * an item opens in a side panel. Below, the Workers where learning is happening and the changes
+ * waiting for review.
  */
 export function LearningPage() {
   const [params, setParams] = useSearchParams()
   const [period, setPeriod] = usePeriod()
   const [q, setQ] = useState(params.get('q') ?? '')
-  const view = params.get('view') === 'list' ? 'list' : 'tiles'
-  const category = isCategory(params.get('kind') ?? undefined) ? (params.get('kind') as CategoryKey) : null
+  const category = isCategory(params.get('wkind') ?? undefined) ? (params.get('wkind') as CategoryKey) : null
   const type = params.get('type')
   const domain = params.get('domain')
   // Filter choices come from the Workers with learning in the period, so none leads to nothing.
@@ -148,14 +157,15 @@ export function LearningPage() {
   const types = [...new Set(all.map((w) => w.type))].sort()
   const domains = [...new Set(all.map((w) => w.domain).filter((d): d is string => Boolean(d)))].sort()
   const noDomain = all.some((w) => w.domain === null)
-  // Every type of learning is listed, with how much of it is new in the period.
   const kinds = CATEGORIES.map((c) => ({ ...c, count: all.reduce((n, w) => n + w.fresh.filter((i) => i.category === c.key).length, 0) }))
+  const view = params.get('view') === 'list' ? 'list' : 'tiles'
   const rows = workersWithNew(period, { q, type, domain, category })
   const tilePage = useTilePage()
   const pageSize = view === 'tiles' ? tilePage : SECTION_SIZE
   const paged = usePaged(rows, { prefix: 'w', defaultSize: pageSize, sizes: [pageSize] })
   const periodLabel = PERIODS.find((p) => p.value === period)!.label.toLowerCase()
-  const filtered = Boolean(q || type || domain || category)
+  const active = [type, domain, category].filter(Boolean).length
+  const filtered = Boolean(q || active)
   const write = (changes: Record<string, string | null>) =>
     setParams(
       (p) => {
@@ -172,62 +182,75 @@ export function LearningPage() {
     )
   const clear = () => {
     setQ('')
-    write({ q: null, type: null, domain: null, kind: null })
+    write({ q: null, type: null, domain: null, wkind: null })
   }
   const to = (w: WorkerLearning) => withPeriod(`/learning/workers/${w.workerId}`, period)
 
   return (
     <div className="flex flex-col gap-6">
-      <Panel id="so-far" title="Learning so far" icon={BarChart3} hue="cyan" count={ITEMS.length} flush collapsible>
-        <CategoryBars rows={distribution(ITEMS)} hrefFor={(k) => withPeriod(`/learning/categories/${k}`, period)} label="Learning items by category, across all Workers" />
-      </Panel>
+      <div className="flex justify-end">
+        <PeriodSelect value={period} onChange={setPeriod} />
+      </div>
+
+      <StageExplorer period={period} onAll={() => setPeriod('all')} />
 
       <Panel
         id="new"
-        title="Workers with new learning"
+        title="Workers"
         icon={Users}
-        hue="violet"
+        hue="blue"
         count={rows.length}
         flush
         aside={
-          <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={view} onValueChange={(v) => v && write({ view: v === 'list' ? 'list' : null })} aria-label="View">
-            <ToggleGroupItem value="list" aria-label="List view"><List aria-hidden="true" /></ToggleGroupItem>
-            <ToggleGroupItem value="tiles" aria-label="Tile view"><LayoutGrid aria-hidden="true" /></ToggleGroupItem>
-          </ToggleGroup>
+          <>
+            <InputGroup className="h-8 w-full sm:w-56">
+              <InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon>
+              <InputGroupInput value={q} onChange={(e) => { setQ(e.target.value); write({ q: e.target.value || null }) }} placeholder="Search Workers or learning" aria-label="Search Workers or learning" />
+            </InputGroup>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className="shrink-0">
+                  <SlidersHorizontal aria-hidden="true" />
+                  Filters
+                  {active > 0 && <Badge className="h-4 min-w-4 rounded-full px-1 tabular-nums">{active}</Badge>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="flex w-72 flex-col gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="l-type">Worker type</Label>
+                  <Select value={type ?? ANY} onValueChange={(v) => write({ type: v === ANY ? null : v })}>
+                    <SelectTrigger id="l-type" className="w-full"><SelectValue /></SelectTrigger>
+                    <SelectContent><SelectItem value={ANY}>All types</SelectItem>{types.map((t) => <SelectItem key={t} value={t}>{workerTypeMeta(t).short}</SelectItem>)}</SelectContent>
+                  </Select>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="l-domain">Business domain</Label>
+                  <Select value={domain ?? ANY} onValueChange={(v) => write({ domain: v === ANY ? null : v })}>
+                    <SelectTrigger id="l-domain" className="w-full"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={ANY}>All domains</SelectItem>
+                      {domains.map((d) => <SelectItem key={d} value={d}>{domainLabel(d)}</SelectItem>)}
+                      {noDomain && <SelectItem value="none">No domain</SelectItem>}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="l-kind">Type of learning</Label>
+                  <Select value={category ?? ANY} onValueChange={(v) => write({ wkind: v === ANY ? null : v })}>
+                    <SelectTrigger id="l-kind" className="w-full"><SelectValue /></SelectTrigger>
+                    <SelectContent><SelectItem value={ANY}>All learning types</SelectItem>{kinds.map((c) => <SelectItem key={c.key} value={c.key}>{c.label} ({formatCount(c.count)})</SelectItem>)}</SelectContent>
+                  </Select>
+                </div>
+                {active > 0 && <Button variant="ghost" className="self-start" onClick={() => write({ type: null, domain: null, wkind: null })}>Clear filters</Button>}
+              </PopoverContent>
+            </Popover>
+            <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={view} onValueChange={(v) => v && write({ view: v === 'list' ? 'list' : null })} aria-label="View">
+              <ToggleGroupItem value="tiles" aria-label="Tile view"><LayoutGrid aria-hidden="true" /></ToggleGroupItem>
+              <ToggleGroupItem value="list" aria-label="List view"><List aria-hidden="true" /></ToggleGroupItem>
+            </ToggleGroup>
+          </>
         }
       >
-        <div className="flex flex-wrap items-center gap-2 border-b bg-muted/30 px-5 py-3">
-          <InputGroup className="w-full bg-card sm:w-60">
-            <InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon>
-            <InputGroupInput value={q} onChange={(e) => { setQ(e.target.value); write({ q: e.target.value || null }) }} placeholder="Search Workers or learning" aria-label="Search Workers or learning" />
-          </InputGroup>
-          <Select value={type ?? ANY} onValueChange={(v) => write({ type: v === ANY ? null : v })}>
-            <SelectTrigger className="w-40 bg-card" aria-label="Worker type"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value={ANY}>All types</SelectItem>
-              {types.map((t) => <SelectItem key={t} value={t}>{workerTypeMeta(t).short}</SelectItem>)}
-            </SelectContent>
-          </Select>
-          <Select value={domain ?? ANY} onValueChange={(v) => write({ domain: v === ANY ? null : v })}>
-            <SelectTrigger className="w-44 bg-card" aria-label="Business domain"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value={ANY}>All domains</SelectItem>
-              {domains.map((d) => <SelectItem key={d} value={d}>{domainLabel(d)}</SelectItem>)}
-              {noDomain && <SelectItem value="none">No domain</SelectItem>}
-            </SelectContent>
-          </Select>
-          <div className="flex flex-wrap items-center gap-2 sm:ml-auto">
-            <Select value={category ?? ANY} onValueChange={(v) => write({ kind: v === ANY ? null : v })}>
-              <SelectTrigger className="w-44 bg-card" aria-label="Type of learning"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value={ANY}>All learning types</SelectItem>
-                {kinds.map((c) => <SelectItem key={c.key} value={c.key}>{c.label} ({formatCount(c.count)})</SelectItem>)}
-              </SelectContent>
-            </Select>
-            <PeriodSelect value={period} onChange={setPeriod} />
-          </div>
-        </div>
-
         {rows.length === 0 ? (
           <EmptyState
             className="m-5"
@@ -259,6 +282,8 @@ export function LearningPage() {
           </>
         )}
       </Panel>
+
+      <ItemSheet />
     </div>
   )
 }

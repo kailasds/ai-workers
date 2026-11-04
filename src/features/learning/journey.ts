@@ -47,6 +47,45 @@ export function journey(item: LearningItem): Journey {
   return { steps, becomes: agreed ? 'knowledge' : 'memory', next: agreed ? 'A Skill change, approved by a person' : `${MIN_RUNS} agreeing runs that met the Definition of Done` }
 }
 
+// ── Lifecycle ───────────────────────────────────────────────────────────────
+// The three stages learning moves through, grouping the existing categories. A stage counts what
+// is recorded in it; nothing says how much of one stage became the next.
+
+export type LifecycleStage = 'experiences' | 'knowledge' | 'skill-changes'
+
+export const LIFECYCLE: { key: LifecycleStage; label: string; categories: CategoryKey[]; about: string }[] = [
+  { key: 'experiences', label: 'Run experiences', categories: ['experiences'], about: 'A memory of each run, kept so the Worker can recall it.' },
+  { key: 'knowledge', label: 'Knowledge', categories: ['facts', 'techniques', 'patterns'], about: 'Facts, techniques and patterns the Worker holds beyond one run.' },
+  { key: 'skill-changes', label: 'Skill changes', categories: ['skill-changes'], about: 'Changes a Worker proposes to its Skills. A person decides.' },
+]
+/** What it takes to move from one stage towards the next; not every item does. */
+export const LIFECYCLE_RULE: Partial<Record<LifecycleStage, string>> = {
+  experiences: `Kept once ${MIN_RUNS} passing runs agree`,
+  knowledge: 'May become a proposed Skill change',
+}
+export const isLifecycleStage = (k: string | null | undefined): k is LifecycleStage => LIFECYCLE.some((s) => s.key === k)
+export const stageOfCategory = (c: CategoryKey): LifecycleStage => LIFECYCLE.find((s) => s.categories.includes(c))!.key
+export const inStage = (items: LearningItem[], stage: LifecycleStage) => items.filter((i) => stageOfCategory(i.category) === stage)
+
+/** Proposed changes on a Skill-change item: the source gives a count per Worker. */
+export const proposedChanges = (i: LearningItem) => Number(i.details.find((d) => d.label === 'Proposed changes')?.value ?? 1)
+
+/** Each stage's records, with the figures the lifecycle shows. Counts come only from the records. */
+export function lifecycle(items: LearningItem[]) {
+  return LIFECYCLE.map((st) => {
+    const of = inStage(items, st.key)
+    const by = (s: StateKey) => of.filter((i) => i.state === s).length
+    return {
+      ...st,
+      items: of,
+      workers: new Set(of.map((i) => i.workerId)).size,
+      // Skill changes are counted as changes, the rest as items.
+      count: st.key === 'skill-changes' ? of.reduce((n, i) => n + proposedChanges(i), 0) : of.length,
+      states: { recorded: by('recorded'), gathering: by('gathering'), agreed: by('agreed'), proposed: by('proposed') },
+    }
+  })
+}
+
 // ── Evolution ───────────────────────────────────────────────────────────────
 
 export interface Evolution {

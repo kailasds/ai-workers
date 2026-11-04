@@ -163,28 +163,25 @@ export function SentinelDecisionsPage() {
           <p className="px-5 py-4 text-body text-muted-foreground">{filtering ? 'No decisions match these filters.' : 'No decisions recorded yet.'}</p>
         ) : (
           <div className="relative overflow-x-auto">
-            <table className="w-full text-left text-body">
+            <table className="w-full table-fixed text-left text-body">
               <caption className="sr-only">Decision log</caption>
               <thead className="border-b bg-muted/40 text-meta text-muted-foreground">
                 <tr>
-                  <th scope="col" className="px-5 py-2.5 font-medium">When</th>
+                  <th scope="col" className="w-44 px-5 py-2.5 font-medium">When</th>
                   <th scope="col" className="px-4 py-2.5 font-medium">Decision</th>
-                  <th scope="col" className="hidden px-4 py-2.5 font-medium md:table-cell">Decided by</th>
-                  <th scope="col" className="hidden px-4 py-2.5 font-medium lg:table-cell">Workers</th>
-                  <th scope="col" className="px-4 py-2.5 font-medium">Status</th>
-                  <th scope="col" className="px-2 py-2.5"><span className="sr-only">Open</span></th>
+                  <th scope="col" className="hidden w-56 px-4 py-2.5 font-medium lg:table-cell">Workers</th>
+                  <th scope="col" className="w-52 px-4 py-2.5 font-medium">Status</th>
+                  <th scope="col" className="w-12 px-2 py-2.5"><span className="sr-only">Open</span></th>
                 </tr>
               </thead>
               <tbody className="divide-y">
                 {paged.rows.map((d) => (
                   <tr key={d.id} className="hover:bg-muted/40">
-                    <td className="px-5 py-3 text-meta whitespace-nowrap"><Timestamp iso={d.at} /><span className="block font-mono text-muted-foreground">{d.id}</span></td>
+                    <td className="px-5 py-3 text-meta whitespace-nowrap text-muted-foreground" title={d.id}><Timestamp iso={d.at} /></td>
                     <td className="px-4 py-3">
-                      <Link to={`/sentinel/decisions/${d.id}`} state={from} className="rounded-sm font-medium underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring">{d.title}</Link>
-                      <span className="block text-meta text-muted-foreground">{TYPE_LABEL[d.type]}</span>
+                      <Link to={`/sentinel/decisions/${d.id}`} state={from} title={d.title} className="block truncate rounded-sm font-medium underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring">{d.title}</Link>
                     </td>
-                    <td className="hidden px-4 py-3 text-meta md:table-cell">{AUTHORITY_LABEL[d.decidedBy.kind]}</td>
-                    <td className="hidden max-w-56 truncate px-4 py-3 text-meta lg:table-cell">{d.workerIds.length === 0 ? <span className="text-muted-foreground">Platform-wide</span> : d.workerIds.length === 1 ? workerLabel(d.workerIds[0]) : `${d.workerIds.length} Workers`}</td>
+                    <td className="hidden truncate px-4 py-3 text-meta text-muted-foreground lg:table-cell" title={d.workerIds.map(workerLabel).join(', ')}>{d.workerIds.length === 0 ? 'Platform-wide' : d.workerIds.length === 1 ? workerLabel(d.workerIds[0]).split(' · ').slice(-2).join(' · ') : `${d.workerIds.length} Workers`}</td>
                     <td className="px-4 py-3"><StatusOf s={s} d={d} /></td>
                     <td className="px-2 py-3"><Link to={`/sentinel/decisions/${d.id}`} state={from} aria-label={`Open ${d.id}`} className="grid size-8 place-items-center rounded-md outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"><ChevronRight className="size-4" aria-hidden="true" /></Link></td>
                   </tr>

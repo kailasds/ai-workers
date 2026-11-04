@@ -9,9 +9,10 @@ import { EmptyState } from '@/components/platform/states'
 import { formatCount } from '@/lib/format'
 import { CATEGORIES, CATEGORY, contributors, inPeriod, isCategory, ITEMS, itemsOf, PERIODS, WORKER_BY_ID_SAFE, workerLabel, workerScope } from './model'
 import { IconTile, Panel } from '@/components/platform/panel'
+import { ItemSheet } from './item-sheet'
 import { ItemList, PeriodSelect } from './ui'
 import { CATEGORY_LOOK } from './look'
-import { useFrom, usePeriod, withPeriod } from './nav'
+import { usePeriod, withPeriod } from './nav'
 
 /**
  * One category of learning, for the whole platform (/learning/categories/:category) or for one
@@ -26,7 +27,6 @@ export function CategoryPage() {
   const scoped = id ? itemsOf(id) : ITEMS
   const key = isCategory(category) ? category : null
   const cat = key ? CATEGORY[key] : null
-  const from = useFrom(cat ? (worker ? `${workerLabel(id!)} · ${cat.label}` : cat.label) : 'Learning')
   if (!key || !cat || (id && !worker)) return <Navigate to={id && worker ? `/learning/workers/${id}` : '/learning'} replace />
 
   const items = scoped.filter((i) => i.category === key)
@@ -36,7 +36,7 @@ export function CategoryPage() {
   const base = id ? `/learning/workers/${id}` : '/learning/categories'
   const crumbs: Crumb[] = id
     ? [{ label: 'Learning', to: withPeriod('/learning', period) }, { label: workerLabel(id), to: withPeriod(`/learning/workers/${id}`, period) }, { label: cat.label }]
-    : [{ label: 'Learning', to: withPeriod('/learning', period) }, { label: 'Learning so far', to: withPeriod('/learning#so-far', period) }, { label: cat.label }]
+    : [{ label: 'Learning', to: withPeriod('/learning', period) }, { label: cat.label }]
   const who = contributors(items)
   const look = CATEGORY_LOOK[key]
 
@@ -63,11 +63,11 @@ export function CategoryPage() {
           <div className={id ? 'flex flex-col gap-6' : 'grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]'}>
             <div className="flex min-w-0 flex-col gap-6">
               <Panel id="fresh" title={period === 'all' ? `All ${cat.label.toLowerCase()}` : `New in the ${periodLabel.toLowerCase()}`} icon={Sparkles} hue="violet" count={fresh.length} flush>
-                <ItemList items={fresh} from={from} prefix="n" label={`New ${cat.label.toLowerCase()}`} showWorker={!id} empty={`Nothing new in the ${periodLabel.toLowerCase()}`} />
+                <ItemList items={fresh} prefix="n" label={`New ${cat.label.toLowerCase()}`} showWorker={!id} empty={`Nothing new in the ${periodLabel.toLowerCase()}`} />
               </Panel>
               {period !== 'all' && (
                 <Panel id="earlier" title="Recorded earlier" icon={Archive} hue="blue" count={earlier.length} flush>
-                  <ItemList items={earlier} from={from} prefix="e" label={`Earlier ${cat.label.toLowerCase()}`} showWorker={!id} empty="Nothing earlier" />
+                  <ItemList items={earlier} prefix="e" label={`Earlier ${cat.label.toLowerCase()}`} showWorker={!id} empty="Nothing earlier" />
                 </Panel>
               )}
             </div>
@@ -94,6 +94,7 @@ export function CategoryPage() {
           </div>
         </>
       )}
+      <ItemSheet />
     </PageContainer>
   )
 }

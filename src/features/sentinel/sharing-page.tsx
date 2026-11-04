@@ -1,11 +1,13 @@
 import { Link, useSearchParams } from 'react-router'
-import { ChevronRight, Inbox, Search, Users } from 'lucide-react'
+import { Ban, ChevronRight, CircleCheck, Inbox, LayoutList, PackageCheck, PauseCircle, Play, Search, Send, Users, XCircle, type LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Pager } from '@/components/platform/pager'
 import { Paged, SECTION_SIZE } from '@/components/platform/section-pager'
-import { Panel } from '@/components/platform/panel'
+import type { Hue } from '@/components/platform/hue'
+import { IconTile, Panel } from '@/components/platform/panel'
+import { TabBar } from '@/components/platform/tab-bar'
 import { SectionNav } from '@/components/platform/section-nav'
 import { Timestamp } from '@/components/platform/timestamp'
 import { usePaged } from '@/hooks/use-paged'
@@ -13,7 +15,7 @@ import { formatCount } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { useDemo } from './demo/store'
 import { poolLabel, POOLS, workerLabel } from './demo/platform'
-import { BLOCKED, poolStats, stageOf, STAGES, type Blocked, type Stage } from './demo/selectors'
+import { BLOCKED, poolStats, sharingCounts, stageOf, STAGES, type Blocked, type Stage } from './demo/selectors'
 import type { Agreement } from './demo/types'
 import { SentinelLayout } from './sentinel-layout'
 import { withParam } from './specs'
@@ -31,6 +33,24 @@ const matchesStage = (a: Agreement, f: StageFilter | null) => !f || (f === 'in_f
 
 const TH = 'px-3 py-2.5 text-right font-medium'
 const num = (n: number, tone?: string) => <span className={cn('tabular-nums', n === 0 ? 'text-muted-foreground' : tone)}>{formatCount(n)}</span>
+
+const STAGE_HUE: Record<Stage | Blocked, Hue> = { eligible: 'blue', proposed: 'blue', agreed: 'teal', delivered: 'violet', used: 'cyan', suspended: 'amber', rejected: 'rose', revoked: 'rose' }
+const STAGE_ICON: Record<StageFilter, LucideIcon> = { in_force: CircleCheck, eligible: Inbox, proposed: Send, agreed: CircleCheck, delivered: PackageCheck, used: Play, suspended: PauseCircle, rejected: XCircle, revoked: Ban }
+
+// A Worker by its domain and short id, enough to tell the two sides apart in a row.
+const short = (id: string) => workerLabel(id).split(' · ').slice(-2).join(' · ')
+
+/** The sharing lifecycle as tabs on top of the agreements: All, each stage, then the stopped states. */
+function StatusTabs({ value, onChange }: { value: StageFilter | null; onChange: (v: StageFilter | null) => void }) {
+  const s = useDemo()
+  const c = sharingCounts(s)
+  const items = [
+    { value: ALL, label: 'All', icon: LayoutList, count: s.agreements.length },
+    ...STAGES.filter((st) => st.key !== 'eligible').map((st) => ({ value: st.key, label: st.key === 'used' ? 'Used' : st.label, icon: STAGE_ICON[st.key], count: c[st.key] })),
+    ...BLOCKED.map((b) => ({ value: b.key, label: b.label, icon: STAGE_ICON[b.key], count: c[b.key] })),
+  ]
+  return <TabBar items={items} value={value ?? ALL} onChange={(v) => onChange(v === ALL ? null : (v as StageFilter))} label="Agreement status" />
+}
 
 /** Pool sharing: each pool's lifecycle counts, and the items eligible to be offered. */
 function PoolsView({ onPool }: { onPool: (key: string) => void }) {
@@ -139,10 +159,6 @@ export function SentinelSharingPage() {
               <InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon>
               <InputGroupInput type="search" value={q} onChange={(e) => set('q', e.target.value)} placeholder="Worker or item" aria-label="Search agreements by Worker or item" />
             </InputGroup>
-            <Select value={stage ?? ALL} onValueChange={(v) => set('stage', v)}>
-              <SelectTrigger className="w-40" aria-label="Status"><SelectValue /></SelectTrigger>
-              <SelectContent><SelectItem value={ALL}>Any status</SelectItem>{STAGE_OPTIONS.map((o) => <SelectItem key={o.key} value={o.key}>{o.label}</SelectItem>)}</SelectContent>
-            </Select>
             <Select value={pool ?? ALL} onValueChange={(v) => set('pool', v)}>
               <SelectTrigger className="w-56" aria-label="Pool"><SelectValue /></SelectTrigger>
               <SelectContent><SelectItem value={ALL}>All pools</SelectItem>{POOLS.map((p) => <SelectItem key={p.key} value={p.key}>{p.label}</SelectItem>)}</SelectContent>
@@ -151,6 +167,7 @@ export function SentinelSharingPage() {
           </div>
 
           <Panel id="agreements" flush>
+            <StatusTabs value={stage} onChange={(v) => set('stage', v)} />
             {rows.length === 0 ? (
               <p className="px-5 py-4 text-body text-muted-foreground">{filtering ? 'No agreements match these filters.' : 'No sharing agreements yet.'}</p>
             ) : (
@@ -160,31 +177,28 @@ export function SentinelSharingPage() {
                   <thead className="border-b bg-muted/40 text-meta text-muted-foreground">
                     <tr>
                       <th scope="col" className="px-5 py-2.5 font-medium">Shared item</th>
-                      <th scope="col" className="px-4 py-2.5 font-medium">From → to</th>
-                      <th scope="col" className="px-4 py-2.5 font-medium">Status</th>
-                      <th scope="col" className="hidden px-3 py-2.5 text-right font-medium md:table-cell">Received</th>
-                      <th scope="col" className="hidden px-3 py-2.5 text-right font-medium md:table-cell">Used</th>
-                      <th scope="col" className="hidden px-4 py-2.5 font-medium lg:table-cell">Last activity</th>
+                      <th scope="col" className="hidden px-4 py-2.5 font-medium md:table-cell">From → to</th>
+                      {!stage && <th scope="col" className="px-4 py-2.5 font-medium">Status</th>}
                       <th scope="col" className="px-2 py-2.5"><span className="sr-only">Open</span></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y">
-                    {paged.rows.map((a) => (
-                      <tr key={a.id} className="hover:bg-muted/40">
-                        <td className="px-5 py-3">
-                          <Link to={withParam(params, 'agreement', a.id)} preventScrollReset className="rounded-sm font-medium underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring">{a.item}</Link>
-                          <span className="block text-meta text-muted-foreground">{poolLabel(a.pool)}</span>
-                        </td>
-                        <td className="px-4 py-3 text-meta"><WorkerLink id={a.sourceId} /><span className="text-muted-foreground"> → </span><WorkerLink id={a.targetId} /></td>
-                        <td className="px-4 py-3">
-                          <AgreementPill status={a.status} />
-                        </td>
-                        <td className="hidden px-3 py-3 text-right md:table-cell">{num(a.delivered)}</td>
-                        <td className="hidden px-3 py-3 text-right md:table-cell">{num(a.used)}</td>
-                        <td className="hidden px-4 py-3 text-meta whitespace-nowrap text-muted-foreground lg:table-cell"><Timestamp iso={a.updatedAt} /></td>
-                        <td className="px-2 py-3"><Link to={withParam(params, 'agreement', a.id)} preventScrollReset aria-label={`Open ${a.item}`} className="grid size-8 place-items-center rounded-md outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"><ChevronRight className="size-4" aria-hidden="true" /></Link></td>
-                      </tr>
-                    ))}
+                    {paged.rows.map((a) => {
+                      const Icon = STAGE_ICON[stageOf(a)]
+                      return (
+                        <tr key={a.id} className="hover:bg-muted/40">
+                          <td className="w-full max-w-0 px-5 py-3">
+                            <Link to={withParam(params, 'agreement', a.id)} preventScrollReset title={`${poolLabel(a.pool)} · ${a.delivered} received · ${a.used} used`} className="flex min-w-0 items-center gap-3 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                              <IconTile icon={Icon} hue={STAGE_HUE[stageOf(a)]} size="sm" />
+                              <span className="truncate font-medium hover:underline">{a.item}</span>
+                            </Link>
+                          </td>
+                          <td className="hidden px-4 py-3 text-meta whitespace-nowrap text-muted-foreground md:table-cell" title={`${workerLabel(a.sourceId)} → ${workerLabel(a.targetId)}`}>{short(a.sourceId)} → {short(a.targetId)}</td>
+                          {!stage && <td className="px-4 py-3"><AgreementPill status={a.status} /></td>}
+                          <td className="w-10 px-2 py-3"><Link to={withParam(params, 'agreement', a.id)} preventScrollReset aria-label={`Open ${a.item}`} className="grid size-8 place-items-center rounded-md outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"><ChevronRight className="size-4" aria-hidden="true" /></Link></td>
+                        </tr>
+                      )
+                    })}
                   </tbody>
                 </table>
               </div>

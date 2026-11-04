@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { ChevronsUpDown, Compass, Hexagon, LogOut, PanelLeftClose, PanelLeftOpen, Search } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -132,8 +133,20 @@ function UserMenu({ onOpenCommand, onOpenGuide }: { onOpenCommand: () => void; o
   )
 }
 
+/** Leaving Home for another main menu folds the sidebar to icons; the user can open it again. */
+function useCollapseOffHome(pathname: string) {
+  const { setOpen, isMobile } = useSidebar()
+  const wasHome = useRef(isActiveItem(pathname, MAIN_MENUS[0]))
+  useEffect(() => {
+    const home = isActiveItem(pathname, MAIN_MENUS[0])
+    if (wasHome.current && !home && !isMobile) setOpen(false)
+    wasHome.current = home
+  }, [pathname, isMobile, setOpen])
+}
+
 export function AppSidebar({ onOpenCommand, onOpenGuide }: { onOpenCommand: () => void; onOpenGuide: () => void }) {
   const { pathname } = useLocation()
+  useCollapseOffHome(pathname)
   return (
     <Sidebar collapsible="icon" variant="inset" className="border-none">
       <SidebarHeader className="flex-row items-center justify-between gap-2 px-5 pt-6 pb-4 group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:gap-3 group-data-[collapsible=icon]:px-2">

@@ -1,13 +1,9 @@
 import { useNavigate } from 'react-router'
-import { FlaskConical, Gavel, Handshake, LayoutDashboard, Lock, RotateCcw, SlidersHorizontal } from 'lucide-react'
-import { toast } from 'sonner'
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { Toaster } from '@/components/ui/sonner'
+import { Gavel, Handshake, LayoutDashboard, Lock, SlidersHorizontal } from 'lucide-react'
 import { PageContainer } from '@/components/platform/page-container'
 import { PageHeader, type Crumb } from '@/components/platform/page-header'
 import { SectionNav } from '@/components/platform/section-nav'
-import { actions, isPersisted, useDemo } from './demo/store'
+import { useDemo } from './demo/store'
 import { SentinelBand } from './bands'
 import { AgreementSheet, ControlSheet, WorkerSheet } from './sheets'
 
@@ -25,40 +21,12 @@ const SENTINEL_VIEWS = [
   { value: 'policy', label: 'Policies', to: '/sentinel/policy', icon: SlidersHorizontal },
 ]
 
-/** Says once, on every Sentinel page, that governance here is a simulation, and offers a reset. */
-function DemoNotice() {
-  return (
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-block border border-dashed px-4 py-2 text-meta text-muted-foreground">
-      <FlaskConical className="size-4 shrink-0" aria-hidden="true" />
-      <p className="min-w-0 flex-1">
-        <span className="font-medium text-foreground">Demo data</span> · simulated, {isPersisted() ? 'saved in this browser' : 'not saved'}, nothing enforced
-      </p>
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button variant="ghost" size="sm"><RotateCcw aria-hidden="true" />Reset demo data</Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Reset the demo data?</AlertDialogTitle>
-            <AlertDialogDescription>Every action you took here — stops, approvals, policy changes — is discarded and the starting data comes back.</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => { actions.reset(); toast.success('Demo data reset') }}>Reset</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
-  )
-}
-
 function Drawers() {
   return (
     <>
       <WorkerSheet />
       <AgreementSheet />
       <ControlSheet />
-      <Toaster position="bottom-right" />
     </>
   )
 }
@@ -74,7 +42,6 @@ export function SentinelLayout({ view, children }: { view: string; children: Rea
       <SentinelBand />
       <SectionNav variant="pills" value={view} onChange={(v) => navigate(SENTINEL_VIEWS.find((x) => x.value === v)!.to)} items={SENTINEL_VIEWS} label="Sentinel" />
       {children}
-      <DemoNotice />
       <Drawers />
     </div>
   )
@@ -86,7 +53,6 @@ export function SentinelPage({ title, crumbs, children }: { title: string; crumb
     <PageContainer>
       <PageHeader crumbs={crumbs} title={title} />
       {children}
-      <DemoNotice />
       <Drawers />
     </PageContainer>
   )
