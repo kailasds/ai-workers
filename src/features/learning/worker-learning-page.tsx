@@ -1,21 +1,23 @@
 import { useState } from 'react'
-import { Link, useParams } from 'react-router'
-import { Archive, BrainCircuit, ChevronDown } from 'lucide-react'
+import { Link, useParams, useSearchParams } from 'react-router'
+import { Archive, BrainCircuit, ChevronDown, Hourglass } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PageContainer } from '@/components/platform/page-container'
 import { PageHeader } from '@/components/platform/page-header'
 import { runtimeStatus, RuntimeStatusDot } from '@/components/platform/runtime-status'
 import { EmptyState } from '@/components/platform/states'
 import { Panel } from '@/components/platform/panel'
+import { SummaryBanner } from '@/components/platform/summary-banner'
+import { formatCount } from '@/lib/format'
 import { domainLabel } from '@/lib/vocabulary'
 import { useDemo } from '@/features/sentinel/demo/store'
 import { domainOfWorker, inPeriod, itemsOf, PERIODS, WORKER_BY_ID_SAFE, workerLabel, workerScope } from './model'
-import { inStage } from './journey'
+import { inStage, LIFECYCLE } from './journey'
 import { EvolutionPanel } from './growth'
 import { ItemSheet } from './item-sheet'
 import { KindTabs, StageTabs, useStage } from './lifecycle'
-import { ItemList, PeriodSelect } from './ui'
-import { useReviews } from './reviews'
+import { ItemList, PeriodSelect, withItem } from './ui'
+import { pendingChanges, useReviews } from './reviews'
 import { usePeriod, withPeriod } from './nav'
 
 /**
@@ -31,6 +33,7 @@ export function WorkerLearningPage() {
   const [showEarlier, setShowEarlier] = useState(false)
   const { stage, kind, setStage, setKind } = useStage(null)
   const reviews = useReviews()
+  const [params] = useSearchParams()
   const crumbs = [{ label: 'Learning', to: withPeriod('/learning', period) }, { label: worker ? workerLabel(id) : 'Worker not found' }]
 
   if (!worker) {
@@ -80,6 +83,20 @@ export function WorkerLearningPage() {
         />
       ) : (
         <>
+          <SummaryBanner
+            icon={BrainCircuit}
+            eyebrow="Learning"
+            title={pending.length ? `${formatCount(pendingChanges(pending, reviews))} Skill ${pendingChanges(pending, reviews) === 1 ? 'change waits' : 'changes wait'} for your review` : allFresh.length ? `${formatCount(allFresh.length)} new ${allFresh.length === 1 ? 'item' : 'items'} in the ${periodLabel}` : `Nothing new in the ${periodLabel}`}
+            facts={[`${formatCount(items.length)} learning items`, ...LIFECYCLE.map((st) => `${formatCount(inStage(items, st.key).length)} ${st.label.toLowerCase()}`), `revision ${worker.revision}`]}
+            action={
+              pending.length ? (
+                <Button asChild className="px-5"><Link to={withItem(params, pending[0].id)} preventScrollReset><Hourglass aria-hidden="true" />Review Skill changes</Link></Button>
+              ) : (
+                <Button asChild variant="outline" className="bg-card px-5"><Link to={`/workers/${id}?view=runs`}>Open its runs</Link></Button>
+              )
+            }
+          />
+
           <Panel id="new" flush>
             <StageTabs items={items.filter(isNew)} value={stage} onChange={setStage} withAll pending={pending} />
             {stage === 'knowledge' && <div className="border-b px-5 py-2.5"><KindTabs items={allFresh} stage={stage} kind={kind} onChange={setKind} /></div>}

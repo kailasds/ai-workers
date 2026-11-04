@@ -35,8 +35,7 @@ export function TabBar({ items, value, onChange, label, steps = false, className
             >
               <t.icon className={cn('size-4 shrink-0', on && 'text-primary')} aria-hidden="true" />
               {t.label}
-              {t.alert && <span className="size-2 rounded-full bg-destructive" aria-label="Needs review" />}
-              {t.count !== undefined && <span className={cn('rounded-full px-2 py-0.5 text-meta font-medium tabular-nums', on ? 'bg-primary text-primary-foreground' : 'bg-chip-neutral text-foreground')}>{formatCount(t.count)}</span>}
+              {t.count !== undefined && <span title={t.alert ? 'Needs review' : undefined} className={cn('rounded-full px-2 py-0.5 text-meta font-medium tabular-nums', t.alert ? 'bg-destructive text-white' : on ? 'bg-primary text-primary-foreground' : 'bg-chip-neutral text-foreground')}>{formatCount(t.count)}{t.alert && <span className="sr-only">, needs review</span>}</span>}
               {on && <span aria-hidden="true" className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-primary" />}
             </button>
           </div>

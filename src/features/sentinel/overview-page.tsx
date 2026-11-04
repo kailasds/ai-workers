@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import { Activity, ArrowRight, Ban, BellRing, ChevronDown, ChevronRight, FileText, Gavel, Handshake, Lock, OctagonX, PauseCircle, ShieldCheck, SlidersHorizontal, X, type LucideIcon } from 'lucide-react'
+import { Activity, ArrowRight, Ban, BellRing, ChevronDown, ChevronRight, FileText, Gavel, Handshake, Lock, OctagonX, PauseCircle, ShieldCheck, X, type LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { Hue } from '@/components/platform/hue'
 import { IconTile, Panel } from '@/components/platform/panel'
@@ -8,10 +8,10 @@ import { formatCount } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { actions, useDemo } from './demo/store'
 import { workerLabel } from './demo/platform'
-import { attention, CONTROL_LABEL, CONTROL_TONE, controlCounts, controlSource, sharingCounts, type Attention } from './demo/selectors'
+import { attention, CONTROL_LABEL, CONTROL_TONE, controlSource, type Attention } from './demo/selectors'
 import type { Control } from './demo/types'
 import { SentinelLayout } from './sentinel-layout'
-import { useChain, withParam } from './specs'
+import { withParam } from './specs'
 import { OutcomePill } from './ui'
 
 const ROW_LINK = 'outline-none hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset'
@@ -50,19 +50,6 @@ function AttentionRow({ a }: { a: Attention }) {
   )
 }
 
-function Area({ to, icon: Icon, title, line }: { to: string; icon: LucideIcon; title: string; line: string }) {
-  return (
-    <Link to={to} className="group flex items-center gap-3 rounded-xl border bg-card px-4 py-3.5 outline-none hover:border-primary/40 focus-visible:ring-3 focus-visible:ring-ring/50">
-      <Icon className="size-5 shrink-0 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
-      <span className="min-w-0 flex-1">
-        <span className="block text-item">{title}</span>
-        <span className="block truncate text-meta text-muted-foreground">{line}</span>
-      </span>
-      <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-    </Link>
-  )
-}
-
 /**
  * Sentinel, attention first: what needs a person, then what is in force now (kept apart from
  * anything still pending), the latest decisions, and the four governance areas. Items open in place
@@ -71,11 +58,8 @@ function Area({ to, icon: Icon, title, line }: { to: string; icon: LucideIcon; t
 export function SentinelOverviewPage() {
   const s = useDemo()
   const [params] = useSearchParams()
-  const chain = useChain()
   const [allAttention, setAllAttention] = useState(false)
   const items = attention(s)
-  const share = sharingCounts(s)
-  const ctl = controlCounts(s)
   const controls = s.controls.filter((c) => c.active).sort((a, b) => SEVERITY[CONTROL_TONE[a.kind]] - SEVERITY[CONTROL_TONE[b.kind]] || b.since.localeCompare(a.since))
   const recent = [...s.decisions].sort((a, b) => b.at.localeCompare(a.at) || b.seq - a.seq).slice(0, TOP)
   const shown = allAttention ? items : items.slice(0, TOP)
@@ -140,13 +124,6 @@ export function SentinelOverviewPage() {
           )}
         </Panel>
       </div>
-
-      <section aria-label="Governance areas" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Area to="/sentinel/controls" icon={Lock} title="Controls" line={`${formatCount(ctl.active)} in force · ${formatCount(ctl.lifted)} lifted`} />
-        <Area to="/sentinel/sharing" icon={Handshake} title="Sharing" line={`${formatCount(share.proposed)} proposed · ${formatCount(share.suspended)} suspended`} />
-        <Area to="/sentinel/decisions" icon={Gavel} title="Decision log" line={`${formatCount(s.decisions.length)} decisions · ${chain.state === 'verified' ? 'record verified' : 'record not verified'}`} />
-        <Area to="/sentinel/policy" icon={SlidersHorizontal} title="Policies" line={`${s.policy.mode === 'enforce' ? 'Enforce' : 'Recording only'} · ${formatCount(s.overrides.length)} Worker ${s.overrides.length === 1 ? 'setting' : 'settings'}`} />
-      </section>
     </SentinelLayout>
   )
 }

@@ -73,7 +73,7 @@ function WorkerTile({ w, to }: { w: WorkerLearning; to: string }) {
       <div className="flex items-start justify-between gap-3">
         <Tag hue={type.hue} icon={type.icon} className="min-w-0">{type.short}</Tag>
         {attention ? (
-          <span role="img" aria-label={attention} title={attention} className="grid size-7 shrink-0 place-items-center rounded-full bg-destructive/10 text-destructive"><TriangleAlert className="size-4" aria-hidden="true" /></span>
+          <span role="img" aria-label={attention} title={attention} className="grid size-7 shrink-0 place-items-center rounded-full bg-destructive text-white"><TriangleAlert className="size-4" aria-hidden="true" /></span>
         ) : (
         <span className="flex shrink-0 items-center gap-1.5 rounded-full border bg-card px-2.5 py-1">
           {stopped ? (
