@@ -23,7 +23,6 @@ import { identityOfContext } from '@/features/compose/compose-model'
 import { Figure } from '@/features/registry/worker-tiles'
 import { useDemo } from '@/features/sentinel/demo/store'
 import { inStage, LIFECYCLE } from './journey'
-import { ItemSheet } from './item-sheet'
 import { pendingChanges, useReviews } from './reviews'
 import { KindTabs, StageTabs, useStage } from './lifecycle'
 import { CATEGORIES, inPeriod, isCategory, ITEMS, itemsOf, learningWorkers, PERIODS, WORKER_BY_ID_SAFE, workersWithNew, type CategoryKey, type WorkerLearning } from './model'
@@ -155,12 +154,8 @@ function LearningBanner({ period, periodLabel, onPeriod }: { period: (typeof PER
   const changes = pendingChanges(pending, reviews)
   const fresh = ITEMS.filter((i) => inPeriod(i, period))
   const freshWorkers = new Set(fresh.map((i) => i.workerId)).size
-  const reviewTo = (() => {
-    const p = new URLSearchParams(params)
-    if (pending[0]) p.set('item', pending[0].id)
-    p.set('stage', 'skill-changes')
-    return { search: p.toString(), hash: 'stage' }
-  })()
+  // Review opens the first Skill change waiting for a person, on its own page.
+  const reviewTo = pending[0] ? `/learning/items/${pending[0].id}` : '/learning'
   return (
     <SummaryBanner
       hue="cyan"
@@ -176,7 +171,7 @@ function LearningBanner({ period, periodLabel, onPeriod }: { period: (typeof PER
       action={
         <>
           <PeriodSelect value={period} onChange={onPeriod} />
-          {pending.length > 0 && <Button asChild className="px-5"><Link to={reviewTo} preventScrollReset><Hourglass aria-hidden="true" />Review Skill changes</Link></Button>}
+          {pending.length > 0 && <Button asChild className="px-5"><Link to={reviewTo} state={{ from: { label: 'Learning', to: `/learning?${params.toString()}` } }}><Hourglass aria-hidden="true" />Review Skill changes</Link></Button>}
         </>
       }
     />
@@ -319,7 +314,6 @@ export function LearningPage() {
         )}
       </Panel>
 
-      <ItemSheet />
     </div>
   )
 }

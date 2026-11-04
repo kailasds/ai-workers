@@ -1,4 +1,4 @@
-import { Link, useSearchParams } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import { ChevronRight, Hourglass, type LucideIcon } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { HUE } from '@/components/platform/hue'
@@ -69,25 +69,17 @@ export function CategoryBars({ rows, hrefFor, label }: { rows: { key: CategoryKe
   )
 }
 
-/** The current URL with a learning item open in the side panel. */
-export function withItem(params: URLSearchParams, id: string) {
-  const n = new URLSearchParams(params)
-  n.set('item', id)
-  return { search: n.toString() }
-}
-
 /**
  * One learning item as a row: category icon, title, a line on what it is, and where it stands.
- * It opens the item in the side panel, so the reader keeps their place.
+ * It opens the item's page; the page's way back leads to the list it was opened from.
  */
-export function ItemRow({ item, showWorker = true }: { item: LearningItem; showWorker?: boolean }) {
-  const [params] = useSearchParams()
+export function ItemRow({ item, showWorker = true, from }: { item: LearningItem; showWorker?: boolean; from?: From }) {
+  const { pathname, search, hash } = useLocation()
   const look = CATEGORY_LOOK[item.category]
-  const open = params.get('item') === item.id
   const reviews = useReviews()
   const pending = item.state === 'proposed' && !reviews[item.id]
   return (
-    <Link to={withItem(params, item.id)} preventScrollReset aria-current={open ? 'true' : undefined} title={item.summary} className={cn('flex items-center gap-3 px-5 py-3', ROW, pending && 'bg-destructive/5', open && 'bg-primary-soft/50')}>
+    <Link to={`/learning/items/${item.id}`} state={{ from: { label: from?.label ?? 'Learning', to: from?.to ?? `${pathname}${search}${hash}` } }} title={item.summary} className={cn('flex items-center gap-3 px-5 py-3', ROW, pending && 'bg-destructive/5')}>
       <IconTile icon={look.icon} hue={pending ? 'rose' : look.hue} size="sm" />
       <span className="min-w-0 flex-1 truncate text-body">{item.title}</span>
       {showWorker && <span className="hidden max-w-56 truncate text-meta text-muted-foreground md:block" title={workerLabel(item.workerId)}>{workerLabel(item.workerId)}</span>}
@@ -102,13 +94,13 @@ export function EmptyRow({ children }: { children: React.ReactNode }) {
 }
 
 /** A paged list of learning items, edge to edge inside a flush panel. */
-export function ItemList({ items, prefix, label, showWorker = true, empty, pageSize = SECTION_SIZE }: { items: LearningItem[]; prefix: string; label: string; showWorker?: boolean; empty: React.ReactNode; pageSize?: number }) {
+export function ItemList({ items, prefix, label, showWorker = true, empty, pageSize = SECTION_SIZE, from }: { items: LearningItem[]; prefix: string; label: string; showWorker?: boolean; empty: React.ReactNode; pageSize?: number; from?: From }) {
   const paged = usePaged(items, { prefix, defaultSize: pageSize, sizes: [pageSize] })
   if (items.length === 0) return <EmptyRow>{empty}</EmptyRow>
   return (
     <>
       <ul aria-label={label} className="divide-y">
-        {paged.rows.map((i) => <li key={i.id}><ItemRow item={i} showWorker={showWorker} /></li>)}
+        {paged.rows.map((i) => <li key={i.id}><ItemRow item={i} showWorker={showWorker} from={from} /></li>)}
       </ul>
       {items.length > pageSize && (
         <div className="border-t px-5 py-3">

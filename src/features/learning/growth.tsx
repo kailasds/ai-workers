@@ -1,55 +1,10 @@
 import { useState } from 'react'
-import { ArrowRight, Brain, Check, CircleCheck, CircleDashed, CircleX, Database, PencilRuler, Route, TrendingDown, TrendingUp, type LucideIcon } from 'lucide-react'
-import { IconTile, Panel } from '@/components/platform/panel'
+import { ArrowRight, CircleCheck, CircleDashed, CircleX, TrendingDown, TrendingUp } from 'lucide-react'
+import { Panel } from '@/components/platform/panel'
 import { Timestamp } from '@/components/platform/timestamp'
 import { formatCount, formatUsd } from '@/lib/format'
 import { cn } from '@/lib/utils'
-import { DESTINATION, evolution, journey, type Destination } from './journey'
-import type { LearningItem } from './model'
-
-const DEST_ICON: Record<Destination, LucideIcon> = { memory: Database, knowledge: Brain, skill: PencilRuler }
-
-/** Where one learning item goes from here: its path, what it becomes, and what the next step needs. */
-export function JourneyPanel({ item }: { item: LearningItem }) {
-  const j = journey(item)
-  const Icon = DEST_ICON[j.becomes]
-  return (
-    <Panel id="next" title="What happens next" icon={Route} hue="teal">
-      <ol className="grid gap-2 sm:grid-flow-col sm:auto-cols-fr" aria-label="Path of this learning">
-        {j.steps.map((s, i) => (
-          <li key={s.label} className="flex items-center gap-2 sm:flex-col sm:items-start">
-            <div className="flex w-full items-center gap-2">
-              <span
-                aria-hidden="true"
-                className={cn(
-                  'grid size-6 shrink-0 place-items-center rounded-full text-meta font-medium',
-                  s.status === 'done' && 'bg-primary text-primary-foreground',
-                  s.status === 'current' && 'bg-primary-soft text-primary-strong ring-2 ring-primary',
-                  s.status === 'next' && 'border border-dashed border-muted-foreground/50 text-muted-foreground',
-                )}
-              >
-                {s.status === 'done' ? <Check className="size-3.5" /> : i + 1}
-              </span>
-              {i < j.steps.length - 1 && <span aria-hidden="true" className={cn('hidden h-px flex-1 sm:block', s.status === 'done' ? 'bg-primary' : 'bg-border')} />}
-            </div>
-            <span className={cn('text-meta', s.status === 'next' ? 'text-muted-foreground' : 'font-medium text-foreground')}>
-              {s.label}
-              <span className="sr-only">{s.status === 'done' ? ': done' : s.status === 'current' ? ': now' : ': not yet'}</span>
-            </span>
-          </li>
-        ))}
-      </ol>
-      <dl className="mt-5 grid gap-4 border-t pt-5 sm:grid-cols-3">
-        <div className="flex items-center gap-3">
-          <IconTile icon={Icon} hue="teal" size="sm" />
-          <div><dt className="text-meta text-muted-foreground">Becomes</dt><dd className="text-item">{DESTINATION[j.becomes].label}</dd></div>
-        </div>
-        <div><dt className="text-meta text-muted-foreground">Useful as</dt><dd className="mt-0.5 text-body">{DESTINATION[j.becomes].use}</dd></div>
-        {j.next && <div><dt className="text-meta text-muted-foreground">Next step needs</dt><dd className="mt-0.5 text-body">{j.next}</dd></div>}
-      </dl>
-    </Panel>
-  )
-}
+import { evolution } from './journey'
 
 const VERDICT = {
   MET: { label: 'Met', bar: 'bg-success', icon: CircleCheck, text: 'text-success' },
