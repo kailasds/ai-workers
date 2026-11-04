@@ -2,8 +2,8 @@ import { Link, useSearchParams } from 'react-router'
 import { Gavel, Handshake, LayoutDashboard, Lock, ShieldCheck, SlidersHorizontal, type LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { SummaryBanner } from '@/components/platform/summary-banner'
+import { BannerTabs } from '@/components/platform/banner-tabs'
 import { formatCount } from '@/lib/format'
-import { cn } from '@/lib/utils'
 import { formatPolicyValue } from './demo/engine'
 import { useDemo } from './demo/store'
 import { attention, awaitingReview, controlCounts, sharingCounts } from './demo/selectors'
@@ -77,33 +77,12 @@ export function SentinelBanner({ view }: { view: SentinelView }) {
   const cur = summary[view]
 
   return (
-    <SummaryBanner icon={ShieldCheck} eyebrow="Sentinel" title={cur.title} facts={cur.facts} action={cur.action || undefined}>
-      <nav aria-label="Sentinel">
-        <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-          {VIEWS.map((v) => {
-            const on = v.value === view
-            const alert = (v.value === 'overview' && att.length > 0) || (v.value === 'sharing' && share.proposed > 0) || (v.value === 'decisions' && pending.length > 0)
-            return (
-              <li key={v.value}>
-                <Link
-                  to={v.to}
-                  aria-current={on ? 'page' : undefined}
-                  className={cn(
-                    'flex h-full items-center gap-3 rounded-xl border px-3.5 py-3 outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50',
-                    on ? 'border-primary bg-card shadow-[inset_0_0_0_1px_var(--primary)]' : 'border-transparent bg-card/70 hover:bg-card',
-                  )}
-                >
-                  <v.icon className={cn('size-5 shrink-0', on ? 'text-primary' : 'text-muted-foreground')} aria-hidden="true" />
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-item">{v.label}</span>
-                    <span className={cn('block truncate text-meta', alert ? 'text-destructive' : 'text-muted-foreground')}>{line[v.value]}</span>
-                  </span>
-                </Link>
-              </li>
-            )
-          })}
-        </ul>
-      </nav>
+    <SummaryBanner hue="rose" icon={ShieldCheck} eyebrow="Sentinel" title={cur.title} facts={cur.facts} action={cur.action || undefined}>
+      <BannerTabs
+        label="Sentinel"
+        value={view}
+        items={VIEWS.map((v) => ({ ...v, line: line[v.value], alert: (v.value === 'overview' && att.length > 0) || (v.value === 'sharing' && share.proposed > 0) || (v.value === 'decisions' && pending.length > 0) }))}
+      />
     </SummaryBanner>
   )
 }

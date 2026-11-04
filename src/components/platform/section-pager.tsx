@@ -36,6 +36,7 @@ export function Paged<T>({
   order = 'ranked',
   className = 'border-t px-5 py-3',
   fill = false,
+  size: fixed,
   children,
 }: {
   rows: T[]
@@ -44,12 +45,14 @@ export function Paged<T>({
   /** Classes for the pager row; the default suits a flush panel. */
   className?: string
   fill?: boolean
+  /** Records per page; defaults to SECTION_SIZE. */
+  size?: number
   children: (rows: T[], offset: number) => React.ReactNode
 }) {
   const [raw, setPage] = useState(1)
   const [fit, setFit] = useState({ rows: SECTION_SIZE, rowHeight: 0 })
   const box = useRef<HTMLDivElement>(null)
-  const size = fill ? fit.rows : SECTION_SIZE
+  const size = fill ? fit.rows : (fixed ?? SECTION_SIZE)
   const pages = Math.max(1, Math.ceil(rows.length / size))
   const page = Math.min(raw, pages)
   const offset = (page - 1) * size

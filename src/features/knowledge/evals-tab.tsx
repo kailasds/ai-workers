@@ -1,23 +1,21 @@
 import { useMemo, useState } from 'react'
-import { Gauge, Search, SearchX, ShieldCheck } from 'lucide-react'
+import { FileCheck2, FolderTree, Gauge, GitCommitVertical, KeyRound, Layers, SearchX, ShieldCheck, Target } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { DetailSheet } from '@/components/platform/detail-sheet'
 import { Paged } from '@/components/platform/section-pager'
-import { Details, IconTile, Panel } from '@/components/platform/panel'
+import { IconTile, Panel } from '@/components/platform/panel'
 import { EmptyState } from '@/components/platform/states'
 import { StatusBadge } from '@/components/platform/status-badge'
+import { TabBar } from '@/components/platform/tab-bar'
 import { formatPercent } from '@/lib/format'
 import type { Evaluation } from '@/lib/types/catalog'
-import { LibraryRow, Toolbar } from './list-parts'
+import { ALL, FactGrid, FiltersButton, human, LIBRARY_PAGE, LibraryRow, Mono, SearchBox, SheetHero } from './list-parts'
 
-const ALL = '__all'
-const human = (key: string) => key.replace(/[_-]+/g, ' ').replace(/^\w/, (c) => c.toUpperCase())
+type Gate = 'all' | 'gate' | 'measured'
 
 export function EvalsTab({ evals }: { evals: Evaluation[] }) {
   const [category, setCategory] = useState(ALL)
-  const [gate, setGate] = useState<'all' | 'gate' | 'measured'>('all')
+  const [gate, setGate] = useState<Gate>('all')
   const [q, setQ] = useState('')
   const [open, setOpen] = useState<Evaluation | null>(null)
 
@@ -27,53 +25,52 @@ export function EvalsTab({ evals }: { evals: Evaluation[] }) {
     return [...counts.entries()].sort((a, b) => b[1] - a[1])
   }, [evals])
 
-  const matching = evals.filter(
-    (e) =>
-      (category === ALL || e.category === category) &&
-      (gate === 'all' || (gate === 'gate' ? e.hard_gate : !e.hard_gate)) &&
-      (!q.trim() || `${e.name} ${e.id} ${e.description ?? ''}`.toLowerCase().includes(q.trim().toLowerCase())),
-  )
+  const needle = q.trim().toLowerCase()
+  const base = evals.filter((e) => (category === ALL || e.category === category) && (!needle || `${e.name} ${e.id} ${e.description ?? ''}`.toLowerCase().includes(needle)))
+  const matching = base.filter((e) => gate === 'all' || (gate === 'gate' ? e.hard_gate : !e.hard_gate))
 
   return (
-    <div className="flex flex-col gap-5">
-      <Panel id="evals" flush>
-        <Toolbar>
-          <InputGroup className="lg:max-w-xs">
-            <InputGroupAddon><Search aria-hidden="true" /></InputGroupAddon>
-            <InputGroupInput type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search EVALs" aria-label="Search EVALs" />
-          </InputGroup>
-          <div className="no-scrollbar -mx-5 overflow-x-auto px-5 lg:mx-0 lg:px-0">
-            <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={category} onValueChange={(v) => { if (v) { setCategory(v) } }} aria-label="Measured as" className="w-max bg-card">
-              <ToggleGroupItem value={ALL}>All <span className="text-muted-foreground tabular-nums">{evals.length}</span></ToggleGroupItem>
-              {categories.slice(0, 5).map(([c, n]) => <ToggleGroupItem key={c} value={c}>{human(c)} <span className="text-muted-foreground tabular-nums">{n}</span></ToggleGroupItem>)}
-            </ToggleGroup>
-          </div>
-          <ToggleGroup type="single" variant="outline" size="sm" spacing={0} value={gate} onValueChange={(v) => v && setGate(v as typeof gate)} aria-label="Gate" className="bg-card lg:ml-auto">
-            <ToggleGroupItem value="all">Any</ToggleGroupItem>
-            <ToggleGroupItem value="gate">Required gates</ToggleGroupItem>
-            <ToggleGroupItem value="measured">Measured checks</ToggleGroupItem>
-          </ToggleGroup>
-        </Toolbar>
-
+    <>
+      <Panel
+        id="evals"
+        title="EVAL Playbooks"
+        icon={FileCheck2}
+        hue="teal"
+        count={matching.length}
+        flush
+        aside={
+          <>
+            <SearchBox value={q} onChange={setQ} label="Search EVALs" />
+            <FiltersButton
+              onClear={() => setCategory(ALL)}
+              fields={[{ id: 'k-measured', label: 'Measured as', value: category, onChange: setCategory, options: [{ value: ALL, label: 'Every category' }, ...categories.map(([c, n]) => ({ value: c, label: `${human(c)} (${n})` }))] }]}
+            />
+          </>
+        }
+      >
+        <TabBar
+          label="EVAL type"
+          value={gate}
+          onChange={(v) => setGate(v as Gate)}
+          items={[
+            { value: 'all', label: 'All', icon: Layers, count: base.length },
+            { value: 'gate', label: 'Required gates', icon: ShieldCheck, count: base.filter((e) => e.hard_gate).length },
+            { value: 'measured', label: 'Measured checks', icon: Gauge, count: base.filter((e) => !e.hard_gate).length },
+          ]}
+        />
         {matching.length === 0 ? (
           <EmptyState className="m-5" icon={SearchX} title="Nothing matches that" action={<Button variant="outline" onClick={() => { setQ(''); setCategory(ALL); setGate('all') }}>Clear filters</Button>} />
         ) : (
-          <Paged key={[category, gate, q].join('|')} rows={matching} label="EVALs">{(page) => (
+          <Paged key={[category, gate, q].join('|')} rows={matching} label="EVALs" size={LIBRARY_PAGE}>{(page) => (
             <ul className="divide-y">
               {page.map((e) => (
                 <LibraryRow
                   key={e.id}
                   label={`Open ${e.name}`}
                   onOpen={() => setOpen(e)}
-                  icon={e.hard_gate ? <IconTile icon={ShieldCheck} hue="amber" /> : <IconTile icon={Gauge} hue="teal" />}
+                  icon={e.hard_gate ? <IconTile icon={ShieldCheck} hue="amber" size="sm" /> : <IconTile icon={Gauge} hue="teal" size="sm" />}
                   title={e.name}
-                  meta={`${human(e.category)} · ${e.id}`}
-                  aside={
-                    <>
-                      {e.pass_threshold !== null && <span className="text-meta text-muted-foreground tabular-nums">Passes at {formatPercent(e.pass_threshold)}</span>}
-                      <StatusBadge tone={e.hard_gate ? 'warning' : 'neutral'} icon={null}>{e.hard_gate ? 'Required gate' : 'Measured check'}</StatusBadge>
-                    </>
-                  }
+                  aside={e.pass_threshold !== null ? <><Target className="size-3.5" aria-hidden="true" />{formatPercent(e.pass_threshold)}</> : undefined}
                 />
               ))}
             </ul>
@@ -81,23 +78,26 @@ export function EvalsTab({ evals }: { evals: Evaluation[] }) {
         )}
       </Panel>
 
-      <DetailSheet open={open !== null} onClose={() => setOpen(null)} title={open?.name} description={open ? `${human(open.category)} · v${open.version}` : undefined} width="lg">
+      <DetailSheet open={open !== null} onClose={() => setOpen(null)} title={open?.name} description={open ? human(open.category) : undefined} width="2xl">
         {open && (
-          <div className="flex flex-col gap-6">
-            <p className="text-body whitespace-pre-line">{open.description?.trim() || 'No description.'}</p>
-            <div className="border-t pt-6">
-              <Details
-                rows={[
-                  { label: 'Type', value: open.hard_gate ? 'Required gate' : 'Measured check' },
-                  { label: 'Passes at', value: open.pass_threshold !== null ? formatPercent(open.pass_threshold) : 'No threshold' },
-                  { label: 'Measured as', value: human(open.category) },
-                  { label: 'Key', value: <span className="font-mono text-meta break-all">{open.id}</span> },
-                ]}
-              />
-            </div>
-          </div>
+          <>
+            <SheetHero
+              icon={open.hard_gate ? ShieldCheck : Gauge}
+              hue={open.hard_gate ? 'amber' : 'teal'}
+              text={open.description?.trim() || 'No description.'}
+              badges={<StatusBadge tone={open.hard_gate ? 'warning' : 'neutral'} icon={null}>{open.hard_gate ? 'Required gate' : 'Measured check'}</StatusBadge>}
+            />
+            <FactGrid
+              facts={[
+                { icon: Target, label: 'Passes at', value: open.pass_threshold !== null ? formatPercent(open.pass_threshold) : 'No threshold' },
+                { icon: FolderTree, label: 'Measured as', value: human(open.category) },
+                { icon: GitCommitVertical, label: 'Version', value: `v${open.version}` },
+                { icon: KeyRound, label: 'Key', value: <Mono>{open.id}</Mono> },
+              ]}
+            />
+          </>
         )}
       </DetailSheet>
-    </div>
+    </>
   )
 }

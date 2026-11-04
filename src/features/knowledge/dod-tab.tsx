@@ -1,11 +1,14 @@
 import { useState } from 'react'
-import { Code, Eye, Gauge, ShieldCheck, Sparkles, Wrench, type LucideIcon } from 'lucide-react'
+import { BadgeCheck, Calculator, ClipboardCheck, Code, Eye, FileOutput, Gauge, ListOrdered, Scale, SearchX, ShieldCheck, Sparkles, Tags, Target, TriangleAlert, Wrench, type LucideIcon } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { DetailSheet } from '@/components/platform/detail-sheet'
 import { Paged } from '@/components/platform/section-pager'
-import { Details, IconTile, Panel } from '@/components/platform/panel'
+import { IconTile, Panel } from '@/components/platform/panel'
+import { EmptyState } from '@/components/platform/states'
 import { StatusBadge } from '@/components/platform/status-badge'
+import { TabBar } from '@/components/platform/tab-bar'
 import type { DodRubric } from '@/lib/types/catalog'
-import { LibraryRow } from './list-parts'
+import { DemoNote, FactGrid, LIBRARY_PAGE, LibraryRow, Mono, SearchBox, SheetHero, SheetSection } from './list-parts'
 
 export const METHOD: Record<string, string> = {
   llm_judge: 'Judged by a model',
@@ -20,63 +23,104 @@ const AVAILABILITY: Record<string, string> = {
   NOT_IMPLEMENTED: 'Can’t be measured yet',
 }
 
-export function DodTab({ rubrics }: { rubrics: DodRubric[] }) {
-  const [open, setOpen] = useState<DodRubric | null>(null)
-  const gating = rubrics.filter((r) => r.gating_by_default)
-  const observed = rubrics.filter((r) => !r.gating_by_default)
+type View = 'gates' | 'tracked'
 
-  const row = (r: DodRubric) => (
-    <LibraryRow
-      key={r.criterion_key}
-      icon={<IconTile icon={METHOD_ICON[r.method] ?? Gauge} hue={r.gating_by_default ? 'amber' : 'blue'} />}
-      label={`Open ${r.display_name}`}
-      onOpen={() => setOpen(r)}
-      title={r.display_name}
-      meta={`${METHOD[r.method] ?? r.method}${r.default_threshold ? ` · passes at ${r.default_threshold}` : ' · no required threshold'}`}
-      aside={r.availability !== 'AVAILABLE' ? <StatusBadge tone="warning">{AVAILABILITY[r.availability] ?? r.availability}</StatusBadge> : undefined}
-    />
-  )
+export function DodTab({ rubrics }: { rubrics: DodRubric[] }) {
+  const blocked = (r: DodRubric) => r.availability !== 'AVAILABLE'
+  // Open on the list that holds a criterion that can't be measured yet: it needs attention.
+  const [view, setView] = useState<View>(() => (!rubrics.some((r) => r.gating_by_default && blocked(r)) && rubrics.some((r) => !r.gating_by_default && blocked(r)) ? 'tracked' : 'gates'))
+  const [q, setQ] = useState('')
+  const [open, setOpen] = useState<DodRubric | null>(null)
+  const needle = q.trim().toLowerCase()
+  const found = rubrics.filter((r) => !needle || `${r.display_name} ${r.criterion_key} ${r.aliases.join(' ')}`.toLowerCase().includes(needle))
+  const gating = found.filter((r) => r.gating_by_default)
+  const observed = found.filter((r) => !r.gating_by_default)
+  // A criterion that can't be measured yet needs attention, so it leads its list.
+  const rows = [...(view === 'gates' ? gating : observed)].sort((a, b) => Number(blocked(b)) - Number(blocked(a)))
 
   return (
     <>
-      <div className="flex flex-col gap-6">
-        <Panel id="gates" title="Release gates" icon={ShieldCheck} hue="amber" count={gating.length} flush>
-          <Paged rows={gating} label="Release gates">{(page) => <ul className="divide-y">{page.map(row)}</ul>}</Paged>
-        </Panel>
-        <Panel id="tracked" title="Tracked only" icon={Eye} hue="blue" count={observed.length} flush>
-          <Paged rows={observed} label="Tracked only">{(page) => <ul className="divide-y">{page.map(row)}</ul>}</Paged>
-        </Panel>
-      </div>
+      <Panel id="dod" title="Definition of Done" icon={ClipboardCheck} hue="amber" count={found.length} flush aside={<SearchBox value={q} onChange={setQ} label="Search criteria" />}>
+        <TabBar
+          label="Release role"
+          value={view}
+          onChange={(v) => setView(v as View)}
+          items={[
+            { value: 'gates', label: 'Release gates', icon: ShieldCheck, count: gating.length, alert: gating.some(blocked) },
+            { value: 'tracked', label: 'Tracked only', icon: Eye, count: observed.length, alert: observed.some(blocked) },
+          ]}
+        />
+        {rows.length === 0 ? (
+          <EmptyState className="m-5" icon={SearchX} title="Nothing matches that" action={<Button variant="outline" onClick={() => setQ('')}>Clear search</Button>} />
+        ) : (
+          <Paged key={[view, q].join('|')} rows={rows} label={view === 'gates' ? 'Release gates' : 'Tracked only'} size={LIBRARY_PAGE}>{(page) => (
+            <ul className="divide-y">
+              {page.map((r) => (
+                <LibraryRow
+                  key={r.criterion_key}
+                  icon={<IconTile icon={METHOD_ICON[r.method] ?? Gauge} hue={r.gating_by_default ? 'amber' : 'blue'} size="sm" />}
+                  label={`Open ${r.display_name}`}
+                  onOpen={() => setOpen(r)}
+                  title={r.display_name}
+                  aside={blocked(r) ? <span className="inline-flex items-center gap-1.5 text-warning" title={AVAILABILITY[r.availability] ?? r.availability}><TriangleAlert className="size-4" aria-hidden="true" /><span className="sr-only">{AVAILABILITY[r.availability] ?? r.availability}</span></span> : undefined}
+                />
+              ))}
+            </ul>
+          )}</Paged>
+        )}
+      </Panel>
+
       <DetailSheet open={open !== null} onClose={() => setOpen(null)} title={open?.display_name} description={open ? METHOD[open.method] ?? open.method : undefined} width="2xl">
         {open && (
-          <div className="flex flex-col gap-6">
-            {open.computation?.summary && <p className="text-body">{open.computation.summary}</p>}
-            <div className="border-t pt-6">
-              <Details
-                rows={[
-                  { label: 'Passes at', value: open.default_threshold ?? 'No required threshold' },
-                  { label: 'Release', value: open.gating_by_default ? 'Release gate' : 'Tracked only' },
-                  { label: 'Measurable', value: AVAILABILITY[open.availability] ?? open.availability },
-                  { label: 'Reported as', value: <span className="font-mono text-meta break-all">{open.criterion_key}</span> },
-                  ...(open.skill_ref ? [{ label: 'Measured by', value: <span className="font-mono text-meta break-all">{open.skill_ref}</span> }] : []),
-                  ...(open.aliases.length > 0 ? [{ label: 'Also called', value: open.aliases.join(', ') }] : []),
-                ]}
-              />
-            </div>
+          <>
+            <SheetHero
+              icon={METHOD_ICON[open.method] ?? Gauge}
+              hue={open.gating_by_default ? 'amber' : 'blue'}
+              text={open.computation?.summary || open.calculation || METHOD[open.method] || open.method}
+              badges={
+                <>
+                  <StatusBadge tone={open.gating_by_default ? 'warning' : 'neutral'} icon={null}>{open.gating_by_default ? 'Release gate' : 'Tracked only'}</StatusBadge>
+                  <StatusBadge tone={open.availability === 'AVAILABLE' ? 'success' : 'warning'}>{AVAILABILITY[open.availability] ?? open.availability}</StatusBadge>
+                </>
+              }
+            />
+            <FactGrid
+              facts={[
+                { icon: Target, label: 'Passes at', value: open.default_threshold?.trim() || 'No required threshold' },
+                { icon: Scale, label: 'Decided by', value: METHOD[open.method] ?? open.method },
+                { icon: FileOutput, label: 'Reported as', value: <Mono>{open.criterion_key}</Mono> },
+                ...(open.skill_ref ? [{ icon: BadgeCheck, label: 'Measured by', value: <Mono>{open.skill_ref}</Mono> }] : []),
+              ]}
+            />
             {open.computation && open.computation.steps.length > 0 && (
-              <section>
-                <h3 className="text-item">How it’s calculated</h3>
-                <ol className="mt-2 flex list-decimal flex-col gap-1.5 pl-5 text-body">{open.computation.steps.map((s) => <li key={s}>{s}</li>)}</ol>
-              </section>
+              <SheetSection icon={ListOrdered} title="How it’s calculated">
+                <ol className="flex flex-col gap-3">
+                  {open.computation.steps.map((s, i) => (
+                    <li key={s} className="flex items-start gap-3 text-body">
+                      <span className="grid size-6 shrink-0 place-items-center rounded-full bg-chip-neutral text-meta font-medium tabular-nums">{i + 1}</span>
+                      <span className="pt-0.5">{s}</span>
+                    </li>
+                  ))}
+                </ol>
+              </SheetSection>
             )}
             {open.computation?.rule && (
-              <section>
-                <h3 className="text-item">Pass criteria</h3>
-                <p className="mt-1 text-body">{open.computation.rule}</p>
-              </section>
+              <SheetSection icon={Calculator} title="Pass criteria">
+                <p className="text-body">{open.computation.rule}</p>
+              </SheetSection>
             )}
-            {open.calculation && <p className="rounded-lg bg-muted px-3 py-2 text-meta text-muted-foreground">{open.calculation}</p>}
-          </div>
+            {open.aliases.length > 0 && (
+              <SheetSection icon={Tags} title="Also called">
+                <div className="flex flex-wrap gap-2">{open.aliases.map((a) => <span key={a} className="rounded-full bg-chip-neutral px-2.5 py-0.5 text-meta">{a}</span>)}</div>
+              </SheetSection>
+            )}
+            {open.availability !== 'AVAILABLE' && open.availability_detail && (
+              <SheetSection icon={TriangleAlert} title="Why it can’t be measured yet">
+                <p className="text-body">{open.availability_detail}</p>
+              </SheetSection>
+            )}
+            {open.computation?.summary && open.calculation && <DemoNote>{open.calculation}</DemoNote>}
+          </>
         )}
       </DetailSheet>
     </>

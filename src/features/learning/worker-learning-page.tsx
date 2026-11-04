@@ -84,6 +84,7 @@ export function WorkerLearningPage() {
       ) : (
         <>
           <SummaryBanner
+            hue="cyan"
             icon={BrainCircuit}
             eyebrow="Learning"
             title={pending.length ? `${formatCount(pendingChanges(pending, reviews))} Skill ${pendingChanges(pending, reviews) === 1 ? 'change waits' : 'changes wait'} for your review` : allFresh.length ? `${formatCount(allFresh.length)} new ${allFresh.length === 1 ? 'item' : 'items'} in the ${periodLabel}` : `Nothing new in the ${periodLabel}`}

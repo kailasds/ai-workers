@@ -3,12 +3,13 @@ import { cn } from '@/lib/utils'
 import type { LucideIcon } from 'lucide-react'
 
 // The Home banner's look (a soft hue under a fine grid) for a page's summary: what matters now,
-// a few figures, the one action to take, and optionally tabs along the bottom.
-const GRID = { backgroundImage: 'linear-gradient(var(--card) 1px, transparent 1px), linear-gradient(90deg, var(--card) 1px, transparent 1px)', backgroundSize: '44px 44px' }
+// a few figures, the one action to take, and optionally tabs along the bottom. The tint is the
+// area's soft hue (the colour of its tab icon) with 6% of the hue itself, the same level for every area.
+const GRID = { '--grid-line': 'color-mix(in oklab, var(--card) 50%, transparent)', backgroundImage: 'linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px)', backgroundSize: '44px 44px' }
 
 export function SummaryBanner({ hue = 'blue', icon: Icon, eyebrow, title, facts, action, children }: { hue?: Hue; icon: LucideIcon; eyebrow: string; title: string; facts: string[]; action?: React.ReactNode; children?: React.ReactNode }) {
   return (
-    <section aria-label={`${eyebrow} summary`} className={cn('overflow-hidden rounded-xl', HUE[hue].soft)} style={GRID}>
+    <section aria-label={`${eyebrow} summary`} className="overflow-hidden rounded-xl" style={{ ...GRID, backgroundColor: `color-mix(in oklab, var(--hue-${hue}) 6%, var(--hue-${hue}-soft))` } as React.CSSProperties}>
       <div className="flex flex-col gap-5 px-6 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <div className="min-w-0">
           <p className={cn('flex items-center gap-2 text-overline', HUE[hue].text)}><Icon className="size-4" aria-hidden="true" />{eyebrow}</p>

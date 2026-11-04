@@ -96,7 +96,7 @@ export function TypeShowcase({ groups, active, onSelect }: { groups: TypeGroup[]
               <CarouselItem key={g.type.key} aria-label={`${i + 1} of ${groups.length}: ${g.type.display_name}`}>
                 <div
                   className={cn('relative flex min-h-56 items-center justify-between gap-6 overflow-hidden rounded-xl px-6 py-8 sm:px-10', HUE[meta.hue].soft)}
-                  style={{ backgroundImage: 'linear-gradient(var(--card) 1px, transparent 1px), linear-gradient(90deg, var(--card) 1px, transparent 1px)', backgroundSize: '44px 44px' }}
+                  style={{ backgroundImage: 'linear-gradient(color-mix(in oklab, var(--card) 50%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--card) 50%, transparent) 1px, transparent 1px)', backgroundSize: '44px 44px' }}
                 >
                   <div className="relative min-w-0 max-w-2xl">
                     <p className={cn('flex items-center gap-2 text-overline', HUE[meta.hue].text)}>

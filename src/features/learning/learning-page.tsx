@@ -13,6 +13,7 @@ import { SECTION_SIZE, useTilePage } from '@/components/platform/section-pager'
 import { Pager } from '@/components/platform/pager'
 import { PRESENCE, runtimeStatus, RuntimeStatusDot } from '@/components/platform/runtime-status'
 import { Panel } from '@/components/platform/panel'
+import { SummaryBanner } from '@/components/platform/summary-banner'
 import { EmptyState } from '@/components/platform/states'
 import { usePaged } from '@/hooks/use-paged'
 import { formatCount } from '@/lib/format'
@@ -145,6 +146,43 @@ function StageExplorer({ period, onAll }: { period: (typeof PERIODS)[number]['va
  * an item opens in a side panel. Below, the Workers where learning is happening and the changes
  * waiting for review.
  */
+// Learning's summary: the one thing to do (review Skill changes) or what is new in the period,
+// its figures, and the period itself. Counted from the learning snapshot and the demo reviews.
+function LearningBanner({ period, periodLabel, onPeriod }: { period: (typeof PERIODS)[number]['value']; periodLabel: string; onPeriod: (p: (typeof PERIODS)[number]['value']) => void }) {
+  const [params] = useSearchParams()
+  const reviews = useReviews()
+  const pending = ITEMS.filter((i) => i.state === 'proposed' && !reviews[i.id])
+  const changes = pendingChanges(pending, reviews)
+  const fresh = ITEMS.filter((i) => inPeriod(i, period))
+  const freshWorkers = new Set(fresh.map((i) => i.workerId)).size
+  const reviewTo = (() => {
+    const p = new URLSearchParams(params)
+    if (pending[0]) p.set('item', pending[0].id)
+    p.set('stage', 'skill-changes')
+    return { search: p.toString(), hash: 'stage' }
+  })()
+  return (
+    <SummaryBanner
+      hue="cyan"
+      icon={BrainCircuit}
+      eyebrow="Learning"
+      title={changes ? `${formatCount(changes)} Skill ${changes === 1 ? 'change waits' : 'changes wait'} for your review` : fresh.length ? `${formatCount(fresh.length)} new learning ${fresh.length === 1 ? 'item' : 'items'} in the ${periodLabel}` : `Nothing new in the ${periodLabel}`}
+      facts={[
+        `${formatCount(fresh.length)} new from ${formatCount(freshWorkers)} ${freshWorkers === 1 ? 'Worker' : 'Workers'}`,
+        `${formatCount(ITEMS.filter((i) => i.state === 'agreed').length)} agreed across runs`,
+        `${formatCount(ITEMS.filter((i) => i.state === 'gathering').length)} collecting evidence`,
+        `${formatCount(ITEMS.length)} learning items in all`,
+      ]}
+      action={
+        <>
+          <PeriodSelect value={period} onChange={onPeriod} />
+          {pending.length > 0 && <Button asChild className="px-5"><Link to={reviewTo} preventScrollReset><Hourglass aria-hidden="true" />Review Skill changes</Link></Button>}
+        </>
+      }
+    />
+  )
+}
+
 export function LearningPage() {
   const [params, setParams] = useSearchParams()
   const [period, setPeriod] = usePeriod()
@@ -188,9 +226,7 @@ export function LearningPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex justify-end">
-        <PeriodSelect value={period} onChange={setPeriod} />
-      </div>
+      <LearningBanner period={period} periodLabel={periodLabel} onPeriod={setPeriod} />
 
       <StageExplorer period={period} onAll={() => setPeriod('all')} />
 

@@ -1,6 +1,6 @@
 import { Link, useNavigate, useParams } from 'react-router'
 import { Boxes, ChevronLeft, DatabaseZap, Grid3x3, Inbox } from 'lucide-react'
-import { SectionNav } from '@/components/platform/section-nav'
+import { TabBar } from '@/components/platform/tab-bar'
 import { Panel } from '@/components/platform/panel'
 import { EmptyState } from '@/components/platform/states'
 
@@ -24,9 +24,9 @@ export function GovernancePage() {
         </Link>
         <h2 className="mt-1 text-section">Knowledge governance</h2>
       </div>
-      <SectionNav variant="pills" value={key} onChange={(v) => navigate(`/knowledge/${v}`)} items={Object.entries(VIEWS).map(([value, v]) => ({ value, label: v.label }))} />
-      <Panel id={`governance-${key}`} title={VIEWS[key].label} icon={VIEWS[key].icon} hue="violet">
-        <EmptyState icon={DatabaseZap} title="Not available in this demo" />
+      <Panel id={`governance-${key}`} flush>
+        <TabBar label="Governance" value={key} onChange={(v) => navigate(`/knowledge/${v}`)} items={Object.entries(VIEWS).map(([value, v]) => ({ value, label: v.label, icon: v.icon }))} />
+        <EmptyState className="m-5" icon={DatabaseZap} title="Not available in this demo" />
       </Panel>
     </div>
   )
